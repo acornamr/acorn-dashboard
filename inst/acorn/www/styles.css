@@ -1,0 +1,196 @@
+/*
+Colors:
+
+Using ACORN logo:
+#654338
+
+http://colormind.io/bootstrap/
+# 1F131E
+# B34558
+# 8489A4
+# F4F7F4
+
+
+Ferra	#794d4c	Primary
+Gondola	#1f131e	Info
+Hippie Green	#5a924f	Success
+Meteor	#d78217	Warning
+Pomegranate	#f44336	Danger
+
+Does this color from the logo fits?
+#FDA93D
+*/
+
+/* .body {font-family: Phetsarath OT, Helvetica, sans-serif;} */
+
+
+/* since position = "fixed-top" inside navbarPage
+body {padding-top: 70px;}  */
+
+.vl {
+  border-left: 1px solid gray;
+  padding-left: 5px;
+}
+
+.cl-success {
+  color: green;
+}
+
+.cl-question {
+  color: gray;
+}
+
+.cl-warning {
+  color: orange;
+}
+
+.cl-fail {
+  color: red;
+}
+
+/*
+.section {
+  margin-top: 25px;
+  margin-bottom: 15px;
+  border-color: #2c3e50;
+  border-top-style: inset;
+  border-width: 3px 0 2px 0;
+}
+*/
+
+.section {
+  margin-top: 30px;
+  margin-bottom: 0;
+  padding: 0;
+  border-color: black;
+  border-top-style: double;
+  border-width: 3px 0 0 0;
+}
+
+/*
+#box_checklist {
+    min-height: 20px;
+    padding: 19px;
+    margin-bottom: 20px;
+}
+*/
+
+/*
+#box_all_filter {
+    background-color: #f5f5f5;
+    border: 1px solid #e3e3e3;
+    padding: 15px;
+    border-radius: 4px;
+}
+*/
+/*
+#box_additional_filter {
+  width: 500px;
+  color: grey;
+}
+*/
+
+.box_filter {
+  padding: 2px;
+  border: 3px solid #f5f5f5;
+}
+
+.filter_on {
+  border: 3px solid red;
+  background-color: orange;
+}
+
+#filter_by {
+  top: calc(-10%);;
+  left: calc(0%);;
+  z-index: 999999999;
+  position: relative;
+  border: 3px;
+  color:red;
+}
+
+
+#language-box {
+  float: right;
+  margin: 25px;
+}
+
+
+/*
+#logo-div {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 200px;
+  margin: auto;
+  background-color: #cccccc;
+  z-index: 9999;
+}
+*/
+
+#logo-img {
+  width: 100%
+  /*
+  height: 50px;
+  background-color: #f5f5f5;
+  */
+}
+
+/*
+#acorn-logo {
+   height: 40px;
+   position: relative;
+   top: -10px
+}
+*/
+
+
+#float {
+  top: calc(2%);;
+  right: calc(1%);;
+  padding: 10px;
+  z-index: 999999999;
+  position: absolute;
+}
+
+#float-debug {
+  top: calc(10%);;
+  right: calc(1%);;
+  padding: 10px;
+  z-index: 999999999;
+  position: absolute;
+}
+
+.checklist {
+  width: 300px;
+}
+
+.centerara {
+  text-align: center;
+}
+
+/* quick access to different font sizes */
+.f-50 { font-size: 50%; }
+.f-60 { font-size: 60%;}
+.f-75 { font-size: 75%;}
+.f-85 { font-size: 85%;}
+.f-150 { font-size: 150%; }
+.f-200 { font-size: 200%; }
+
+/* quick access to width */
+.w-25 { width: 25%; }
+.w-33 { width: 33%; }
+.w-50 { width: 50%; }
+.w-100 { width: 100%; }
+
+/* fixed footer */
+.footer {
+  position: fixed;
+  bottom: 0;
+  background-color: #FFFFFF;
+  color: black;
+  text-align: right;
+  width: 100%;
+  padding-right: 50px;
+}
+

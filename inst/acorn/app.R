@@ -1,0 +1,723 @@
+# ACORN shiny app main script
+
+source("./www/scripts/load_packages.R", local = TRUE)
+app_version <- 'prototype.001'  # IMPORTANT ensure that the version is identical in DESCRIPTION and README.md
+helper_developer <- "true" # JS condition
+session_start_time <- format(Sys.time(), "%Y-%m-%d_%H:%M")
+session_id <- glue("{glue_collapse(sample(LETTERS, 5, TRUE))}_{session_start_time}")
+
+# It's safe to expose those since the acornamr-cred bucket content can only be listed + read 
+# and contains only encrypted files
+bucket_cred_k <- readRDS("./www/cred/bucket_cred_k.Rds")
+bucket_cred_s <- readRDS("./www/cred/bucket_cred_s.Rds")
+
+# contains all require i18n elements
+source('./www/scripts/indicate_translation.R', local = TRUE)
+for(file in list.files('./www/functions/'))  source(paste0('./www/functions/', file), local = TRUE)  # define all functions
+
+# list of BS4 variables: https://github.com/rstudio/bslib/blob/master/inst/lib/bs/scss/_variables.scss
+acorn_theme <- bs_theme(bootswatch = "flatly", version = 4, 
+                        "border-width" = "2px")
+acorn_theme_la <- bs_theme(bootswatch = "flatly", version = 4, 
+                           "border-width" = "2px", base_font = "Phetsarath OT", bg = "#202123", fg = "#B8BCC2")
+
+tab <- function(...) {
+  shiny::tabPanel(..., class = "p-3 border border-top-0 rounded-bottom")
+}
+
+ui <- fluidPage(
+  title = 'ACORN | A Clinically Oriented antimicrobial Resistance Network',
+  theme = acorn_theme,
+  includeCSS("www/styles.css"),
+  withAnim(),  # for shinyanimate
+  usei18n(i18n),  # for translation
+  useShinyjs(),
+  
+  
+  div(id = 'float',
+      dropMenu(
+        actionButton("checklist_show", icon = icon("check-double"), label = "App Checklist", class = "btn-success"),
+        theme = "light-border",
+        class = "checklist",
+        placement = "bottom-end",
+        htmlOutput("checklist_status")
+      )
+  ),
+  
+  div(id = 'float-debug',
+      conditionalPanel(helper_developer, actionLink("debug", label = "(Debug)"))
+  ),
+  
+  
+  navbarPage(id = 'tabs', 
+             title = a(img(src = "logo_acorn.png", style = "height: 40px; position: relative; top: -10px")),
+             collapsible = TRUE, inverse = FALSE, 
+             position = "static-top",
+             footer = div(class = "f-85 footer", 
+                          p(glue("App version {app_version}"), "| ", a("ACORN Project website", href = "https://acornamr.net/", class='js-external-link', target="_blank"))),
+             tabPanel(i18n$t('ACORN'), value = 'welcome',
+                      fluidRow(
+                        column(3,
+                               uiOutput('site_logo'),
+                               br(),
+                               div(id = "login-basic", 
+                                   div(
+                                     class = "well",
+                                     h4(class = "text-center", "Please login"),
+                                     p(class = "text-center", "Use demo/demo for a tour of the App or to visualise a specific .acorn file."
+                                     ),
+                                     textInput(
+                                       inputId     = "cred_username", 
+                                       label       = tagList(icon("user"), "User Name"),
+                                       placeholder = "Enter user name"
+                                     ),
+                                     passwordInput(
+                                       inputId     = "cred_password", 
+                                       label       = tagList(icon("unlock-alt"), "Password"), 
+                                       placeholder = "Enter password"
+                                     ), 
+                                     div(class = "text-center",
+                                         actionButton(inputId = "cred_login", label = "Log in", class = "btn-primary")
+                                     )
+                                   )
+                               )
+                        ),
+                        column(9,
+                               div(id = 'language-box', class = "well",
+                                   selectInput(
+                                     inputId = 'selected_language', label = span(icon('language'), i18n$t('Language')),
+                                     choices = i18n$get_languages(), selected = i18n$get_key_translation(), width = "150px"
+                                   )
+                               ),
+                               h4('Welcome!'),
+                               includeMarkdown("./www/markdown/lorem_ipsum.md")
+                        )
+                      )
+             ),
+             tabPanel('Data Management', value = "data_management",
+                      tabsetPanel(id = "management", type = "tabs",
+                                  tab(value = "clinical", "Review clinical data",
+                                      p("Provided clinical data, you can track records and generate logs here."),
+                                      conditionalPanel(condition = 'output.state_redcap_cred',
+                                                       actionButton('get_redcap_data', span(icon('cloud-download-alt'), HTML('Get REDCap Data')))
+                                      ),
+                                      DTOutput("table_redcap_dta")
+                                  ),
+                                  tab(value = "generate", span("Generate ", em(".acorn"), " file"),
+                                      p("Provided with clinical and lab data, we can generate a .acorn file."),
+                                      fluidRow(
+                                        column(6,
+                                               div(class = "centerara", h5(icon("laptop"), "Local")), br()
+                                        ),
+                                        column(6,
+                                               div(class = "centerara", class = "vl", h5(icon("cloud"), "Server")), br()
+                                        )
+                                      ),
+                                      br()
+                                  ),
+                                  tab(value = "load", span("Load ", em(".acorn"), " file"),
+                                      HTML("This section allows you to load an .acorn file. If you don't have one, you can <a id='link_to_generate' href='#' class='action-button'>generate one.</a>"),
+                                      br(),
+                                      fluidRow(
+                                        column(6,
+                                               div(class = "centerara", h5(icon("laptop"), "Local")),
+                                               fileInput("load_acorn_local", label = NULL, buttonLabel =  HTML("Load <em>.acorn</em>"), accept = '.acorn'),
+                                        ),
+                                        column(6,
+                                               div(class = "centerara", class = "vl", 
+                                                   h5(icon("cloud"), "Server"),
+                                                   conditionalPanel(condition = '! output.state_s3_connection',
+                                                                    p("No connection to a server has been established."),
+                                                   ),
+                                                   conditionalPanel(condition = 'output.state_s3_connection',
+                                                                    fluidRow(
+                                                                      column(6,
+                                                                             pickerInput('acorn_files_server', choices = NULL, label = NULL,
+                                                                                         options = pickerOptions(actionsBox = TRUE, noneSelectedText = "No file selected", liveSearch = FALSE,
+                                                                                                                 showTick = TRUE, header = "10 most recent files:"))
+                                                                      ),
+                                                                      column(6,
+                                                                             conditionalPanel(condition = "input.acorn_files_server",
+                                                                                              actionButton('load_acorn_server', span(icon('cloud-download-alt'), HTML('Load <em>.acorn</em>')))
+                                                                             )
+                                                                      )
+                                                                    )
+                                                   )
+                                               )
+                                        )
+                                      ),
+                                      br()
+                                  ),
+                                  tab(value = "save", span("Save ", em(".acorn"), " file"),
+                                      conditionalPanel(condition = '! output.state_dta_available',
+                                                       p("There is no data to be saved. Create data first.")
+                                      ),
+                                      conditionalPanel(condition = 'output.state_dta_available',
+                                                       fluidRow(
+                                                         column(6,
+                                                                div(class = "centerara", h5(icon("laptop"), "Local")), br(),
+                                                                actionButton('save_acorn_local', HTML('Save <em>.acorn</em>'))
+                                                         ),
+                                                         column(6,
+                                                                div(class = "centerara", class = "vl", h5(icon("cloud"), "Server"), br(),
+                                                                    conditionalPanel(condition = 'output.state_s3_connection & output.state_write_s3',
+                                                                                     actionButton('save_acorn_server', span(icon('cloud-upload-alt'), HTML('Save <em>.acorn</em>')))
+                                                                    ),
+                                                                    conditionalPanel(condition = '! output.state_write_s3',
+                                                                                     p(icon("times"), " No write access to server."),
+                                                                                     actionButton('save_acorn_server', span(icon('cloud-upload-alt'), HTML('Save <em>.acorn</em>')), disabled = TRUE)
+                                                                    ),
+                                                                    conditionalPanel(condition = '! output.state_s3_connection',
+                                                                                     p(icon("satellite-dish"), " No connection to server.")
+                                                                    )
+                                                                )
+                                                         )
+                                                       )
+                                      )
+                                  )
+                      ), br(), br()
+             ),
+             tabPanel('Data Visualisation', value = "data_visualisation",
+                      fluidRow(
+                        column(10,
+                               div(id = "box_all_filter", class = "well",
+                                   div(id = "filter_by", "FILTER BY:"),
+                                   flowLayout(
+                                     cellWidths = 150,
+                                     uiOutput("box_filt_1"),
+                                     uiOutput("box_filt_2"),
+                                     uiOutput("box_filt_3"),
+                                     actionButton("additional_filter_1", icon = icon("plus"), label = "",
+                                                  class = "btn-success"),
+                                     div(id = "box_additional_filter_1", 
+                                         uiOutput("box_filt_4"),
+                                         uiOutput("box_filt_5"),
+                                         uiOutput("box_filt_6")
+                                     )
+                                   )
+                               )
+                        ),
+                        column(2,
+                               br(), br(),
+                               uiOutput("box_rows_acorn_filt"),
+                               uiOutput("box_rows_acorn_filt_dup")
+                        )
+                      ),
+                      br(),
+                      
+                      tabsetPanel(type = "tabs",
+                                  tab("Admission Date", plotOutput('plot_date_admission')), 
+                                  tab("Lorem Ipsum", includeMarkdown("./www/markdown/lorem_ipsum.md"))
+                      )
+             )
+  )
+)
+
+# define server ----
+
+server <- function(input, output, session) {
+  
+  observeEvent(input$link_to_generate, {
+    updateTabsetPanel(session, "management", "generate")
+  })
+  
+  # Management of CSS ----
+  observe({
+    session$setCurrentTheme(
+      if (isTRUE(input$selected_language == "la")) acorn_theme_la else acorn_theme
+    )
+  })
+  
+  hideTab("tabs", "data_visualisation")
+  observe(
+    if (checklist_status$acorn_file_loaded$status == "okay")  showTab("tabs", "data_visualisation")
+  )
+  
+  # Management of filters ----
+  # change color based on if filtered or not
+  observe({
+    req(input$Id094, input$filter_sex)
+    toggleClass(id = "filter-1", class = "filter_on", condition = length(input$Id094) != 5)
+    toggleClass(id = "filter-2", class = "filter_on", condition = length(input$filter_sex) != 2)
+  })
+  
+  # To have it hidden on start of the app
+  observe(
+    if( input$additional_filter_1 == 0 )  shinyjs::hide(id = "box_additional_filter_1")
+  )
+  
+  observeEvent(input$additional_filter_1, {
+    if( input$additional_filter_1 %% 2 == 1 ) {
+      shinyjs::show(id = "box_additional_filter_1")
+      updateActionButton(session = session, inputId = "additional_filter_1", icon = icon("minus"))
+    } else {
+      shinyjs::hide(id = "box_additional_filter_1")
+      updateActionButton(session = session, inputId = "additional_filter_1", icon = icon("plus"))
+    }
+  })
+  
+  # Misc stuff ----
+  # source files with code to generate outputs
+  file_list <- list.files(path = "./www/outputs", pattern = "*.R")
+  for (file in file_list) source(paste0("./www/outputs/", file), local = TRUE)$value
+  
+  # allow debug on click
+  observeEvent(input$debug, browser())
+  
+  # update language based on dropdown choice
+  observeEvent(input$selected_language, {
+    update_lang(session, input$selected_language)
+  })
+  
+  # Definition of reactive elements for data ----
+  # The "ACORN Data Management SOP" document has relevant information
+  redcap_dta <- reactiveVal()
+  acorn_cred <- reactiveVal()
+  acorn_dta_file <- reactiveValues()
+  # In-App editing:
+  # acorn_dta_session <- reactiveValues()
+  acorn_dta_merged <- reactiveValues()  
+  
+  acorn_dta <- reactive({
+    req(acorn_dta_merged$lab_dta, acorn_dta_merged$f01_cor)
+    merge_clinical_lab(acorn_dta_merged)
+  })
+  
+  acorn_dta_filter <- reactive({
+    req(acorn_dta())
+    acorn_dta() %>% filter_data(input = input)
+  })
+  
+  
+  # Checklists ----
+  
+  # Status can be: hidden / question / okay / warning / ko
+  checklist_status <- reactiveValues(
+    app_login = list(status = "hidden", msg = "Connection status"),
+    s3_cred = list(status = "hidden", msg = "S3 ACORN server credential"),
+    redcap_cred = list(status = "hidden", msg = "REDCap server credential"),
+    internet_con = list(status = "hidden", msg = "Connection to internet"),
+    s3_connection = list(status = "hidden", msg = "Connection to S3 ACORN server"),
+    s3_write = list(status = "hidden", msg = "Authorisation to write on S3 ACORN server"),
+    acorn_file_loaded = list(status = "hidden", msg = "ACORN data loaded"),
+    acorn_file_saved = list(status = "hidden", msg = "ACORN data saved"),
+    acorn_data_filtered = list(status = "hidden", msg = "ACORN data filter status")
+  )
+  
+  # allow access to info on AWS S3 connection and data availability in UI
+  output$state_redcap_cred <- reactive(checklist_status$redcap_cred$status == "okay")
+  outputOptions(output, 'state_redcap_cred', suspendWhenHidden = FALSE)
+  output$state_s3_connection <- reactive(checklist_status$s3_connection$status == "okay")
+  outputOptions(output, 'state_s3_connection', suspendWhenHidden = FALSE)
+  output$state_write_s3 <- reactive(checklist_status$s3_write$status == "okay")
+  outputOptions(output, 'state_write_s3', suspendWhenHidden = FALSE)
+  output$state_dta_available <- reactive(checklist_status$acorn_file_loaded$status == "okay")
+  outputOptions(output, 'state_dta_available', suspendWhenHidden = FALSE)
+  
+  # checklist management if data is filtered
+  observe({
+    req(acorn_dta())
+    req(acorn_dta_filter())
+    same_nb_rows <- (nrow(acorn_dta()) == nrow(acorn_dta_filter()))
+    if(same_nb_rows)  checklist_status$acorn_data_filtered <- list(status = "okay", msg = "ACORN data not filtered")
+    if(! same_nb_rows)  checklist_status$acorn_data_filtered <- list(status = "warning", msg = "ACORN data is filtered")
+  })
+  
+  # On connection ----
+  observeEvent(input$cred_login, {
+    if (input$cred_username == "demo") {
+      
+      # Stop is the password is wrong
+      cred <- readRDS("./www/cred/encrypted_cred_demo.rds")
+      key_user <- sha256(charToRaw(input$cred_password))
+      test <- try(unserialize(aes_cbc_decrypt(cred, key = key_user)), silent = TRUE)
+      
+      if(inherits(test, "try-error"))  {
+        show_toast(title = "Wrong password", type = "error", position = "top")
+        return()
+      }
+      
+      # Save into reactive element to be able to used later on
+      cred <- unserialize(aes_cbc_decrypt(cred, key = key_user))
+      
+      test <- (cred$user == input$cred_username)
+      if(!test)  {
+        Sys.sleep(1)
+        show_toast(title = "Something strange is happening", type = "error", position = "top")
+        return()
+      }
+      
+      acorn_cred(cred)
+    }
+    if (input$cred_username != "demo") {
+      file_cred <- glue("encrypted_cred_{input$cred_username}.rds")
+      # Feedback if the connection can't be established
+      connect <- try(get_bucket(bucket = "acornamr-cred", 
+                                key    = bucket_cred_k,
+                                secret = bucket_cred_s,
+                                region = "eu-west-3") %>% unlist(),
+                     silent = TRUE)
+      
+      if (inherits(connect, 'try-error')) {
+        showNotification("Couldn't connect to server credentials. Please check internet access/firewall.")
+        return()
+      }
+      
+      # Test if credentials for this user name exist
+      if (! file_cred %in% 
+          as.vector(connect[names(connect) == 'Contents.Key'])) {
+        showNotification("Couldn't find this user")
+        return()
+      }
+      
+      # I can't find a way to pass those credentials directly in s3read_using()
+      Sys.setenv("AWS_ACCESS_KEY_ID" = bucket_cred_k,
+                 "AWS_SECRET_ACCESS_KEY" = bucket_cred_s,
+                 "AWS_DEFAULT_REGION" = "eu-west-3")
+      
+      cred <- s3read_using(FUN = readRDS_encrypted, 
+                           pwd = input$cred_password,
+                           object = file_cred,
+                           bucket = "acornamr-cred")
+      
+      # To avoid issues during devel
+      Sys.setenv("AWS_ACCESS_KEY_ID" = "",
+                 "AWS_SECRET_ACCESS_KEY" = "",
+                 "AWS_DEFAULT_REGION" = "")
+      
+      test <- (cred$user == input$cred_username)
+      if(!test)  {
+        Sys.sleep(1)
+        show_toast(title = "Something strange is happening", type = "error", position = "top")
+        return()
+      }
+      
+      acorn_cred(cred)
+    }
+    showNotification("You are now logged in!")
+    
+    # Connect to AWS S3 server ----
+    if(acorn_cred()$acorn_s3) {
+      
+      checklist_status$s3_cred <- list(status = "okay", msg = "Server connection credential provided")
+      
+      ifelse(has_internet(), 
+             { checklist_status$internet_con <- list(status = "okay", msg = "Connection to internet") }, 
+             { checklist_status$internet_con <- list(status = "ko", msg = "No connection to internet") 
+             return()})
+      
+      connect_server_test <- bucket_exists(
+        bucket = acorn_cred()$acorn_s3_bucket,
+        key =  acorn_cred()$acorn_s3_key,
+        secret = acorn_cred()$acorn_s3_secret,
+        region = acorn_cred()$acorn_s3_region)[1]
+      
+      if(connect_server_test) {
+        checklist_status$s3_connection <- list(status = "okay", msg = "Server connection established")
+        
+        if(acorn_cred()$acorn_s3_write)  checklist_status$s3_write <- list(status = "okay", msg = "Ability to write on server")
+        if(! acorn_cred()$acorn_s3_write)  checklist_status$s3_write <- list(status = "ko", msg = "Not allowed to write on server")
+        
+        # Update select list with .acorn files on the server
+        dta <- get_bucket(bucket = acorn_cred()$acorn_s3_bucket,
+                          key =  acorn_cred()$acorn_s3_key,
+                          secret = acorn_cred()$acorn_s3_secret,
+                          region = acorn_cred()$acorn_s3_region)
+        dta <- unlist(dta)
+        acorn_dates <- as.vector(dta[names(dta) == 'Contents.LastModified'])
+        ord_acorn_dates <- order(as.POSIXct(acorn_dates))
+        acorn_files <- rev(tail(as.vector(dta[names(dta) == 'Contents.Key'])[ord_acorn_dates], 10))
+        
+        updatePickerInput(session, 'acorn_files_server', choices = acorn_files, selected = acorn_files[1])
+      }
+      
+      if(!connect_server_test) {
+        checklist_status$s3_connection <- list(status = "ko", msg = "No server connection established")
+        return()
+      }
+      
+    }
+    
+    # Connect to REDCap server ----
+    if(acorn_cred()$redcap_server) {
+      checklist_status$redcap_cred <- list(status = "okay", msg = "REDCap server connection credential provided")
+    }
+    
+    startAnim(session, 'float', 'bounce')
+  })
+  
+  # On Download of .acorn file from server ----
+  observeEvent(input$load_acorn_server, {
+    # laod content
+    acorn_s3 <- get_object(object = input$acorn_files_server, 
+                           bucket = acorn_cred()$acorn_s3_bucket,
+                           key =  acorn_cred()$acorn_s3_key,
+                           secret = acorn_cred()$acorn_s3_secret,
+                           region = acorn_cred()$acorn_s3_region)
+    load(rawConnection(acorn_s3))
+    
+    # update acorn_dta_file
+    acorn_dta_file$f01 <- f01
+    acorn_dta_file$f02 <- f02
+    acorn_dta_file$f03 <- f03
+    acorn_dta_file$f04 <- f04
+    acorn_dta_file$f05 <- f05
+    acorn_dta_file$f06 <- f06
+    acorn_dta_file$f01_edit <- f01_edit
+    acorn_dta_file$f02_edit <- f02_edit
+    acorn_dta_file$f03_edit <- f03_edit
+    acorn_dta_file$f04_edit <- f04_edit
+    acorn_dta_file$f05_edit <- f05_edit
+    acorn_dta_file$f06_edit <- f06_edit
+    acorn_dta_file$lab_dta <- lab_dta
+    acorn_dta_file$meta <- meta
+    
+    # update acorn_dta_merged
+    acorn_dta_merged$f01 <- f01
+    acorn_dta_merged$f02 <- f02
+    acorn_dta_merged$f03 <- f03
+    acorn_dta_merged$f04 <- f04
+    acorn_dta_merged$f05 <- f05
+    acorn_dta_merged$f06 <- f06
+    acorn_dta_merged$f01_edit <- f01_edit
+    acorn_dta_merged$f02_edit <- f02_edit
+    acorn_dta_merged$f03_edit <- f03_edit
+    acorn_dta_merged$f04_edit <- f04_edit
+    acorn_dta_merged$f05_edit <- f05_edit
+    acorn_dta_merged$f06_edit <- f06_edit
+    acorn_dta_merged$f01_cor <- process_edit(f01, f01_edit)
+    acorn_dta_merged$f02_cor <- process_edit(f02, f02_edit)
+    acorn_dta_merged$f03_cor <- process_edit(f03, f03_edit)
+    acorn_dta_merged$f04_cor <- process_edit(f04, f04_edit)
+    acorn_dta_merged$f05_cor <- process_edit(f05, f05_edit)
+    acorn_dta_merged$f06_cor <- process_edit(f06, f06_edit)
+    acorn_dta_merged$lab_dta <- lab_dta
+    acorn_dta_merged$meta <- meta
+    
+    # update status of the app
+    checklist_status$acorn_file_loaded <- list(status = "okay", msg = glue("Successfully loaded data<br>{icon('info-circle')} Data generated on the {acorn_dta_merged$meta$time_generation}; on <strong>{acorn_dta_merged$meta$machine}</strong>; by <strong>{acorn_dta_merged$meta$user}</strong>. {acorn_dta_merged$meta$comment}"))
+    
+    showModal(modalDialog(
+      info_acorn_file(acorn_dta_file),
+      title = "Info on file loaded",
+      footer = modalButton("Okay"),
+      size = "l",
+      easyClose = FALSE,
+      fade = TRUE
+    ))
+  })
+  
+  # On "Load .acorn" file from local ----
+  observeEvent(input$load_acorn_local, {
+    load(input$load_acorn_local$datapath)
+    
+    # update acorn_dta_file
+    acorn_dta_file$f01 <- f01
+    acorn_dta_file$f02 <- f02
+    acorn_dta_file$f03 <- f03
+    acorn_dta_file$f04 <- f04
+    acorn_dta_file$f05 <- f05
+    acorn_dta_file$f06 <- f06
+    acorn_dta_file$f01_edit <- f01_edit
+    acorn_dta_file$f02_edit <- f02_edit
+    acorn_dta_file$f03_edit <- f03_edit
+    acorn_dta_file$f04_edit <- f04_edit
+    acorn_dta_file$f05_edit <- f05_edit
+    acorn_dta_file$f06_edit <- f06_edit
+    acorn_dta_file$lab_dta <- lab_dta
+    acorn_dta_file$meta <- meta
+    
+    # update acorn_dta_merged
+    acorn_dta_merged$f01 <- f01
+    acorn_dta_merged$f02 <- f02
+    acorn_dta_merged$f03 <- f03
+    acorn_dta_merged$f04 <- f04
+    acorn_dta_merged$f05 <- f05
+    acorn_dta_merged$f06 <- f06
+    acorn_dta_merged$f01_edit <- f01_edit
+    acorn_dta_merged$f02_edit <- f02_edit
+    acorn_dta_merged$f03_edit <- f03_edit
+    acorn_dta_merged$f04_edit <- f04_edit
+    acorn_dta_merged$f05_edit <- f05_edit
+    acorn_dta_merged$f06_edit <- f06_edit
+    acorn_dta_merged$f01_cor <- process_edit(f01, f01_edit)
+    acorn_dta_merged$f02_cor <- process_edit(f02, f02_edit)
+    acorn_dta_merged$f03_cor <- process_edit(f03, f03_edit)
+    acorn_dta_merged$f04_cor <- process_edit(f04, f04_edit)
+    acorn_dta_merged$f05_cor <- process_edit(f05, f05_edit)
+    acorn_dta_merged$f06_cor <- process_edit(f06, f06_edit)
+    acorn_dta_merged$lab_dta <- lab_dta
+    acorn_dta_merged$meta <- meta
+    
+    # update status of the app
+    checklist_status$acorn_file_loaded <- list(status = "okay", msg = glue("Successfully loaded data<br>{icon('info-circle')} Data generated on the {acorn_dta_merged$meta$time_generation}; on <strong>{acorn_dta_merged$meta$machine}</strong>; by <strong>{acorn_dta_merged$meta$user}</strong>. {acorn_dta_merged$meta$comment}"))
+    
+    
+    showModal(modalDialog(
+      info_acorn_file(acorn_dta_file),
+      title = "Info on file loaded",
+      footer = modalButton("Okay"),
+      size = "l",
+      easyClose = FALSE,
+      fade = TRUE
+    ))
+    startAnim(session, 'float', 'bounce')
+  })
+  
+  
+  # On "Get REDCap data" ----
+  observeEvent(input$get_redcap_data, {
+    dta <- redcap_read(redcap_uri='https://m-redcap-test.tropmedres.ac/redcap_test/api/', 
+                       token = acorn_cred()$redcap_server_api)$data
+    
+    redcap_dta(dta)
+  })
+  
+  
+  # On "Save ACORN" ----
+  # on server
+  # ask for confirmation and metadata
+  observeEvent(input$save_acorn_server, { 
+    
+    showModal(modalDialog(
+      fluidRow(
+        column(6,
+               textInput("name_file", value = session_start_time, label = "Choose a name for the file"),
+               textInput("meta_acorn_user", label = "User:", value = Sys.info()["user"]),
+               textInput("meta_acorn_machine", label = "Machine:", value = Sys.info()["nodename"]),
+               textAreaInput("meta_acorn_comment", label = "(Optional) Comment"),
+               p(glue("The session id: {session_id} will be added to the file."))
+        ),
+        column(6,
+               actionButton("save_acorn_server_confirm", label = "Confirm Save on Server")
+        )
+      ),
+      
+      title = "Save acorn data",
+      footer = modalButton("Cancel"),
+      size = "l",
+      easyClose = FALSE,
+      fade = TRUE
+    ))
+    
+  })
+  
+  observeEvent(input$save_acorn_server_confirm, { 
+    name_file <- glue("{input$name_file}.acorn")
+    file <- file.path(tempdir(), name_file)
+    
+    f01 <- acorn_dta_merged$f01
+    f02 <- acorn_dta_merged$f02
+    f03 <- acorn_dta_merged$f03
+    f04 <- acorn_dta_merged$f04
+    f05 <- acorn_dta_merged$f05
+    f06 <- acorn_dta_merged$f06
+    
+    f01_edit <- acorn_dta_merged$f01_edit
+    f02_edit <- acorn_dta_merged$f02_edit
+    f03_edit <- acorn_dta_merged$f03_edit
+    f04_edit <- acorn_dta_merged$f04_edit
+    f05_edit <- acorn_dta_merged$f05_edit
+    f06_edit <- acorn_dta_merged$f06_edit
+    
+    lab_dta <- acorn_dta_merged$lab_dta
+    meta <- list(time_generation = session_start_time,
+                 session_id = session_id,
+                 app_version = app_version,
+                 user = input$meta_acorn_user,
+                 machine = input$meta_acorn_machine,
+                 comment = input$meta_acorn_comment)
+    
+    save(f01, f02, f03, f04, f05, f06,
+         f01_edit, f02_edit, f03_edit, f04_edit, f05_edit, f06_edit,
+         lab_dta, meta,
+         file = file)
+    
+    put_object(file = file,
+               object = name_file,
+               bucket = acorn_cred()$acorn_s3_bucket,
+               key =  acorn_cred()$acorn_s3_key,
+               secret = acorn_cred()$acorn_s3_secret,
+               region = acorn_cred()$acorn_s3_region)
+    
+    dta <- get_bucket(bucket = acorn_cred()$acorn_s3_bucket,
+                      key =  acorn_cred()$acorn_s3_key,
+                      secret = acorn_cred()$acorn_s3_secret,
+                      region = acorn_cred()$acorn_s3_region)
+    dta <- unlist(dta)
+    acorn_dates <- as.vector(dta[names(dta) == 'Contents.LastModified'])
+    ord_acorn_dates <- order(as.POSIXct(acorn_dates))
+    acorn_files <- rev(tail(as.vector(dta[names(dta) == 'Contents.Key'])[ord_acorn_dates], 10))
+    
+    checklist_status$acorn_file_saved <- list(status = "okay", msg = "ACORN file saved")
+    
+    updatePickerInput(session, 'acorn_files_server', choices = acorn_files, selected = character(0))
+    removeModal()
+    show_toast(title = "File Saved on Server", type = "success", position = "top")
+  })
+  
+  # locally
+  observeEvent(input$save_acorn_local, { 
+    showModal(modalDialog(
+      fluidRow(
+        column(6,
+               textInput("name_file_dup", value = session_start_time, label = "Choose a name for the file"),
+               textInput("meta_acorn_user_dup", label = "User:", value = Sys.info()["user"]),
+               textInput("meta_acorn_machine_dup", label = "Machine:", value = Sys.info()["nodename"]),
+               textAreaInput("meta_acorn_comment_dup", label = "(Optional) Comment"),
+               p(glue("The session id: {session_id} will be added to the file."))
+        ),
+        column(6,
+               downloadButton("save_acorn_local_confirm", label = "Confirm Save File")
+        )
+      ),
+      
+      title = "Save acorn data",
+      footer = modalButton("Cancel"),
+      size = "l",
+      easyClose = FALSE,
+      fade = TRUE
+    ))
+  })
+  
+  output$save_acorn_local_confirm <- downloadHandler(
+    filename = glue("{input$name_file_dup}.acorn"),
+    content = function(file) {
+      checklist_status$acorn_file_saved <- list(status = "okay", msg = "ACORN file saved")
+      f01 <- acorn_dta_merged$f01
+      f02 <- acorn_dta_merged$f02
+      f03 <- acorn_dta_merged$f03
+      f04 <- acorn_dta_merged$f04
+      f05 <- acorn_dta_merged$f05
+      f06 <- acorn_dta_merged$f06
+      
+      f01_edit <- acorn_dta_merged$f01_edit
+      f02_edit <- acorn_dta_merged$f02_edit
+      f03_edit <- acorn_dta_merged$f03_edit
+      f04_edit <- acorn_dta_merged$f04_edit
+      f05_edit <- acorn_dta_merged$f05_edit
+      f06_edit <- acorn_dta_merged$f06_edit
+      
+      lab_dta <- acorn_dta_merged$lab_dta
+      
+      meta <- list(time_generation = session_start_time,
+                   session_id = session_id,
+                   app_version = app_version,
+                   user = input$meta_acorn_user_dup,
+                   machine = input$meta_acorn_machine_dup,
+                   comment = input$meta_acorn_comment_dup)
+      
+      save(f01, f02, f03, f04, f05, f06,
+           f01_edit, f02_edit, f03_edit, f04_edit, f05_edit, f06_edit,
+           lab_dta, meta,
+           file = file)
+    })
+  startAnim(session, 'float', 'bounce')
+  # showDropMenu("checklist_show_dropmenu")
+}
+
+
+shinyApp(ui = ui, server = server)  # port 3872
+
+
+
