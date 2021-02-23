@@ -1,55 +1,35 @@
 output$box_filt_1 <- renderUI({
   div(id = "filter-1", class = "box_filter",
-      pickerInput(
-        inputId = "Id094",
-        label = "Letters:", 
-        choices = LETTERS[1:5],
-        selected = LETTERS[1:5],
-        options = list(
-          `actions-box` = TRUE), 
-        multiple = TRUE
-      )
+      prettyCheckboxGroup(inputId = "filter_type_ward", label = NULL, shape = "curve", status = "primary",
+                  choices = c("Paediatrics", "PICU"), 
+                  selected = c("Paediatrics", "PICU")),
   )
 })
 
 output$box_filt_2 <- renderUI({
   div(id = "filter-2", class = "box_filter",
-      awesomeCheckboxGroup("filter_sex", label = "Sex:",
-                           choices = c("Male", "Female"), selected = c("Male", "Female"))
+      prettyCheckboxGroup("filter_sex", label = NULL,  shape = "curve", status = "primary",
+                  choices = c("Male", "Female"), selected = c("Male", "Female"))
   )
 })
 
 output$box_filt_3 <- renderUI({
-  div(class = "box_filter",
-      prettyRadioButtons(inputId = "variable_2",
-                         label = "Click me!",
-                         choices = c("Click me !", "Me !", "Or me !")),
+  div(id = "filter-3", class = "box_filter",
+      prettyCheckboxGroup("filter_category", label = NULL,  status = "primary",
+                          icon = icon("check"), animation = "tada", 
+                  choices = c("Community Acquired Infections", "Hospital Acquired Infections"), 
+                  selected = c("Community Acquired Infections", "Hospital Acquired Infections"))
   )
 })
 
 output$box_filt_4 <- renderUI({
-  div(class = "box_filter",
-      checkboxGroupInput("variable_4", "Variables to show:",
-                         c("Cylinders" = "cyl",
-                           "Transmission" = "am",
-                           "Gears" = "gear"))
-  )
+  
 })
 
 output$box_filt_5 <- renderUI({
   div(class = "box_filter",
-      checkboxGroupInput("variable_5", "Variables to show:",
-                         c("Cylinders" = "cyl",
-                           "Transmission" = "am",
-                           "Gears" = "gear"))
-  )
-})
-
-output$box_filt_6 <- renderUI({
-  div(class = "box_filter",
-      checkboxGroupInput("variable_6", "Variables to show:",
-                         c("Cylinders" = "cyl",
-                           "Transmission" = "am",
-                           "Gears" = "gear"))
+      p('Clinical or Day-28 Outcome'), 
+      prettySwitch(inputId = "filter_outcome_clinical", label = "Select Only Patients with Clinical Outcome", status = "primary", value = FALSE),
+      prettySwitch(inputId = "filter_outcome_d28", label = "Select Only Patients with Day-28 Outcome", status = "primary", value = FALSE)
   )
 })

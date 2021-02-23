@@ -2,7 +2,7 @@ output$box_rows_acorn_filt <- renderUI({
   req(acorn_dta_filter())
   n_row <- format(nrow(acorn_dta()), big.mark = ",")
   
-  div(class = "alert alert-success", role = "alert", 
+  div(class = "card card-inverse card-primary",
       strong(span(class = "f-150", n_row),  "Elements"),
       p("In dataset.")
   )
@@ -12,7 +12,7 @@ output$box_rows_acorn_filt_dup <- renderUI({
   req(acorn_dta_filter())
   n_row <- format(nrow(acorn_dta_filter()), big.mark = ",")
   
-  div(class = "alert alert-success", role = "alert", 
+  div(class = "card card-inverse card-warning",
       strong(span(class = "f-150", n_row),  "Elements"),
       p("In FILTERED dataset.")
   )

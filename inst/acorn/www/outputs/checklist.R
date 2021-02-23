@@ -16,8 +16,13 @@ output$checklist_status <- renderText({
     if(checklist[[index]]$status == "warning")  text[index] <-  paste0("<span class='cl-warning'><i class='fa fa-stop-circle'></i> ", i18n$t(checklist[[index]]$msg), "</span>")
     if(checklist[[index]]$status == "question" | checklist[[index]]$status == "hidden")  text[index] <-  paste0("<span class='cl-question'><i class='fa fa-question'></i> ", i18n$t(checklist[[index]]$msg), "</span>")
   }
-
   
   text <- paste(text, collapse = "</br>")
-  return(paste("(To close click outside)</br></br>", text))
+  
+  report <- ifelse(pandoc_available(),
+                   paste(tagList(downloadLink("report", label = span(icon("file-word"), "Generate Report (.docx)")))),
+                   paste(tagList(span("To generate a report", a("install pandoc", href = "https://pandoc.org/installing.html", target = "_blank"), " and restart the app."))))
+  
+  
+  return(paste("Checklist:</br></br>", text, "</br></br>", report))
 })

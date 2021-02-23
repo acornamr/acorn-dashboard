@@ -1,4 +1,12 @@
 # ACORN shiny app main script
+# TODO: eliminate everything labelled 'ACORN1'
+
+# Start ACORN1 ----
+load("./www/mock_ACORN1_Data.RData")
+patient$patient_id <- as.character(patient$patient_id)
+patient$episode_id <- as.character(patient$episode_id)
+hc_export_kind <- c("downloadJPEG", "downloadCSV")
+# End ACORN1 ----
 
 source("./www/scripts/load_packages.R", local = TRUE)
 app_version <- 'prototype.001'  # IMPORTANT ensure that the version is identical in DESCRIPTION and README.md
@@ -15,7 +23,8 @@ bucket_cred_s <- readRDS("./www/cred/bucket_cred_s.Rds")
 source('./www/scripts/indicate_translation.R', local = TRUE)
 for(file in list.files('./www/functions/'))  source(paste0('./www/functions/', file), local = TRUE)  # define all functions
 
-# list of BS4 variables: https://github.com/rstudio/bslib/blob/master/inst/lib/bs/scss/_variables.scss
+# List of BS4 variables: https://github.com/rstudio/bslib/blob/master/inst/lib/bs/scss/_variables.scss
+# Theme flatly: https://bootswatch.com/flatly/ ; https://bootswatch.com/4/flatly/bootstrap.css
 acorn_theme <- bs_theme(bootswatch = "flatly", version = 4, 
                         "border-width" = "2px")
 acorn_theme_la <- bs_theme(bootswatch = "flatly", version = 4, 
@@ -36,26 +45,185 @@ ui <- fluidPage(
   
   div(id = 'float',
       dropMenu(
-        actionButton("checklist_show", icon = icon("check-double"), label = "App Checklist", class = "btn-success"),
+        actionButton("checklist_show", icon = icon("gear"), label = NULL, class = "btn-success"),
         theme = "light-border",
         class = "checklist",
         placement = "bottom-end",
-        htmlOutput("checklist_status")
+        htmlOutput("checklist_status"),
+        
       )
   ),
   
-  div(id = 'float-debug',
-      conditionalPanel(helper_developer, actionLink("debug", label = "(Debug)"))
-  ),
+  # div(id = 'float-debug',
+  #     conditionalPanel(helper_developer, actionLink("debug", label = "(Debug)"))
+  # ),
   
   
-  navbarPage(id = 'tabs', 
-             title = a(img(src = "logo_acorn.png", style = "height: 40px; position: relative; top: -10px")),
+  navbarPage(id = 'tabs',
+             title = a(img(src = "logo_acorn.png", style = "height: 40px; position: relative;")),
              collapsible = TRUE, inverse = FALSE, 
              position = "static-top",
+             # Header ----
+             header = conditionalPanel(
+               id = "header-filter",
+               condition = "input.tabs != 'welcome' & input.tabs != 'data_management'",
+               fluidRow(
+                 column(12,
+                        div(id = "filter_box", class = "well",
+                            div(id = "filter_more", 
+                                dropMenu(
+                                  class = "filter_box_small",
+                                  actionButton("filterito", "Filters", icon = icon("filter"), class = "btn-success"),
+                                  actionLink(inputId = "shortcut_filter_1", label = span(icon("filter"), " Patients with Pneumonia, BC only")),
+                                  br(),
+                                  actionLink(inputId = "shortcut_filter_2", label = span(icon("filter"), " Below 5 y.o. HAI")),
+                                  br(), br(),
+                                  actionLink(inputId = "shortcut_reset_filters", label = span(icon("times"), " Reset All Filters"))
+                                )
+                            ),
+                            fluidRow(
+                              column(6,
+                                     div(class = "f-125", class = "centerara", span(icon("user"), " Patients")),
+                                     fluidRow(
+                                       column(5,
+                                              prettyRadioButtons(
+                                                inputId = "filter_origin_infection",
+                                                label = "Origin of Infection:", 
+                                                choices = c("All Origins", "CAI", "HAI"),
+                                                inline = TRUE, 
+                                                status = "primary",
+                                                fill = FALSE
+                                              )
+                                       ),
+                                       column(5,
+                                              prettyCheckboxGroup(inputId = "filter_type_ward", label = "Type of Ward:", shape = "curve", status = "primary", inline = TRUE, 
+                                                                  choices = c("Paediatric ward", "PICU"), selected = c("Paediatric ward", "PICU"))
+                                       ),
+                                       column(2, 
+                                              br(),
+                                              dropMenu(
+                                                actionButton("more_filters", icon = icon("plus"), label = "", class = "btn-primary"),
+                                                theme = "light-border",
+                                                class = "filter_box",
+                                                placement = "bottom-start",
+                                                div(id = "box_additional_filter_1", 
+                                                    fluidRow(
+                                                      column(6,
+                                                             dateRangeInput("filter_date_enrollment", label = "Date of Enrollment:", startview = "year"),
+                                                             p("Patient Ages:"),
+                                                             fluidRow(
+                                                               column(4, numericInput("filter_age_min", label = "", min = 0, value = 0)),
+                                                               column(4, numericInput("filter_age_max", label = "", min = 0, value = 99),),
+                                                               column(4, selectInput("filter_age_unit", label = "", choices = c("days", "months", "years"), selected = "years"))
+                                                             ),
+                                                             prettySwitch(inputId = "filter_age_na", label = "Including Unknown Ages", status = "primary", value = TRUE, slim = TRUE),
+                                                             hr()
+                                                      ),
+                                                      column(4,
+                                                             prettyCheckboxGroup(inputId = "filter_diagnosis", label = "Patient Diagnosis:", shape = "curve", status = "primary",
+                                                                                 choices = c("Meningitis", "Pneumonia", "Sepsis"), selected = c("Meningitis", "Pneumonia", "Sepsis"), 
+                                                                                 inline = TRUE),
+                                                             prettyRadioButtons(inputId = "confirmed_diagnosis", label = "Diagnosis confirmation (if clinical outcome):", 
+                                                                                choices = c("Diagnosis confirmed", "Diagnosis rejected", "No filter on diagnosis confirmation"),
+                                                                                selected = "No filter on diagnosis confirmation")
+                                                      ),
+                                                      column(4,
+                                                             prettySwitch(inputId = "filter_outcome_clinical", label = "Select Only Patients with Clinical Outcome", status = "primary", value = FALSE),
+                                                             prettySwitch(inputId = "filter_outcome_d28", label = "Patients w/ Day-28 Outcome", status = "primary", value = FALSE)
+                                                      )
+                                                    )
+                                                )
+                                              )
+                                       )
+                                     ),
+                                     fluidRow(
+                                       column(5,
+                                              div(class = "summary_filter_start", "214 Enrollments, 172 Distinct Patients, 150 with Microbiology.")
+                                       ),
+                                       column(2, div(class = "centerara", icon("arrow-right"))),
+                                       column(5, 
+                                              div(class = "summary_filter_end", "200 Enrollments, 160 Distinct Patients, 125 with Microbiology.")
+                                       )
+                                     )
+                                     # div(id = "box_additional_filter_1", 
+                                     #     fluidRow(
+                                     #       column(6,
+                                     #              dateRangeInput("filter_date_enrollment", label = "Date of Enrollment:", startview = "year"),
+                                     #              p("Patient Ages:"),
+                                     #              fluidRow(
+                                     #                column(4, numericInput("filter_age_min", label = "", min = 0, value = 0)),
+                                     #                column(4, numericInput("filter_age_max", label = "", min = 0, value = 99),),
+                                     #                column(4, selectInput("filter_age_unit", label = "", choices = c("days", "months", "years"), selected = "years"))
+                                     #              ),
+                                     #              prettySwitch(inputId = "filter_age_na", label = "Including Unknown Ages", status = "primary", value = TRUE, slim = TRUE),
+                                     #              hr()
+                                     #       ),
+                                     #       column(4,
+                                     #              prettyCheckboxGroup(inputId = "filter_diagnosis", label = "Patient Diagnosis:", shape = "curve", status = "primary",
+                                     #                                  choices = c("Meningitis", "Pneumonia", "Sepsis"), selected = c("Meningitis", "Pneumonia", "Sepsis"), 
+                                     #                                  inline = TRUE),
+                                     #              prettyRadioButtons(inputId = "confirmed_diagnosis", label = "Diagnosis confirmation (if clinical outcome):", 
+                                     #                                 choices = c("Diagnosis confirmed", "Diagnosis rejected", "No filter on diagnosis confirmation"),
+                                     #                                 selected = "No filter on diagnosis confirmation")
+                                     #       ),
+                                     #       column(4,
+                                     #              prettySwitch(inputId = "filter_outcome_clinical", label = "Select Only Patients with Clinical Outcome", status = "primary", value = FALSE),
+                                     #              prettySwitch(inputId = "filter_outcome_d28", label = "Patients w/ Day-28 Outcome", status = "primary", value = FALSE)
+                                     #       )
+                                     #     )
+                                     # ),
+                                     # div(id = "additional_filter_btn",
+                                     #     actionButton("additional_filter_1", icon = icon("plus"), label = "", class = "btn-success")
+                                     # )
+                              ),
+                              column(3, class = "vl",
+                                     div(class = "f-125", class = "centerara", span(icon("vial"), " Specimens")),
+                                     pickerInput(inputId = "filter_method_other", label = "Method of Collection:", multiple = TRUE,
+                                                 choices = c("Blood Culture", "CSF", "Genito-urinary swab"), 
+                                                 selected = c("Blood Culture", "CSF", "Genito-urinary swab"),
+                                                 options = list(`actions-box` = TRUE, 
+                                                                `deselect-all-text` = "None...",
+                                                                `select-all-text` = "All Methods", 
+                                                                `none-selected-text` = "None Selected",
+                                                                `multiple-separator` = " + "),
+                                                 choicesOpt = list(content = c("<span class = 'filter_blood'>Blood Culture</span>", "CSF", "Genito-urinary swab")),
+                                     ),
+                                     fluidRow(
+                                       column(5,
+                                              div(class = "summary_filter_start", "100 Specimens Collected - 1.43 per Enrollment")
+                                       ),
+                                       column(2, div(class = "centerara", icon("arrow-right"))),
+                                       column(5, 
+                                              div(class = "summary_filter_end", "98 Specimens Collected - 1.5 per Enrollment")
+                                       )
+                                     )
+                              ),
+                              column(3, class = "vl",
+                                     div(class = "f-125", class = "centerara", span(icon("microscope"), " Isolates")),
+                                     pickerInput(inputId = "deduplication_method", label = "Deduplication:", 
+                                                 choices = c("No deduplication of isolates", "Deduplication by patient-episode", "Deduplication by patient ID")),
+                                     fluidRow(
+                                       column(5,
+                                              div(class = "summary_filter_start", "10 Isolates from culture that have growth with 5 Isolates of target pathogens")
+                                       ),
+                                       column(2, div(class = "centerara", icon("arrow-right"))),
+                                       column(5, 
+                                              div(class = "summary_filter_end", "10 Isolates from culture that have growth with 5 Isolates of target pathogens")
+                                       )
+                                     )
+                              )
+                            )
+                        )
+                 )
+               )
+             ),
+             
+             # Footer ----
              footer = div(class = "f-85 footer", 
                           p(glue("App version {app_version}"), "| ", a("ACORN Project website", href = "https://acornamr.net/", class='js-external-link', target="_blank"))),
-             tabPanel(i18n$t('ACORN'), value = 'welcome',
+             
+             # Tab Welcome ----
+             tabPanel(i18n$t('Welcome'), value = 'welcome',
                       fluidRow(
                         column(3,
                                uiOutput('site_logo'),
@@ -94,7 +262,8 @@ ui <- fluidPage(
                         )
                       )
              ),
-             tabPanel('Data Management', value = "data_management",
+             # Tab Data Management ----
+             tabPanel(span(icon("database"), 'Data Management'), value = "data_management",
                       tabsetPanel(id = "management", type = "tabs",
                                   tab(value = "clinical", "Review clinical data",
                                       p("Provided clinical data, you can track records and generate logs here."),
@@ -177,39 +346,68 @@ ui <- fluidPage(
                                   )
                       ), br(), br()
              ),
-             tabPanel('Data Visualisation', value = "data_visualisation",
-                      fluidRow(
-                        column(10,
-                               div(id = "box_all_filter", class = "well",
-                                   div(id = "filter_by", "FILTER BY:"),
-                                   flowLayout(
-                                     cellWidths = 150,
-                                     uiOutput("box_filt_1"),
-                                     uiOutput("box_filt_2"),
-                                     uiOutput("box_filt_3"),
-                                     actionButton("additional_filter_1", icon = icon("plus"), label = "",
-                                                  class = "btn-success"),
-                                     div(id = "box_additional_filter_1", 
-                                         uiOutput("box_filt_4"),
-                                         uiOutput("box_filt_5"),
-                                         uiOutput("box_filt_6")
-                                     )
+             # Tab Patients ----
+             navbarMenu("Enrollments",
+                        # Tab Overview ----
+                        tabPanel("Overview", value = "overview", 
+                                 br(), br(), 
+                                 
+                                 # fluidRow(
+                                 #   column(6,
+                                 #          div(class = "box_outputs",
+                                 #              h5("Proportions of Enrollments with Blood Culture"),
+                                 #              highchartOutput("evolution_blood_culture", height = "350px")
+                                 #          )
+                                 #   ),
+                                 #   column(6,
+                                 #          div(class = "box_outputs",
+                                 #              h5("Number of Patients"),
+                                 #              # checkboxGroupButtons("variables_table", label = "Select Variables to Include in Table:", 
+                                 #              #                      size = "sm", status = "primary", checkIcon = list(yes = icon("check")), individual = TRUE,
+                                 #              #                      choices = c("Place of Infection" = "surveillance_cat", "Type of Ward" = "ward", "Ward" = "ward_text", "Clinical Outcome" = "clinical_outcome", "Day-28 Outcome" = "d28_outcome"), 
+                                 #              #                      selected = c("surveillance_cat", "ward", "ward_text")),
+                                 #              
+                                 #              pickerInput("variables_table", label = "Table Columns:", 
+                                 #                          # size = "sm", status = "primary", checkIcon = list(yes = icon("check")), 
+                                 #                          multiple = TRUE, width = "100%",
+                                 #                          choices = c("Place of Infection" = "surveillance_cat", "Type of Ward" = "ward", "Ward" = "ward_text", "Clinical Outcome" = "clinical_outcome", "Day-28 Outcome" = "d28_outcome"), 
+                                 #                          selected = c("surveillance_cat", "ward", "ward_text")),
+                                 #              
+                                 #              DTOutput("table_patients", width = "95%")
+                                 #          )
+                                 #   )
+                                 # ),
+                                 fluidRow(
+                                   column(5,
+                                          div(class = "box_outputs",
+                                              h5("Proportions of Enrollments with Blood Culture"),
+                                              highchartOutput("evolution_blood_culture")
+                                          )),
+                                   column(7,
+                                          div(class = "box_outputs",
+                                              h5("Number of Patients"),
+                                              pickerInput("variables_table", label = "Table Columns:", 
+                                                          multiple = TRUE, width = "600px",
+                                                          choices = c("Place of Infection" = "surveillance_cat", "Type of Ward" = "ward", "Ward" = "ward_text", "Clinical Outcome" = "clinical_outcome", "Day-28 Outcome" = "d28_outcome"), 
+                                                          selected = c("surveillance_cat", "ward", "ward_text")),
+                                              
+                                              DTOutput("table_patients", width = "95%")
+                                          )
                                    )
-                               )
+                                 ),
+                                 br()
                         ),
-                        column(2,
-                               br(), br(),
-                               uiOutput("box_rows_acorn_filt"),
-                               uiOutput("box_rows_acorn_filt_dup")
-                        )
-                      ),
-                      br(),
-                      
-                      tabsetPanel(type = "tabs",
-                                  tab("Admission Date", plotOutput('plot_date_admission')), 
-                                  tab("Lorem Ipsum", includeMarkdown("./www/markdown/lorem_ipsum.md"))
-                      )
-             )
+                        "----",
+                        tabPanel("Profile", value = "patients_profile", br()),
+                        # Tab Follow-up ----
+                        tabPanel("Follow-up", value = "follow_up", br()),
+                        # Tab HAI ----
+                        tabPanel("HAI", value = "hai", br())
+             ),
+             # Tab Microbiology ----
+             tabPanel("Microbiology", value = "microbiology", br()),
+             # Tab AMR ----
+             tabPanel(span(icon("bug"), "AMR"), value = "amr", br())
   )
 )
 
@@ -228,10 +426,11 @@ server <- function(input, output, session) {
     )
   })
   
-  hideTab("tabs", "data_visualisation")
-  observe(
-    if (checklist_status$acorn_file_loaded$status == "okay")  showTab("tabs", "data_visualisation")
-  )
+  # TODO: activate in production:
+  # hideTab("tabs", "data_visualisation")
+  # observe(
+  #   if (checklist_status$acorn_file_loaded$status == "okay")  showTab("tabs", "data_visualisation")
+  # )
   
   # Management of filters ----
   # change color based on if filtered or not
@@ -242,24 +441,25 @@ server <- function(input, output, session) {
   })
   
   # To have it hidden on start of the app
-  observe(
-    if( input$additional_filter_1 == 0 )  shinyjs::hide(id = "box_additional_filter_1")
-  )
-  
-  observeEvent(input$additional_filter_1, {
-    if( input$additional_filter_1 %% 2 == 1 ) {
-      shinyjs::show(id = "box_additional_filter_1")
-      updateActionButton(session = session, inputId = "additional_filter_1", icon = icon("minus"))
-    } else {
-      shinyjs::hide(id = "box_additional_filter_1")
-      updateActionButton(session = session, inputId = "additional_filter_1", icon = icon("plus"))
-    }
-  })
+  # observe(
+  #   if( input$additional_filter_1 == 0 )  shinyjs::hide(id = "box_additional_filter_1")
+  # )
+  # 
+  # observeEvent(input$additional_filter_1, {
+  #   if( input$additional_filter_1 %% 2 == 1 ) {
+  #     shinyjs::show(id = "box_additional_filter_1")
+  #     updateActionButton(session = session, inputId = "additional_filter_1", icon = icon("minus"))
+  #   } else {
+  #     shinyjs::hide(id = "box_additional_filter_1")
+  #     updateActionButton(session = session, inputId = "additional_filter_1", icon = icon("plus"))
+  #   }
+  # })
   
   # Misc stuff ----
   # source files with code to generate outputs
   file_list <- list.files(path = "./www/outputs", pattern = "*.R")
   for (file in file_list) source(paste0("./www/outputs/", file), local = TRUE)$value
+  source("./www/scripts/shortcuts_filters_exec.R", local = TRUE)$value
   
   # allow debug on click
   observeEvent(input$debug, browser())
@@ -288,6 +488,23 @@ server <- function(input, output, session) {
     acorn_dta() %>% filter_data(input = input)
   })
   
+  
+  # ACORN1 Start ----
+  # Main datasets:
+  patient <- reactiveVal(patient)
+  microbio <- reactiveVal(microbio)
+  hai_surveys <- reactiveVal(hai.surveys)
+  
+  # Secondary datasets:
+  # patient_filter <- reactive(patient() %>% fun_filter_patient(input = input))
+  # microbio_filter <- reactive(microbio() %>% fun_filter_microbio(patient = patient_filter(), input = input))
+  # microbio_filter_blood <- reactive(microbio_filter() %>% fun_filter_blood_only())
+  # hai_surveys_filter <- reactive(hai_surveys() %>% fun_filter_hai(input = input))
+  patient_filter <- reactive(patient())
+  microbio_filter <- reactive(microbio())
+  microbio_filter_blood <- reactive(microbio_filter())
+  hai_surveys_filter <- reactive(hai_surveys())
+  # ACORN1 End ----
   
   # Checklists ----
   
@@ -435,7 +652,6 @@ server <- function(input, output, session) {
         checklist_status$s3_connection <- list(status = "ko", msg = "No server connection established")
         return()
       }
-      
     }
     
     # Connect to REDCap server ----
@@ -574,9 +790,7 @@ server <- function(input, output, session) {
   })
   
   
-  # On "Save ACORN" ----
-  # on server
-  # ask for confirmation and metadata
+  # On "Save ACORN" on server ----
   observeEvent(input$save_acorn_server, { 
     
     showModal(modalDialog(
@@ -602,6 +816,7 @@ server <- function(input, output, session) {
     
   })
   
+  # Require confirmation and metadata
   observeEvent(input$save_acorn_server_confirm, { 
     name_file <- glue("{input$name_file}.acorn")
     file <- file.path(tempdir(), name_file)
@@ -656,7 +871,7 @@ server <- function(input, output, session) {
     show_toast(title = "File Saved on Server", type = "success", position = "top")
   })
   
-  # locally
+  # On "Save ACORN" locally ----
   observeEvent(input$save_acorn_local, { 
     showModal(modalDialog(
       fluidRow(
@@ -680,6 +895,7 @@ server <- function(input, output, session) {
     ))
   })
   
+  # Require confirmation and metadata
   output$save_acorn_local_confirm <- downloadHandler(
     filename = glue("{input$name_file_dup}.acorn"),
     content = function(file) {
@@ -713,11 +929,6 @@ server <- function(input, output, session) {
            file = file)
     })
   startAnim(session, 'float', 'bounce')
-  # showDropMenu("checklist_show_dropmenu")
 }
 
-
 shinyApp(ui = ui, server = server)  # port 3872
-
-
-

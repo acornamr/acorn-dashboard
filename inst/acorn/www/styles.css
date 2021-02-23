@@ -27,8 +27,11 @@ Does this color from the logo fits?
 /* since position = "fixed-top" inside navbarPage
 body {padding-top: 70px;}  */
 
+
+
+
 .vl {
-  border-left: 1px solid gray;
+  border-style: hidden hidden hidden double;
   padding-left: 5px;
 }
 
@@ -46,6 +49,25 @@ body {padding-top: 70px;}  */
 
 .cl-fail {
   color: red;
+}
+
+/* https://bootswatch.com/4/flatly/bootstrap.css */
+.filer_all {
+  padding: 1px;
+  border-radius: 1px;
+}
+
+
+.filer_choice {
+  background: #e74c3c; 
+  color: white;
+  padding: 1px;
+  border-radius: 1px;
+}
+
+.filter_blood {
+  color: #e74c3c; 
+  font-weight: bold;
 }
 
 /*
@@ -92,12 +114,39 @@ body {padding-top: 70px;}  */
 
 .box_filter {
   padding: 2px;
-  border: 3px solid #f5f5f5;
+  /* border: 3px solid #f5f5f5;*/
 }
 
 .filter_on {
   border: 3px solid red;
   background-color: orange;
+}
+
+/* Otherwise the navbar is very tall */
+.navbar-static-top{
+  height: 60px;
+}
+
+#filter_box {
+  min-width: 100%;
+  /*
+  border: 3px solid #2c3e50;
+  border-radius: 5px;
+  background-color: #ecf0f1;
+  */
+  padding-top: 2px;
+  padding-right: 15px;
+  padding-bottom: 2px;
+  padding-left: 15px;
+  position: relative;
+}
+
+
+#filter_more {
+  position: absolute;
+  top: -12px;
+  left: -5px;
+  z-index: 999999999;
 }
 
 #filter_by {
@@ -109,6 +158,11 @@ body {padding-top: 70px;}  */
   color:red;
 }
 
+
+#additional_filter_btn{
+  float: right;
+  margin: 10px;
+}
 
 #language-box {
   float: right;
@@ -136,6 +190,10 @@ body {padding-top: 70px;}  */
   */
 }
 
+#header-filter {
+  width: 100%
+}
+
 /*
 #acorn-logo {
    height: 40px;
@@ -154,18 +212,52 @@ body {padding-top: 70px;}  */
 }
 
 #float-debug {
-  top: calc(10%);;
-  right: calc(1%);;
+  bottom: calc(1%);;
+  left: calc(1%);;
   padding: 10px;
   z-index: 999999999;
   position: absolute;
+}
+
+#filter_age_min {
+  margin: 0px;
+  padding: 0px;
+  text-align: center;
 }
 
 .checklist {
   width: 300px;
 }
 
+.filter_box {
+  width: 500px;
+}
+
+.filter_box_small {
+  width: 250px;
+}
+
 .centerara {
+  text-align: center;
+}
+
+.box_outputs {
+  margin-top: 5px;
+  margin-bottom: 15px;
+  border-color: #2c3e50;
+  border-top-style: inset;
+  border-width: 3px 0 0 0;
+  width:100%;
+  height:100%;
+}
+
+
+.summary_filter_start {
+  text-align: center;
+}
+
+.summary_filter_end {
+  color: gray;
   text-align: center;
 }
 
@@ -174,6 +266,7 @@ body {padding-top: 70px;}  */
 .f-60 { font-size: 60%;}
 .f-75 { font-size: 75%;}
 .f-85 { font-size: 85%;}
+.f-125 { font-size: 125%; }
 .f-150 { font-size: 150%; }
 .f-200 { font-size: 200%; }
 
@@ -187,7 +280,7 @@ body {padding-top: 70px;}  */
 .footer {
   position: fixed;
   bottom: 0;
-  background-color: #FFFFFF;
+  background-color: orange;
   color: black;
   text-align: right;
   width: 100%;
