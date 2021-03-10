@@ -21,6 +21,7 @@ Imports:
     bslib,
     curl,
     DT,
+    flexdashboard,
     glue,
     highcharter,
     lubridate,

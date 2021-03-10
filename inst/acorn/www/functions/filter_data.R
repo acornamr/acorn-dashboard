@@ -10,3 +10,6 @@ filter_data <- function(data, input) {
   
   return(data)
 }
+
+# Function that keeps only "Blood" specimen types
+fun_filter_blood_only <- function(data)  data %>% filter(specimen_type == "Blood")

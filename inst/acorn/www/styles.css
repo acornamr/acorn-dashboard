@@ -261,14 +261,33 @@ body {padding-top: 70px;}  */
   text-align: center;
 }
 
+.box_summary {
+  border: 2px solid #2c3e50;
+  padding: 5px;
+  border-radius: 6px;
+  margin: 5px;
+}
+
+.right {
+  float: right;
+}
+
 /* quick access to different font sizes */
 .f-50 { font-size: 50%; }
 .f-60 { font-size: 60%;}
 .f-75 { font-size: 75%;}
 .f-85 { font-size: 85%;}
+.f-100 { font-size: 100%; }
+.f-115 { font-size: 115%; }
 .f-125 { font-size: 125%; }
 .f-150 { font-size: 150%; }
 .f-200 { font-size: 200%; }
+
+.smallcaps {
+  font-variant: small-caps;
+  font-weight: 900;
+  font-size: 125%;
+}
 
 /* quick access to width */
 .w-25 { width: 25%; }
@@ -286,4 +305,3 @@ body {padding-top: 70px;}  */
   width: 100%;
   padding-right: 50px;
 }
-
