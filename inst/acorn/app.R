@@ -66,125 +66,129 @@ ui <- fluidPage(
              header = conditionalPanel(
                id = "header-filter",
                condition = "input.tabs != 'welcome' & input.tabs != 'data_management'",
-               fluidRow(
-                 column(12,
-                        div(id = "filter_box", class = "well",
-                            div(id = "filter_more", 
-                                dropMenu(
-                                  class = "filter_box_small",
-                                  actionButton("filterito", "Filters", icon = icon("sliders-h"), class = "btn-success"),
-                                  actionLink(inputId = "shortcut_filter_1", label = span(icon("filter"), " Patients with Pneumonia, BC only")),
-                                  br(),
-                                  actionLink(inputId = "shortcut_filter_2", label = span(icon("filter"), " Below 5 y.o. HAI")),
-                                  br(), br(),
-                                  actionLink(inputId = "shortcut_reset_filters", label = span(icon("times"), " Reset All Filters"))
-                                )
-                            ),
-                            fluidRow(
-                              column(6,
-                                     div(class = "smallcaps", class = "centerara", span(icon("hospital-user"), " Patients")),
-                                     fluidRow(
-                                       column(6,
-                                              prettyRadioButtons(
-                                                inputId = "filter_origin_infection",
-                                                label = "Origin of Infection:", 
-                                                choices = c("All Origins", "CAI", "HAI"),
-                                                inline = TRUE, 
-                                                status = "primary",
-                                                fill = FALSE
-                                              )
-                                       ),
-                                       column(6,
-                                              prettyCheckboxGroup(inputId = "filter_type_ward", label = "Type of Ward:", shape = "curve", status = "primary", inline = TRUE, 
-                                                                  choices = c("Paediatric ward", "PICU"), selected = c("Paediatric ward", "PICU")),
-                                              div(id = "additional_filter_btn", class = "right",
-                                                  actionButton("additional_filter_1", icon = icon("plus"), label = "", class = "btn-success")
-                                              )
-                                       )
-                                     ),
-                                     div(id = "box_additional_filter_1",
-                                         fluidRow(
-                                           column(6,
-                                                  dateRangeInput("filter_date_enrollment", label = "Date of Enrollment:", startview = "year"),
-                                                  span("Patient Ages:"),
-                                                  fluidRow(
-                                                    column(4, numericInput("filter_age_min", label = "", min = 0, value = 0)),
-                                                    column(4, numericInput("filter_age_max", label = "", min = 0, value = 99),),
-                                                    column(4, selectInput("filter_age_unit", label = "", choices = c("days", "months", "years"), selected = "years"))
-                                                  ),
-                                                  prettySwitch(inputId = "filter_age_na", label = "Include Unknown Ages", status = "primary", value = TRUE, slim = TRUE),
-                                                  hr()
-                                           ),
-                                           column(6,
-                                                  prettyCheckboxGroup(inputId = "filter_diagnosis", label = "Patient Diagnosis:", shape = "curve", status = "primary",
-                                                                      choices = c("Meningitis", "Pneumonia", "Sepsis"), selected = c("Meningitis", "Pneumonia", "Sepsis"),
-                                                                      inline = TRUE),
-                                                  prettyRadioButtons(inputId = "confirmed_diagnosis", label = "Diagnosis confirmation (if clinical outcome):",
-                                                                     choices = c("Diagnosis confirmed", "Diagnosis rejected", "No filter on diagnosis confirmation"),
-                                                                     selected = "No filter on diagnosis confirmation"),
-                                                  prettySwitch(inputId = "filter_outcome_clinical", label = "Only Patients with Clinical Outcome", status = "primary", value = FALSE, slim = TRUE),
-                                                  prettySwitch(inputId = "filter_outcome_d28", label = "Only Patients with Day-28 Outcome", status = "primary", value = FALSE, slim = TRUE)
-                                           )
+               div(
+                 fluidRow(
+                   column(12,
+                          div(id = "filter_box", class = "well",
+                              div(id = "filter_more", 
+                                  dropMenu(
+                                    class = "filter_box_small",
+                                    actionButton("filterito", "Filters", icon = icon("sliders-h"), class = "btn-success"),
+                                    actionLink(inputId = "shortcut_filter_1", label = span(icon("filter"), " Patients with Pneumonia, BC only")),
+                                    br(),
+                                    actionLink(inputId = "shortcut_filter_2", label = span(icon("filter"), " Below 5 y.o. HAI")),
+                                    br(), br(),
+                                    actionLink(inputId = "shortcut_reset_filters", label = span(icon("times"), " Reset All Filters"))
+                                  )
+                              ),
+                              fluidRow(
+                                column(6,
+                                       div(class = "smallcaps", class = "centerara", span(icon("hospital-user"), " Patients")),
+                                       fluidRow(
+                                         column(6,
+                                                prettyRadioButtons(
+                                                  inputId = "filter_origin_infection",
+                                                  label = "Origin of Infection:", 
+                                                  choices = c("All Origins", "CAI", "HAI"),
+                                                  inline = TRUE, 
+                                                  status = "primary",
+                                                  fill = FALSE
+                                                )
+                                         ),
+                                         column(5,
+                                                prettyCheckboxGroup(inputId = "filter_type_ward", label = "Type of Ward:", shape = "curve", status = "primary", inline = TRUE, 
+                                                                    choices = c("Paediatric ward", "PICU"), selected = c("Paediatric ward", "PICU"))
+                                         ),
+                                         column(1,
+                                                br(),
+                                                div(id = "additional_filter_btn", class = "right",
+                                                    actionButton("additional_filter_1", icon = icon("plus"), label = "", class = "btn-success")
+                                                )
                                          )
-                                     ),
-                                     fluidRow(
-                                       column(6, htmlOutput("nb_enrollments")),
-                                       column(6, htmlOutput("nb_patients_microbiology"))
-                                       # column(4, htmlOutput("nb_patients_microbiology"))
-                                     )
-                                     # div(id = "box_additional_filter_1", 
-                                     #     fluidRow(
-                                     #       column(6,
-                                     #              dateRangeInput("filter_date_enrollment", label = "Date of Enrollment:", startview = "year"),
-                                     #              p("Patient Ages:"),
-                                     #              fluidRow(
-                                     #                column(4, numericInput("filter_age_min", label = "", min = 0, value = 0)),
-                                     #                column(4, numericInput("filter_age_max", label = "", min = 0, value = 99),),
-                                     #                column(4, selectInput("filter_age_unit", label = "", choices = c("days", "months", "years"), selected = "years"))
-                                     #              ),
-                                     #              prettySwitch(inputId = "filter_age_na", label = "Including Unknown Ages", status = "primary", value = TRUE, slim = TRUE),
-                                     #              hr()
-                                     #       ),
-                                     #       column(4,
-                                     #              prettyCheckboxGroup(inputId = "filter_diagnosis", label = "Patient Diagnosis:", shape = "curve", status = "primary",
-                                     #                                  choices = c("Meningitis", "Pneumonia", "Sepsis"), selected = c("Meningitis", "Pneumonia", "Sepsis"), 
-                                     #                                  inline = TRUE),
-                                     #              prettyRadioButtons(inputId = "confirmed_diagnosis", label = "Diagnosis confirmation (if clinical outcome):", 
-                                     #                                 choices = c("Diagnosis confirmed", "Diagnosis rejected", "No filter on diagnosis confirmation"),
-                                     #                                 selected = "No filter on diagnosis confirmation")
-                                     #       ),
-                                     #       column(4,
-                                     #              prettySwitch(inputId = "filter_outcome_clinical", label = "Select Only Patients with Clinical Outcome", status = "primary", value = FALSE),
-                                     #              prettySwitch(inputId = "filter_outcome_d28", label = "Patients w/ Day-28 Outcome", status = "primary", value = FALSE)
-                                     #       )
-                                     #     )
-                                     # ),
-                                     # div(id = "additional_filter_btn",
-                                     #     actionButton("additional_filter_1", icon = icon("plus"), label = "", class = "btn-success")
-                                     # )
-                              ),
-                              column(3, class = "vl",
-                                     div(class = "smallcaps", class = "centerara", span(icon("vial"), " Specimens")),
-                                     pickerInput(inputId = "filter_method_other", label = "Method of Collection:", multiple = TRUE,
-                                                 choices = c("Blood Culture", "CSF", "Genito-urinary swab"), 
-                                                 selected = c("Blood Culture", "CSF", "Genito-urinary swab"),
-                                                 options = list(`actions-box` = TRUE, 
-                                                                `deselect-all-text` = "None...",
-                                                                `select-all-text` = "All Methods", 
-                                                                `none-selected-text` = "None Selected",
-                                                                `multiple-separator` = " + "),
-                                                 choicesOpt = list(content = c("<span class = 'filter_blood'>Blood Culture</span>", "CSF", "Genito-urinary swab")),
-                                     ),
-                                     htmlOutput("nb_specimens")
-                              ),
-                              column(3, class = "vl",
-                                     div(class = "smallcaps", class = "centerara", span(icon("microscope"), " Isolates")),
-                                     pickerInput(inputId = "deduplication_method", label = "Deduplication:", 
-                                                 choices = c("No deduplication of isolates", "Deduplication by patient-episode", "Deduplication by patient ID")),
-                                     htmlOutput("nb_isolates")
+                                       ),
+                                       div(id = "box_additional_filter_1",
+                                           fluidRow(
+                                             column(6,
+                                                    dateRangeInput("filter_date_enrollment", label = "Date of Enrollment:", startview = "year"),
+                                                    span("Patient Ages:"),
+                                                    fluidRow(
+                                                      column(4, numericInput("filter_age_min", label = "", min = 0, value = 0)),
+                                                      column(4, numericInput("filter_age_max", label = "", min = 0, value = 99),),
+                                                      column(4, selectInput("filter_age_unit", label = "", choices = c("days", "months", "years"), selected = "years"))
+                                                    ),
+                                                    prettySwitch(inputId = "filter_age_na", label = "Include Unknown Ages", status = "primary", value = TRUE, slim = TRUE),
+                                                    hr()
+                                             ),
+                                             column(6,
+                                                    prettyCheckboxGroup(inputId = "filter_diagnosis", label = "Patient Diagnosis:", shape = "curve", status = "primary",
+                                                                        choices = c("Meningitis", "Pneumonia", "Sepsis"), selected = c("Meningitis", "Pneumonia", "Sepsis"),
+                                                                        inline = TRUE),
+                                                    prettyRadioButtons(inputId = "confirmed_diagnosis", label = "Diagnosis confirmation (if clinical outcome):",
+                                                                       choices = c("Diagnosis confirmed", "Diagnosis rejected", "No filter on diagnosis confirmation"),
+                                                                       selected = "No filter on diagnosis confirmation"),
+                                                    prettySwitch(inputId = "filter_outcome_clinical", label = "Only Patients with Clinical Outcome", status = "primary", value = FALSE, slim = TRUE),
+                                                    prettySwitch(inputId = "filter_outcome_d28", label = "Only Patients with Day-28 Outcome", status = "primary", value = FALSE, slim = TRUE)
+                                             )
+                                           )
+                                       )
+                                       # div(id = "box_additional_filter_1", 
+                                       #     fluidRow(
+                                       #       column(6,
+                                       #              dateRangeInput("filter_date_enrollment", label = "Date of Enrollment:", startview = "year"),
+                                       #              p("Patient Ages:"),
+                                       #              fluidRow(
+                                       #                column(4, numericInput("filter_age_min", label = "", min = 0, value = 0)),
+                                       #                column(4, numericInput("filter_age_max", label = "", min = 0, value = 99),),
+                                       #                column(4, selectInput("filter_age_unit", label = "", choices = c("days", "months", "years"), selected = "years"))
+                                       #              ),
+                                       #              prettySwitch(inputId = "filter_age_na", label = "Including Unknown Ages", status = "primary", value = TRUE, slim = TRUE),
+                                       #              hr()
+                                       #       ),
+                                       #       column(4,
+                                       #              prettyCheckboxGroup(inputId = "filter_diagnosis", label = "Patient Diagnosis:", shape = "curve", status = "primary",
+                                       #                                  choices = c("Meningitis", "Pneumonia", "Sepsis"), selected = c("Meningitis", "Pneumonia", "Sepsis"), 
+                                       #                                  inline = TRUE),
+                                       #              prettyRadioButtons(inputId = "confirmed_diagnosis", label = "Diagnosis confirmation (if clinical outcome):", 
+                                       #                                 choices = c("Diagnosis confirmed", "Diagnosis rejected", "No filter on diagnosis confirmation"),
+                                       #                                 selected = "No filter on diagnosis confirmation")
+                                       #       ),
+                                       #       column(4,
+                                       #              prettySwitch(inputId = "filter_outcome_clinical", label = "Select Only Patients with Clinical Outcome", status = "primary", value = FALSE),
+                                       #              prettySwitch(inputId = "filter_outcome_d28", label = "Patients w/ Day-28 Outcome", status = "primary", value = FALSE)
+                                       #       )
+                                       #     )
+                                       # ),
+                                       # div(id = "additional_filter_btn",
+                                       #     actionButton("additional_filter_1", icon = icon("plus"), label = "", class = "btn-success")
+                                       # )
+                                ),
+                                column(3, class = "vl",
+                                       div(class = "smallcaps", class = "centerara", span(icon("vial"), " Specimens")),
+                                       pickerInput(inputId = "filter_method_other", label = "Method of Collection:", multiple = TRUE,
+                                                   choices = c("Blood Culture", "CSF", "Genito-urinary swab"), 
+                                                   selected = c("Blood Culture", "CSF", "Genito-urinary swab"),
+                                                   options = list(`actions-box` = TRUE, 
+                                                                  `deselect-all-text` = "None...",
+                                                                  `select-all-text` = "All Methods", 
+                                                                  `none-selected-text` = "None Selected",
+                                                                  `multiple-separator` = " + "),
+                                                   choicesOpt = list(content = c("<span class = 'filter_blood'>Blood Culture</span>", "CSF", "Genito-urinary swab")),
+                                       )
+                                ),
+                                column(3, class = "vl",
+                                       div(class = "smallcaps", class = "centerara", span(icon("microscope"), " Isolates")),
+                                       pickerInput(inputId = "deduplication_method", label = "Deduplication:", 
+                                                   choices = c("No deduplication of isolates", "Deduplication by patient-episode", "Deduplication by patient ID"))
+                                )
                               )
-                            )
-                        )
+                          )
+                   )
+                 ),
+                 fluidRow(
+                   column(3, htmlOutput("nb_enrollments")),
+                   column(3, htmlOutput("nb_patients_microbiology")),
+                   column(3, htmlOutput("nb_specimens")),
+                   column(3, htmlOutput("nb_isolates"))
                  )
                )
              ),
@@ -318,7 +322,7 @@ ui <- fluidPage(
                       ), br(), br()
              ),
              # Tab Patients ----
-             navbarMenu("Enrollments",
+             navbarMenu("Patient Enrollment",
                         # Tab Overview ----
                         tabPanel("Overview", value = "overview", 
                                  br(), br(), 
@@ -432,12 +436,87 @@ ui <- fluidPage(
                                  )
                         ),
                         # Tab Follow-up ----
-                        tabPanel("Follow-up", value = "follow_up", br()),
+                        tabPanel("Follow-up", value = "follow_up",
+                                 fluidRow(
+                                   column(6,
+                                          div(class = 'box_outputs',
+                                              h4("Clinical Outcome"),
+                                              fluidRow(
+                                                column(6, gaugeOutput("clinical_outcome_gauge", width = "100%", height = "100px")),
+                                                column(6, htmlOutput("clinical_outcome_pct", width = "100%", height = "100px"))
+                                              )
+                                          ),
+                                          div(class = 'box_outputs',
+                                              h4("Clinical Outcome Status"),
+                                              highchartOutput("clinical_outcome_status", height = "250px")
+                                          ),
+                                          div(class = 'box_outputs',
+                                              h4("Initial & Final Surveillance Diagnosis"),
+                                              highchartOutput("profile_outcome_diagnosis", height = "500px")
+                                          )
+                                   ),
+                                   column(6,
+                                          div(class = 'box_outputs',
+                                              h4("Day 28"),
+                                              fluidRow(
+                                                column(6, gaugeOutput("d28_outcome_gauge", width = "100%", height = "100px")),
+                                                column(6, htmlOutput("d28_outcome_pct", width = "100%", height = "100px"))
+                                              )
+                                          ),
+                                          div(class = 'box_outputs',
+                                              h4("Day 28 Status"),
+                                              highchartOutput("d28_outcome_status", height = "200px")
+                                          )
+                                   )
+                                 )
+                        ),
                         # Tab HAI ----
-                        tabPanel("HAI", value = "hai", br())
+                        tabPanel("HAI", value = "hai", 
+                                 div(class = 'box_outputs',
+                                     h4("Wards Occupancy Rates"),
+                                     htmlOutput("bed_occupancy_ward_title"),
+                                     plotOutput("bed_occupancy_ward", width = "80%")
+                                 ),
+                                 plotOutput("hai_rate_ward", width = "80%")
+                        )
              ),
              # Tab Microbiology ----
-             tabPanel("Microbiology", value = "microbiology", br()),
+             tabPanel("Microbiology", value = "microbiology", 
+                      fluidRow(
+                        column(3, htmlOutput("n_patient")),
+                        column(3, offset = 1, htmlOutput("n_specimen")),
+                        column(4, offset = 1, htmlOutput("n_isolate"))
+                      ),
+                      br(),
+                      fluidRow(
+                        column(5,
+                               div(class = 'box_outputs',
+                                   h4("Growth / No Growth"),
+                                   fluidRow(
+                                     column(6, gaugeOutput("isolates_growth_gauge", width = "100%", height = "100px")),
+                                     column(6, htmlOutput("isolates_growth_pct", width = "100%", height = "100px"))
+                                   )
+                               ),
+                               div(class = 'box_outputs',
+                                   h4("Specimen Types"),
+                                   p("Number of specimens per specimen type"),
+                                   highchartOutput("specimens_specimens_type", height = "350px"),
+                                   p("Culture results per specimen type"),
+                                   highchartOutput("culture_specimen_type", height = "400px")
+                               )
+                        ),
+                        column(6, offset = 1,
+                               div(class = 'box_outputs',
+                                   h4("Isolates"),
+                                   p("Most frequent 10 organisms in the plot and complete listing in the table."),
+                                   highchartOutput("isolates_organism", height = "400px"),
+                                   br(), br(),
+                                   DTOutput("isolates_organism_table", width = "95%"),
+                                   br(), br()
+                               )
+                        )
+                      )
+             ),
              # Tab AMR ----
              tabPanel(span(icon("bug"), "AMR"), value = "amr", br())
   )
