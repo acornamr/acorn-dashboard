@@ -22,7 +22,7 @@ output$nb_patients_microbiology <- renderText({
   as.character(
     div(class = "box_summary", 
         span(class = "badge badge-primary f-115", "145"), 
-        span(class = "smallcaps", "Enrollnets With Microbiology"),
+        span(class = "smallcaps", "Enrollments With Microbiology"),
         span(class = "badge badge-light f-100 right", "81% of 180")
     )
   )

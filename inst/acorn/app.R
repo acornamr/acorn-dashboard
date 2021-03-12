@@ -5,6 +5,7 @@
 load("./www/mock_ACORN1_Data.RData")
 patient$patient_id <- as.character(patient$patient_id)
 patient$episode_id <- as.character(patient$episode_id)
+cols_sir <- c("#2166ac", "#fddbc7", "#b2182b")  # resp. S, I, R
 hc_export_kind <- c("downloadJPEG", "downloadCSV")
 # End ACORN1 ----
 
@@ -518,7 +519,97 @@ ui <- fluidPage(
                       )
              ),
              # Tab AMR ----
-             tabPanel(span(icon("bug"), "AMR"), value = "amr", br())
+             tabPanel(span(icon("bug"), "AMR"), value = "amr", 
+                      prettySwitch(inputId = "combine_SI", label = "Combine Susceptible + Intermediate", status = "primary"),
+                      tabsetPanel(
+                        tabPanel(
+                          "A. baumannii", 
+                          htmlOutput("nb_isolates_abaumannii"),
+                          conditionalPanel(condition = "output.test_abaumannii_sir",
+                                           highchartOutput("abaumannii_sir", height = "500px"),
+                                           h4("Resistance to Carbapenems Over Time"),
+                                           highchartOutput("abaumannii_sir_evolution", height = "300px"),
+                                           em("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable.")
+                          ),
+                          conditionalPanel(condition = "! output.test_abaumannii_sir", span(h4("There is no data to display for this organism.")))
+                        ),
+                        tabPanel(
+                          "E. coli",
+                          htmlOutput("nb_isolates_ecoli"),
+                          conditionalPanel(condition = "output.test_ecoli_sir",
+                                           highchartOutput("ecoli_sir", height = "600px"), br(), br(),
+                                           h4("Resistance to Carbapenems Over Time"),
+                                           highchartOutput("ecoli_sir_evolution", height = "300px"),
+                                           h4("Resistance to 3rd gen. cephalosporins Over Time"),
+                                           highchartOutput("ecoli_sir_evolution_ceph", height = "300px"),
+                                           em("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable.")
+                          ),
+                          conditionalPanel(condition = "! output.test_ecoli_sir", span(h4("There is no data to display for this organism.")))
+                        ),
+                        tabPanel(
+                          "K. pneumoniae",
+                          htmlOutput("nb_isolates_kpneumoniae"),
+                          conditionalPanel(condition = "output.test_kpneumoniae_sir",
+                                           highchartOutput("kpneumoniae_sir", height = "600px"), br(), br(),
+                                           h4("Resistance to Carbapenems Over Time"),
+                                           highchartOutput("kpneumoniae_sir_evolution", height = "300px"),
+                                           h4("Resistance to 3rd gen. cephalosporins Over Time"),
+                                           highchartOutput("kpneumoniae_sir_evolution_ceph", height = "300px"),
+                                           em("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable.")
+                          ),
+                          conditionalPanel(condition = "! output.test_kpneumoniae_sir", span(h4("There is no data to display for this organism.")))
+                        ),
+                        tabPanel(
+                          "S. aureus",
+                          htmlOutput("nb_isolates_saureus"),
+                          conditionalPanel(condition = "output.test_saureus_sir",
+                                           highchartOutput("saureus_sir", height = "500px"),
+                                           h4("Resistance to Oxacillin Over Time"),
+                                           highchartOutput("saureus_sir_evolution", height = "300px"),
+                                           em("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable.")
+                          ),
+                          conditionalPanel(condition = "! output.test_saureus_sir", span(h4("There is no data to display for this organism.")))
+                        ),
+                        tabPanel(
+                          "S. pneumoniae",
+                          htmlOutput("nb_isolates_spneumoniae"),
+                          conditionalPanel(condition = "output.test_spneumoniae_sir",
+                                           highchartOutput("spneumoniae_sir", height = "500px"),
+                                           h4("Resistance to Penicillin Over Time"),
+                                           highchartOutput("spneumoniae_sir_evolution", height = "300px"),
+                                           em("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable.")
+                          ),
+                          conditionalPanel(condition = "! output.test_spneumoniae_sir", span(h4("There is no data to display for this organism.")))
+                        ),
+                        tabPanel(
+                          "Salmonella species",
+                          htmlOutput("nb_isolates_salmonella"),
+                          prettyRadioButtons(inputId = "select_salmonella", label = NULL,  shape = "curve",
+                                             choices = c("Salmonella typhi", "Salmonella paratyphi", "Salmonella sp (not S. typhi or S. paratyphi)"), 
+                                             selected = "Salmonella typhi", inline = TRUE),
+                          conditionalPanel(condition = "output.test_salmonella_sir",
+                                           highchartOutput("salmonella_sir", height = "500px"),
+                                           h4("Resistance to 3rd gen. cephalosporins Over Time"),
+                                           highchartOutput("salmonella_sir_evolution_ceph", height = "300px"),
+                                           h4("Resistance to Fluoroquinolones Over Time"),
+                                           highchartOutput("salmonella_sir_evolution_fluo", height = "300px"),
+                                           em("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable.")
+                          ),
+                          conditionalPanel(condition = "! output.test_salmonella_sir", span(h4("There is no data to display for this organism.")))
+                        ),
+                        tabPanel(
+                          "Other Organisms",
+                          htmlOutput("nb_isolates_other"),
+                          selectInput(inputId = "other_organism", label = NULL, multiple = FALSE,
+                                      choices = NULL, selected = NULL),
+                          conditionalPanel(condition = "output.test_other_sir",
+                                           highchartOutput("other_organism_sir", height = "700px"),
+                                           em("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable.")
+                          ),
+                          conditionalPanel(condition = "! output.test_other_sir", span(h4("There is no data to display.")))
+                        )
+                      )
+             )
   )
 )
 
@@ -605,6 +696,7 @@ server <- function(input, output, session) {
   patient <- reactiveVal(patient)
   microbio <- reactiveVal(microbio)
   hai_surveys <- reactiveVal(hai.surveys)
+  corresp_org_antibio <- reactiveVal(corresp_org_antibio)
   
   # Secondary datasets:
   # patient_filter <- reactive(patient() %>% fun_filter_patient(input = input))
