@@ -15,6 +15,8 @@ helper_developer <- "true" # JS condition
 session_start_time <- format(Sys.time(), "%Y-%m-%d_%H:%M")
 session_id <- glue("{glue_collapse(sample(LETTERS, 5, TRUE))}_{session_start_time}")
 
+h4_title <- function(...)  div(class = "h4_title", ...)
+
 # It's safe to expose those since the acornamr-cred bucket content can only be listed + read 
 # and contains only encrypted files
 bucket_cred_k <- readRDS("./www/cred/bucket_cred_k.Rds")
@@ -378,7 +380,7 @@ ui <- fluidPage(
                         tabPanel("Profile", value = "patients_profile", 
                                  br(), br(),
                                  div(class = 'box_outputs',
-                                     h4(icon('stethoscope'), "Patients Diagnosis"),
+                                     h4_title(icon('stethoscope'), "Patients Diagnosis"),
                                      fluidRow(
                                        column(6, highchartOutput("profile_diagnosis")),
                                        column(3, highchartOutput("profile_diagnosis_meningitis")),
@@ -388,14 +390,14 @@ ui <- fluidPage(
                                  fluidRow(
                                    column(6,
                                           div(class = 'box_outputs',
-                                              h4("Enrolled Cases by Ward / Type of Ward"),
+                                              h4_title("Enrolled Cases by Ward / Type of Ward"),
                                               prettySwitch(inputId = "show_ward_breakdown", label = "See Breakdown by Ward", status = "primary"),
                                               highchartOutput("profile_type_ward")
                                           )
                                    ),
                                    column(6,
                                           div(class = 'box_outputs',
-                                              h4(icon("tint"), "Patients with Blood Culture"),
+                                              h4_title(icon("tint"), "Patients with Blood Culture"),
                                               fluidRow(
                                                 column(6, gaugeOutput("profile_blood_culture_gauge", width = "100%", height = "100px")),
                                                 column(6, htmlOutput("profile_blood_culture_pct", width = "100%", height = "100px"))
@@ -405,33 +407,43 @@ ui <- fluidPage(
                                  ),
                                  fluidRow(
                                    column(6,
-                                          h4("Patients Age Distribution"),
-                                          highchartOutput("profile_age"),
-                                          h4("Patients Sex"),
-                                          highchartOutput("profile_sex"),
-                                          h4("Blood culture collected within 24h"),
-                                          highchartOutput("profile_blood")
+                                          div(class = 'box_outputs', h4_title("Patients Age Distribution"),
+                                              highchartOutput("profile_age")
+                                          ),
+                                          div(class = 'box_outputs', h4_title("Patients Sex"),
+                                              highchartOutput("profile_sex")
+                                          ),
+                                          div(class = 'box_outputs', h4_title("Blood culture collected within 24h"),
+                                              highchartOutput("profile_blood")
+                                          )
                                           
                                    ),
                                    column(6,
-                                          h4(icon("calendar-check"), "Date of Enrollment"),
-                                          prettySwitch(inputId = "show_date_week", label = "See by Week", status = "primary"),
-                                          highchartOutput("profile_date_enrollment"),
-                                          h4("Empiric Antibiotics Prescribed"),
-                                          highchartOutput("profile_antibiotics"),
-                                          h4("Patients Comorbidities"),
-                                          pickerInput(width = '100%',
-                                                      options = pickerOptions(style = "primary"),
-                                                      inputId = "comorbidities",
-                                                      choices = list(
-                                                        Syndromes = c("Cancer", "Chronic renal failure", "Chronic lung disease", "Diabetes mellitus", "Malnutrition"),
-                                                        Options = c("Display Comorbidities", "Show Patients with No Recorded Syndrom")
-                                                      ),
-                                                      selected = c("Cancer", "Chronic renal failure", "Chronic lung disease", "Diabetes mellitus", "Malnutrition"),
-                                                      multiple = TRUE),
-                                          highchartOutput("profile_comorbidities"),
-                                          h4(icon("arrows-alt-h"), "Patients Transfered"),
-                                          highchartOutput("profile_transfer"),
+                                          div(class = 'box_outputs', h4_title(icon("calendar-check"), "Date of Enrollment"),
+                                              prettySwitch(inputId = "show_date_week", label = "See by Week", status = "primary"),
+                                              highchartOutput("profile_date_enrollment")
+                                          ),
+                                          div(class = 'box_outputs',
+                                              h4_title("Empiric Antibiotics Prescribed"),
+                                              highchartOutput("profile_antibiotics")
+                                          ),
+                                          div(class = 'box_outputs',
+                                              h4_title("Patients Comorbidities"),
+                                              pickerInput(width = '100%',
+                                                          options = pickerOptions(style = "primary"),
+                                                          inputId = "comorbidities",
+                                                          choices = list(
+                                                            Syndromes = c("Cancer", "Chronic renal failure", "Chronic lung disease", "Diabetes mellitus", "Malnutrition"),
+                                                            Options = c("Display Comorbidities", "Show Patients with No Recorded Syndrom")
+                                                          ),
+                                                          selected = c("Cancer", "Chronic renal failure", "Chronic lung disease", "Diabetes mellitus", "Malnutrition"),
+                                                          multiple = TRUE),
+                                              highchartOutput("profile_comorbidities")
+                                          ),
+                                          div(class = 'box_outputs',
+                                              h4_title(icon("arrows-alt-h"), "Patients Transfered"),
+                                              highchartOutput("profile_transfer")
+                                          ),
                                           br(), br(), br(), br(), br()
                                    )
                                  )
@@ -441,31 +453,31 @@ ui <- fluidPage(
                                  fluidRow(
                                    column(6,
                                           div(class = 'box_outputs',
-                                              h4("Clinical Outcome"),
+                                              h4_title("Clinical Outcome"),
                                               fluidRow(
                                                 column(6, gaugeOutput("clinical_outcome_gauge", width = "100%", height = "100px")),
                                                 column(6, htmlOutput("clinical_outcome_pct", width = "100%", height = "100px"))
                                               )
                                           ),
                                           div(class = 'box_outputs',
-                                              h4("Clinical Outcome Status"),
+                                              h4_title("Clinical Outcome Status"),
                                               highchartOutput("clinical_outcome_status", height = "250px")
                                           ),
                                           div(class = 'box_outputs',
-                                              h4("Initial & Final Surveillance Diagnosis"),
+                                              h4_title("Initial & Final Surveillance Diagnosis"),
                                               highchartOutput("profile_outcome_diagnosis", height = "500px")
                                           )
                                    ),
                                    column(6,
                                           div(class = 'box_outputs',
-                                              h4("Day 28"),
+                                              h4_title("Day 28"),
                                               fluidRow(
                                                 column(6, gaugeOutput("d28_outcome_gauge", width = "100%", height = "100px")),
                                                 column(6, htmlOutput("d28_outcome_pct", width = "100%", height = "100px"))
                                               )
                                           ),
                                           div(class = 'box_outputs',
-                                              h4("Day 28 Status"),
+                                              h4_title("Day 28 Status"),
                                               highchartOutput("d28_outcome_status", height = "200px")
                                           )
                                    )
@@ -474,7 +486,7 @@ ui <- fluidPage(
                         # Tab HAI ----
                         tabPanel("HAI", value = "hai", 
                                  div(class = 'box_outputs',
-                                     h4("Wards Occupancy Rates"),
+                                     h4_title("Wards Occupancy Rates"),
                                      htmlOutput("bed_occupancy_ward_title"),
                                      plotOutput("bed_occupancy_ward", width = "80%")
                                  ),
@@ -492,14 +504,14 @@ ui <- fluidPage(
                       fluidRow(
                         column(5,
                                div(class = 'box_outputs',
-                                   h4("Growth / No Growth"),
+                                   h4_title("Growth / No Growth"),
                                    fluidRow(
                                      column(6, gaugeOutput("isolates_growth_gauge", width = "100%", height = "100px")),
                                      column(6, htmlOutput("isolates_growth_pct", width = "100%", height = "100px"))
                                    )
                                ),
                                div(class = 'box_outputs',
-                                   h4("Specimen Types"),
+                                   h4_title("Specimen Types"),
                                    p("Number of specimens per specimen type"),
                                    highchartOutput("specimens_specimens_type", height = "350px"),
                                    p("Culture results per specimen type"),
@@ -508,7 +520,7 @@ ui <- fluidPage(
                         ),
                         column(6, offset = 1,
                                div(class = 'box_outputs',
-                                   h4("Isolates"),
+                                   h4_title("Isolates"),
                                    p("Most frequent 10 organisms in the plot and complete listing in the table."),
                                    highchartOutput("isolates_organism", height = "400px"),
                                    br(), br(),
@@ -527,7 +539,7 @@ ui <- fluidPage(
                           htmlOutput("nb_isolates_abaumannii"),
                           conditionalPanel(condition = "output.test_abaumannii_sir",
                                            highchartOutput("abaumannii_sir", height = "500px"),
-                                           h4("Resistance to Carbapenems Over Time"),
+                                           h4_title("Resistance to Carbapenems Over Time"),
                                            highchartOutput("abaumannii_sir_evolution", height = "300px"),
                                            em("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable.")
                           ),
