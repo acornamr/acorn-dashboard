@@ -122,6 +122,7 @@ clin <- left_join(f01.f02.sel, f03.sel, by = "LINK1")
 # Creation of files for REDCap import ----
 
 nb_clin <- nrow(clin)
+set.seed(0203)
 sample_10_records <- sample(paste0("import-oc-", 1:nb_clin), 10)
 
 
