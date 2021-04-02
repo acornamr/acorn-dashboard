@@ -214,8 +214,8 @@ ui <- fluidPage(
                                      ),
                                      textInput(
                                        inputId     = "cred_username", 
-                                       label       = tagList(icon("user"), "User Name"),
-                                       placeholder = "Enter user name"
+                                       label       = tagList(icon("user"), "Site Name"),
+                                       placeholder = "Enter site name"
                                      ),
                                      passwordInput(
                                        inputId     = "cred_password", 
@@ -243,26 +243,64 @@ ui <- fluidPage(
              # Tab Data Management ----
              tabPanel(span(icon("database"), 'Data Management'), value = "data_management",
                       tabsetPanel(id = "management", type = "tabs",
-                                  tab(value = "clinical", "Review clinical data",
-                                      p("Provided clinical data, you can track records and generate logs here."),
+                                  tab(value = "clinical", "Clinical data",
+                                      conditionalPanel(condition = '! output.state_redcap_cred',
+                                                       p(icon("info"), " You need to login to get clinical data from REDCap server.")
+                                      ),
                                       conditionalPanel(condition = 'output.state_redcap_cred',
-                                                       actionButton('get_redcap_data', span(icon('cloud-download-alt'), HTML('Get REDCap Data')))
+                                                       actionButton('get_redcap_data', span(icon('cloud-download-alt'), HTML('Get Clinical Data from REDCap server')))
                                       ),
                                       DTOutput("table_redcap_dta")
                                   ),
-                                  tab(value = "generate", span("Generate ", em(".acorn"), " file"),
-                                      p("Provided with clinical and lab data, we can generate a .acorn file."),
+                                  tab(value = "lab", "Lab data",
                                       fluidRow(
                                         column(6,
-                                               div(class = "centerara", h5(icon("laptop"), "Local")), br()
+                                               div(class = "centerara", h5(icon("laptop"), "Local")), br(),
+                                               p(icon("arrow-right"), "Upload Lab Data"),
+                                               pickerInput(inputId = "format_lab_data", label = "Select Format:", 
+                                                           choices = c("", "WHONET .dBase", "WHONET .SQLite", "Tabular (.csv, .txt, .xls(x)"), 
+                                                           multiple = FALSE),
+                                               
+                                               conditionalPanel("! input.format_lab_data == ''",
+                                                                fileInput("file_lab_data", label = NULL, buttonLabel = "Browse ...")),
+                                               
+                                               conditionalPanel("input.format_lab_data == ''", br(), br())
                                         ),
                                         column(6,
                                                div(class = "centerara", class = "vl", h5(icon("cloud"), "Server")), br()
                                         )
-                                      ),
-                                      br()
+                                      )
                                   ),
-                                  tab(value = "load", span("Load ", em(".acorn"), " file"),
+                                  tab(value = "generate", span("Generate & Save ", em(".acorn"), " file"),
+                                      p("Provided with clinical and lab data, we can generate a .acorn file."),
+                                      
+                                      conditionalPanel(condition = '! output.state_dta_available',
+                                                       p("There is no data to be saved. Create data first.")
+                                      ),
+                                      conditionalPanel(condition = 'output.state_dta_available',
+                                                       fluidRow(
+                                                         column(6,
+                                                                div(class = "centerara", h5(icon("laptop"), "Local")), br(),
+                                                                actionButton('save_acorn_local', HTML('Save <em>.acorn</em>'))
+                                                         ),
+                                                         column(6,
+                                                                div(class = "centerara", class = "vl", h5(icon("cloud"), "Server"), br(),
+                                                                    conditionalPanel(condition = 'output.state_s3_connection & output.state_write_s3',
+                                                                                     actionButton('save_acorn_server', span(icon('cloud-upload-alt'), HTML('Save <em>.acorn</em>')))
+                                                                    ),
+                                                                    conditionalPanel(condition = '! output.state_write_s3',
+                                                                                     p(icon("times"), " No write access to server."),
+                                                                                     actionButton('save_acorn_server', span(icon('cloud-upload-alt'), HTML('Save <em>.acorn</em>')), disabled = TRUE)
+                                                                    ),
+                                                                    conditionalPanel(condition = '! output.state_s3_connection',
+                                                                                     p(icon("satellite-dish"), " No connection to server.")
+                                                                    )
+                                                                )
+                                                         )
+                                                       )
+                                      )
+                                  ),
+                                  tab(value = "load", span("(Alternative) Load ", em(".acorn"), " file"),
                                       HTML("This section allows you to load an .acorn file. If you don't have one, you can <a id='link_to_generate' href='#' class='action-button'>generate one.</a>"),
                                       br(),
                                       fluidRow(
@@ -294,33 +332,6 @@ ui <- fluidPage(
                                         )
                                       ),
                                       br()
-                                  ),
-                                  tab(value = "save", span("Save ", em(".acorn"), " file"),
-                                      conditionalPanel(condition = '! output.state_dta_available',
-                                                       p("There is no data to be saved. Create data first.")
-                                      ),
-                                      conditionalPanel(condition = 'output.state_dta_available',
-                                                       fluidRow(
-                                                         column(6,
-                                                                div(class = "centerara", h5(icon("laptop"), "Local")), br(),
-                                                                actionButton('save_acorn_local', HTML('Save <em>.acorn</em>'))
-                                                         ),
-                                                         column(6,
-                                                                div(class = "centerara", class = "vl", h5(icon("cloud"), "Server"), br(),
-                                                                    conditionalPanel(condition = 'output.state_s3_connection & output.state_write_s3',
-                                                                                     actionButton('save_acorn_server', span(icon('cloud-upload-alt'), HTML('Save <em>.acorn</em>')))
-                                                                    ),
-                                                                    conditionalPanel(condition = '! output.state_write_s3',
-                                                                                     p(icon("times"), " No write access to server."),
-                                                                                     actionButton('save_acorn_server', span(icon('cloud-upload-alt'), HTML('Save <em>.acorn</em>')), disabled = TRUE)
-                                                                    ),
-                                                                    conditionalPanel(condition = '! output.state_s3_connection',
-                                                                                     p(icon("satellite-dish"), " No connection to server.")
-                                                                    )
-                                                                )
-                                                         )
-                                                       )
-                                      )
                                   )
                       ), br(), br()
              ),
@@ -998,9 +1009,19 @@ server <- function(input, output, session) {
   
   # On "Get REDCap data" ----
   observeEvent(input$get_redcap_data, {
-    dta <- redcap_read(redcap_uri='https://m-redcap-test.tropmedres.ac/redcap_test/api/', 
-                       token = acorn_cred()$redcap_server_api)$data
+    showNotification("Trying to retrive REDCap Data. It might take a minute", duration = NULL, id = "try_redcap")
     
+    dta <- try(redcap_read(redcap_uri='https://m-redcap-test.tropmedres.ac/redcap_test/api/', 
+                           token = acorn_cred()$redcap_server_api)$data)
+    
+    # TODO: provide full comlumn specification
+    
+    if(inherits(dta, "try-error"))  {
+      showNotification("We couldn't retrive REDCap Data.")
+      return()
+    }
+    
+    removeNotification(id = "try_redcap")
     redcap_dta(dta)
   })
   
