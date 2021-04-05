@@ -1,0 +1,16 @@
+rules:
+- expr: 'is_complete(recordid)'
+  name: 'recordid.complete'
+  label: 'Missng record id'
+  description: |
+    There could be no missing record id
+  meta:
+    severity: error
+- expr: 'in_range(brthdtc, min = as.Date("1980-01-01"), max = Sys.Date())'
+  name: 'brthdtc.range'
+  label: 'Range of birthdates'
+  description: |
+    No birth before 1980 is allowed.
+    (TODO: remove this stupid rule!)
+  meta:
+    severity: error

@@ -34,4 +34,5 @@ Imports:
     shinyjs,
     shinyWidgets,
     tidyverse,
+    validate,
 RoxygenNote: 7.1.1

@@ -2,7 +2,7 @@
 # TODO: eliminate everything labelled 'ACORN1'
 
 # Start ACORN1 ----
-load("./www/mock_ACORN1_Data.RData")
+load("./www/data/mock_ACORN1_Data.RData")
 patient$patient_id <- as.character(patient$patient_id)
 patient$episode_id <- as.character(patient$episode_id)
 cols_sir <- c("#2166ac", "#fddbc7", "#b2182b")  # resp. S, I, R
@@ -14,6 +14,7 @@ app_version <- 'prototype.001'  # IMPORTANT ensure that the version is identical
 helper_developer <- "true" # JS condition
 session_start_time <- format(Sys.time(), "%Y-%m-%d_%H:%M")
 session_id <- glue("{glue_collapse(sample(LETTERS, 5, TRUE))}_{session_start_time}")
+validate_rules_REDCap <- validator(.file = "./www/data/validate_rules_REDCap.yaml")
 
 h4_title <- function(...)  div(class = "h4_title", ...)
 
@@ -86,7 +87,7 @@ ui <- fluidPage(
                               ),
                               fluidRow(
                                 column(6,
-                                       div(class = "smallcaps", class = "centerara", span(icon("hospital-user"), " Patients")),
+                                       div(class = "smallcaps", class = "centerara", span(icon("hospital-user"), " Patient Enrollments")),
                                        fluidRow(
                                          column(6,
                                                 prettyRadioButtons(
@@ -245,12 +246,14 @@ ui <- fluidPage(
                       tabsetPanel(id = "management", type = "tabs",
                                   tab(value = "clinical", "Clinical data",
                                       conditionalPanel(condition = '! output.state_redcap_cred',
-                                                       p(icon("info"), " You need to login to get clinical data from REDCap server.")
+                                                       p(icon("info"), " You need to login first to get clinical data from REDCap server.")
                                       ),
                                       conditionalPanel(condition = 'output.state_redcap_cred',
                                                        actionButton('get_redcap_data', span(icon('cloud-download-alt'), HTML('Get Clinical Data from REDCap server')))
                                       ),
-                                      DTOutput("table_redcap_dta")
+                                      DTOutput("table_redcap_dta"),
+                                      htmlOutput("message_redcap_dta"),
+                                      plotOutput("validate_rules_REDCap")
                                   ),
                                   tab(value = "lab", "Lab data",
                                       fluidRow(
@@ -300,7 +303,7 @@ ui <- fluidPage(
                                                        )
                                       )
                                   ),
-                                  tab(value = "load", span("(Alternative) Load ", em(".acorn"), " file"),
+                                  tab(value = "load", span("Load ", em(".acorn"), " file"),
                                       HTML("This section allows you to load an .acorn file. If you don't have one, you can <a id='link_to_generate' href='#' class='action-button'>generate one.</a>"),
                                       br(),
                                       fluidRow(
@@ -336,7 +339,7 @@ ui <- fluidPage(
                       ), br(), br()
              ),
              # Tab Patients ----
-             navbarMenu("Patient Enrollment",
+             navbarMenu("Patient Enrollments",
                         # Tab Overview ----
                         tabPanel("Overview", value = "overview", 
                                  br(), br(), 
@@ -682,7 +685,7 @@ server <- function(input, output, session) {
   
   # Misc stuff ----
   # source files with code to generate outputs
-  file_list <- list.files(path = "./www/outputs", pattern = "*.R")
+  file_list <- list.files(path = "./www/outputs", pattern = "*.R", recursive = TRUE)
   for (file in file_list) source(paste0("./www/outputs/", file), local = TRUE)$value
   source("./www/scripts/shortcuts_filters_exec.R", local = TRUE)$value
   
@@ -1014,14 +1017,18 @@ server <- function(input, output, session) {
     dta <- try(redcap_read(redcap_uri='https://m-redcap-test.tropmedres.ac/redcap_test/api/', 
                            token = acorn_cred()$redcap_server_api)$data)
     
-    # TODO: provide full comlumn specification
+    # TODO: sometimes, there are timeout - what to do in this case?
+    
+    # TODO: provide full column specification
     
     if(inherits(dta, "try-error"))  {
-      showNotification("We couldn't retrive REDCap Data.")
+      removeNotification(id = "try_redcap")
+      showNotification("We couldn't retrive REDCap Data.", type = "error")
       return()
     }
     
     removeNotification(id = "try_redcap")
+    showNotification("Clinical data successfully retrived from REDCap server.")
     redcap_dta(dta)
   })
   
