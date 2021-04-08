@@ -28,6 +28,16 @@ Does this color from the logo fits?
 body {padding-top: 70px;}  */
 
 
+#shiny-notification-panel {
+  top: 0;
+  bottom: unset;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  max-width: 450px;
+}
 
 
 .vl {
@@ -303,14 +313,3 @@ body {padding-top: 70px;}  */
 .w-33 { width: 33%; }
 .w-50 { width: 50%; }
 .w-100 { width: 100%; }
-
-/* fixed footer */
-.footer {
-  position: fixed;
-  bottom: 0;
-  background-color: rgba(0,0,0,0.03);
-  color: black;
-  text-align: right;
-  width: 100%;
-  padding-right: 50px;
-}

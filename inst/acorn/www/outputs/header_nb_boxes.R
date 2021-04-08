@@ -8,16 +8,6 @@ output$nb_enrollments <- renderText({
   )
 })
 
-output$nb_patients_distinct <- renderText({
-  as.character(
-    div(class = "box_summary", 
-          span(class = "badge badge-primary f-115", "168"), 
-          span(class = "smallcaps", "Distinct Patients"), 
-          span(class = "badge badge-light f-100 right", "93% of 180")
-    )
-  )
-})
-
 output$nb_patients_microbiology <- renderText({
   as.character(
     div(class = "box_summary", 
