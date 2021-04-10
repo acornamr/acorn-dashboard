@@ -23,7 +23,7 @@ output$checklist_status_load_server <- renderText({
   checklist <- reactiveValuesToList(checklist_status)
   
   # re-order
-  checklist <- checklist[c("internet_connection", "app_login", "acorn_server_cred", "acorn_server_test")]
+  checklist <- checklist[c("internet_connection", "app_login", "acorn_server_test")]
   
   text <- NULL
   

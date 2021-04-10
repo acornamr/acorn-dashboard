@@ -1,16 +1,11 @@
 # ACORN shiny app main script
 # TODO: eliminate everything labelled 'ACORN1'
 
-# Start ACORN1 ----
-load("./www/data/mock_ACORN1_Data.RData")
-patient$patient_id <- as.character(patient$patient_id)
-patient$episode_id <- as.character(patient$episode_id)
 cols_sir <- c("#2166ac", "#fddbc7", "#b2182b")  # resp. S, I, R
 hc_export_kind <- c("downloadJPEG", "downloadCSV")
-# End ACORN1 ----
 
 source("./www/scripts/load_packages.R", local = TRUE)
-app_version <- 'prototype.001'  # IMPORTANT ensure that the version is identical in DESCRIPTION and README.md
+app_version <- "prototype.001"  # IMPORTANT ensure that the version is identical in DESCRIPTION and README.md
 helper_developer <- "true" # JS condition
 session_start_time <- format(Sys.time(), "%Y-%m-%d_%H:%M")
 session_id <- glue("{glue_collapse(sample(LETTERS, 5, TRUE))}_{session_start_time}")
@@ -343,148 +338,148 @@ ui <- fluidPage(
                                   )
                       )
              ),
-             # Tab Patients ----
-             navbarMenu("Patient Enrollments",
-                        # Tab Overview ----
-                        tabPanel("Overview", value = "overview", 
-                                 br(), br(), 
-                                 p("Merge Overview and Profile Tabs?"),
-                                 fluidRow(
-                                   column(5,
-                                          div(class = "box_outputs",
-                                              h5("Proportions of Enrollments with Blood Culture"),
-                                              highchartOutput("evolution_blood_culture")
-                                          )),
-                                   column(6, offset = 1,
-                                          div(class = "box_outputs",
-                                              h5("Number of Patients"),
-                                              pickerInput("variables_table", label = "Table Columns:", 
-                                                          multiple = TRUE, width = "600px",
-                                                          choices = c("Place of Infection" = "surveillance_cat", "Type of Ward" = "ward", "Ward" = "ward_text", "Clinical Outcome" = "clinical_outcome", "Day-28 Outcome" = "d28_outcome"), 
-                                                          selected = c("surveillance_cat", "ward", "ward_text")),
-                                              
-                                              DTOutput("table_patients", width = "95%")
-                                          )
-                                   )
-                                 ),
-                                 br()
-                        ),
-                        # "----",
-                        tabPanel("Profile", value = "patients_profile", 
-                                 br(), br(),
-                                 div(class = 'box_outputs',
-                                     h4_title(icon('stethoscope'), "Patients Diagnosis"),
-                                     fluidRow(
-                                       column(6, highchartOutput("profile_diagnosis")),
-                                       column(3, highchartOutput("profile_diagnosis_meningitis")),
-                                       column(3, highchartOutput("profile_diagnosis_pneumonia"))
-                                     )
-                                 ),
-                                 fluidRow(
-                                   column(6,
-                                          div(class = 'box_outputs',
-                                              h4_title("Enrolled Cases by Ward / Type of Ward"),
-                                              prettySwitch(inputId = "show_ward_breakdown", label = "See Breakdown by Ward", status = "primary"),
-                                              highchartOutput("profile_type_ward")
-                                          )
-                                   ),
-                                   column(6,
-                                          div(class = 'box_outputs',
-                                              h4_title(icon("tint"), "Patients with Blood Culture"),
-                                              fluidRow(
-                                                column(6, gaugeOutput("profile_blood_culture_gauge", width = "100%", height = "100px")),
-                                                column(6, htmlOutput("profile_blood_culture_pct", width = "100%", height = "100px"))
-                                              )
-                                          )
-                                   )
-                                 ),
-                                 fluidRow(
-                                   column(6,
-                                          div(class = 'box_outputs', h4_title("Patients Age Distribution"),
-                                              highchartOutput("profile_age")
-                                          ),
-                                          div(class = 'box_outputs', h4_title("Patients Sex"),
-                                              highchartOutput("profile_sex")
-                                          ),
-                                          div(class = 'box_outputs', h4_title("Blood culture collected within 24h"),
-                                              highchartOutput("profile_blood")
-                                          )
-                                          
-                                   ),
-                                   column(6,
-                                          div(class = 'box_outputs', h4_title(icon("calendar-check"), "Date of Enrollment"),
-                                              prettySwitch(inputId = "show_date_week", label = "See by Week", status = "primary"),
-                                              highchartOutput("profile_date_enrollment")
-                                          ),
-                                          div(class = 'box_outputs',
-                                              h4_title("Empiric Antibiotics Prescribed"),
-                                              highchartOutput("profile_antibiotics")
-                                          ),
-                                          div(class = 'box_outputs',
-                                              h4_title("Patients Comorbidities"),
-                                              pickerInput(width = '100%',
-                                                          options = pickerOptions(style = "primary"),
-                                                          inputId = "comorbidities",
-                                                          choices = list(
-                                                            Syndromes = c("Cancer", "Chronic renal failure", "Chronic lung disease", "Diabetes mellitus", "Malnutrition"),
-                                                            Options = c("Display Comorbidities", "Show Patients with No Recorded Syndrom")
-                                                          ),
-                                                          selected = c("Cancer", "Chronic renal failure", "Chronic lung disease", "Diabetes mellitus", "Malnutrition"),
-                                                          multiple = TRUE),
-                                              highchartOutput("profile_comorbidities")
-                                          ),
-                                          div(class = 'box_outputs',
-                                              h4_title(icon("arrows-alt-h"), "Patients Transfered"),
-                                              highchartOutput("profile_transfer")
-                                          ),
-                                          br(), br(), br(), br(), br()
-                                   )
-                                 )
-                        ),
-                        # Tab Follow-up ----
-                        tabPanel("Follow-up", value = "follow_up",
-                                 fluidRow(
-                                   column(6,
-                                          div(class = 'box_outputs',
-                                              h4_title("Clinical Outcome"),
-                                              fluidRow(
-                                                column(6, gaugeOutput("clinical_outcome_gauge", width = "100%", height = "100px")),
-                                                column(6, htmlOutput("clinical_outcome_pct", width = "100%", height = "100px"))
-                                              )
-                                          ),
-                                          div(class = 'box_outputs',
-                                              h4_title("Clinical Outcome Status"),
-                                              highchartOutput("clinical_outcome_status", height = "250px")
-                                          ),
-                                          div(class = 'box_outputs',
-                                              h4_title("Initial & Final Surveillance Diagnosis"),
-                                              highchartOutput("profile_outcome_diagnosis", height = "500px")
-                                          )
-                                   ),
-                                   column(6,
-                                          div(class = 'box_outputs',
-                                              h4_title("Day 28"),
-                                              fluidRow(
-                                                column(6, gaugeOutput("d28_outcome_gauge", width = "100%", height = "100px")),
-                                                column(6, htmlOutput("d28_outcome_pct", width = "100%", height = "100px"))
-                                              )
-                                          ),
-                                          div(class = 'box_outputs',
-                                              h4_title("Day 28 Status"),
-                                              highchartOutput("d28_outcome_status", height = "200px")
-                                          )
-                                   )
-                                 )
-                        ),
-                        # Tab HAI ----
-                        tabPanel("HAI", value = "hai", 
-                                 div(class = 'box_outputs',
-                                     h4_title("Wards Occupancy Rates"),
-                                     htmlOutput("bed_occupancy_ward_title"),
-                                     plotOutput("bed_occupancy_ward", width = "80%")
-                                 ),
-                                 plotOutput("hai_rate_ward", width = "80%")
+             # Tab "Patient Enrollments" ----
+             # navbarMenu("Patient Enrollments",
+             # Tab Overview ----
+             tabPanel("Overview", value = "overview", 
+                      br(), br(), 
+                      p("Merge Overview and Profile Tabs?"),
+                      fluidRow(
+                        column(5,
+                               div(class = "box_outputs",
+                                   h5("Proportions of Enrollments with Blood Culture"),
+                                   highchartOutput("evolution_blood_culture")
+                               )),
+                        column(6, offset = 1,
+                               div(class = "box_outputs",
+                                   h5("Number of Patients"),
+                                   pickerInput("variables_table", label = "Table Columns:", 
+                                               multiple = TRUE, width = "600px",
+                                               choices = c("Place of Infection" = "surveillance_cat", "Type of Ward" = "ward", "Ward" = "ward_text", "Clinical Outcome" = "clinical_outcome", "Day-28 Outcome" = "d28_outcome"), 
+                                               selected = c("surveillance_cat", "ward", "ward_text")),
+                                   
+                                   DTOutput("table_patients", width = "95%")
+                               )
                         )
+                      ),
+                      br()
+             ),
+             # "----",
+             tabPanel("Profile", value = "patients_profile", 
+                      br(), br(),
+                      div(class = 'box_outputs',
+                          h4_title(icon('stethoscope'), "Patients Diagnosis"),
+                          fluidRow(
+                            column(6, highchartOutput("profile_diagnosis")),
+                            column(3, highchartOutput("profile_diagnosis_meningitis")),
+                            column(3, highchartOutput("profile_diagnosis_pneumonia"))
+                          )
+                      ),
+                      fluidRow(
+                        column(6,
+                               div(class = 'box_outputs',
+                                   h4_title("Enrolled Cases by Ward / Type of Ward"),
+                                   prettySwitch(inputId = "show_ward_breakdown", label = "See Breakdown by Ward", status = "primary"),
+                                   highchartOutput("profile_type_ward")
+                               )
+                        ),
+                        column(6,
+                               div(class = 'box_outputs',
+                                   h4_title(icon("tint"), "Patients with Blood Culture"),
+                                   fluidRow(
+                                     column(6, gaugeOutput("profile_blood_culture_gauge", width = "100%", height = "100px")),
+                                     column(6, htmlOutput("profile_blood_culture_pct", width = "100%", height = "100px"))
+                                   )
+                               )
+                        )
+                      ),
+                      fluidRow(
+                        column(6,
+                               div(class = 'box_outputs', h4_title("Patients Age Distribution"),
+                                   highchartOutput("profile_age")
+                               ),
+                               div(class = 'box_outputs', h4_title("Patients Sex"),
+                                   highchartOutput("profile_sex")
+                               ),
+                               div(class = 'box_outputs', h4_title("Blood culture collected within 24h"),
+                                   highchartOutput("profile_blood")
+                               )
+                               
+                        ),
+                        column(6,
+                               div(class = 'box_outputs', h4_title(icon("calendar-check"), "Date of Enrollment"),
+                                   prettySwitch(inputId = "show_date_week", label = "See by Week", status = "primary"),
+                                   highchartOutput("profile_date_enrollment")
+                               ),
+                               div(class = 'box_outputs',
+                                   h4_title("Empiric Antibiotics Prescribed"),
+                                   highchartOutput("profile_antibiotics")
+                               ),
+                               div(class = 'box_outputs',
+                                   h4_title("Patients Comorbidities"),
+                                   pickerInput(width = '100%',
+                                               options = pickerOptions(style = "primary"),
+                                               inputId = "comorbidities",
+                                               choices = list(
+                                                 Syndromes = c("Cancer", "Chronic renal failure", "Chronic lung disease", "Diabetes mellitus", "Malnutrition"),
+                                                 Options = c("Display Comorbidities", "Show Patients with No Recorded Syndrom")
+                                               ),
+                                               selected = c("Cancer", "Chronic renal failure", "Chronic lung disease", "Diabetes mellitus", "Malnutrition"),
+                                               multiple = TRUE),
+                                   highchartOutput("profile_comorbidities")
+                               ),
+                               div(class = 'box_outputs',
+                                   h4_title(icon("arrows-alt-h"), "Patients Transfered"),
+                                   highchartOutput("profile_transfer")
+                               ),
+                               br(), br(), br(), br(), br()
+                        )
+                      )
+             ),
+             # Tab Follow-up ----
+             tabPanel("Follow-up", value = "follow_up",
+                      fluidRow(
+                        column(6,
+                               div(class = 'box_outputs',
+                                   h4_title("Clinical Outcome"),
+                                   fluidRow(
+                                     column(6, gaugeOutput("clinical_outcome_gauge", width = "100%", height = "100px")),
+                                     column(6, htmlOutput("clinical_outcome_pct", width = "100%", height = "100px"))
+                                   )
+                               ),
+                               div(class = 'box_outputs',
+                                   h4_title("Clinical Outcome Status"),
+                                   highchartOutput("clinical_outcome_status", height = "250px")
+                               ),
+                               div(class = 'box_outputs',
+                                   h4_title("Initial & Final Surveillance Diagnosis"),
+                                   highchartOutput("profile_outcome_diagnosis", height = "500px")
+                               )
+                        ),
+                        column(6,
+                               div(class = 'box_outputs',
+                                   h4_title("Day 28"),
+                                   fluidRow(
+                                     column(6, gaugeOutput("d28_outcome_gauge", width = "100%", height = "100px")),
+                                     column(6, htmlOutput("d28_outcome_pct", width = "100%", height = "100px"))
+                                   )
+                               ),
+                               div(class = 'box_outputs',
+                                   h4_title("Day 28 Status"),
+                                   highchartOutput("d28_outcome_status", height = "200px")
+                               )
+                        )
+                      )
+             ),
+             # Tab HAI ----
+             tabPanel("HAI", value = "hai", 
+                      div(class = 'box_outputs',
+                          h4_title("Wards Occupancy Rates"),
+                          htmlOutput("bed_occupancy_ward_title"),
+                          plotOutput("bed_occupancy_ward", width = "80%")
+                      ),
+                      plotOutput("hai_rate_ward", width = "80%")
+                      # )
              ),
              # Tab Microbiology ----
              tabPanel("Microbiology", value = "microbiology", 
@@ -616,6 +611,16 @@ ui <- fluidPage(
 
 server <- function(input, output, session) {
   
+  # Hide tabs on app launch ----
+  hideTab(inputId = "tabs", target = "overview")
+  hideTab(inputId = "tabs", target = "patients_profile")
+  hideTab(inputId = "tabs", target = "follow_up")
+  hideTab(inputId = "tabs", target = "hai")
+  hideTab(inputId = "tabs", target = "microbiology")
+  hideTab(inputId = "tabs", target = "amr")
+  
+  
+  
   observeEvent(input$link_to_generate, {
     updateTabsetPanel(session, "management", "generate")
   })
@@ -671,33 +676,22 @@ server <- function(input, output, session) {
   })
   
   # Definition of reactive elements for data ----
-  # The "ACORN Data Management SOP" document has relevant information
-  redcap_dta <- reactiveVal()
+  
+  # Original datatsets
   acorn_cred <- reactiveVal()
+  
+  redcap_dta <- reactiveVal()
+  lab_dta <- reactiveVal()
   acorn_dta_file <- reactiveValues()
-  # In-App editing:
-  # acorn_dta_session <- reactiveValues()
-  acorn_dta_merged <- reactiveValues()  
   
-  acorn_dta <- reactive({
-    req(acorn_dta_merged$lab_dta, acorn_dta_merged$f01_cor)
-    merge_clinical_lab(acorn_dta_merged)
-  })
+  # Secondary datasets created from original datasets (apart from meta)
+  patient <- reactiveVal()
+  microbio <- reactiveVal()
+  hai_surveys <- reactiveVal()
+  corresp_org_antibio <- reactiveVal()
+  meta <- reactiveVal()
   
-  acorn_dta_filter <- reactive({
-    req(acorn_dta())
-    acorn_dta() %>% filter_data(input = input)
-  })
-  
-  
-  # ACORN1 Start ----
-  # Main datasets:
-  patient <- reactiveVal(patient)
-  microbio <- reactiveVal(microbio)
-  hai_surveys <- reactiveVal(hai.surveys)
-  corresp_org_antibio <- reactiveVal(corresp_org_antibio)
-  
-  # Secondary datasets:
+  # Tertiary datasets
   # patient_filter <- reactive(patient() %>% fun_filter_patient(input = input))
   # microbio_filter <- reactive(microbio() %>% fun_filter_microbio(patient = patient_filter(), input = input))
   # microbio_filter_blood <- reactive(microbio_filter() %>% fun_filter_blood_only())
@@ -706,18 +700,16 @@ server <- function(input, output, session) {
   microbio_filter <- reactive(microbio())
   microbio_filter_blood <- reactive(microbio_filter())
   hai_surveys_filter <- reactive(hai_surveys())
-  # ACORN1 End ----
+  
   
   # Checklists ----
-  
   # Status can be: hidden/question/okay/warning/ko
   checklist_status <- reactiveValues(
     internet_connection = list(status = "ko", msg = "Not connected to internet"),
     app_login = list(status = "ko", msg = "Not logged in"),
     
     redcap_server_cred = list(status = "ko", msg = "No connection to REDCap server"),
-    acorn_server_cred = list(status = "ko", msg = "No creds to .acorn backup server"),
-    acorn_server_test = list(status = "ko", msg = "No access to .acorn server"),
+    acorn_server_test = list(status = "ko", msg = "Not connected to .acorn server"),
     acorn_server_write = list(status = "ko", msg = "No rights to backup .acorn on the server"),
     
     redcap_dta = list(status = "ko", msg = "Clinical data not loaded"),
@@ -730,7 +722,7 @@ server <- function(input, output, session) {
   output$state_redcap_cred <- reactive(checklist_status$redcap_server_cred$status == "okay")
   outputOptions(output, 'state_redcap_cred', suspendWhenHidden = FALSE)
   
-  output$state_s3_connection <- reactive(checklist_status$acorn_server_cred$status == "okay")
+  output$state_s3_connection <- reactive(checklist_status$acorn_server_test$status == "okay")
   outputOptions(output, 'state_s3_connection', suspendWhenHidden = FALSE)
   
   output$state_write_s3 <- reactive(checklist_status$acorn_server_write$status == "okay")
@@ -824,8 +816,6 @@ server <- function(input, output, session) {
     # Connect to AWS S3 server ----
     if(acorn_cred()$acorn_s3) {
       
-      checklist_status$acorn_server_cred <- list(status = "okay", msg = "Server connection credential provided")
-      
       connect_server_test <- bucket_exists(
         bucket = acorn_cred()$acorn_s3_bucket,
         key =  acorn_cred()$acorn_s3_key,
@@ -834,7 +824,6 @@ server <- function(input, output, session) {
       
       if(connect_server_test) {
         
-        checklist_status$acorn_server_cred <- list(status = "hidden", msg = "")
         checklist_status$acorn_server_test <- list(status = "okay", msg = "Connection to .acorn server established")
         
         if(acorn_cred()$acorn_s3_write)  checklist_status$acorn_server_write <- list(status = "okay", msg = "Ability to write on server")
@@ -873,6 +862,12 @@ server <- function(input, output, session) {
                            region = acorn_cred()$acorn_s3_region)
     load(rawConnection(acorn_s3))
     
+    
+    patient <- reactiveVal(patient)
+    microbio <- reactiveVal(microbio)
+    hai_surveys <- reactiveVal(hai.surveys)
+    corresp_org_antibio <- reactiveVal(corresp_org_antibio)
+    
     # update acorn_dta_file
     acorn_dta_file$f01 <- f01
     acorn_dta_file$f02 <- f02
@@ -912,7 +907,10 @@ server <- function(input, output, session) {
     acorn_dta_merged$meta <- meta
     
     # update status of the app
-    checklist_status$acorn_dta <- list(status = "okay", msg = glue("Successfully loaded data<br>{icon('info-circle')} Data generated on the {acorn_dta_merged$meta$time_generation}; on <strong>{acorn_dta_merged$meta$machine}</strong>; by <strong>{acorn_dta_merged$meta$user}</strong>. {acorn_dta_merged$meta$comment}"))
+    checklist_status$acorn_dta <- list(status = "okay", msg = glue("Successfully loaded data<br>{icon('info-circle')} 
+                                                                   Data generated on the {acorn_dta_merged$meta$time_generation};
+                                                                   by <strong>{acorn_dta_merged$meta$user}</strong>. 
+                                                                   {acorn_dta_merged$meta$comment}"))
     
     showModal(modalDialog(
       info_acorn_file(acorn_dta_file),
@@ -928,57 +926,25 @@ server <- function(input, output, session) {
   observeEvent(input$load_acorn_local, {
     load(input$load_acorn_local$datapath)
     
-    # update acorn_dta_file
-    acorn_dta_file$f01 <- f01
-    acorn_dta_file$f02 <- f02
-    acorn_dta_file$f03 <- f03
-    acorn_dta_file$f04 <- f04
-    acorn_dta_file$f05 <- f05
-    acorn_dta_file$f06 <- f06
-    acorn_dta_file$f01_edit <- f01_edit
-    acorn_dta_file$f02_edit <- f02_edit
-    acorn_dta_file$f03_edit <- f03_edit
-    acorn_dta_file$f04_edit <- f04_edit
-    acorn_dta_file$f05_edit <- f05_edit
-    acorn_dta_file$f06_edit <- f06_edit
-    acorn_dta_file$lab_dta <- lab_dta
-    acorn_dta_file$meta <- meta
+    patient(patient)
+    microbio(microbio)
+    hai_surveys(hai.surveys)
+    corresp_org_antibio(corresp_org_antibio)
+    meta(meta)
     
-    # update acorn_dta_merged
-    acorn_dta_merged$f01 <- f01
-    acorn_dta_merged$f02 <- f02
-    acorn_dta_merged$f03 <- f03
-    acorn_dta_merged$f04 <- f04
-    acorn_dta_merged$f05 <- f05
-    acorn_dta_merged$f06 <- f06
-    acorn_dta_merged$f01_edit <- f01_edit
-    acorn_dta_merged$f02_edit <- f02_edit
-    acorn_dta_merged$f03_edit <- f03_edit
-    acorn_dta_merged$f04_edit <- f04_edit
-    acorn_dta_merged$f05_edit <- f05_edit
-    acorn_dta_merged$f06_edit <- f06_edit
-    acorn_dta_merged$f01_cor <- process_edit(f01, f01_edit)
-    acorn_dta_merged$f02_cor <- process_edit(f02, f02_edit)
-    acorn_dta_merged$f03_cor <- process_edit(f03, f03_edit)
-    acorn_dta_merged$f04_cor <- process_edit(f04, f04_edit)
-    acorn_dta_merged$f05_cor <- process_edit(f05, f05_edit)
-    acorn_dta_merged$f06_cor <- process_edit(f06, f06_edit)
-    acorn_dta_merged$lab_dta <- lab_dta
-    acorn_dta_merged$meta <- meta
     
     # update status of the app
-    checklist_status$acorn_dta <- list(status = "okay", msg = glue("Successfully loaded data<br>{icon('info-circle')} Data generated on the {acorn_dta_merged$meta$time_generation}; on <strong>{acorn_dta_merged$meta$machine}</strong>; by <strong>{acorn_dta_merged$meta$user}</strong>. {acorn_dta_merged$meta$comment}"))
+    checklist_status$acorn_dta <- list(status = "okay", msg = glue("Successfully loaded data<br>{icon('info-circle')} Data generated on the {meta()$time_generation}; 
+                                                                   by <strong>{meta$user}</strong>. {meta$comment}"))
     
+    showNotification(".acorn file successfully loaded")
     
-    showModal(modalDialog(
-      info_acorn_file(acorn_dta_file),
-      title = "Info on file loaded",
-      footer = modalButton("Okay"),
-      size = "l",
-      easyClose = FALSE,
-      fade = TRUE
-    ))
-    startAnim(session, 'float', 'bounce')
+    showTab(inputId = "tabs", target = "overview")
+    showTab(inputId = "tabs", target = "patients_profile")
+    showTab(inputId = "tabs", target = "follow_up")
+    showTab(inputId = "tabs", target = "hai")
+    showTab(inputId = "tabs", target = "microbiology")
+    showTab(inputId = "tabs", target = "amr")
   })
   
   
