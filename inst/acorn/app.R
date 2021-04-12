@@ -6,8 +6,7 @@ hc_export_kind <- c("downloadJPEG", "downloadCSV")
 
 source("./www/scripts/load_packages.R", local = TRUE)
 app_version <- "prototype.001"  # IMPORTANT ensure that the version is identical in DESCRIPTION and README.md
-helper_developer <- "true" # JS condition
-session_start_time <- format(Sys.time(), "%Y-%m-%d_%H:%M")
+session_start_time <- format(Sys.time(), "%Y-%m-%d_%HH%M")
 session_id <- glue("{glue_collapse(sample(LETTERS, 5, TRUE))}_{session_start_time}")
 validate_rules_REDCap <- validator(.file = "./www/data/validate_rules_REDCap.yaml")
 
@@ -22,12 +21,8 @@ bucket_cred_s <- readRDS("./www/cred/bucket_cred_s.Rds")
 source('./www/scripts/indicate_translation.R', local = TRUE)
 for(file in list.files('./www/functions/'))  source(paste0('./www/functions/', file), local = TRUE)  # define all functions
 
-# List of BS4 variables: https://github.com/rstudio/bslib/blob/master/inst/lib/bs/scss/_variables.scss
-# Theme flatly: https://bootswatch.com/flatly/ ; https://bootswatch.com/4/flatly/bootstrap.css
-acorn_theme <- bs_theme(bootswatch = "flatly", version = 4, 
-                        "border-width" = "2px")
-acorn_theme_la <- bs_theme(bootswatch = "flatly", version = 4, 
-                           "border-width" = "2px", base_font = "Phetsarath OT", bg = "#202123", fg = "#B8BCC2")
+acorn_theme <- bs_theme(bootswatch = "flatly", version = 4, "border-width" = "2px")
+acorn_theme_la <- bs_theme(bootswatch = "flatly", version = 4, "border-width" = "2px", base_font = "Phetsarath OT")
 
 tab <- function(...) {
   shiny::tabPanel(..., class = "p-3 border border-top-0 rounded-bottom")
@@ -51,11 +46,6 @@ ui <- fluidPage(
         htmlOutput("report_generation")
       )
   ),
-  
-  # div(id = 'float-debug',
-  #     conditionalPanel(helper_developer, actionLink("debug", label = "(Debug)"))
-  # ),
-  
   
   navbarPage(id = 'tabs',
              title = a(img(src = "logo_acorn.png", style = "height: 40px; position: relative;")),
@@ -115,8 +105,7 @@ ui <- fluidPage(
                                                       column(4, numericInput("filter_age_max", label = "", min = 0, value = 99),),
                                                       column(4, selectInput("filter_age_unit", label = "", choices = c("days", "months", "years"), selected = "years"))
                                                     ),
-                                                    prettySwitch(inputId = "filter_age_na", label = "Include Unknown Ages", status = "primary", value = TRUE, slim = TRUE),
-                                                    hr()
+                                                    prettySwitch(inputId = "filter_age_na", label = "Include Unknown Ages", status = "primary", value = TRUE, slim = TRUE)
                                              ),
                                              column(6,
                                                     prettyCheckboxGroup(inputId = "filter_diagnosis", label = "Patient Diagnosis:", shape = "curve", status = "primary",
@@ -125,41 +114,11 @@ ui <- fluidPage(
                                                     prettyRadioButtons(inputId = "confirmed_diagnosis", label = "Diagnosis confirmation (if clinical outcome):",
                                                                        choices = c("Diagnosis confirmed", "Diagnosis rejected", "No filter on diagnosis confirmation"),
                                                                        selected = "No filter on diagnosis confirmation"),
-                                                    prettySwitch(inputId = "filter_outcome_clinical", label = "Only Patients with Clinical Outcome", status = "primary", value = FALSE, slim = TRUE),
-                                                    prettySwitch(inputId = "filter_outcome_d28", label = "Only Patients with Day-28 Outcome", status = "primary", value = FALSE, slim = TRUE)
+                                                    prettySwitch(inputId = "filter_outcome_clinical", label = "Only with Clinical Outcome", status = "primary", value = FALSE, slim = TRUE),
+                                                    prettySwitch(inputId = "filter_outcome_d28", label = "Only with Day-28 Outcome", status = "primary", value = FALSE, slim = TRUE)
                                              )
                                            )
                                        )
-                                       # div(id = "box_additional_filter_1", 
-                                       #     fluidRow(
-                                       #       column(6,
-                                       #              dateRangeInput("filter_date_enrollment", label = "Date of Enrollment:", startview = "year"),
-                                       #              p("Patient Ages:"),
-                                       #              fluidRow(
-                                       #                column(4, numericInput("filter_age_min", label = "", min = 0, value = 0)),
-                                       #                column(4, numericInput("filter_age_max", label = "", min = 0, value = 99),),
-                                       #                column(4, selectInput("filter_age_unit", label = "", choices = c("days", "months", "years"), selected = "years"))
-                                       #              ),
-                                       #              prettySwitch(inputId = "filter_age_na", label = "Including Unknown Ages", status = "primary", value = TRUE, slim = TRUE),
-                                       #              hr()
-                                       #       ),
-                                       #       column(4,
-                                       #              prettyCheckboxGroup(inputId = "filter_diagnosis", label = "Patient Diagnosis:", shape = "curve", status = "primary",
-                                       #                                  choices = c("Meningitis", "Pneumonia", "Sepsis"), selected = c("Meningitis", "Pneumonia", "Sepsis"), 
-                                       #                                  inline = TRUE),
-                                       #              prettyRadioButtons(inputId = "confirmed_diagnosis", label = "Diagnosis confirmation (if clinical outcome):", 
-                                       #                                 choices = c("Diagnosis confirmed", "Diagnosis rejected", "No filter on diagnosis confirmation"),
-                                       #                                 selected = "No filter on diagnosis confirmation")
-                                       #       ),
-                                       #       column(4,
-                                       #              prettySwitch(inputId = "filter_outcome_clinical", label = "Select Only Patients with Clinical Outcome", status = "primary", value = FALSE),
-                                       #              prettySwitch(inputId = "filter_outcome_d28", label = "Patients w/ Day-28 Outcome", status = "primary", value = FALSE)
-                                       #       )
-                                       #     )
-                                       # ),
-                                       # div(id = "additional_filter_btn",
-                                       #     actionButton("additional_filter_1", icon = icon("plus"), label = "", class = "btn-success")
-                                       # )
                                 ),
                                 column(3, class = "vl",
                                        div(class = "smallcaps", class = "centerara", span(icon("vial"), " Specimens")),
@@ -202,8 +161,7 @@ ui <- fluidPage(
                                    div(
                                      class = "well",
                                      h4(class = "text-center", "Please login"),
-                                     p(class = "text-center", "Use demo/demo for a tour of the App or to visualise a specific .acorn file."
-                                     ),
+                                     p("Use demo/demo for an app demo."),
                                      textInput(
                                        inputId     = "cred_username", 
                                        label       = tagList(icon("user"), "Site Name"),
@@ -237,122 +195,118 @@ ui <- fluidPage(
                       tabsetPanel(id = "data_management_tabs", type = "tabs",
                                   tab(value = "load", span("Load existing ", em(".acorn")),
                                       fluidRow(
-                                        column(6,
-                                               fluidRow(
-                                                 column(2,
-                                                        div(class = "centerara", h5(icon("laptop"), "Local"))
-                                                 ),
-                                                 column(10,
-                                                        p("You can upload a file from your PC"),
-                                                        fileInput("load_acorn_local", label = NULL, buttonLabel =  HTML("Load <em>.acorn</em>"), accept = '.acorn'),
-                                                 )
+                                        column(3,
+                                               tags$div(
+                                                 materialSwitch(inputId = "load_switch", label = "Local", 
+                                                                inline = TRUE, status = "primary", value = TRUE),
+                                                 tags$span(icon("cloud"), "Server")
                                                )
                                         ),
-                                        column(6,
-                                               fluidRow(
-                                                 column(2,
-                                                        div(class = "centerara", h5(icon("cloud"), "Server"))
-                                                 ),
-                                                 column(10,
-                                                        htmlOutput("checklist_status_load_server"),
-                                                        fluidRow(
-                                                          column(6,
-                                                                 pickerInput('acorn_files_server', choices = NULL, label = NULL,
-                                                                             options = pickerOptions(actionsBox = TRUE, noneSelectedText = "No file selected", liveSearch = FALSE,
-                                                                                                     showTick = TRUE, header = "10 most recent files:"))
-                                                          ),
-                                                          column(6,
-                                                                 conditionalPanel(condition = "input.acorn_files_server",
-                                                                                  actionButton('load_acorn_server', span(icon('cloud-download-alt'), HTML('Load <em>.acorn</em>')))
-                                                                 )
-                                                          )
-                                                        )
-                                                 )
+                                        column(9,
+                                               conditionalPanel("! input.load_switch",
+                                                                div(
+                                                                  p("You can upload a file from your PC"),
+                                                                  fileInput("load_acorn_local", label = NULL, buttonLabel =  HTML("Load <em>.acorn</em>"), accept = '.acorn'),
+                                                                )
+                                               ),
+                                               conditionalPanel("input.load_switch",
+                                                                div(
+                                                                  htmlOutput("checklist_status_load_server"),
+                                                                  fluidRow(
+                                                                    column(6,
+                                                                           pickerInput('acorn_files_server', choices = NULL, label = NULL,
+                                                                                       options = pickerOptions(actionsBox = TRUE, noneSelectedText = "No file selected", liveSearch = FALSE,
+                                                                                                               showTick = TRUE, header = "10 most recent files:"))
+                                                                    ),
+                                                                    column(6,
+                                                                           conditionalPanel(condition = "input.acorn_files_server",
+                                                                                            actionButton('load_acorn_server', span(icon('cloud-download-alt'), HTML('Load <em>.acorn</em>')))
+                                                                           )
+                                                                    )
+                                                                  )
+                                                                )
                                                )
                                         )
                                       )
                                   ),
                                   tab(value = "generate", span("Generate ", em(".acorn")),
                                       fluidRow(
-                                        column(3,
-                                               h4("Lab data")
+                                        column(7,
+                                               fluidRow(
+                                                 column(3,
+                                                        h5("Lab data")
+                                                 ),
+                                                 column(9,
+                                                        htmlOutput("checklist_status_lab"),
+                                                        pickerInput(inputId = "format_lab_data", label = "What is the format of the lab data?", 
+                                                                    choices = c("", "WHONET .dBase", "WHONET .SQLite", "Tabular (.csv, .txt, .xls(x)"), 
+                                                                    multiple = FALSE),
+                                                        
+                                                        conditionalPanel("! input.format_lab_data == ''",
+                                                                         fileInput("file_lab_data", label = NULL, buttonLabel = "Browse ..."))
+                                                 )
+                                               ),
+                                               hr(),
+                                               fluidRow(
+                                                 column(3,    
+                                                        h5("Clinical data")
+                                                 ),
+                                                 column(9,
+                                                        htmlOutput("checklist_status_clinical"),
+                                                        actionButton('get_redcap_data', span(icon('times-circle'), HTML('Get Clinical Data from REDCap server'))),
+                                                        br(), br(),
+                                                        htmlOutput("message_redcap_dta"),
+                                                        DTOutput("table_redcap_dta"),
+                                                        plotOutput("validate_rules_REDCap")
+                                                 )
+                                               )
                                         ),
-                                        column(9,
-                                               # htmlOutput("checklist_status_lab"),
-                                               pickerInput(inputId = "format_lab_data", label = "What is the format of the lab data?", 
-                                                           choices = c("", "WHONET .dBase", "WHONET .SQLite", "Tabular (.csv, .txt, .xls(x)"), 
-                                                           multiple = FALSE),
-                                               
-                                               conditionalPanel("! input.format_lab_data == ''",
-                                                                fileInput("file_lab_data", label = NULL, buttonLabel = "Browse ..."))
-                                        )
-                                      ),
-                                      fluidRow(
-                                        column(3,    
-                                               h4("Clinical data")
-                                        ),
-                                        column(9,
-                                               htmlOutput("checklist_status_clinical"),
-                                               actionButton('get_redcap_data', span(icon('cloud-download-alt'), HTML('Get Clinical Data from REDCap server')), disabled = TRUE),
-                                               DTOutput("table_redcap_dta"),
-                                               htmlOutput("message_redcap_dta"),
-                                               plotOutput("validate_rules_REDCap")
-                                        )
-                                      ),
-                                      fluidRow(
-                                        column(3,
-                                               h4("Generate .acorn")
-                                        ),
-                                        column(9,
+                                        column(5,
+                                               h5("Combine Clinical and Lab data"),
                                                htmlOutput("checklist_generate"),
-                                               actionButton("generate_acorn_data", label = "Generate ACORN Data", disabled = TRUE)
+                                               actionButton("generate_acorn_data", label = span("Generate ", em(".acorn")))
                                         )
                                       )
                                   ),
                                   tab(value = "save", span("Save ", em(".acorn"), " file"),
                                       fluidRow(
-                                        column(6,
-                                               fluidRow(
-                                                 column(2,
-                                                        div(class = "centerara", h5(icon("laptop"), "Local"))
-                                                 ),
-                                                 column(10,
-                                                        htmlOutput("checklist_save"),
-                                                        actionButton('save_acorn_local', HTML('Save <em>.acorn</em>'), disabled = TRUE)
-                                                 )
+                                        column(3,
+                                               tags$div(
+                                                 materialSwitch(inputId = "save_switch", label = "Local", 
+                                                                inline = TRUE, status = "primary", value = TRUE),
+                                                 tags$span(icon("cloud"), "Server")
                                                )
                                         ),
-                                        column(6,
-                                               fluidRow(
-                                                 column(2,
-                                                        div(class = "centerara", h5(icon("cloud"), "Server")
-                                                        )
-                                                 ),
-                                                 column(10,
-                                                        htmlOutput("checklist_save_server"),
-                                                        actionButton('save_acorn_server', span(icon('cloud-upload-alt'), HTML('Save <em>.acorn</em>')), disabled = TRUE)
-                                                 )
+                                        column(9,
+                                               conditionalPanel("! input.save_switch",
+                                                                div(
+                                                                  htmlOutput("checklist_save_local"),
+                                                                  actionButton('save_acorn_local', HTML('Save <em>.acorn</em>'))
+                                                                )
+                                               ),
+                                               conditionalPanel("input.save_switch",
+                                                                div(
+                                                                  htmlOutput("checklist_save_server"),
+                                                                  actionButton('save_acorn_server', span(icon('cloud-upload-alt'), HTML('Save <em>.acorn</em>')))
+                                                                )
                                                )
                                         )
                                       )
                                   )
                       )
              ),
-             # Tab "Patient Enrollments" ----
-             # navbarMenu("Patient Enrollments",
              # Tab Overview ----
              tabPanel("Overview", value = "overview", 
-                      br(), br(), 
-                      p("Merge Overview and Profile Tabs?"),
+                      br(), br(),
                       fluidRow(
                         column(5,
                                div(class = "box_outputs",
-                                   h5("Proportions of Enrollments with Blood Culture"),
+                                   h4_title("Proportions of Enrollments with Blood Culture"),
                                    highchartOutput("evolution_blood_culture")
                                )),
                         column(6, offset = 1,
                                div(class = "box_outputs",
-                                   h5("Number of Patients"),
+                                   h4_title("Number of Patients"),
                                    pickerInput("variables_table", label = "Table Columns:", 
                                                multiple = TRUE, width = "600px",
                                                choices = c("Place of Infection" = "surveillance_cat", "Type of Ward" = "ward", "Ward" = "ward_text", "Clinical Outcome" = "clinical_outcome", "Day-28 Outcome" = "d28_outcome"), 
@@ -362,11 +316,6 @@ ui <- fluidPage(
                                )
                         )
                       ),
-                      br()
-             ),
-             # "----",
-             tabPanel("Profile", value = "patients_profile", 
-                      br(), br(),
                       div(class = 'box_outputs',
                           h4_title(icon('stethoscope'), "Patients Diagnosis"),
                           fluidRow(
@@ -613,7 +562,6 @@ server <- function(input, output, session) {
   
   # Hide tabs on app launch ----
   hideTab(inputId = "tabs", target = "overview")
-  hideTab(inputId = "tabs", target = "patients_profile")
   hideTab(inputId = "tabs", target = "follow_up")
   hideTab(inputId = "tabs", target = "hai")
   hideTab(inputId = "tabs", target = "microbiology")
@@ -696,7 +644,7 @@ server <- function(input, output, session) {
   # microbio_filter <- reactive(microbio() %>% fun_filter_microbio(patient = patient_filter(), input = input))
   # microbio_filter_blood <- reactive(microbio_filter() %>% fun_filter_blood_only())
   # hai_surveys_filter <- reactive(hai_surveys() %>% fun_filter_hai(input = input))
-  patient_filter <- reactive(patient())
+  patient_filter <- reactive(patient() %>% fun_filter_patient(input = input))
   microbio_filter <- reactive(microbio())
   microbio_filter_blood <- reactive(microbio_filter())
   hai_surveys_filter <- reactive(hai_surveys())
@@ -712,24 +660,24 @@ server <- function(input, output, session) {
     acorn_server_test = list(status = "ko", msg = "Not connected to .acorn server"),
     acorn_server_write = list(status = "ko", msg = "No rights to backup .acorn on the server"),
     
-    redcap_dta = list(status = "ko", msg = "Clinical data not loaded"),
-    lab_dta = list(status = "ko", msg = "Lab data not loaded"),
+    redcap_dta = list(status = "ko", msg = "Clinical data not provided"),
+    lab_dta = list(status = "ko", msg = "Lab data not provided"),
     acorn_dta = list(status = "ko", msg = ".acorn data not loaded"),
     acorn_dta_saved = list(status = "ko", msg = "There is no .acorn data loaded")
   )
   
   # allow access to info on some elements of checklist_status
-  output$state_redcap_cred <- reactive(checklist_status$redcap_server_cred$status == "okay")
-  outputOptions(output, 'state_redcap_cred', suspendWhenHidden = FALSE)
+  # output$state_redcap_cred <- reactive(checklist_status$redcap_server_cred$status == "okay")
+  # outputOptions(output, 'state_redcap_cred', suspendWhenHidden = FALSE)
   
-  output$state_s3_connection <- reactive(checklist_status$acorn_server_test$status == "okay")
-  outputOptions(output, 'state_s3_connection', suspendWhenHidden = FALSE)
+  # output$state_s3_connection <- reactive(checklist_status$acorn_server_test$status == "okay")
+  # outputOptions(output, 'state_s3_connection', suspendWhenHidden = FALSE)
   
-  output$state_write_s3 <- reactive(checklist_status$acorn_server_write$status == "okay")
-  outputOptions(output, 'state_write_s3', suspendWhenHidden = FALSE)
+  # output$state_write_s3 <- reactive(checklist_status$acorn_server_write$status == "okay")
+  # outputOptions(output, 'state_write_s3', suspendWhenHidden = FALSE)
   
-  output$state_dta_available <- reactive(checklist_status$acorn_dta$status == "okay")
-  outputOptions(output, 'state_dta_available', suspendWhenHidden = FALSE)
+  # output$state_dta_available <- reactive(checklist_status$acorn_dta$status == "okay")
+  # outputOptions(output, 'state_dta_available', suspendWhenHidden = FALSE)
   
   observe({
     ifelse(has_internet(), 
@@ -812,6 +760,7 @@ server <- function(input, output, session) {
       acorn_cred(cred)
     }
     showNotification("Successfully logged in!")
+    updateTabsetPanel(inputId = "tabs", selected = "data_management")
     
     # Connect to AWS S3 server ----
     if(acorn_cred()$acorn_s3) {
@@ -825,6 +774,7 @@ server <- function(input, output, session) {
       if(connect_server_test) {
         
         checklist_status$acorn_server_test <- list(status = "okay", msg = "Connection to .acorn server established")
+        updateActionButton(session = session, 'get_redcap_data', icon = icon("cloud-download-alt"), label = "Get Clinical Data from REDCap server")
         
         if(acorn_cred()$acorn_s3_write)  checklist_status$acorn_server_write <- list(status = "okay", msg = "Ability to write on server")
         if(! acorn_cred()$acorn_s3_write)  checklist_status$acorn_server_write <- list(status = "ko", msg = "Not allowed to write on server")
@@ -852,7 +802,7 @@ server <- function(input, output, session) {
     startAnim(session, 'float', 'bounce')
   })
   
-  # On Download of .acorn file from server ----
+  # On "Load .acorn" file from server ----
   observeEvent(input$load_acorn_server, {
     # laod content
     acorn_s3 <- get_object(object = input$acorn_files_server, 
@@ -862,64 +812,28 @@ server <- function(input, output, session) {
                            region = acorn_cred()$acorn_s3_region)
     load(rawConnection(acorn_s3))
     
-    
-    patient <- reactiveVal(patient)
-    microbio <- reactiveVal(microbio)
-    hai_surveys <- reactiveVal(hai.surveys)
-    corresp_org_antibio <- reactiveVal(corresp_org_antibio)
-    
-    # update acorn_dta_file
-    acorn_dta_file$f01 <- f01
-    acorn_dta_file$f02 <- f02
-    acorn_dta_file$f03 <- f03
-    acorn_dta_file$f04 <- f04
-    acorn_dta_file$f05 <- f05
-    acorn_dta_file$f06 <- f06
-    acorn_dta_file$f01_edit <- f01_edit
-    acorn_dta_file$f02_edit <- f02_edit
-    acorn_dta_file$f03_edit <- f03_edit
-    acorn_dta_file$f04_edit <- f04_edit
-    acorn_dta_file$f05_edit <- f05_edit
-    acorn_dta_file$f06_edit <- f06_edit
-    acorn_dta_file$lab_dta <- lab_dta
-    acorn_dta_file$meta <- meta
-    
-    # update acorn_dta_merged
-    acorn_dta_merged$f01 <- f01
-    acorn_dta_merged$f02 <- f02
-    acorn_dta_merged$f03 <- f03
-    acorn_dta_merged$f04 <- f04
-    acorn_dta_merged$f05 <- f05
-    acorn_dta_merged$f06 <- f06
-    acorn_dta_merged$f01_edit <- f01_edit
-    acorn_dta_merged$f02_edit <- f02_edit
-    acorn_dta_merged$f03_edit <- f03_edit
-    acorn_dta_merged$f04_edit <- f04_edit
-    acorn_dta_merged$f05_edit <- f05_edit
-    acorn_dta_merged$f06_edit <- f06_edit
-    acorn_dta_merged$f01_cor <- process_edit(f01, f01_edit)
-    acorn_dta_merged$f02_cor <- process_edit(f02, f02_edit)
-    acorn_dta_merged$f03_cor <- process_edit(f03, f03_edit)
-    acorn_dta_merged$f04_cor <- process_edit(f04, f04_edit)
-    acorn_dta_merged$f05_cor <- process_edit(f05, f05_edit)
-    acorn_dta_merged$f06_cor <- process_edit(f06, f06_edit)
-    acorn_dta_merged$lab_dta <- lab_dta
-    acorn_dta_merged$meta <- meta
+    patient(patient)
+    microbio(microbio)
+    hai_surveys(hai.surveys)
+    corresp_org_antibio(corresp_org_antibio)
+    meta(meta)
     
     # update status of the app
-    checklist_status$acorn_dta <- list(status = "okay", msg = glue("Successfully loaded data<br>{icon('info-circle')} 
-                                                                   Data generated on the {acorn_dta_merged$meta$time_generation};
-                                                                   by <strong>{acorn_dta_merged$meta$user}</strong>. 
-                                                                   {acorn_dta_merged$meta$comment}"))
+    checklist_status$acorn_dta <- list(status = "okay", msg = glue("Successfully loaded data<br>{icon('info-circle')} Data generated on the {meta()$time_generation}; 
+                                                                   by <strong>{meta$user}</strong>. {meta$comment}"))
     
-    showModal(modalDialog(
-      info_acorn_file(acorn_dta_file),
-      title = "Info on file loaded",
-      footer = modalButton("Okay"),
-      size = "l",
-      easyClose = FALSE,
-      fade = TRUE
-    ))
+    checklist_status$acorn_dta_saved = list(status = "info", msg = ".acorn not saved (but nothing new here)")
+    
+    # TODO: provide more details in the notification on the file loaded - see info_acorn_file() for a start
+    showNotification(".acorn file successfully loaded")
+    
+    showTab(inputId = "tabs", target = "overview")
+    showTab(inputId = "tabs", target = "follow_up")
+    showTab(inputId = "tabs", target = "hai")
+    showTab(inputId = "tabs", target = "microbiology")
+    showTab(inputId = "tabs", target = "amr")
+    
+    updateTabsetPanel(inputId = "tabs", selected = "overview")
   })
   
   # On "Load .acorn" file from local ----
@@ -937,19 +851,55 @@ server <- function(input, output, session) {
     checklist_status$acorn_dta <- list(status = "okay", msg = glue("Successfully loaded data<br>{icon('info-circle')} Data generated on the {meta()$time_generation}; 
                                                                    by <strong>{meta$user}</strong>. {meta$comment}"))
     
+    checklist_status$acorn_dta_saved = list(status = "info", msg = ".acorn not saved (but nothing new here)")
+    
+    # TODO: provide more details in the notification on the file loaded - see info_acorn_file() for a start
     showNotification(".acorn file successfully loaded")
     
     showTab(inputId = "tabs", target = "overview")
-    showTab(inputId = "tabs", target = "patients_profile")
     showTab(inputId = "tabs", target = "follow_up")
     showTab(inputId = "tabs", target = "hai")
     showTab(inputId = "tabs", target = "microbiology")
     showTab(inputId = "tabs", target = "amr")
+    
+    updateTabsetPanel(inputId = "tabs", selected = "overview")
+  })
+  
+  
+  # On "Browse..." Lab data ----
+  observeEvent(input$file_lab_data, {
+    
+    # TODO: establish control of inputs
+    path_lab_file <- input$file_lab_data[[1, 'datapath']]
+    
+    if (input$format_lab_data == "WHONET dBase")  lab_dta <- foreign::read.dbf(path_lab_file, as.is = TRUE)
+    if (input$format_lab_data == "WHONET .SQLite") {
+      dta <- DBI::dbConnect(RSQLite::SQLite(), path_lab_file)
+      lab_dta <- as.data.frame(DBI::dbReadTable(dta, "Isolates"))
+    }
+    
+    if (input$format_lab_data == "Tabular (.csv, .txt, .xls(x)") {
+      extension_file_lab_data <- tools::file_ext(path_lab_file)
+      
+      if (extension_file_lab_data == "csv")  lab_dta <- readr::read_csv(path_lab_file, guess_max = 10000)
+      if (extension_file_lab_data == "txt")  lab_dta <- readr::read_tsv(path_lab_file, guess_max = 10000)
+      if (extension_file_lab_data %in% c("xls", "xlsx")) lab_dta <- readxl::read_excel(path_lab_file, guess_max = 10000)
+    }
+    
+    lab_dta(lab_dta)
+    
+    showNotification("Lab data successfully provided.")
+    checklist_status$lab_dta = list(status = "okay", msg = "Lab data provided")
   })
   
   
   # On "Get REDCap data" ----
   observeEvent(input$get_redcap_data, {
+    if(is.null(acorn_cred()$redcap_server_api)) {
+      showNotification("REDCap server credentials not provided", type = "error")
+      return()
+    }
+    
     showNotification("Trying to retrive REDCap Data. It might take a minute", duration = NULL, id = "try_redcap")
     
     dta <- try(redcap_read(redcap_uri='https://m-redcap-test.tropmedres.ac/redcap_test/api/', 
@@ -965,6 +915,7 @@ server <- function(input, output, session) {
     
     removeNotification(id = "try_redcap")
     showNotification("Clinical data successfully retrived from REDCap server.")
+    checklist_status$redcap_dta <- list(status = "okay", msg = "Clinical data provided")
     
     if(nrow(dta) == 0) {
       showNotification("Clinical dataset is empty.", type = "warning", duration = NULL)
@@ -976,21 +927,26 @@ server <- function(input, output, session) {
   
   # On "Generate ACORN" ----
   observeEvent(input$generate_acorn_data, {
+    # TODO: write the generation process here - this will be dome at an advanced stage
+    showNotification("Not yet possible in this version of the app.", type = "error")
     
     acorn_dta_saved = list(status = "ko", msg = ".acorn not saved")
   })
   
   # On "Save ACORN" on server ----
   observeEvent(input$save_acorn_server, { 
+    if(checklist_status$acorn_dta$status != "ok") {
+      showNotification("No .acorn data loaded.", type = "warning", duration = NULL)
+      return()
+    }
     
     showModal(modalDialog(
       fluidRow(
         column(6,
+               p(glue("The time of generation: {session_start_time} will be added to the file.")),
                textInput("name_file", value = session_start_time, label = "Choose a name for the file"),
                textInput("meta_acorn_user", label = "User:", value = Sys.info()["user"]),
-               textInput("meta_acorn_machine", label = "Machine:", value = Sys.info()["nodename"]),
-               textAreaInput("meta_acorn_comment", label = "(Optional) Comment"),
-               p(glue("The session id: {session_id} will be added to the file."))
+               textAreaInput("meta_acorn_comment", label = "(Optional) Comment")
         ),
         column(6,
                actionButton("save_acorn_server_confirm", label = "Confirm Save on Server")
@@ -1011,31 +967,20 @@ server <- function(input, output, session) {
     name_file <- glue("{input$name_file}.acorn")
     file <- file.path(tempdir(), name_file)
     
-    f01 <- acorn_dta_merged$f01
-    f02 <- acorn_dta_merged$f02
-    f03 <- acorn_dta_merged$f03
-    f04 <- acorn_dta_merged$f04
-    f05 <- acorn_dta_merged$f05
-    f06 <- acorn_dta_merged$f06
+    patient <- patient()
+    microbio <- microbio()
+    hai.surveys <- hai_surveys()
+    corresp_org_antibio <- corresp_org_antibio()
     
-    f01_edit <- acorn_dta_merged$f01_edit
-    f02_edit <- acorn_dta_merged$f02_edit
-    f03_edit <- acorn_dta_merged$f03_edit
-    f04_edit <- acorn_dta_merged$f04_edit
-    f05_edit <- acorn_dta_merged$f05_edit
-    f06_edit <- acorn_dta_merged$f06_edit
+    # generate meta
+    meta <- list()
+    meta$time_generation <- session_start_time
+    meta$app_version <- app_version
+    meta$user <- input$meta_acorn_user
+    meta$comment <- input$meta_acorn_comment
     
-    lab_dta <- acorn_dta_merged$lab_dta
-    meta <- list(time_generation = session_start_time,
-                 session_id = session_id,
-                 app_version = app_version,
-                 user = input$meta_acorn_user,
-                 machine = input$meta_acorn_machine,
-                 comment = input$meta_acorn_comment)
-    
-    save(f01, f02, f03, f04, f05, f06,
-         f01_edit, f02_edit, f03_edit, f04_edit, f05_edit, f06_edit,
-         lab_dta, meta,
+    save(patient, microbio, corresp_org_antibio, hai.surveys,
+         meta,
          file = file)
     
     put_object(file = file,

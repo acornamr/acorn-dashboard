@@ -7,8 +7,8 @@
 #' 
 #' @export
 #'
-#' @import aws.s3 bslib curl DT flexdashboard glue highcharter lubridate openssl REDCapR 
-#' rmarkdown shiny shinyanimate shiny.i18n shinyjs shinyWidgets tidyverse validate
+#' @import aws.s3 bslib curl DBI DT flexdashboard glue highcharter lubridate openssl readr readxl REDCapR 
+#' rmarkdown RSQLite shiny shinyanimate shiny.i18n shinyjs shinyWidgets tidyverse validate
 #' 
 
 run_app <- function(options = list()) {

@@ -4,13 +4,17 @@
 library(aws.s3)
 library(bslib)  # bs_theme()
 library(curl)
+library(DBI)  # to read lab data
 library(DT)
 library(flexdashboard)  # gaugeOutput()
 library(glue)
 library(highcharter)
 library(lubridate)
 library(openssl)
-library(REDCapR)
+library(readr)  # to read lab data
+library(readxl)  # to read lab data
+library(REDCapR)  # to read clinical data
+library(RSQLite)  # to read lab data
 library(rmarkdown)  # pandoc_available()
 library(shiny)
 library(shinyanimate)

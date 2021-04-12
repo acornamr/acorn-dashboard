@@ -7,5 +7,7 @@ output$report_generation <- renderText({
   
   paste(glue("App version {app_version}"), br(),
         a("ACORN Project website", href = "https://acornamr.net/", class='js-external-link', target="_blank"), br(), br(),
-        report)
+        report, br(), br(),
+        actionLink("debug", label = "(Debug)")
+  )
 })

@@ -1,12 +1,9 @@
 # Function that returns a filtered dataset
-filter_data <- function(data, input) {
+fun_filter_patient <- function(data, input) {
   
   if( is.null(data) ) return(NULL)
   
-  data <- data %>%
-    filter(
-      sex %in% input$filter_sex
-    )
+  if(input$filter_origin_infection != "All Origins") data <- data %>% filter(surveillance_cat == input$filter_origin_infection)
   
   return(data)
 }
