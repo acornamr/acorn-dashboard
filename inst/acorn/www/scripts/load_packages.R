@@ -22,4 +22,4 @@ library(shiny.i18n)  # i18n$t()
 library(shinyjs)
 library(shinyWidgets)  # chooseSliderSkin()
 library(tidyverse)
-library(validate)
+library(validate)  # TODO: remove validate package?

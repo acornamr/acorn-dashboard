@@ -1,16 +1,18 @@
 # ACORN shiny app main script
-# TODO: eliminate everything labelled 'ACORN1'
+# Olivier Celhay
 
-cols_sir <- c("#2166ac", "#fddbc7", "#b2182b")  # resp. S, I, R
+app_version <- "prototype.001"  # IMPORTANT ensure that the version is identical in DESCRIPTION and README.md
+
+cols_sir <- c("#2c3e50", "#f39c12", "#e74c3c")  # resp. S, I, R
+# cols_sir <- c("#2166ac", "#fddbc7", "#b2182b")  # resp. S, I, R
 hc_export_kind <- c("downloadJPEG", "downloadCSV")
 
 source("./www/scripts/load_packages.R", local = TRUE)
-app_version <- "prototype.001"  # IMPORTANT ensure that the version is identical in DESCRIPTION and README.md
+
 session_start_time <- format(Sys.time(), "%Y-%m-%d_%HH%M")
 session_id <- glue("{glue_collapse(sample(LETTERS, 5, TRUE))}_{session_start_time}")
-validate_rules_REDCap <- validator(.file = "./www/data/validate_rules_REDCap.yaml")
 
-h4_title <- function(...)  div(class = "h4_title", ...)
+
 
 # It's safe to expose those since the acornamr-cred bucket content can only be listed + read 
 # and contains only encrypted files
@@ -24,10 +26,14 @@ for(file in list.files('./www/functions/'))  source(paste0('./www/functions/', f
 acorn_theme <- bs_theme(bootswatch = "flatly", version = 4, "border-width" = "2px")
 acorn_theme_la <- bs_theme(bootswatch = "flatly", version = 4, "border-width" = "2px", base_font = "Phetsarath OT")
 
+h4_title <- function(...)  div(class = "h4_title", ...)
+
 tab <- function(...) {
   shiny::tabPanel(..., class = "p-3 border border-top-0 rounded-bottom")
 }
 
+
+# Definition of UI ----
 ui <- fluidPage(
   title = 'ACORN | A Clinically Oriented antimicrobial Resistance Network',
   theme = acorn_theme,
@@ -51,7 +57,7 @@ ui <- fluidPage(
              title = a(img(src = "logo_acorn.png", style = "height: 40px; position: relative;")),
              collapsible = TRUE, inverse = FALSE, 
              position = "static-top",
-             # Header ----
+             ## Header ----
              header = conditionalPanel(
                id = "header-filter",
                condition = "input.tabs != 'welcome' & input.tabs != 'data_management'",
@@ -161,7 +167,7 @@ ui <- fluidPage(
                                    div(
                                      class = "well",
                                      h4(class = "text-center", "Please login"),
-                                     p("Use demo/demo for an app demo."),
+                                     p("Use demo/demo for a tour."),
                                      textInput(
                                        inputId     = "cred_username", 
                                        label       = tagList(icon("user"), "Site Name"),
@@ -186,7 +192,8 @@ ui <- fluidPage(
                                    )
                                ),
                                h4('Welcome!'),
-                               includeMarkdown("./www/markdown/lorem_ipsum.md")
+                               includeMarkdown("./www/markdown/lorem_ipsum.md"),
+                               span(img(src = "./Map-ACORN-Sites-Global.png", id = "map_sites"))
                         )
                       )
              ),
@@ -212,17 +219,14 @@ ui <- fluidPage(
                                                conditionalPanel("input.load_switch",
                                                                 div(
                                                                   htmlOutput("checklist_status_load_server"),
-                                                                  fluidRow(
-                                                                    column(6,
-                                                                           pickerInput('acorn_files_server', choices = NULL, label = NULL,
-                                                                                       options = pickerOptions(actionsBox = TRUE, noneSelectedText = "No file selected", liveSearch = FALSE,
-                                                                                                               showTick = TRUE, header = "10 most recent files:"))
-                                                                    ),
-                                                                    column(6,
-                                                                           conditionalPanel(condition = "input.acorn_files_server",
-                                                                                            actionButton('load_acorn_server', span(icon('cloud-download-alt'), HTML('Load <em>.acorn</em>')))
-                                                                           )
-                                                                    )
+                                                                  br(),
+                                                                  
+                                                                  pickerInput('acorn_files_server', choices = NULL, label = NULL,
+                                                                              options = pickerOptions(actionsBox = TRUE, noneSelectedText = "No file selected", liveSearch = FALSE,
+                                                                                                      showTick = TRUE, header = "10 most recent files:")),
+                                                                  
+                                                                  conditionalPanel(condition = "input.acorn_files_server",
+                                                                                   actionButton('load_acorn_server', span(icon('cloud-download-alt'), HTML('Load <em>.acorn</em>')))
                                                                   )
                                                                 )
                                                )
@@ -237,7 +241,7 @@ ui <- fluidPage(
                                                         h5("Lab data")
                                                  ),
                                                  column(9,
-                                                        htmlOutput("checklist_status_lab"),
+                                                        # htmlOutput("checklist_status_lab"),
                                                         pickerInput(inputId = "format_lab_data", label = "What is the format of the lab data?", 
                                                                     choices = c("", "WHONET .dBase", "WHONET .SQLite", "Tabular (.csv, .txt, .xls(x)"), 
                                                                     multiple = FALSE),
@@ -255,9 +259,9 @@ ui <- fluidPage(
                                                         htmlOutput("checklist_status_clinical"),
                                                         actionButton('get_redcap_data', span(icon('times-circle'), HTML('Get Clinical Data from REDCap server'))),
                                                         br(), br(),
-                                                        htmlOutput("message_redcap_dta"),
-                                                        DTOutput("table_redcap_dta"),
-                                                        plotOutput("validate_rules_REDCap")
+                                                        htmlOutput("message_redcap_dta"), br(),
+                                                        htmlOutput("checklist_qc_clinical"),
+                                                        DTOutput("table_redcap_dta")
                                                  )
                                                )
                                         ),
@@ -467,14 +471,21 @@ ui <- fluidPage(
                       tabsetPanel(
                         tabPanel(
                           "A. baumannii", 
-                          htmlOutput("nb_isolates_abaumannii"),
-                          conditionalPanel(condition = "output.test_abaumannii_sir",
-                                           highchartOutput("abaumannii_sir", height = "500px"),
-                                           h4_title("Resistance to Carbapenems Over Time"),
-                                           highchartOutput("abaumannii_sir_evolution", height = "300px"),
-                                           em("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable.")
-                          ),
-                          conditionalPanel(condition = "! output.test_abaumannii_sir", span(h4("There is no data to display for this organism.")))
+                          fluidRow(
+                            column(2,
+                                   br(), 
+                                   htmlOutput("nb_isolates_abaumannii"), br(),
+                                   em("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable.")
+                            ),
+                            column(10,
+                                   conditionalPanel(condition = "output.test_abaumannii_sir",
+                                                    highchartOutput("abaumannii_sir", height = "500px"),
+                                                    h4_title("Resistance to Carbapenems Over Time"),
+                                                    highchartOutput("abaumannii_sir_evolution", height = "300px")
+                                   ),
+                                   conditionalPanel(condition = "! output.test_abaumannii_sir", span(h4("There is no data to display for this organism.")))
+                            )
+                          )
                         ),
                         tabPanel(
                           "E. coli",
@@ -556,8 +567,7 @@ ui <- fluidPage(
   )
 )
 
-# define server ----
-
+# Definition of server ----
 server <- function(input, output, session) {
   
   # Hide tabs on app launch ----
@@ -660,7 +670,16 @@ server <- function(input, output, session) {
     acorn_server_test = list(status = "ko", msg = "Not connected to .acorn server"),
     acorn_server_write = list(status = "ko", msg = "No rights to backup .acorn on the server"),
     
+    redcap_qc_1 = list(status = "hidden", msg = "REDCap dataset empty"),
+    redcap_qc_2 = list(status = "hidden", msg = "REDCap dataset columns number"),
+    redcap_qc_3 = list(status = "hidden", msg = "REDCap dataset columns names"),
+    redcap_qc_4 = list(status = "hidden", msg = "Every infection episode (F02) has a matching patient enrolment (F01)"),
+    redcap_qc_5 = list(status = "hidden", msg = "Every hospital outcome (F03) has a matching infection episode (F02)"),
+    redcap_qc_6 = list(status = "hidden", msg = "All confirmed entries match the original entry"),
+    
     redcap_dta = list(status = "ko", msg = "Clinical data not provided"),
+    
+    
     lab_dta = list(status = "ko", msg = "Lab data not provided"),
     acorn_dta = list(status = "ko", msg = ".acorn data not loaded"),
     acorn_dta_saved = list(status = "ko", msg = "There is no .acorn data loaded")
@@ -900,29 +919,24 @@ server <- function(input, output, session) {
       return()
     }
     
-    showNotification("Trying to retrive REDCap Data. It might take a minute", duration = NULL, id = "try_redcap")
+    showNotification("Trying to retrive REDCap Data. It might take a minute.", duration = NULL, id = "try_redcap")
     
-    dta <- try(redcap_read(redcap_uri='https://m-redcap-test.tropmedres.ac/redcap_test/api/', 
-                           token = acorn_cred()$redcap_server_api)$data)
+    dl_redcap_dta <- try(redcap_read(redcap_uri='https://m-redcap-test.tropmedres.ac/redcap_test/api/', 
+                                     token = acorn_cred()$redcap_server_api)$data)
     
-    # TODO: provide full column specification
-    
-    if(inherits(dta, "try-error"))  {
+    if(inherits(dl_redcap_dta, "try-error"))  {
       removeNotification(id = "try_redcap")
       showNotification("We couldn't retrive REDCap Data. Please try again.", type = "error")
       return()
     }
     
     removeNotification(id = "try_redcap")
-    showNotification("Clinical data successfully retrived from REDCap server.")
-    checklist_status$redcap_dta <- list(status = "okay", msg = "Clinical data provided")
+    showNotification("Clinical data successfully retrived from REDCap server. Ongoing data quality control.")
     
-    if(nrow(dta) == 0) {
-      showNotification("Clinical dataset is empty.", type = "warning", duration = NULL)
-      return()
-    }
+    source("./www/data/00_read_redcap_data.R", local = TRUE)
+    if(checklist_status$redcap_dta$status == "ko")  return()
     
-    redcap_dta(dta)
+    # TODO otherwise continue
   })
   
   # On "Generate ACORN" ----

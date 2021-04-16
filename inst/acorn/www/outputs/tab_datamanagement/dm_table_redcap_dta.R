@@ -1,9 +1,7 @@
 output$table_redcap_dta <- renderDT({
   req(redcap_dta())
   
-  dta <- redcap_dta() %>% 
-    select(recordid, redcap_repeat_instrument,
-           brthdtc, d28_date)
+  dta <- redcap_dta()[, 1:5]
   
   
   datatable(dta, 

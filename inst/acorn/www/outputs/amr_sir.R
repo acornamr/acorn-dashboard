@@ -27,7 +27,7 @@ output$nb_isolates_abaumannii <- renderText({
   organism_input <- "Acinetobacter baumannii"
   req(microbio_filter() %>% filter(organism == organism_input))
   nb <- microbio_filter() %>% filter(organism == organism_input) %>% fun_deduplication(method = input$deduplication_method) %>% nrow()
-  ifelse (nb != 0, paste0(span("Total of ", br(), nb, " isolates")), HTML("There are no isolates"))
+  ifelse (nb != 0, glue("Total of {nb} isolate(s) for {organism_input}"), HTML("There are no isolates for {organism_input}"))
 })
 
 
