@@ -93,8 +93,9 @@ f03.sel <- f03 %>% select(LINK1, D28_DATE, D28_STATUS, D28_DEATH_DATE)
 
 # Link f01 (enrolment) to f02 (hosp discharge) and f03 (d28 outcome)
 f01.f02.sel <- left_join(f01.sel, f02.sel, by = "LINK")
-clin <- left_join(f01.f02.sel, f03.sel, by = "LINK1")
 
+clin <- left_join(f01.f02.sel, f03.sel, by = "LINK1")  # one row per admission
+rm(f01, f01.sel, f01.f02.sel, f02, f02.sel, f02rep, f03, f03.sel)
 
 # (Helper) for easy copy/paste of column names ----
 
@@ -123,11 +124,11 @@ clin <- left_join(f01.f02.sel, f03.sel, by = "LINK1")
 
 nb_clin <- nrow(clin)
 set.seed(0203)
-sample_10_records <- sample(paste0("import-oc-", 1:nb_clin), 10)
+sample_10_records <- sample(paste0("import-acorn1-", 1:nb_clin), 10)
 
 
 ## template_f01 ----
-template_f01 <- tibble(recordid = paste0("import-oc-", 1:nb_clin))
+template_f01 <- tibble(recordid = paste0("import-acorn1-", 1:nb_clin))
 
 template_f01$f01odkreckey <- clin$KEY
 template_f01$acornid_odk <- ""
@@ -151,14 +152,13 @@ template_f01$hpd_is_othfaci_date <- ""
 template_f01$hpd_hosp_date <- clin$HPD_HOSP_DATE
 template_f01$hpd_admtype <- ""
 template_f01$hpd_admreason <- ""
-# NOTE: expertise required to match CRF Chronic renal failure, CLD Chronic lung disease, DM Diabetes mellitus as per F01
 template_f01$cmb_comorbidities___aids <- 0
 template_f01$cmb_comorbidities___onc <- as.numeric(grepl("ONC", clin$CMB_COMORBIDITIES))
-template_f01$cmb_comorbidities___cpd <- 0
+template_f01$cmb_comorbidities___cpd <- as.numeric(grepl("CLD", clin$CMB_COMORBIDITIES))
 template_f01$cmb_comorbidities___cog <- 0
 template_f01$cmb_comorbidities___rheu <- 0
 template_f01$cmb_comorbidities___dem <- 0
-template_f01$cmb_comorbidities___diab <- 0
+template_f01$cmb_comorbidities___diab <- as.numeric(grepl("DM", clin$CMB_COMORBIDITIES))
 template_f01$cmb_comorbidities___diad <- 0
 template_f01$cmb_comorbidities___hop <- 0
 template_f01$cmb_comorbidities___hivwa <- 0
@@ -187,9 +187,9 @@ template_f01 <- template_f01  %>%
   mutate(across(everything(), as.character)) %>% 
   replace(is.na(.), "")
 
-write_csv(template_f01, file = "template_f01_REDCap_2020-03-23.csv")
+write_csv(template_f01, file = "template_f01_REDCap_2020-04-21.csv")
 write_csv(template_f01 %>% filter(recordid %in% sample_10_records), 
-          file = "template_f01_REDCap_sample10rows_2020-03-23.csv")
+          file = "template_f01_REDCap_sample10rows_2020-04-21.csv")
 
 # These are new and all set to NA
 # template_f01$f05odkreckey <- NA
@@ -259,7 +259,7 @@ write_csv(template_f01 %>% filter(recordid %in% sample_10_records),
 
 
 ## template_f02 ----
-template_f02 <- tibble(recordid = paste0("import-oc-", 1:nb_clin),
+template_f02 <- tibble(recordid = paste0("import-acorn1-", 1:nb_clin),
                        redcap_repeat_instrument = "f02_infected_episode",
                        redcap_repeat_instance = 1)
 
@@ -271,7 +271,7 @@ template_f02$hpd_onset_date <- clin$IFD_HAI_DATE
 
 template_f02$hpd_adm_wardtype <- clin$HPD_ADM_WARDTYPE
 template_f02$hpd_adm_wardtype[template_f02$hpd_adm_wardtype == "SUR"] <- "SRG"
-template_f02$hpd_adm_wardtype[template_f02$hpd_adm_wardtype == "PED"] <- "PMED" # or "Pediatric surgical ward (PSRG)"?
+template_f02$hpd_adm_wardtype[template_f02$hpd_adm_wardtype == "PED"] <- "PMED"
 template_f02$hpd_adm_wardtype[template_f02$hpd_adm_wardtype == "ICUNEO"] <- "NICU"
 template_f02$hpd_adm_wardtype[template_f02$hpd_adm_wardtype == "ICUPED"] <- "PICU"
 
@@ -294,7 +294,7 @@ template_f02$hai_have_med_device___vent <- as.numeric(grepl("VENT", clin$HAI_HAV
 template_f02$hai_icu48days <- "" # NEW
 template_f02$hai_have_sur <- "" # NEW
 template_f02$mic_bloodcollect <- clin$MIC_BLOODCOLLECT
-template_f02$mic_rec_antibiotic <- clin$MIC_REC_ANTIBIOTIC  # (conditional mic_bloodcollect)
+template_f02$mic_rec_antibiotic <- clin$MIC_REC_ANTIBIOTIC
 template_f02$antibiotic___j01gb06 <- as.numeric(grepl("J01GB06", clin$ANTIBIOTIC))
 template_f02$antibiotic___j01ca04 <- as.numeric(grepl("J01CA04", clin$ANTIBIOTIC))
 template_f02$antibiotic___j01cr02 <- as.numeric(grepl("J01CR02", clin$ANTIBIOTIC))
@@ -345,29 +345,36 @@ template_f02 <- template_f02  %>%
   mutate(across(everything(), as.character)) %>% 
   replace(is.na(.), "")
 
-write_csv(template_f02, file = "template_f02_REDCap_2020-03-23.csv")
+write_csv(template_f02, file = "template_f02_REDCap_2020-04-21.csv")
 write_csv(template_f02 %>% filter(recordid %in% sample_10_records), 
-          file = "template_f02_REDCap_sample10rows_2020-03-23.csv")
+          file = "template_f02_REDCap_sample10rows_2020-04-21.csv")
 
 ## template_f03 ----
-template_f03 <- tibble(recordid = paste0("import-oc-", 1:nb_clin),
-                       redcap_repeat_instrument = "f03_infection_hospital_outcome",
-                       redcap_repeat_instance = 1)
+template_f03 <- tibble(recordid = paste0("import-acorn1-", 1:nb_clin))
 
+# template_f03$f03odkreckey <- clin$KEY
+template_f03$ho_dmdtc1 <- clin$DMDTC
+template_f03$ho_fin_infect_diag1 <- clin$IFD_SURDIAG
+template_f03$ho_dmdtc2 <- ""
+template_f03$ho_fin_infect_diag2 <- ""
+template_f03$ho_dmdtc3 <- ""
+template_f03$ho_fin_infect_diag3 <- ""
+template_f03$ho_dmdtc4 <- ""
+template_f03$ho_fin_infect_diag4 <- ""
+template_f03$ho_dmdtc5 <- ""
+template_f03$ho_fin_infect_diag5 <- ""
+# Random assignment of SEPSIS
+n_sepsis <- sum(template_f03$ho_fin_infect_diag1 == "SEPSIS")
+template_f03$ho_fin_infect_diag1[template_f03$ho_fin_infect_diag1 == "SEPSIS"] <-  sample(c("BJ", "CVS", "OTH", "URTI", "EYE", "FN", "GI", "GU", "IA", "LRTI", "NEC", "PNEU", "SSTI", "SSI", "UTI", "OTH", "UNK"), n_sepsis, replace = TRUE)
+template_f03$ho_fin_infect_diag1[template_f03$ho_fin_infect_diag1 == "MEN"] <- "CNS"
 
-template_f03$f03odkreckey <- clin$KEY
-template_f03$ho_dmdtc <- clin$DMDTC
-
-template_f03$ho_fin_infect_episode_diag <- clin$IFD_SURDIAG
-template_f03$ho_fin_infect_episode_diag[template_f03$ho_fin_infect_episode_diag == "SEPSIS"] <- "OTH" # Unsure how to recode SEPSIS
-template_f03$ho_fin_infect_episode_diag[template_f03$ho_fin_infect_episode_diag == "MEN"] <- "OTH" # Unsure how to recode MEN
-
-template_f03$ho_alreadyenter <- "N"
 template_f03$ho_dischargestatus <- clin$HO_DISCHARGESTATUS
-template_f03$ho_dischargeto <- ""  # NEW
+template_f03$ho_dischargestatus[template_f03$ho_dischargestatus == "TRANS"] <- "ALIVE"
+template_f03$ho_dischargeto[template_f03$ho_dischargestatus == "DEAD"] <- "NA"
+n_not_dead <- sum(template_f03$ho_dischargestatus != "DEAD")
+template_f03$ho_dischargeto[template_f03$ho_dischargestatus != "DEAD"] <- sample(c("HOM", "HOS", "LTC", "UNK"), n_not_dead, replace = TRUE) 
 template_f03$ho_discharge_date <- clin$HO_DISCHARGE_DATE
 template_f03$ho_days_icu <- clin$HO_DAYS_ICU
-template_f03$f03_deleted <- ""
 template_f03$f03_infection_hospital_outcome_complete <- ""
 
 # Export
@@ -375,38 +382,37 @@ template_f03 <- template_f03  %>%
   mutate(across(everything(), as.character)) %>% 
   replace(is.na(.), "")
 
-write_csv(template_f03, file = "template_f03_REDCap_2020-03-23.csv")
+write_csv(template_f03, file = "template_f03_REDCap_2020-04-21.csv")
 write_csv(template_f03 %>% filter(recordid %in% sample_10_records), 
-          file = "template_f03_REDCap_sample10rows_2020-03-23.csv")
+          file = "template_f03_REDCap_sample10rows_2020-04-21.csv")
 
-# template_f04 ----
-nb_f04 <- nrow(f04)
-
-template_f04 <- tibble(recordid = paste0("import-oc-hai-", 1:nb_f04),
+# template_hai ---- 
+nb_hai <- nrow(f04)
+template_hai <- tibble(recordid = paste0("import-acorn1-hai-", 1:nb_hai),
                        redcap_repeat_instrument = "f06_hai_ward",
                        redcap_repeat_instance = 1)
 
-template_f04$f06odkreckey <- f04$KEY
-template_f04$survey_date <- f04$SURVEY_DATE
+template_hai$f06odkreckey <- f04$KEY
+template_hai$survey_date <- f04$SURVEY_DATE
 
-template_f04$wardtype <- f04$WARDTYPE
-template_f04$wardtype[template_f04$wardtype == "SUR"] <- "SRG"
-template_f04$wardtype[template_f04$wardtype == "PED"] <- "PMED" # or "Pediatric surgical ward (PSRG)"?
-template_f04$wardtype[template_f04$wardtype == "ICUNEO"] <- "NICU"
-template_f04$wardtype[template_f04$wardtype == "ICUPED"] <- "PICU"
+template_hai$wardtype <- f04$WARDTYPE
+template_hai$wardtype[template_hai$wardtype == "SUR"] <- "SRG"
+template_hai$wardtype[template_hai$wardtype == "PED"] <- "PMED"
+template_hai$wardtype[template_hai$wardtype == "ICUNEO"] <- "NICU"
+template_hai$wardtype[template_hai$wardtype == "ICUPED"] <- "PICU"
 
-template_f04$ward <- f04$WARD
-template_f04$mixward <- f04$MIXWARD
-template_f04$ward_beds <- f04$WARD_BEDS
-template_f04$ward_patients <- f04$WARD_PATIENTS
-template_f04$ward_med_patients <- f04$WARD_PATIENTS
-template_f04$ward_sur_patients <- f04$`FORMIXWARD-WARD_MED_PATIENTS`
-template_f04$ward_icu_patients <- f04$`FORMIXWARD-WARD_SUR_PATIENTS`
-template_f04$f06_deleted <- ""
-template_f04$f06_hai_ward_complete <- ""
+template_hai$ward <- f04$WARD
+template_hai$mixward <- f04$MIXWARD
+template_hai$ward_beds <- f04$WARD_BEDS
+template_hai$ward_patients <- f04$WARD_PATIENTS
+template_hai$ward_med_patients <- f04$WARD_PATIENTS
+template_hai$ward_sur_patients <- f04$`FORMIXWARD-WARD_MED_PATIENTS`
+template_hai$ward_icu_patients <- f04$`FORMIXWARD-WARD_SUR_PATIENTS`
+template_hai$f06_deleted <- ""
+template_hai$f06_hai_ward_complete <- ""
 
-template_f04 <- template_f04  %>%
+template_hai <- template_hai  %>%
   mutate(across(everything(), as.character)) %>% 
   replace(is.na(.), "")
 
-write_csv(template_f04, file = "template_f04_REDCap_2020-03-23.csv")
+write_csv(template_hai, file = "template_hai_REDCap_2020-04-21.csv")
