@@ -10,10 +10,6 @@ output$checklist_status_clinical <- renderText(
   text_checklist(checklist_status, vec = c("internet_connection", "app_login", "redcap_server_cred"))
 )
 
-output$checklist_status_lab <- renderText(
-  text_checklist(checklist_status, vec = c("lab_dta"))
-)
-
 output$checklist_generate <- renderText(
   text_checklist(checklist_status, vec = c("lab_dta", "redcap_dta"))
 )

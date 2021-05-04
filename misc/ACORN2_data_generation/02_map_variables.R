@@ -1,4 +1,42 @@
-print("Source 02_map_variables.R")
+# bridge
+amr.loc <- lab_dta()
+
+# message("Source 02_map_variables.R")
+# 
+# # Alternative Start (Olivier)
+# use_acorn_name <- function(x, acorn_names, local_names) {
+#   if(x %in% acorn_names)  return(x)
+#   if(x %in% local_names)  return(acorn_names[which(local_names == x)])
+#   return(paste0("NOT_ACORN_COLUMN_", x))
+# }
+# 
+# use_acorn_name <- Vectorize(use_acorn_name, vectorize.args = "x")
+
+# # Test of use_acorn_name()
+# data_dictionary$variables$acorn.code[2] <- "specid2"
+# data_dictionary$variables$local.code[2] <- "specid"
+# 
+# use_acorn_name("patid", acorn_names = data_dictionary$variables$acorn.code, 
+#                local_names = data_dictionary$variables$local.code)
+# use_acorn_name("specid", acorn_names = data_dictionary$variables$acorn.code, 
+#                local_names = data_dictionary$variables$local.code)
+# use_acorn_name("patid45", acorn_names = data_dictionary$variables$acorn.code, 
+#                local_names = data_dictionary$variables$local.code)
+
+# amr <- lab_dta() %>%
+#   mutate_all(as.character) %>%
+#   rename_with(use_acorn_name, 
+#               acorn_names = data_dictionary$variables$acorn.code, 
+#               local_names = data_dictionary$variables$local.code) %>%
+#   select(! starts_with("NOT_ACORN_COLUMN_")) %>%
+#   mutate(specdate = parse_date_time(specdate, c("dmY", "Ymd", "dbY", "Ymd HMS"))) %>%
+#   # Create specid.acorn:
+#   mutate(specid_lowercase = tolower(specid)) %>%
+#   group_by(specid_lowercase) %>% mutate(spec_indice = row_number()) %>% ungroup() %>%
+#   mutate(specid.acorn = paste(specid_lowercase, spec_indice)) %>%
+#   select(-specid_lowercase, -spec_indice)
+
+# Alternative End (Olivier)
 
 # Map local variable names with acorn variable names (use "match" command)
 variable.names <- data_dictionary$variables %>%

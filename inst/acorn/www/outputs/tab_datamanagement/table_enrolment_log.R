@@ -1,10 +1,8 @@
-output$table_redcap_dta <- renderDT({
+output$table_enrolment_log <- renderDT({
   req(redcap_dta())
+  req(enrolment_log())
   
-  dta <- redcap_dta()[, 1:5]
-  
-  
-  datatable(dta, 
+  datatable(enrolment_log(), 
             escape = FALSE, selection = "single", rownames = FALSE, 
             options = list(pageLength = 5)
   )

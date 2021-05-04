@@ -1,37 +1,5 @@
 # ACORN shiny app main script
-# Olivier Celhay
-
-app_version <- "prototype.001"  # IMPORTANT ensure that the version is identical in DESCRIPTION and README.md
-
-cols_sir <- c("#2c3e50", "#f39c12", "#e74c3c")  # resp. S, I, R
-# cols_sir <- c("#2166ac", "#fddbc7", "#b2182b")  # resp. S, I, R
-hc_export_kind <- c("downloadJPEG", "downloadCSV")
-
-source("./www/scripts/load_packages.R", local = TRUE)
-
-session_start_time <- format(Sys.time(), "%Y-%m-%d_%HH%M")
-session_id <- glue("{glue_collapse(sample(LETTERS, 5, TRUE))}_{session_start_time}")
-
-
-
-# It's safe to expose those since the acornamr-cred bucket content can only be listed + read 
-# and contains only encrypted files
-bucket_cred_k <- readRDS("./www/cred/bucket_cred_k.Rds")
-bucket_cred_s <- readRDS("./www/cred/bucket_cred_s.Rds")
-
-# contains all require i18n elements
-source('./www/scripts/indicate_translation.R', local = TRUE)
-for(file in list.files('./www/functions/'))  source(paste0('./www/functions/', file), local = TRUE)  # define all functions
-
-acorn_theme <- bs_theme(bootswatch = "flatly", version = 4, "border-width" = "2px")
-acorn_theme_la <- bs_theme(bootswatch = "flatly", version = 4, "border-width" = "2px", base_font = "Phetsarath OT")
-
-h4_title <- function(...)  div(class = "h4_title", ...)
-
-tab <- function(...) {
-  shiny::tabPanel(..., class = "p-3 border border-top-0 rounded-bottom")
-}
-
+source('./www/scripts/startup.R', local = TRUE)
 
 # Definition of UI ----
 ui <- fluidPage(
@@ -235,40 +203,49 @@ ui <- fluidPage(
                                   ),
                                   tab(value = "generate", span("Generate ", em(".acorn")),
                                       fluidRow(
-                                        column(7,
-                                               fluidRow(
-                                                 column(3,
-                                                        h5("Lab data")
-                                                 ),
-                                                 column(9,
-                                                        # htmlOutput("checklist_status_lab"),
-                                                        pickerInput(inputId = "format_lab_data", label = "What is the format of the lab data?", 
-                                                                    choices = c("", "WHONET .dBase", "WHONET .SQLite", "Tabular (.csv, .txt, .xls(x)"), 
-                                                                    multiple = FALSE),
-                                                        
-                                                        conditionalPanel("! input.format_lab_data == ''",
-                                                                         fileInput("file_lab_data", label = NULL, buttonLabel = "Browse ..."))
-                                                 )
-                                               ),
-                                               hr(),
-                                               fluidRow(
-                                                 column(3,    
-                                                        h5("Clinical data")
-                                                 ),
-                                                 column(9,
-                                                        htmlOutput("checklist_status_clinical"),
-                                                        actionButton('get_redcap_data', span(icon('times-circle'), HTML('Get Clinical Data from REDCap server'))),
-                                                        br(), br(),
-                                                        htmlOutput("message_redcap_dta"), br(),
-                                                        htmlOutput("checklist_qc_clinical"),
-                                                        DTOutput("table_redcap_dta")
-                                                 )
-                                               )
+                                        column(3,
+                                               h5("(1) Provide Lab data")
                                         ),
-                                        column(5,
-                                               h5("Combine Clinical and Lab data"),
+                                        column(9,
+                                               pickerInput("format_lab_data", "What is the format of the lab data?", 
+                                                           choices = c("Unknown", "WHONET .dBase", "WHONET .SQLite", "Tabular"), 
+                                                           multiple = FALSE),
+                                               
+                                               conditionalPanel("input.format_lab_data == 'WHONET .dBase'",
+                                                                fileInput("file_lab_dba", NULL,  buttonLabel = "Browse for dBase file")
+                                               ),
+                                               conditionalPanel("input.format_lab_data == 'WHONET .SQLite'",
+                                                                fileInput("file_lab_sql", NULL,  buttonLabel = "Browse for sqlite file")
+                                               ),
+                                               conditionalPanel("input.format_lab_data == 'Tabular'",
+                                                                fileInput("file_lab_tab", NULL,  buttonLabel = "Browse for tabular file", accept = c(".csv", ".txt", ".xls", ".xlsx"))
+                                               )
+                                        )
+                                      ),
+                                      hr(),
+                                      fluidRow(
+                                        column(3,    
+                                               h5("(2) Provide Clinical data")
+                                        ),
+                                        column(9,
+                                               htmlOutput("checklist_status_clinical"),
+                                               actionButton("get_redcap_data", "Get Clinical Data from REDCap server", icon = icon('times-circle')),
+                                               br(), br(),
+                                               htmlOutput("message_redcap_dta"), br(),
+                                               htmlOutput("checklist_qc_clinical"),
+                                               h5("Enrolment Log:"),
+                                               DTOutput("table_enrolment_log"),
+                                               downloadButton("download_enrolment_log", "Download Enrolment Log")
+                                        )
+                                      ),
+                                      hr(),
+                                      fluidRow(
+                                        column(3, 
+                                               h5("(3) Combine Clinical and Lab data")
+                                        ),
+                                        column(9,
                                                htmlOutput("checklist_generate"),
-                                               actionButton("generate_acorn_data", label = span("Generate ", em(".acorn")))
+                                               actionButton("generate_acorn_data", span("Generate ", em(".acorn")), icon = icon('times-circle'))
                                         )
                                       )
                                   ),
@@ -639,6 +616,24 @@ server <- function(input, output, session) {
   acorn_cred <- reactiveVal()
   
   redcap_dta <- reactiveVal()
+  
+  enrolment_log <- reactive(
+    redcap_dta() %>%
+      select('ID number' = recordid, 
+             'Date of enrolment' = hpd_dmdtc, 
+             'Date of admission' = hpd_adm_date, 
+             'Primary admission reason' = hpd_admreason,
+             
+             'Infection Episode' = group,
+             'Date of episode enrolment' = ho_dmdtc, 
+             'Discharge status' = ho_dischargestatus,
+             'Discharge date' = ho_discharge_date, 
+             
+             'Actual Day-28 date' = d28_date, 
+             'Day-28 status' = d28_status) %>%
+      mutate('Expected Day-28 date' = `Date of enrolment` + 28)
+  )
+  
   lab_dta <- reactiveVal()
   acorn_dta_file <- reactiveValues()
   
@@ -658,6 +653,9 @@ server <- function(input, output, session) {
   microbio_filter <- reactive(microbio())
   microbio_filter_blood <- reactive(microbio_filter())
   hai_surveys_filter <- reactive(hai_surveys())
+  
+  
+  
   
   
   # Checklists ----
@@ -885,30 +883,17 @@ server <- function(input, output, session) {
   })
   
   
-  # On "Browse..." Lab data ----
-  observeEvent(input$file_lab_data, {
-    
-    # TODO: establish control of inputs
-    path_lab_file <- input$file_lab_data[[1, 'datapath']]
-    
-    if (input$format_lab_data == "WHONET dBase")  lab_dta <- foreign::read.dbf(path_lab_file, as.is = TRUE)
-    if (input$format_lab_data == "WHONET .SQLite") {
-      dta <- DBI::dbConnect(RSQLite::SQLite(), path_lab_file)
-      lab_dta <- as.data.frame(DBI::dbReadTable(dta, "Isolates"))
-    }
-    
-    if (input$format_lab_data == "Tabular (.csv, .txt, .xls(x)") {
-      extension_file_lab_data <- tools::file_ext(path_lab_file)
-      
-      if (extension_file_lab_data == "csv")  lab_dta <- readr::read_csv(path_lab_file, guess_max = 10000)
-      if (extension_file_lab_data == "txt")  lab_dta <- readr::read_tsv(path_lab_file, guess_max = 10000)
-      if (extension_file_lab_data %in% c("xls", "xlsx")) lab_dta <- readxl::read_excel(path_lab_file, guess_max = 10000)
-    }
-    
-    lab_dta(lab_dta)
-    
-    showNotification("Lab data successfully provided.")
-    checklist_status$lab_dta = list(status = "okay", msg = "Lab data provided")
+  # On supply of Lab data file ----
+  observeEvent(input$file_lab_dba, {
+    source("./www/data/01_read_lab_data.R", local = TRUE)
+  })
+  
+  observeEvent(input$file_lab_sql, {
+    source("./www/data/01_read_lab_data.R", local = TRUE)
+  })
+  
+  observeEvent(input$file_lab_tab, {
+    source("./www/data/01_read_lab_data.R", local = TRUE)
   })
   
   
@@ -933,15 +918,34 @@ server <- function(input, output, session) {
     removeNotification(id = "try_redcap")
     showNotification("Clinical data successfully retrived from REDCap server. Ongoing data quality control.")
     
-    source("./www/data/00_read_redcap_data.R", local = TRUE)
+    source("./www/data/01_read_redcap_data.R", local = TRUE)
     if(checklist_status$redcap_dta$status == "ko")  return()
-    
-    # TODO otherwise continue
   })
+  
+  
+  # On "Download Enrolment Log"
+  output$download_enrolment_log <- downloadHandler(
+    filename = "enrolment_log.csv",
+    content = function(file) {
+      write.csv(enrolment_log(), file, row.names = FALSE)
+    }
+  )
   
   # On "Generate ACORN" ----
   observeEvent(input$generate_acorn_data, {
-    # TODO: write the generation process here - this will be dome at an advanced stage
+    browser()
+    source("./www/R/data_generation/02_map_variables.R", local = TRUE)
+    source("./www/R/data_generation/03_map_specimens.R", local = TRUE)
+    source("./www/R/data_generation/04_map_organisms.R", local = TRUE)
+    source("./www/R/data_generation/05_make_ast_group.R", local = TRUE)
+    source("./www/R/data_generation/06_ast_interpretation.R", local = TRUE)
+    source("./www/R/data_generation/07_ast_interpretation_nonstandard.R", local = TRUE)
+    source("./www/R/data_generation/08_odk_assembly.R", local = TRUE)
+    source("./www/R/data_generation/09_link_clinical_assembly.R", local = TRUE)
+    source("./www/R/data_generation/10_process_hai_survey_data.R", local = TRUE)
+    source("./www/R/data_generation/11_prepare_data.R", local = TRUE)
+    source("./www/R/data_generation/12_quality_control.R", local = TRUE)
+    
     showNotification("Not yet possible in this version of the app.", type = "error")
     
     acorn_dta_saved = list(status = "ko", msg = ".acorn not saved")
