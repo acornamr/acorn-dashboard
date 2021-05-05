@@ -1,17 +1,42 @@
+message("Start ACORN shiny app.")
+
 app_version <- "prototype.001"  # IMPORTANT ensure that the version is identical in DESCRIPTION and README.md
 
 cols_sir <- c("#2c3e50", "#f39c12", "#e74c3c")  # resp. S, I, R
 # cols_sir <- c("#2166ac", "#fddbc7", "#b2182b")  # resp. S, I, R
 hc_export_kind <- c("downloadJPEG", "downloadCSV")
 
-source("./www/scripts/load_packages.R", local = TRUE)
+# IMPORTANT: packages listed here should be synced to
+# run_app.R and DESCRIPTION
+
+library(aws.s3)
+library(bslib)  # bs_theme()
+library(curl)
+library(DBI)  # to read lab data
+library(DT)
+library(flexdashboard)  # gaugeOutput()
+library(glue)
+library(highcharter)
+library(lubridate)
+library(openssl)
+library(readr)  # to read lab data
+library(readxl)  # to read lab data
+library(REDCapR)  # to read clinical data
+library(RSQLite)  # to read lab data
+library(rmarkdown)  # pandoc_available()
+library(shiny)
+library(shinyanimate)
+library(shiny.i18n)  # i18n$t()
+library(shinyjs)
+library(shinyWidgets)  # chooseSliderSkin()
+library(tidyverse)
+library(validate)  # TODO: remove validate package?
 
 session_start_time <- format(Sys.time(), "%Y-%m-%d_%HH%M")
 session_id <- glue("{glue_collapse(sample(LETTERS, 5, TRUE))}_{session_start_time}")
 
-# Read data dictionnary
-message("Read data dictionary")
-
+# Read data dictionnary, one unique file for all sites
+message("Read data dictionary.")
 path_data_dictionary_file <- "www/data/ACORN2_lab_data_dictionary_2021-05-02.xlsx"
 data_dictionary <- list()
 data_dictionary$variables <- read_excel(path_data_dictionary_file, sheet = "variables")

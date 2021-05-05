@@ -1,18 +1,50 @@
+if(is.null(acorn_cred()$redcap_server_api)) {
+  showNotification("REDCap server credentials not provided", type = "error")
+  return()
+}
+
+showNotification("Trying to retrive REDCap data It might take a minute.", duration = NULL, id = "try_redcap")
+
+dl_redcap_dta <- try(
+  withCallingHandlers({
+    shinyjs::html(id = "text_redcap_log", "<h5>REDCap data retrieval Log:</h5>")
+    redcap_read(
+      redcap_uri = "https://m-redcap-test.tropmedres.ac/redcap_test/api/", 
+      token = acorn_cred()$redcap_server_api,
+      col_types = cols(.default = col_character())
+    )$data
+  },
+  message = function(m) {
+    shinyjs::html(id = "text_redcap_log", html = m$message, add = TRUE)
+  }
+  )
+)
+
+if(inherits(dl_redcap_dta, "try-error"))  {
+  removeNotification(id = "try_redcap")
+  showNotification("We couldn't retrive REDCap Data. Please try again.", type = "error")
+  return()
+}
+
+removeNotification(id = "try_redcap")
+showNotification("Clinical data successfully retrived from REDCap server.")
+shinyjs::html(id = "text_redcap_log", "<hr/>", add = TRUE)
+
 # Test "REDCap dataset empty" ----
 n <- nrow(dl_redcap_dta)
 
 if(n == 0) {
   checklist_status$redcap_qc_1 <- list(status = "ko", msg = "The REDCap dataset is empty. Please contact ACORN data management.")
 } else {
-  checklist_status$redcap_qc_1 <- list(status = "okay", msg = glue("The REDCap dataset contains {n} rows."))
+  checklist_status$redcap_qc_1 <- list(status = "okay", msg = glue("The REDCap dataset contains data."))
 }
 
 
 # Test "REDCap dataset columns number" ----
 if(ncol(dl_redcap_dta) != 210) {
-  checklist_status$redcap_qc_2 <- list(status = "ko", msg = "The REDCap dataset structure is not as expected (ncol is not 210). Please contact ACORN data management.")
+  checklist_status$redcap_qc_2 <- list(status = "ko", msg = "The REDCap dataset structure is not as expected (not 210 columns). Please contact ACORN data management.")
 } else {
-  checklist_status$redcap_qc_2 <- list(status = "okay", msg = "The REDCap dataset structure is as expected.")
+  checklist_status$redcap_qc_2 <- list(status = "okay", msg = "The REDCap dataset structure is as expected (210 columns)")
 }
 
 # Test "REDCap dataset columns names" ----
@@ -133,7 +165,6 @@ if(identical(recordid_no_matching_enrolment, character(0))) {
   patient_enrolment <- patient_enrolment %>% filter(!recordid %in% recordid_no_matching_enrolment)
 }
 
-
 # Test "Every hospital outcome (F03) has a matching infection episode (F02)" ----
 # we detect that by finding recordid for which siteid (required value) is missing
 # if it happens, we elminate any recordid of all datasets and warn
@@ -142,7 +173,6 @@ if(all(dl_redcap_f03$id_dmdtc %in% dl_redcap_f02$id_dmdtc)) {
 } else {
   checklist_status$redcap_qc_5 <- list(status = "warning", msg = "Some hospital outcome (F03) do not have a matching infection episode (F02)")
 }
-
 
 # Test "All confirmed entries match the original entry"
 if(all(patient_enrolment$siteid == patient_enrolment$siteid_cfm,
@@ -153,21 +183,6 @@ if(all(patient_enrolment$siteid == patient_enrolment$siteid_cfm,
 } else {
   checklist_status$redcap_qc_6 <- list(status = "ko", msg = "Some confirmed entries do not match the original entry")
 }
-
-# Clean patient_enrolment ----
-# columns "odk" have data already in other columns (TODO: confirm with Ong)
-# columns "_cfm" are duplicated
-patient_enrolment <- patient_enrolment %>%
-  select(-c("redcap_repeat_instrument", "redcap_repeat_instance", "f01odkreckey",
-            "acornid_odk", "adm_date_odk", "siteid_cfm", "usubjid_cfm", "acornid_cfm",
-            "hpd_adm_date_cfm", "f04odkreckey"))
-
-# Clean infection_episode ----
-# columns "odk" have data already in other columns (TODO: confirm with Ong)
-# id_dmdtc isn't used anymore
-infection_episode <- infection_episode %>%
-  select(-c("f02odkreckey", "odkreckey", "id_dmdtc"))
-
 
 # TODO: check that for a given enrollement, all infection episodes are on different dates
 if(any(checklist_status$redcap_qc_1$status == "ko",
@@ -180,9 +195,43 @@ if(any(checklist_status$redcap_qc_1$status == "ko",
   return()
 }
 
-dta <- left_join(infection_episode, patient_enrolment, by = "recordid")
+dta <- left_join(infection_episode %>%
+                   select(-c("f02odkreckey", "odkreckey", "id_dmdtc")), 
+                 patient_enrolment %>%
+                   select(-c("redcap_repeat_instrument", "redcap_repeat_instance", "f01odkreckey",
+                             "acornid_odk", "adm_date_odk", "siteid_cfm", "usubjid_cfm", "acornid_cfm",
+                             "hpd_adm_date_cfm", "f04odkreckey")), 
+                 by = "recordid")
+
+# Convert columns to date/numeric formats
+dta <- dta %>%
+  mutate(hpd_dmdtc = as_date(hpd_dmdtc),
+         hpd_onset_date = as_date(hpd_onset_date),
+         ho_discharge_date = as_date(ho_discharge_date),
+         ho_dmdtc = as_date(ho_dmdtc),
+         brthdtc = as_date(brthdtc),
+         hpd_adm_date = as_date(hpd_adm_date),
+         hpd_hosp_date = as_date(hpd_hosp_date),
+         d28_date = as_date(d28_date),
+         d28_death_date = as_date(d28_death_date)) %>%
+  mutate(agey = as.numeric(agey),
+         agem = as.numeric(agem),
+         aged = as.numeric(aged))
+
+# Summarise the age with agey and aged 
+dta$aged[is.na(dta$aged) & is.na(dta$brthdtc)] <- 0
+dta$agem[is.na(dta$agem) & is.na(dta$brthdtc)] <- 0
+dta$agey[is.na(dta$agey) & is.na(dta$brthdtc)] <- 0
+dta$calc_aged <- as.numeric(dta$hpd_dmdtc - dta$brthdtc)
+dta$calc_aged[is.na(dta$brthdtc)] <- ceiling((dta$aged[is.na(dta$brthdtc)]) + (dta$agem[is.na(dta$brthdtc)] * 30.4375) + (dta$agey[is.na(dta$brthdtc)] * 365.25))
+dta$aged <- dta$calc_aged # to replace in the original location: this is age in days at date of enrolment
+dta$agey <- round(dta$aged / 365.25, 2) # to make a calculated age in years based on aged: this is age in years at date of enrolment
+dta <- dta %>% select(-brthdtc, -calc_aged, -agem)
+
+
 redcap_dta(dta)
-checklist_status$redcap_dta <- list(status = "okay", msg = glue("Clinical data provided with {length(unique(dta$recordid))} patient enrolments and {nrow(dta)} infection episodes"))
+checklist_status$redcap_dta <- list(status = "okay", 
+                                    msg = glue("Clinical data provided with {length(unique(dta$recordid))} patient enrolments and {nrow(dta)} infection episodes"))
 
 if(checklist_status$lab_dta$status == "okay")  {
   updateActionButton(session = session, inputId = "generate_acorn_data", label = HTML("Generate <em>.acorn</em>"), icon = icon("angle-right"))

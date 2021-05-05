@@ -203,10 +203,10 @@ ui <- fluidPage(
                                   ),
                                   tab(value = "generate", span("Generate ", em(".acorn")),
                                       fluidRow(
-                                        column(3,
+                                        column(2,
                                                h5("(1) Provide Lab data")
                                         ),
-                                        column(9,
+                                        column(10,
                                                pickerInput("format_lab_data", "What is the format of the lab data?", 
                                                            choices = c("Unknown", "WHONET .dBase", "WHONET .SQLite", "Tabular"), 
                                                            multiple = FALSE),
@@ -219,31 +219,36 @@ ui <- fluidPage(
                                                ),
                                                conditionalPanel("input.format_lab_data == 'Tabular'",
                                                                 fileInput("file_lab_tab", NULL,  buttonLabel = "Browse for tabular file", accept = c(".csv", ".txt", ".xls", ".xlsx"))
+                                               ),
+                                               
+                                               fluidRow(
+                                                 column(4, htmlOutput("message_lab_dta")),
+                                                 column(8, htmlOutput("checklist_qc_lab"))
                                                )
                                         )
                                       ),
                                       hr(),
                                       fluidRow(
-                                        column(3,    
+                                        column(2,    
                                                h5("(2) Provide Clinical data")
                                         ),
-                                        column(9,
+                                        column(10,
                                                htmlOutput("checklist_status_clinical"),
                                                actionButton("get_redcap_data", "Get Clinical Data from REDCap server", icon = icon('times-circle')),
-                                               br(), br(),
-                                               htmlOutput("message_redcap_dta"), br(),
-                                               htmlOutput("checklist_qc_clinical"),
-                                               h5("Enrolment Log:"),
-                                               DTOutput("table_enrolment_log"),
-                                               downloadButton("download_enrolment_log", "Download Enrolment Log")
+                                               textOutput("text_redcap_log"),
+                                               fluidRow(
+                                                 column(4, htmlOutput("message_redcap_dta")),
+                                                 column(8, htmlOutput("checklist_qc_clinical"))
+                                               ), br(),
+                                               uiOutput("enrolment_log")
                                         )
                                       ),
                                       hr(),
                                       fluidRow(
-                                        column(3, 
+                                        column(2, 
                                                h5("(3) Combine Clinical and Lab data")
                                         ),
-                                        column(9,
+                                        column(10,
                                                htmlOutput("checklist_generate"),
                                                actionButton("generate_acorn_data", span("Generate ", em(".acorn")), icon = icon('times-circle'))
                                         )
@@ -617,7 +622,9 @@ server <- function(input, output, session) {
   
   redcap_dta <- reactiveVal()
   
-  enrolment_log <- reactive(
+  enrolment_log <- reactive({
+    req(redcap_dta())
+    
     redcap_dta() %>%
       select('ID number' = recordid, 
              'Date of enrolment' = hpd_dmdtc, 
@@ -632,7 +639,7 @@ server <- function(input, output, session) {
              'Actual Day-28 date' = d28_date, 
              'Day-28 status' = d28_status) %>%
       mutate('Expected Day-28 date' = `Date of enrolment` + 28)
-  )
+  })
   
   lab_dta <- reactiveVal()
   acorn_dta_file <- reactiveValues()
@@ -656,7 +663,15 @@ server <- function(input, output, session) {
   
   
   
-  
+  output$enrolment_log <- renderUI({
+    req(enrolment_log())
+    
+    tagList(
+      h5("Enrolment Log:"),
+      DTOutput("table_enrolment_log"),
+      downloadButton("download_enrolment_log", "Download Enrolment Log")
+    )
+  })
   
   # Checklists ----
   # Status can be: hidden/question/okay/warning/ko
@@ -668,6 +683,8 @@ server <- function(input, output, session) {
     acorn_server_test = list(status = "ko", msg = "Not connected to .acorn server"),
     acorn_server_write = list(status = "ko", msg = "No rights to backup .acorn on the server"),
     
+    lab_data_qc_1 = list(status = "hidden", msg = "Lab dataset empty"),
+    
     redcap_qc_1 = list(status = "hidden", msg = "REDCap dataset empty"),
     redcap_qc_2 = list(status = "hidden", msg = "REDCap dataset columns number"),
     redcap_qc_3 = list(status = "hidden", msg = "REDCap dataset columns names"),
@@ -676,9 +693,8 @@ server <- function(input, output, session) {
     redcap_qc_6 = list(status = "hidden", msg = "All confirmed entries match the original entry"),
     
     redcap_dta = list(status = "ko", msg = "Clinical data not provided"),
-    
-    
     lab_dta = list(status = "ko", msg = "Lab data not provided"),
+    
     acorn_dta = list(status = "ko", msg = ".acorn data not loaded"),
     acorn_dta_saved = list(status = "ko", msg = "There is no .acorn data loaded")
   )
@@ -899,56 +915,38 @@ server <- function(input, output, session) {
   
   # On "Get REDCap data" ----
   observeEvent(input$get_redcap_data, {
-    if(is.null(acorn_cred()$redcap_server_api)) {
-      showNotification("REDCap server credentials not provided", type = "error")
-      return()
-    }
-    
-    showNotification("Trying to retrive REDCap Data. It might take a minute.", duration = NULL, id = "try_redcap")
-    
-    dl_redcap_dta <- try(redcap_read(redcap_uri='https://m-redcap-test.tropmedres.ac/redcap_test/api/', 
-                                     token = acorn_cred()$redcap_server_api)$data)
-    
-    if(inherits(dl_redcap_dta, "try-error"))  {
-      removeNotification(id = "try_redcap")
-      showNotification("We couldn't retrive REDCap Data. Please try again.", type = "error")
-      return()
-    }
-    
-    removeNotification(id = "try_redcap")
-    showNotification("Clinical data successfully retrived from REDCap server. Ongoing data quality control.")
-    
-    source("./www/data/01_read_redcap_data.R", local = TRUE)
-    if(checklist_status$redcap_dta$status == "ko")  return()
+    source("./www/data/01_read_redcap_f01f05.R", local = TRUE)
+    source("./www/data/01_read_redcap_hai.R", local = TRUE)
   })
   
   
   # On "Download Enrolment Log"
   output$download_enrolment_log <- downloadHandler(
     filename = "enrolment_log.csv",
-    content = function(file) {
-      write.csv(enrolment_log(), file, row.names = FALSE)
-    }
+    content = function(file)  write.csv(enrolment_log(), file, row.names = FALSE)
   )
   
   # On "Generate ACORN" ----
   observeEvent(input$generate_acorn_data, {
+    
     browser()
+    # showNotification("Not yet possible in this version of the app.", type = "error")
+    # acorn_dta_saved = list(status = "ko", msg = ".acorn not saved")
+    
+    message("Process lab data.")
     source("./www/R/data_generation/02_map_variables.R", local = TRUE)
     source("./www/R/data_generation/03_map_specimens.R", local = TRUE)
     source("./www/R/data_generation/04_map_organisms.R", local = TRUE)
     source("./www/R/data_generation/05_make_ast_group.R", local = TRUE)
     source("./www/R/data_generation/06_ast_interpretation.R", local = TRUE)
     source("./www/R/data_generation/07_ast_interpretation_nonstandard.R", local = TRUE)
+    
+    message("Other steps")
     source("./www/R/data_generation/08_odk_assembly.R", local = TRUE)
     source("./www/R/data_generation/09_link_clinical_assembly.R", local = TRUE)
     source("./www/R/data_generation/10_process_hai_survey_data.R", local = TRUE)
     source("./www/R/data_generation/11_prepare_data.R", local = TRUE)
     source("./www/R/data_generation/12_quality_control.R", local = TRUE)
-    
-    showNotification("Not yet possible in this version of the app.", type = "error")
-    
-    acorn_dta_saved = list(status = "ko", msg = ".acorn not saved")
   })
   
   # On "Save ACORN" on server ----
