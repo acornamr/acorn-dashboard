@@ -36,18 +36,11 @@ session_start_time <- format(Sys.time(), "%Y-%m-%d_%HH%M")
 session_id <- glue("{glue_collapse(sample(LETTERS, 5, TRUE))}_{session_start_time}")
 
 # Read data dictionnary, one unique file for all sites
-message("Read data dictionary.")
-path_data_dictionary_file <- "www/data/ACORN2_lab_data_dictionary_2021-05-02.xlsx"
-data_dictionary <- list()
-data_dictionary$variables <- read_excel(path_data_dictionary_file, sheet = "variables")
-data_dictionary$test.res <- read_excel(path_data_dictionary_file, sheet = "test.results")
-data_dictionary$local.spec <- read_excel(path_data_dictionary_file, sheet = "spec.types")
-data_dictionary$local.orgs <- read_excel(path_data_dictionary_file, sheet = "organisms")
-data_dictionary$notes <- read_excel(path_data_dictionary_file, sheet = "notes",
-                                    col_types = "text", skip = 1, col_names = c("_", "Valeur"))
+message("List data dictionaries files.")
+files_data_dictionary <- list.files('./www/data/data_dictionary/')
 
 # Read lab codes and AST breakpoint data
-message("Read lab codes and AST breakpoint data")
+message("Read lab codes and AST breakpoint data.")
 
 path_lab_code_file <- "www/data/ACORN2_lab_codes_2021-05-02.xlsx"
 read_lab_code <- function(sheet) read_excel(path_lab_code_file, sheet = sheet, 
@@ -76,11 +69,13 @@ lab_code <- list(
 # It's safe to expose those since the acornamr-cred bucket content can only be listed + read 
 # and contains only encrypted files
 bucket_cred_k <- readRDS("./www/cred/bucket_cred_k.Rds")
-bucket_cred_s <- readRDS("./www/cred/bucket_cred_s.Rds")
+bucket_cred_s <- readRDS("./www/cred/bucket_cred_l.Rds")
 
 # contains all require i18n elements
-source('./www/scripts/indicate_translation.R', local = TRUE)
-for(file in list.files('./www/functions/'))  source(paste0('./www/functions/', file), local = TRUE)  # define all functions
+i18n <- Translator$new(translation_csvs_path = './www/translations/')
+i18n$set_translation_language('en')
+
+for(file in list.files('./www/R/functions/'))  source(paste0('./www/R/functions/', file), local = TRUE)  # define all functions
 
 acorn_theme <- bs_theme(bootswatch = "flatly", version = 4, "border-width" = "2px")
 acorn_theme_la <- bs_theme(bootswatch = "flatly", version = 4, "border-width" = "2px", base_font = "Phetsarath OT")

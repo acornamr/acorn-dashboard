@@ -1,5 +1,5 @@
 # ACORN shiny app main script
-source('./www/scripts/startup.R', local = TRUE)
+source('./www/R/startup.R', local = TRUE)
 
 # Definition of UI ----
 ui <- fluidPage(
@@ -161,7 +161,7 @@ ui <- fluidPage(
                                ),
                                h4('Welcome!'),
                                includeMarkdown("./www/markdown/lorem_ipsum.md"),
-                               span(img(src = "./Map-ACORN-Sites-Global.png", id = "map_sites"))
+                               span(img(src = "./images/Map-ACORN-Sites-Global.png", id = "map_sites"))
                         )
                       )
              ),
@@ -207,19 +207,23 @@ ui <- fluidPage(
                                                h5("(1) Provide Lab data")
                                         ),
                                         column(10,
-                                               pickerInput("format_lab_data", "What is the format of the lab data?", 
-                                                           choices = c("Unknown", "WHONET .dBase", "WHONET .SQLite", "Tabular"), 
+                                               pickerInput("format_lab_data", "Select lab data format", 
+                                                           choices = c("_", "WHONET .dBase", "WHONET .SQLite", "Tabular"), 
                                                            multiple = FALSE),
                                                
                                                conditionalPanel("input.format_lab_data == 'WHONET .dBase'",
-                                                                fileInput("file_lab_dba", NULL,  buttonLabel = "Browse for dBase file")
+                                                                fileInput("file_lab_dba", NULL,  buttonLabel = "Browse for dBase file", accept = ".dbf")
                                                ),
                                                conditionalPanel("input.format_lab_data == 'WHONET .SQLite'",
-                                                                fileInput("file_lab_sql", NULL,  buttonLabel = "Browse for sqlite file")
+                                                                fileInput("file_lab_sql", NULL,  buttonLabel = "Browse for sqlite file", accept = c(".sqlite3", ".sqlite", ".db"))
                                                ),
                                                conditionalPanel("input.format_lab_data == 'Tabular'",
                                                                 fileInput("file_lab_tab", NULL,  buttonLabel = "Browse for tabular file", accept = c(".csv", ".txt", ".xls", ".xlsx"))
                                                ),
+                                               
+                                               # pickerInput("select_data_dictionary", "Select lab data dictionary file",
+                                               #             choices = c("_", files_data_dictionary), 
+                                               #             multiple = FALSE),
                                                
                                                fluidRow(
                                                  column(4, htmlOutput("message_lab_dta")),
@@ -603,9 +607,22 @@ server <- function(input, output, session) {
   
   # Misc stuff ----
   # source files with code to generate outputs
-  file_list <- list.files(path = "./www/outputs", pattern = "*.R", recursive = TRUE)
-  for (file in file_list) source(paste0("./www/outputs/", file), local = TRUE)$value
-  source("./www/scripts/shortcuts_filters_exec.R", local = TRUE)$value
+  file_list <- list.files(path = "./www/R/outputs", pattern = "*.R", recursive = TRUE)
+  for (file in file_list) source(paste0("./www/R/outputs/", file), local = TRUE)$value
+  
+  # management of filters shortcuts ----
+  observeEvent(input$shortcut_filter_1, {
+    # Patients with Pneumonia, BC only
+    updatePrettyCheckboxGroup(session, "filter_diagnosis", selected = c("Pneumonia"))
+  })
+  
+  observeEvent(input$shortcut_filter_2, {
+    
+  })
+  
+  observeEvent(input$shortcut_reset_filters, {
+    
+  })
   
   # allow debug on click
   observeEvent(input$debug, browser())
@@ -642,6 +659,7 @@ server <- function(input, output, session) {
   })
   
   lab_dta <- reactiveVal()
+  
   acorn_dta_file <- reactiveValues()
   
   # Secondary datasets created from original datasets (apart from meta)
@@ -694,6 +712,7 @@ server <- function(input, output, session) {
     
     redcap_dta = list(status = "ko", msg = "Clinical data not provided"),
     lab_dta = list(status = "ko", msg = "Lab data not provided"),
+    lab_dic = list(status = "ko", msg = "Lab data dictionary not found"),
     
     acorn_dta = list(status = "ko", msg = ".acorn data not loaded"),
     acorn_dta_saved = list(status = "ko", msg = "There is no .acorn data loaded")
@@ -901,22 +920,27 @@ server <- function(input, output, session) {
   
   # On supply of Lab data file ----
   observeEvent(input$file_lab_dba, {
-    source("./www/data/01_read_lab_data.R", local = TRUE)
+    source("./www/R/data/01_read_lab_data.R", local = TRUE)
   })
   
   observeEvent(input$file_lab_sql, {
-    source("./www/data/01_read_lab_data.R", local = TRUE)
+    source("./www/R/data/01_read_lab_data.R", local = TRUE)
   })
   
   observeEvent(input$file_lab_tab, {
-    source("./www/data/01_read_lab_data.R", local = TRUE)
+    source("./www/R/data/01_read_lab_data.R", local = TRUE)
   })
   
   
   # On "Get REDCap data" ----
   observeEvent(input$get_redcap_data, {
-    source("./www/data/01_read_redcap_f01f05.R", local = TRUE)
-    source("./www/data/01_read_redcap_hai.R", local = TRUE)
+    if(is.null(acorn_cred()$redcap_server_api)) {
+      showNotification("REDCap server credentials not provided", type = "error")
+      return()
+    }
+    source("./www/R/data/01_read_redcap_f01f05.R", local = TRUE)
+    
+    source("./www/R/data/01_read_redcap_hai.R", local = TRUE)
   })
   
   
@@ -929,24 +953,40 @@ server <- function(input, output, session) {
   # On "Generate ACORN" ----
   observeEvent(input$generate_acorn_data, {
     
+    message("Read data dictionary.")
+    source("./www/R/data/02_read_data_dic.R", local = TRUE)
+    
+    if(! file.exists(path_data_dictionary_file))  {
+      showNotification("We couldn't find the lab data dictionary. Please contact ACORN Data Management.", type = "error", duration = NULL)
+      return()
+    }
+    
+    data_dictionary$variables <- read_excel(path_data_dictionary_file, sheet = "variables")
+    data_dictionary$test.res <- read_excel(path_data_dictionary_file, sheet = "test.results")
+    data_dictionary$local.spec <- read_excel(path_data_dictionary_file, sheet = "spec.types")
+    data_dictionary$local.orgs <- read_excel(path_data_dictionary_file, sheet = "organisms")
+    data_dictionary$notes <- read_excel(path_data_dictionary_file, sheet = "notes",
+                                        col_types = "text", skip = 1, col_names = c("_", "Valeur"))
+    
+    
     browser()
-    # showNotification("Not yet possible in this version of the app.", type = "error")
-    # acorn_dta_saved = list(status = "ko", msg = ".acorn not saved")
     
     message("Process lab data.")
-    source("./www/R/data_generation/02_map_variables.R", local = TRUE)
-    source("./www/R/data_generation/03_map_specimens.R", local = TRUE)
-    source("./www/R/data_generation/04_map_organisms.R", local = TRUE)
-    source("./www/R/data_generation/05_make_ast_group.R", local = TRUE)
-    source("./www/R/data_generation/06_ast_interpretation.R", local = TRUE)
-    source("./www/R/data_generation/07_ast_interpretation_nonstandard.R", local = TRUE)
+    source("./www/R/data/02_map_variables.R", local = TRUE)
+    source("./www/R/data/03_map_specimens.R", local = TRUE)
+    source("./www/R/data/04_map_organisms.R", local = TRUE)
+    source("./www/R/data/05_make_ast_group.R", local = TRUE)
+    source("./www/R/data/06_ast_interpretation.R", local = TRUE)
+    source("./www/R/data/07_ast_interpretation_nonstandard.R", local = TRUE)
     
     message("Other steps")
-    source("./www/R/data_generation/08_odk_assembly.R", local = TRUE)
-    source("./www/R/data_generation/09_link_clinical_assembly.R", local = TRUE)
-    source("./www/R/data_generation/10_process_hai_survey_data.R", local = TRUE)
-    source("./www/R/data_generation/11_prepare_data.R", local = TRUE)
-    source("./www/R/data_generation/12_quality_control.R", local = TRUE)
+    source("./www/R/data/08_odk_assembly.R", local = TRUE)
+    source("./www/R/data/09_link_clinical_assembly.R", local = TRUE)
+    source("./www/R/data/10_process_hai_survey_data.R", local = TRUE)
+    source("./www/R/data/11_prepare_data.R", local = TRUE)
+    source("./www/R/data/12_quality_control.R", local = TRUE)
+    
+    acorn_dta_saved = list(status = "ko", msg = ".acorn not saved")
   })
   
   # On "Save ACORN" on server ----

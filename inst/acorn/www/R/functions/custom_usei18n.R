@@ -1,6 +1,3 @@
-i18n <- Translator$new(translation_csvs_path = './www/translations/')
-i18n$set_translation_language('en')
-
 # modification of usei18n function for standalone app
 # provide path to a copy of shiny-i18n.js in the www folder
 # https://github.com/Appsilon/shiny.i18n/blob/master/inst/www/shiny-i18n.js

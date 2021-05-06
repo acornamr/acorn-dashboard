@@ -1,8 +1,3 @@
-if(is.null(acorn_cred()$redcap_server_api)) {
-  showNotification("REDCap server credentials not provided", type = "error")
-  return()
-}
-
 showNotification("Trying to retrive REDCap data It might take a minute.", duration = NULL, id = "try_redcap")
 
 dl_redcap_dta <- try(
