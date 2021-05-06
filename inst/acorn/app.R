@@ -685,7 +685,7 @@ server <- function(input, output, session) {
     req(enrolment_log())
     
     tagList(
-      h5("Enrolment Log:"),
+      strong("Enrolment Log:"),
       DTOutput("table_enrolment_log"),
       downloadButton("download_enrolment_log", "Download Enrolment Log")
     )
