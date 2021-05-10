@@ -203,8 +203,24 @@ ui <- fluidPage(
                                   ),
                                   tab(value = "generate", span("Generate ", em(".acorn")),
                                       fluidRow(
+                                        column(2,    
+                                               h5("(1) Provide Clinical data"), p("and generate enrolment log.")
+                                        ),
+                                        column(10,
+                                               htmlOutput("checklist_status_clinical"),
+                                               actionButton("get_redcap_data", "Get Clinical Data from REDCap server", icon = icon('times-circle')),
+                                               textOutput("text_redcap_log"),
+                                               fluidRow(
+                                                 column(4, htmlOutput("message_redcap_dta")),
+                                                 column(8, htmlOutput("checklist_qc_clinical"))
+                                               ), br(),
+                                               uiOutput("enrolment_log")
+                                        )
+                                      ),
+                                      hr(),
+                                      fluidRow(
                                         column(2,
-                                               h5("(1) Provide Lab data")
+                                               h5("(2) Provide Lab data")
                                         ),
                                         column(10,
                                                pickerInput("format_lab_data", "Select lab data format", 
@@ -212,7 +228,7 @@ ui <- fluidPage(
                                                            multiple = FALSE),
                                                
                                                conditionalPanel("input.format_lab_data == 'WHONET .dBase'",
-                                                                fileInput("file_lab_dba", NULL,  buttonLabel = "Browse for dBase file", accept = ".dbf")
+                                                                fileInput("file_lab_dba", NULL,  buttonLabel = "Browse for dBase file", accept = c(".ahc", ".dbf"))
                                                ),
                                                conditionalPanel("input.format_lab_data == 'WHONET .SQLite'",
                                                                 fileInput("file_lab_sql", NULL,  buttonLabel = "Browse for sqlite file", accept = c(".sqlite3", ".sqlite", ".db"))
@@ -229,22 +245,6 @@ ui <- fluidPage(
                                                  column(4, htmlOutput("message_lab_dta")),
                                                  column(8, htmlOutput("checklist_qc_lab"))
                                                )
-                                        )
-                                      ),
-                                      hr(),
-                                      fluidRow(
-                                        column(2,    
-                                               h5("(2) Provide Clinical data")
-                                        ),
-                                        column(10,
-                                               htmlOutput("checklist_status_clinical"),
-                                               actionButton("get_redcap_data", "Get Clinical Data from REDCap server", icon = icon('times-circle')),
-                                               textOutput("text_redcap_log"),
-                                               fluidRow(
-                                                 column(4, htmlOutput("message_redcap_dta")),
-                                                 column(8, htmlOutput("checklist_qc_clinical"))
-                                               ), br(),
-                                               uiOutput("enrolment_log")
                                         )
                                       ),
                                       hr(),
@@ -702,13 +702,18 @@ server <- function(input, output, session) {
     acorn_server_write = list(status = "ko", msg = "No rights to backup .acorn on the server"),
     
     lab_data_qc_1 = list(status = "hidden", msg = "Lab dataset empty"),
+    lab_data_qc_2 = list(status = "hidden", msg = "Lab dataset minimal columns"),
     
-    redcap_qc_1 = list(status = "hidden", msg = "REDCap dataset empty"),
-    redcap_qc_2 = list(status = "hidden", msg = "REDCap dataset columns number"),
-    redcap_qc_3 = list(status = "hidden", msg = "REDCap dataset columns names"),
-    redcap_qc_4 = list(status = "hidden", msg = "Every infection episode (F02) has a matching patient enrolment (F01)"),
-    redcap_qc_5 = list(status = "hidden", msg = "Every hospital outcome (F03) has a matching infection episode (F02)"),
-    redcap_qc_6 = list(status = "hidden", msg = "All confirmed entries match the original entry"),
+    redcap_not_empty = list(status = "hidden", msg = "REDCap dataset empty"),
+    redcap_structure = list(status = "hidden", msg = "REDCap dataset columns number"),
+    redcap_columns = list(status = "hidden", msg = "REDCap dataset columns names"),
+    redcap_acornid = list(status = "hidden", msg = "All records have an ACORN id."),
+    redcap_F04F01 = list(status = "hidden", msg = "Every D28 form (F04) matches exactly one patient enrolment (F01)"),
+    redcap_F03F02 = list(status = "hidden", msg = "Every hospital outcome (F03) has a matching infection episode (F02)"),
+    redcap_F02F01 = list(status = "hidden", msg = "Every infection episode (F02) has a matching patient enrolment (F01)"),
+    redcap_F03F01 = list(status = "hidden", msg = "Every hospital outcome form (F03) matches exactly one patient enrolment (F01)"),
+    redcap_confirmed_match = list(status = "hidden", msg = "All confirmed entries match the original entry"),
+    # redcap_F05F01 = list(status = "hidden", msg = "Every BSI episode form (F05) matches exactly one patient enrolment (F01)"),
     
     redcap_dta = list(status = "ko", msg = "Clinical data not provided"),
     lab_dta = list(status = "ko", msg = "Lab data not provided"),
@@ -938,9 +943,12 @@ server <- function(input, output, session) {
       showNotification("REDCap server credentials not provided", type = "error")
       return()
     }
-    source("./www/R/data/01_read_redcap_f01f05.R", local = TRUE)
     
+    source("./www/R/data/01_read_redcap_f01f05.R", local = TRUE)
     source("./www/R/data/01_read_redcap_hai.R", local = TRUE)
+    
+    source("./www/R/data/02_process_redcap_f01f05.R", local = TRUE)
+    
   })
   
   
@@ -969,9 +977,16 @@ server <- function(input, output, session) {
                                         col_types = "text", skip = 1, col_names = c("_", "Valeur"))
     
     
+    # the lab dataset should contain at minima:
+    # if WHONET format: PATIENT_ID ; SPEC_NUM ; SPEC_DATE ; SPEC_CODE
+    # if TABULAR format: PATIENT_ID ; SPEC_NUM ; SPEC_DATE ; LOCAL_SPEC
+    
+    
     browser()
     
     message("Process lab data.")
+    # filter lab data by id to make sure that we have only ACORN patients
+    
     source("./www/R/data/02_map_variables.R", local = TRUE)
     source("./www/R/data/03_map_specimens.R", local = TRUE)
     source("./www/R/data/04_map_organisms.R", local = TRUE)

@@ -3,7 +3,15 @@ output$checklist_status_load_server <- renderText(
 ) 
 
 output$checklist_qc_clinical <- renderText({
-  text_checklist(checklist_status, vec = paste0("redcap_qc_", 1:6))
+  text_checklist(checklist_status, vec = c("redcap_not_empty",
+                                           "redcap_structure",
+                                           "redcap_columns",
+                                           "redcap_acornid",
+                                           "redcap_F04F01",
+                                           "redcap_F03F02",
+                                           "redcap_F02F01",
+                                           "redcap_F03F01",
+                                           "redcap_confirmed_match"))
 })
 
 output$checklist_qc_lab <- renderText({

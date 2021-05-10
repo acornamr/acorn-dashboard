@@ -7,6 +7,4 @@ output$message_redcap_dta <- renderText({
 output$message_lab_dta <- renderText({
   req(lab_dta())
   "Successfully provided lab data."
-  
-  # data_dictionary()$variables
 })

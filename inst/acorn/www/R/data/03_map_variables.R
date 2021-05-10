@@ -25,8 +25,8 @@ amr.loc <- lab_dta()
 
 # amr <- lab_dta() %>%
 #   mutate_all(as.character) %>%
-#   rename_with(use_acorn_name, 
-#               acorn_names = data_dictionary$variables$acorn.code, 
+#   rename_with(use_acorn_name,
+#               acorn_names = data_dictionary$variables$acorn.code,
 #               local_names = data_dictionary$variables$local.code) %>%
 #   select(! starts_with("NOT_ACORN_COLUMN_")) %>%
 #   mutate(specdate = parse_date_time(specdate, c("dmY", "Ymd", "dbY", "Ymd HMS"))) %>%
