@@ -11,7 +11,8 @@ output$checklist_qc_clinical <- renderText({
                                            "redcap_F03F02",
                                            "redcap_F02F01",
                                            "redcap_F03F01",
-                                           "redcap_confirmed_match"))
+                                           "redcap_confirmed_match",
+                                           "redcap_age_category"))
 })
 
 output$checklist_qc_lab <- renderText({

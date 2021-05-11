@@ -80,8 +80,6 @@ ifelse(identical(recordid_no_matching_enrolment, character(0)),
        patient_enrolment <- patient_enrolment %>% filter(!recordid %in% recordid_no_matching_enrolment)})
 
 
-
-
 ## Test that "Every hospital outcome form (F03) matches exactly one patient enrolment (F01)"
 ifelse(all(dl_redcap_f03$recordid %in% patient_enrolment$recordid), 
        { checklist_status$redcap_F03F01 <- list(status = "okay", msg = "Every hospital outcome form (F03) matches exactly one patient enrolment (F01)") },
@@ -98,19 +96,6 @@ if(all(patient_enrolment$siteid == patient_enrolment$siteid_cfm,
   checklist_status$redcap_confirmed_match <- list(status = "ko", msg = "Some confirmed entries do not match the original entry")
 }
 
-# TODO: check that for a given enrollement, all infection episodes are on different dates
-if(any(checklist_status$redcap_not_empty$status == "ko",
-       checklist_status$redcap_structure$status == "ko",
-       checklist_status$redcap_columns$status == "ko",
-       checklist_status$redcap_acornid$status == "ko",
-       checklist_status$redcap_F04F01$status == "ko",
-       checklist_status$redcap_F03F02$status == "ko",
-       checklist_status$redcap_F02F01$status == "ko",
-       checklist_status$redcap_F03F01$status == "ko",
-       checklist_status$redcap_confirmed_match$status == "ko")) {
-  checklist_status$redcap_dta <- list(status = "ko", msg = "A critical error was detected during clinical data generation (see above)")
-  return()
-}
 
 # consolidate patient_enrolment & infection_episode in infection ----
 infection <- left_join(infection_episode %>%
@@ -121,48 +106,17 @@ infection <- left_join(infection_episode %>%
                                    "hpd_adm_date_cfm", "f04odkreckey")), 
                        by = "recordid")
 
-# Convert columns to date/numeric formats
-infection <- infection %>%
-  mutate(hpd_dmdtc = as_date(hpd_dmdtc),
-         hpd_onset_date = as_date(hpd_onset_date),
-         ho_discharge_date = as_date(ho_discharge_date),
-         ho_dmdtc = as_date(ho_dmdtc),
-         brthdtc = as_date(brthdtc),
-         hpd_adm_date = as_date(hpd_adm_date),
-         hpd_hosp_date = as_date(hpd_hosp_date),
-         d28_date = as_date(d28_date),
-         d28_death_date = as_date(d28_death_date)) %>%
-  mutate(agey = as.numeric(agey),
-         agem = as.numeric(agem),
-         aged = as.numeric(aged))
 
-# Summarise the age with agey and aged
-infection$aged[is.na(infection$aged) & is.na(infection$brthdtc)] <- 0
-infection$agem[is.na(infection$agem) & is.na(infection$brthdtc)] <- 0
-infection$agey[is.na(infection$agey) & is.na(infection$brthdtc)] <- 0
-infection$calc_aged <- as.numeric(infection$hpd_dmdtc - infection$brthdtc)
-infection$calc_aged[is.na(infection$brthdtc)] <- ceiling((infection$aged[is.na(infection$brthdtc)]) + (infection$agem[is.na(infection$brthdtc)] * 30.4375) + (infection$agey[is.na(infection$brthdtc)] * 365.25))
-infection$aged <- infection$calc_aged # to replace in the original location: this is age in days at date of enrolment
-infection$agey <- round(infection$aged / 365.25, 2) # to make a calculated age in years based on aged: this is age in years at date of enrolment
-infection <- infection %>% select(-brthdtc, -calc_aged, -agem)
-
-
-# TODO: check if consistent with age_category fieldd
-infection$agey[infection$hpd_agegroup == "A"] >= 18
-infection$agey[infection$hpd_agegroup == "P"] <= 17
-infection$aged[infection$hpd_agegroup == "N"] <= 28
 
 # rename / drop (by commenting) / recode columns
-browser()
-
 infection <- infection %>% transmute(
   redcap_id = as.character(md5(recordid)),
   # redcap_repeat_instance,
   # Start fields from F02
-  date_episode_enrolment = hpd_dmdtc,
-  age_category = hpd_agegroup, 
+  date_episode_enrolment = as_date(hpd_dmdtc),
+  age_category = recode(hpd_agegroup, "A" = "Adult", "P" = "Child", "N"  = "Neonate"),
   suveillance_category = ifd_surcate,
-  hai_date_symptom_onset = hpd_onset_date,
+  hai_date_symptom_onset = as_date(hpd_onset_date),
   ward_type = recode(hpd_adm_wardtype, MED = "Adult medical ward", SRG = "Adult surgical ward", 
                      ICU = "Adult intensive care unit", PMED = "Pediatric medical ward", 
                      PSRG = "Pediatric surgical ward", PICU = "Pediatric intensive care unit", 
@@ -195,7 +149,7 @@ infection <- infection %>% transmute(
   med_device_iuc = recode(hai_have_med_device___iuc, "0" = "_", "1" = "Urinary catheter"),
   med_device_vent = recode(hai_have_med_device___vent, "0" = "_", "1" = "Intubation / Mechanical ventilation"),
   icu_48_hai = recode(hai_icu48days, "Y" = "Yes", "N" = "No", "UNK" = "Unknown"), 
-  surgery_hai = recode(surgery_hai_have_sur, "Y" = "Yes", "N" = "No", "UNK" = "Unknown"), 
+  surgery_hai = recode(hai_have_sur, "Y" = "Yes", "N" = "No", "UNK" = "Unknown"), 
   blood_collect = recode(mic_bloodcollect, "Y" = "Yes", "N" = "No", "UNK" = "Unknown"), 
   received_antibio = recode(mic_rec_antibiotic, "Y" = "Yes", "N" = "No", "UNK" = "Unknown"), 
   antibiotic_j01gb06 = recode(antibiotic___j01gb06, "0" = "", "1" = "Amikacin"),
@@ -238,8 +192,8 @@ infection <- infection %>% transmute(
   antibiotic_j01aa12 = recode(antibiotic___j01aa12, "0" = "", "1" = "Tigecycline"),
   antibiotic_j01xa01 = recode(antibiotic___j01xa01, "0" = "", "1" = "Vancomycin"),
   antibiotic_unknown = recode(antibiotic___unk, "0" = "", "1" = "Unknown"),
-  antibiotic_other = recode(antibiotic___oth, "0" = "", "1" = "Other"),
-  antibiotic_other_text,
+  antibiotic_any_other = recode(antibiotic___oth, "0" = "", "1" = "Other"),
+  antibiotic_other_text = antibiotic_other,
   # f02_deleted, 
   # f02_infected_episode_complete, 
   # Start fields from F03:
@@ -249,12 +203,12 @@ infection <- infection %>% transmute(
   ho_discharge_to = recode(ho_dischargeto, "HOM" = "Home", "HOS" = "Other hospital", 
                            "LTC" = "Long-term care facility", "NA" = "Not applicable (death)",
                            "UNK" = "Unknown"),
-  ho_discharge_date, 
+  ho_discharge_date = as_date(ho_discharge_date), 
   ho_days_icu = as.numeric(ho_days_icu), 
   # deleted, 
   # f03_infection_hospital_outcome_complete, 
   infection_episode_nb = as.numeric(group),
-  ho_date_enrolment = ho_dmdtc, 
+  ho_date_enrolment = as_date(ho_dmdtc), 
   ho_final_diag = recode(ho_fin_infect_diag, BJ = "Bone / Joint", CVS = "Cardiovascular system",
                          CNS = "Central nervous system", URTI = "ENT / Upper respiratory tract",
                          EYE = "Eye", FN = "Febrile neutropenia", GI = "Gastrointestinal",
@@ -267,13 +221,15 @@ infection <- infection %>% transmute(
   # End F03
   # Start fields from F01:
   hospital_code = siteid, 
-  date_enrolment = dmdtc, 
-  patient_id = as.character(md5(usubjid)), 
-  acorn_id = as.character(md5(acornid)), 
-  age = agey, 
-  age_days = aged, 
-  sex = recode(sex, M = "Male", `F` = "Female"),
-  date_admission = hpd_adm_date, 
+  date_enrolment = as_date(dmdtc), 
+  patient_id = usubjid,  # as.character(md5(usubjid)), 
+  acorn_id = acornid,  # as.character(md5(acornid)), 
+  birthday = as_date(brthdtc),
+  age_year = as.numeric(agey),
+  age_month = as.numeric(agem),
+  age_day = as.numeric(aged), 
+  sex = recode(sex, "M" = "Male", "F" = "Female"),
+  date_admission = as_date(hpd_adm_date), 
   # cal_agey, 
   transfer_hospital = recode(hpd_is_hosp_date, "Y" = "Yes", "N" = "No", "UNK" = "Unknown"),
   transfer_facility = recode(hpd_is_othfaci_date, "Y" = "Yes", "N" = "No", "UNK" = "Unknown"),
@@ -307,223 +263,49 @@ infection <- infection %>% transmute(
   cmb_overnight = recode(cmb_comorbidities___none, "N" = "No", "Y" = "Yes"), 
   cmb_rhc = recode(cmb_rhc, "N" = "No", "Y" = "Yes"), 
   cmb_surgery = recode(cmb_surgery, "N" = "No", "Y" = "Yes"), 
-  
   # f01_deleted, 
   # f01_enrolment_complete, 
   # End F01
   # Start fields from F04
-  d28_date, 
+  d28_date = as_date(d28_date), 
   d28_status = recode(d28_status, "ALIVE" = "(TBC) Alive - completely recovered", 
                       "ABALIVE" = "(TBC) Alive - not back to normal activities", 
                       "DEAD" = "(TBC) Dead"), # TODO: confime with updated data dic from Ong
-  d28_death_date
+  d28_death_date = as_date(d28_death_date)
   # f04_deleted, 
   # f04_d28_complete
   # End F04
 )
 
+# Summarise the age with age_year and age_day
+infection$age_day[is.na(infection$age_day) & is.na(infection$birthday)] <- 0
+infection$age_month[is.na(infection$age_month) & is.na(infection$birthday)] <- 0
+infection$age_year[is.na(infection$age_year) & is.na(infection$birthday)] <- 0
+infection$calc_age_day <- as.numeric(infection$date_episode_enrolment - infection$birthday)
+infection$calc_age_day[is.na(infection$birthday)] <- ceiling((infection$age_day[is.na(infection$birthday)]) + (infection$age_month[is.na(infection$birthday)] * 30.4375) + (infection$age_year[is.na(infection$birthday)] * 365.25))
+infection$age_day <- infection$calc_age_day # to replace in the original location: this is age in days at date of enrolment
+infection$age_year <- round(infection$age_day / 365.25, 2) # to make a calculated age in years based on age_day: this is age in years at date of enrolment
+infection <- infection %>% select(-birthday, -calc_age_day, -age_month)
 
-# START Previousely in 11_prepare_data ----
-if(FALSE){
-  # Preparation for the App
-  patient <- clin %>%
-    transmute(
-      site_id = SITEID,
-      patient_id = as.character(md5(USUBJID)),
-      date_enrollment = DMDTC,
-      episode_id = as.character(md5(ACORN.EPID)),
-      age = AGEY,
-      sex = SEX,
-      date_admission = HPD_ADM_DATE,
-      transfer = HPD_IS_HOSP_DATE,
-      date_hospitalisation = HPD_HOSP_DATE,
-      ward = HPD_ADM_WARDTYPE,
-      ward_text = HPD_ADM_WARD,
-      CMB_COMORBIDITIES,
-      comorb_cancer = NA,
-      comorb_renal = NA,
-      comorb_lung = NA,
-      comorb_diabetes = NA,
-      comorb_malnutrition = NA,
-      overnight_3months = CMB_OVERNIGHT,
-      surgery_3months = CMB_SURGERY,
-      surveillance_cat = IFD_SURCATE,
-      surveillance_diag = IFD_SURDIAG,
-      date_symptom_onset = IFD_HAI_DATE,
-      state_mentation = SER_GCS_UNDER15,
-      state_respiratory = SER_RR_22UP,
-      state_systolic = SER_SBP_UNDER100,
-      state_temperature = SER_ABNORMAL_TEMP,
-      state_tachycardia = SER_INAPP_TACHYCARDIA,
-      state_mental = SER_ALTER_MENTAL,
-      state_perfusion = SER_REDUCE_PP,
-      HAI_HAVE_MED_DEVICE,
-      medical_p_catheter = NA,
-      medical_c_catheter = NA,
-      medical_u_catheter = NA,
-      medical_ventilation = NA,
-      blood_24 = MIC_BLOODCOLLECT,
-      antibiotic_24 = MIC_REC_ANTIBIOTIC,
-      antibiotic_other = ANTIBIOTIC_OTHER,
-      ANTIBIOTIC,
-      Amikacin = "No", 
-      Amoxicillin = "No", 
-      `Amoxicillin-Clavulanate` = "No", 
-      Ampicillin = "No", 
-      `Ampicillin-Sulbactam`  = "No", 
-      Azithromycin = "No", 
-      Benzylpenicillin = "No", 
-      Cefepime = "No", 
-      Cefixime = "No", 
-      Cefotaxime = "No", 
-      Ceftazidime = "No", 
-      Ceftriaxone = "No", 
-      Cephalexin = "No", 
-      Ciprofloxacin = "No", 
-      Clarithromycin = "No", 
-      Clindamycin = "No", 
-      Cloxacillin = "No", 
-      Cotrimoxazole = "No", 
-      Daptomycin = "No", 
-      Doripenem = "No", 
-      Doxycycline = "No",
-      Erythromycin = "No", 
-      Gentamicin = "No", 
-      Imipenem = "No", 
-      Levofloxacin = "No", 
-      Linezolid = "No",
-      Meropenem = "No",
-      Metronidazole = "No", 
-      Moxifloxacin = "No", 
-      Norfloxacin = "No", 
-      Ofloxacin = "No", 
-      `Penicillin V` = "No", 
-      `Piperacillin-Tazobactam` = "No", 
-      Roxithromycin = "No", 
-      Teicoplanin = "No", 
-      Tetracycline = "No", 
-      Tigecycline = "No", 
-      Vancomycin = "No",
-      d28_outcome = ifelse(is.na(D28_DATE), FALSE, TRUE), 
-      date_enrollment_d28 = NA, 
-      date_admission_d28 = NA, 
-      date_discharge = NA, 
-      date_d28 = D28_DATE, 
-      status_d28 = D28_STATUS, 
-      date_death = D28_DEATH_DATE,
-      clinical_outcome = ifelse(is.na(HO_DISCHARGESTATUS), FALSE, TRUE),  
-      username_outcome = NA, 
-      hospital_name_outcome = NA, 
-      date_enrollment_outcome = NA, 
-      date_admission_outcome = NA, 
-      code_icd10 = HO_ICD10, 
-      diag_final = HO_FINDIAG,   # CONF or REJ
-      sepsis_source = HO_SEPSIS_SOURCE, 
-      sepsis_source_other = HO_SEPSIS_SOURCE_OTH, 
-      discharge_status = HO_DISCHARGESTATUS, 
-      date_discharge_outcome = HO_DISCHARGE_DATE, 
-      days_icu = HO_DAYS_ICU)
-  
-  patient$comorb_cancer[str_detect(patient$CMB_COMORBIDITIES, "ONC")] <- "Cancer"
-  patient$comorb_renal[str_detect(patient$CMB_COMORBIDITIES, "CRF")] <- "Chronic renal failure"
-  patient$comorb_lung[str_detect(patient$CMB_COMORBIDITIES, "CLD")] <- "Chronic lung disease"
-  patient$comorb_diabetes[str_detect(patient$CMB_COMORBIDITIES, "DM")] <- "Diabetes mellitus"
-  patient$comorb_malnutrition[str_detect(patient$CMB_COMORBIDITIES, "MAL")] <- "Malnutrition"
-  
-  patient$medical_p_catheter[str_detect(patient$HAI_HAVE_MED_DEVICE, "PCV")] <- "Peripheral IV catheter"
-  patient$medical_c_catheter[str_detect(patient$HAI_HAVE_MED_DEVICE, "CVC")] <- "Central IV catheter"
-  patient$medical_u_catheter[str_detect(patient$HAI_HAVE_MED_DEVICE, "IUC")] <- "Urinary catheter"
-  patient$medical_ventilation[str_detect(patient$HAI_HAVE_MED_DEVICE, "VENT")] <- "Intubation / Mechanical ventilation"
-  
-  patient$Amikacin[str_detect(patient$ANTIBIOTIC, "J01GB06")] <- "Yes"
-  patient$Amoxicillin[str_detect(patient$ANTIBIOTIC, "J01CA04")] <- "Yes"
-  patient$`Amoxicillin-Clavulanate`[str_detect(patient$ANTIBIOTIC, "J01CR02")] <- "Yes"
-  patient$Ampicillin[str_detect(patient$ANTIBIOTIC, "J01CA01")] <- "Yes"
-  patient$`Ampicillin-Sulbactam` [str_detect(patient$ANTIBIOTIC, "J01CR01")] <- "Yes"
-  patient$Azithromycin[str_detect(patient$ANTIBIOTIC, "J01FA10")] <- "Yes"
-  patient$Benzylpenicillin[str_detect(patient$ANTIBIOTIC, "J01CE01")] <- "Yes"
-  patient$Cefepime[str_detect(patient$ANTIBIOTIC, "J01DE01")] <- "Yes"
-  patient$Cefixime[str_detect(patient$ANTIBIOTIC, "J01DD08")] <- "Yes"
-  patient$Cefotaxime[str_detect(patient$ANTIBIOTIC, "J01DD01")] <- "Yes"
-  patient$Ceftazidime[str_detect(patient$ANTIBIOTIC, "J01DD02")] <- "Yes"
-  patient$Ceftriaxone[str_detect(patient$ANTIBIOTIC, "J01DD04")] <- "Yes"
-  patient$Cephalexin[str_detect(patient$ANTIBIOTIC, "J01DB01")] <- "Yes"
-  patient$Ciprofloxacin[str_detect(patient$ANTIBIOTIC, "J01MA02")] <- "Yes"
-  patient$Clarithromycin[str_detect(patient$ANTIBIOTIC, "J01FA09")] <- "Yes"
-  patient$Clindamycin[str_detect(patient$ANTIBIOTIC, "J01FF01")] <- "Yes"
-  patient$Cloxacillin[str_detect(patient$ANTIBIOTIC, "J01CF02")] <- "Yes"
-  patient$Cotrimoxazole[str_detect(patient$ANTIBIOTIC, "J01EE01")] <- "Yes"
-  patient$Daptomycin[str_detect(patient$ANTIBIOTIC, "J01XX09")] <- "Yes"
-  patient$Doripenem[str_detect(patient$ANTIBIOTIC, "J01DH04")] <- "Yes"
-  patient$Doxycycline[str_detect(patient$ANTIBIOTIC, "J01AA02")] <- "Yes"
-  patient$Erythromycin[str_detect(patient$ANTIBIOTIC, "J01FA01")] <- "Yes"
-  patient$Gentamicin[str_detect(patient$ANTIBIOTIC, "J01GB03")] <- "Yes"
-  patient$Imipenem[str_detect(patient$ANTIBIOTIC, "J01DH51")] <- "Yes"
-  patient$Levofloxacin[str_detect(patient$ANTIBIOTIC, "J01MA12")] <- "Yes"
-  patient$Linezolid[str_detect(patient$ANTIBIOTIC, "J01XX08")] <- "Yes"
-  patient$Meropenem[str_detect(patient$ANTIBIOTIC, "J01DH02")] <- "Yes"
-  patient$Metronidazole[str_detect(patient$ANTIBIOTIC, "J01XD01")] <- "Yes"
-  patient$Moxifloxacin[str_detect(patient$ANTIBIOTIC, "J01MA14")] <- "Yes"
-  patient$Norfloxacin[str_detect(patient$ANTIBIOTIC, "J01MA06")] <- "Yes"
-  patient$Ofloxacin[str_detect(patient$ANTIBIOTIC, "J01MA01")] <- "Yes"
-  patient$`Penicillin V`[str_detect(patient$ANTIBIOTIC, "J01CE02")] <- "Yes"
-  patient$`Piperacillin-Tazobactam`[str_detect(patient$ANTIBIOTIC, "J01CR05")] <- "Yes"
-  patient$Roxithromycin[str_detect(patient$ANTIBIOTIC, "J01FA06")] <- "Yes"
-  patient$Teicoplanin[str_detect(patient$ANTIBIOTIC, "J01XA02")] <- "Yes"
-  patient$Tetracycline[str_detect(patient$ANTIBIOTIC, "J01AA07")] <- "Yes"
-  patient$Tigecycline[str_detect(patient$ANTIBIOTIC, "J01AA12")] <- "Yes"
-  patient$Vancomycin[str_detect(patient$ANTIBIOTIC, "J01XA01")] <- "Yes"
-  
-  
-  
-  patient <- patient %>% 
-    mutate(
-      ward = recode(ward, MED = "Medical", SUR = "Surgical", PED = "Paediatric", ICUNEO = "NICU", ICUPED = "PICU"),
-      ward_text = toupper(ward_text),
-      sex = recode(sex, M = "Male", `F` = "Female"),
-      surveillance_diag = recode(surveillance_diag, MEN = "Meningitis", PNEU = "Pneumonia", SEPSIS = "Sepsis"),
-      
-      transfer = recode(transfer, Y = "Yes", N = "No", UNK = "Unknown", .missing = "Missing Value"),
-      surgery_3months = recode(surgery_3months, Y = "Yes", N = "No", UNK = "Unknown", .missing = "Missing Value"),
-      
-      state_mentation = recode(patient$state_mentation, Y = "Yes", N = "No", UNK = "Unknown", .missing = "Missing Value"),
-      state_respiratory = recode(patient$state_respiratory, Y = "Yes", N = "No", UNK = "Unknown", .missing = "Missing Value"),
-      state_systolic = recode(patient$state_systolic, Y = "Yes", N = "No", UNK = "Unknown", .missing = "Missing Value"),
-      state_temperature = recode(patient$state_temperature, Y = "Yes", N = "No", UNK = "Unknown", .missing = "Missing Value"),
-      state_tachycardia = recode(patient$state_tachycardia, Y = "Yes", N = "No", UNK = "Unknown", .missing = "Missing Value"),
-      state_mental = recode(patient$state_mental, Y = "Yes", N = "No", UNK = "Unknown", .missing = "Missing Value"),
-      state_perfusion = recode(patient$state_mental, Y = "Yes", N = "No", UNK = "Unknown", .missing = "Missing Value"),
-      
-      
-      overnight_3months = recode(overnight_3months, Y = "Yes", N = "No"),
-      blood_24 = recode(blood_24, Y = "Yes", N = "No"),
-      antibiotic_24 = recode(antibiotic_24, Y = "Yes", N = "No"),
-      status_d28 = recode(status_d28, ALIVE = "Alive", DEAD = "Dead", UTC = "Unable to Contact"),
-      diag_final = recode(diag_final, CONF = "Confirmed", REJ = "Rejected", UPD = "Updated"),
-      sepsis_source = recode(sepsis_source, BURN = "Burn", CVS = "Cardiovascular system", CNS = "Central nervous system", 
-                             CR = "Line-associated", GI = "Gastrointestinal", IA = "Intra-abdominal", GU = "Genital",
-                             UTI = "Urinary tract", URTI = "Upper respiratory tract", LRTI = "Lower respiratory tract", 
-                             BJ = "Bone / Joint", SST = "Skin / Soft tissue", UND = "Undefined", OTH = "Other"),
-      discharge_status = recode(discharge_status, ALIVE = "Alive", DEAD = "Dead", MORIBUND = "Discharged to die at home",
-                                LAMA = "Left against medical advice", TRANS = "Transferred")) %>% 
-    select(-CMB_COMORBIDITIES, -HAI_HAVE_MED_DEVICE, -ANTIBIOTIC)
-  
-  
-  # Define Clinical Severity
-  patient$clinical_severity <- "Unknown"
-  patient$clinical_severity[patient$age >= 18 & (patient$state_mentation == "Yes" | patient$state_respiratory == "Yes" | patient$state_systolic == "Yes")] <- "Severe"
-  patient$clinical_severity[patient$age < 18 & (patient$state_temperature == "Yes" | patient$state_tachycardia == "Yes" | 
-                                                  patient$state_mental == "Yes" | patient$state_perfusion == "Yes")] <- "Severe"
-  
+## Test "Calculated age is consistent with 'Age Category'"
+if(all(infection$age_year[infection$age_category == "Adult"] >= 18,
+       infection$age_year[infection$age_category == "Child"] <= 17,
+       infection$age_day[infection$age_category == "Neonate"] <= 28)) {
+  checklist_status$redcap_age_category <- list(status = "okay", msg = "Calculated age is consistent with 'Age Category'")
+} else {
+  checklist_status$redcap_age_category <- list(status = "ko", msg = "Calculated age isn't consistent with 'Age Category'")
 }
-# END Previousely in 11_prepare_data ----
 
 
+# Define Clinical Severity
+# TODO: confirm with Paul the new definition of clinical_severity, now including neo_reduce, neo_fee, neo_convul
+infection$clinical_severity <- "Unknown"
+infection$clinical_severity[infection$age_year >= 18 & 
+                              (infection$adult_altered_mentation == "Yes" | infection$adult_respiratory_rate == "Yes" | 
+                                 infection$adult_blood_pressure == "Yes")] <- "Severe"
+infection$clinical_severity[infection$age_year <= 17 & 
+                              (infection$child_neo_abnormal_temp == "Yes" | infection$child_neo_inapp_tachycardia == "Yes" | 
+                                 infection$child_neo_alter_mental == "Yes" | infection$child_neo_reduce_pp == "Yes")] <- "Severe"
+infection$clinical_severity[infection$age_day <= 28 & 
+                              (infection$neo_reduce == "Yes" | infection$neo_feed == "Yes" | infection$neo_convul == "Yes")] <- "Severe"
 
-redcap_dta(dta)
-checklist_status$redcap_dta <- list(status = "okay", 
-                                    msg = glue("Clinical data provided with {length(unique(dta$recordid))} patient enrolments and {nrow(dta)} infection episodes"))
-
-if(checklist_status$lab_dta$status == "okay")  {
-  updateActionButton(session = session, inputId = "generate_acorn_data", label = HTML("Generate <em>.acorn</em>"), icon = icon("angle-right"))
-}

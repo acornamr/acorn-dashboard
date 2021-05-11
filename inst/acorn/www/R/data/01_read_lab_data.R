@@ -33,10 +33,3 @@ if (n == 0) {
 }
 
 checklist_status$lab_data_qc_1 <- list(status = "okay", msg = glue("The Lab dataset contains {n} rows"))
-
-lab_dta(dta)
-showNotification("Lab data successfully provided.")
-checklist_status$lab_dta = list(status = "okay", msg = "Lab data provided")
-if(checklist_status$redcap_dta$status == "okay")  {
-  updateActionButton(session = session, inputId = "generate_acorn_data", label = HTML("Generate <em>.acorn</em>"), icon = icon("angle-right"))
-}
