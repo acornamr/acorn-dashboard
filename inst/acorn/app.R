@@ -134,20 +134,26 @@ ui <- fluidPage(
                                div(id = "login-basic", 
                                    div(
                                      class = "well",
-                                     h4(class = "text-center", "Please login"),
-                                     p("Use demo/demo for a tour."),
-                                     textInput(
-                                       inputId     = "cred_username", 
-                                       label       = tagList(icon("user"), "Site Name"),
-                                       placeholder = "Enter site name"
+                                     h4(class = "text-center", "Please log in"),
+                                     selectInput("cred_site", tagList(icon("hospital"), "Site"),
+                                                 choices = c("demo", "KH001", "GH001", "GH002", "ID001", "ID002", 
+                                                             "KE001", "KE002", "LA001", "LA002", "MW001", 
+                                                             "NP001", "NG001", "NG002", "VN001", "VN002", 
+                                                             "VN003")
                                      ),
-                                     passwordInput(
-                                       inputId     = "cred_password", 
-                                       label       = tagList(icon("unlock-alt"), "Password"), 
-                                       placeholder = "Enter password"
+                                     conditionalPanel("input.cred_site != 'demo'", div(
+                                       textInput("cred_user", tagList(icon("user"), "User"),
+                                                 placeholder = "Enter user"
+                                       ),
+                                       passwordInput("cred_password", tagList(icon("unlock-alt"), "Password"), 
+                                                     placeholder = "Enter password"
+                                       )
+                                     )
                                      ), 
                                      div(class = "text-center",
-                                         actionButton(inputId = "cred_login", label = "Log in", class = "btn-primary")
+                                         actionButton(inputId = "cred_login", label = "Log in", class = "btn-primary"),
+                                         # TODO: add an option to log out
+                                         # actionButton(inputId = "cred_logout", label = "Log out", class = "btn-primary")
                                      )
                                    )
                                )
@@ -644,15 +650,15 @@ server <- function(input, output, session) {
     
     redcap_dta() %>%
       transmute("Category" = suveillance_category,
-             "Patient ID" = patient_id, 
-             "ACORN ID" = acorn_id,
-             "Date of admission" = date_admission, 
-             "Infection Episode" = infection_episode_nb,
-             "Date of episode enrolment" = date_episode_enrolment, 
-             "Discharge date" = ho_discharge_date, 
-             "Discharge status" = ho_discharge_status,
-             "Expected Day-28 date" =  date_episode_enrolment + 28,
-             "Actual Day-28 date" = d28_date)
+                "Patient ID" = patient_id, 
+                "ACORN ID" = acorn_id,
+                "Date of admission" = date_admission, 
+                "Infection Episode" = infection_episode_nb,
+                "Date of episode enrolment" = date_episode_enrolment, 
+                "Discharge date" = ho_discharge_date, 
+                "Discharge status" = ho_discharge_status,
+                "Expected Day-28 date" =  date_episode_enrolment + 28,
+                "Actual Day-28 date" = d28_date)
   })
   
   lab_dta <- reactiveVal()
@@ -684,7 +690,7 @@ server <- function(input, output, session) {
     tagList(
       strong("Enrolment Log:"),
       DTOutput("table_enrolment_log"),
-      downloadButton("download_enrolment_log", "Download Enrolment Log")
+      downloadButton("download_enrolment_log", "Download Enrolment Log (.xlsx)")
     )
   })
   
@@ -742,55 +748,58 @@ server <- function(input, output, session) {
   
   # On connection ----
   observeEvent(input$cred_login, {
-    if (input$cred_username == "demo") {
+    showNotification("Attempting to connect")
+    Sys.sleep(1)
+    
+    if (input$cred_site == "demo") {
       
       # Stop is the password is wrong
-      cred <- readRDS("./www/cred/encrypted_cred_demo.rds")
+      cred <- readRDS("./www/cred/bucket_site/encrypted_cred_demo.rds")
       key_user <- sha256(charToRaw(input$cred_password))
       test <- try(unserialize(aes_cbc_decrypt(cred, key = key_user)), silent = TRUE)
       
       if(inherits(test, "try-error"))  {
-        show_toast(title = "Wrong password", type = "error", position = "top")
+        showNotification("Wrong password", type = "error")
         return()
       }
       
       # Save into reactive element to be able to used later on
       cred <- unserialize(aes_cbc_decrypt(cred, key = key_user))
       
-      test <- (cred$user == input$cred_username)
+      test <- (cred$site == input$cred_site)
       if(!test)  {
-        Sys.sleep(1)
-        show_toast(title = "Something strange is happening", type = "error", position = "top")
+        showNotification("Something strange is happening", type = "error")
         return()
       }
       
       checklist_status$app_login <- list(status = "okay", msg = "Successfully logged in (demo)")
       acorn_cred(cred)
     }
-    if (input$cred_username != "demo") {
-      file_cred <- glue("encrypted_cred_{input$cred_username}.rds")
+    if (input$cred_site != "demo") {
+      file_cred <- glue("encrypted_cred_{input$cred_site}.rds")
       # Feedback if the connection can't be established
       connect <- try(get_bucket(bucket = "acornamr-cred", 
-                                key    = bucket_cred_k,
-                                secret = bucket_cred_s,
+                                key    = bucket_cred_key,
+                                secret = bucket_cred_sec,
                                 region = "eu-west-3") %>% unlist(),
                      silent = TRUE)
       
       if (inherits(connect, 'try-error')) {
-        showNotification("Couldn't connect to server credentials. Please check internet access/firewall.")
+        showNotification("Couldn't connect to server credentials. Please check internet access/firewall.", type = "error")
         return()
       }
       
       # Test if credentials for this user name exist
       if (! file_cred %in% 
           as.vector(connect[names(connect) == 'Contents.Key'])) {
-        showNotification("Couldn't find this user")
+        showNotification("Couldn't find this user",
+                         type = "error")
         return()
       }
       
       # I can't find a way to pass those credentials directly in s3read_using()
-      Sys.setenv("AWS_ACCESS_KEY_ID" = bucket_cred_k,
-                 "AWS_SECRET_ACCESS_KEY" = bucket_cred_s,
+      Sys.setenv("AWS_ACCESS_KEY_ID" = bucket_cred_key,
+                 "AWS_SECRET_ACCESS_KEY" = bucket_cred_sec,
                  "AWS_DEFAULT_REGION" = "eu-west-3")
       
       cred <- s3read_using(FUN = readRDS_encrypted, 
@@ -803,14 +812,13 @@ server <- function(input, output, session) {
                  "AWS_SECRET_ACCESS_KEY" = "",
                  "AWS_DEFAULT_REGION" = "")
       
-      test <- (cred$user == input$cred_username)
+      test <- (cred$site == input$cred_site)
       if(!test)  {
-        Sys.sleep(1)
         show_toast(title = "Something strange is happening", type = "error", position = "top")
         return()
       }
       
-      checklist_status$app_login <- list(status = "okay", msg = glue("Successfully logged in (as {cred$user})"))
+      checklist_status$app_login <- list(status = "okay", msg = glue("Successfully logged in (as {cred$site})"))
       acorn_cred(cred)
     }
     showNotification("Successfully logged in!")
@@ -950,7 +958,7 @@ server <- function(input, output, session) {
     
     source("./www/R/data/01_read_redcap_f01f05.R", local = TRUE)
     source("./www/R/data/01_read_redcap_hai.R", local = TRUE)
-
+    
     source("./www/R/data/02_process_redcap_f01f05.R", local = TRUE)
     
     # TODO: check that for a given enrollement, all infection episodes are on different dates
@@ -977,192 +985,188 @@ server <- function(input, output, session) {
     if(checklist_status$lab_dta$status == "okay")  {
       updateActionButton(session = session, inputId = "generate_acorn_data", label = HTML("Generate <em>.acorn</em>"), icon = icon("angle-right"))
     }
-    })
+  })
+  
+  
+  # On "Download Enrolment Log"
+  output$download_enrolment_log <- downloadHandler(
+    filename = glue("enrolment_log_{format(Sys.time(), '%Y-%m-%d_%H%M')}.xlsx"),
+    content = function(file)  writexl::write_xlsx(enrolment_log(), path = file)
+  )
+  
+  # On "Generate ACORN" ----
+  observeEvent(input$generate_acorn_data, {
+    message("Read data dictionary.")
+    source("./www/R/data/02_read_data_dic.R", local = TRUE)
     
-    
-    # On "Download Enrolment Log"
-    output$download_enrolment_log <- downloadHandler(
-      filename = "enrolment_log.csv",
-      content = function(file)  write.csv(enrolment_log(), file, row.names = FALSE)
-    )
-    
-    # On "Generate ACORN" ----
-    observeEvent(input$generate_acorn_data, {
-      
-      message("Read data dictionary.")
-      source("./www/R/data/02_read_data_dic.R", local = TRUE)
-      
-      if(! file.exists(path_data_dictionary_file))  {
-        showNotification("We couldn't find the lab data dictionary. Please contact ACORN Data Management.", type = "error", duration = NULL)
-        return()
-      }
-      
-      data_dictionary$variables <- read_excel(path_data_dictionary_file, sheet = "variables")
-      data_dictionary$test.res <- read_excel(path_data_dictionary_file, sheet = "test.results")
-      data_dictionary$local.spec <- read_excel(path_data_dictionary_file, sheet = "spec.types")
-      data_dictionary$local.orgs <- read_excel(path_data_dictionary_file, sheet = "organisms")
-      data_dictionary$notes <- read_excel(path_data_dictionary_file, sheet = "notes",
-                                          col_types = "text", skip = 1, col_names = c("_", "Valeur"))
-      
-      
-      # the lab dataset should contain at minima:
-      # if WHONET format: PATIENT_ID ; SPEC_NUM ; SPEC_DATE ; SPEC_CODE
-      # if TABULAR format: PATIENT_ID ; SPEC_NUM ; SPEC_DATE ; LOCAL_SPEC
-      
-      
-      browser()
-      
-      message("Process lab data.")
-      # filter lab data by id to make sure that we have only ACORN patients
-      
-      source("./www/R/data/02_map_variables.R", local = TRUE)
-      source("./www/R/data/03_map_specimens.R", local = TRUE)
-      source("./www/R/data/04_map_organisms.R", local = TRUE)
-      source("./www/R/data/05_make_ast_group.R", local = TRUE)
-      source("./www/R/data/06_ast_interpretation.R", local = TRUE)
-      source("./www/R/data/07_ast_interpretation_nonstandard.R", local = TRUE)
-      
-      message("Other steps")
-      source("./www/R/data/08_odk_assembly.R", local = TRUE)
-      source("./www/R/data/09_link_clinical_assembly.R", local = TRUE)
-      source("./www/R/data/10_process_hai_survey_data.R", local = TRUE)
-      source("./www/R/data/11_prepare_data.R", local = TRUE)
-      source("./www/R/data/12_quality_control.R", local = TRUE)
-      
-      acorn_dta_saved = list(status = "ko", msg = ".acorn not saved")
-    })
-    
-    # On "Save ACORN" on server ----
-    observeEvent(input$save_acorn_server, { 
-      if(checklist_status$acorn_dta$status != "ok") {
-        showNotification("No .acorn data loaded.", type = "warning", duration = NULL)
-        return()
-      }
-      
-      showModal(modalDialog(
-        fluidRow(
-          column(6,
-                 p(glue("The time of generation: {session_start_time} will be added to the file.")),
-                 textInput("name_file", value = session_start_time, label = "Choose a name for the file"),
-                 textInput("meta_acorn_user", label = "User:", value = Sys.info()["user"]),
-                 textAreaInput("meta_acorn_comment", label = "(Optional) Comment")
-          ),
-          column(6,
-                 actionButton("save_acorn_server_confirm", label = "Confirm Save on Server")
-          )
-        ),
-        
-        title = "Save acorn data",
-        footer = modalButton("Cancel"),
-        size = "l",
-        easyClose = FALSE,
-        fade = TRUE
-      ))
-      
-    })
-    
-    # Require confirmation and metadata
-    observeEvent(input$save_acorn_server_confirm, { 
-      name_file <- glue("{input$name_file}.acorn")
-      file <- file.path(tempdir(), name_file)
-      
-      patient <- patient()
-      microbio <- microbio()
-      hai.surveys <- hai_surveys()
-      corresp_org_antibio <- corresp_org_antibio()
-      
-      # generate meta
-      meta <- list()
-      meta$time_generation <- session_start_time
-      meta$app_version <- app_version
-      meta$user <- input$meta_acorn_user
-      meta$comment <- input$meta_acorn_comment
-      
-      save(patient, microbio, corresp_org_antibio, hai.surveys,
-           meta,
-           file = file)
-      
-      put_object(file = file,
-                 object = name_file,
-                 bucket = acorn_cred()$acorn_s3_bucket,
-                 key =  acorn_cred()$acorn_s3_key,
-                 secret = acorn_cred()$acorn_s3_secret,
-                 region = acorn_cred()$acorn_s3_region)
-      
-      dta <- get_bucket(bucket = acorn_cred()$acorn_s3_bucket,
-                        key =  acorn_cred()$acorn_s3_key,
-                        secret = acorn_cred()$acorn_s3_secret,
-                        region = acorn_cred()$acorn_s3_region)
-      dta <- unlist(dta)
-      acorn_dates <- as.vector(dta[names(dta) == 'Contents.LastModified'])
-      ord_acorn_dates <- order(as.POSIXct(acorn_dates))
-      acorn_files <- rev(tail(as.vector(dta[names(dta) == 'Contents.Key'])[ord_acorn_dates], 10))
-      
-      checklist_status$acorn_dta_saved <- list(status = "okay", msg = "ACORN file saved")
-      
-      updatePickerInput(session, 'acorn_files_server', choices = acorn_files, selected = character(0))
-      removeModal()
-      show_toast(title = "File Saved on Server", type = "success", position = "top")
-    })
-    
-    # On "Save ACORN" locally ----
-    observeEvent(input$save_acorn_local, { 
-      showModal(modalDialog(
-        fluidRow(
-          column(6,
-                 textInput("name_file_dup", value = session_start_time, label = "Choose a name for the file"),
-                 textInput("meta_acorn_user_dup", label = "User:", value = Sys.info()["user"]),
-                 textInput("meta_acorn_machine_dup", label = "Machine:", value = Sys.info()["nodename"]),
-                 textAreaInput("meta_acorn_comment_dup", label = "(Optional) Comment"),
-                 p(glue("The session id: {session_id} will be added to the file."))
-          ),
-          column(6,
-                 downloadButton("save_acorn_local_confirm", label = "Confirm Save File")
-          )
-        ),
-        
-        title = "Save acorn data",
-        footer = modalButton("Cancel"),
-        size = "l",
-        easyClose = FALSE,
-        fade = TRUE
-      ))
-    })
-    
-    # Require confirmation and metadata
-    output$save_acorn_local_confirm <- downloadHandler(
-      filename = glue("{input$name_file_dup}.acorn"),
-      content = function(file) {
-        checklist_status$acorn_dta_saved <- list(status = "okay", msg = "ACORN file saved")
-        f01 <- acorn_dta_merged$f01
-        f02 <- acorn_dta_merged$f02
-        f03 <- acorn_dta_merged$f03
-        f04 <- acorn_dta_merged$f04
-        f05 <- acorn_dta_merged$f05
-        f06 <- acorn_dta_merged$f06
-        
-        f01_edit <- acorn_dta_merged$f01_edit
-        f02_edit <- acorn_dta_merged$f02_edit
-        f03_edit <- acorn_dta_merged$f03_edit
-        f04_edit <- acorn_dta_merged$f04_edit
-        f05_edit <- acorn_dta_merged$f05_edit
-        f06_edit <- acorn_dta_merged$f06_edit
-        
-        lab_dta <- acorn_dta_merged$lab_dta
-        
-        meta <- list(time_generation = session_start_time,
-                     session_id = session_id,
-                     app_version = app_version,
-                     user = input$meta_acorn_user_dup,
-                     machine = input$meta_acorn_machine_dup,
-                     comment = input$meta_acorn_comment_dup)
-        
-        save(f01, f02, f03, f04, f05, f06,
-             f01_edit, f02_edit, f03_edit, f04_edit, f05_edit, f06_edit,
-             lab_dta, meta,
-             file = file)
-      })
-    startAnim(session, 'float', 'bounce')
+    if(! file.exists(data_dictionary$file_path))  {
+      showNotification("We couldn't find the lab data dictionary. Please contact ACORN Data Management.", type = "error", duration = NULL)
+      return()
     }
+    
+    data_dictionary$variables <- read_excel(data_dictionary$file_path, sheet = "variables")
+    data_dictionary$test.res <- read_excel(data_dictionary$file_path, sheet = "test.results")
+    data_dictionary$local.spec <- read_excel(data_dictionary$file_path, sheet = "spec.types")
+    data_dictionary$local.orgs <- read_excel(data_dictionary$file_path, sheet = "organisms")
+    data_dictionary$notes <- read_excel(data_dictionary$file_path, sheet = "notes")
+    
+    
+    # the lab dataset should contain at minima:
+    # if WHONET format: PATIENT_ID ; SPEC_NUM ; SPEC_DATE ; SPEC_CODE
+    # if TABULAR format: PATIENT_ID ; SPEC_NUM ; SPEC_DATE ; LOCAL_SPEC
+    
+    
+    message("Process lab data.")
+    # filter lab data by id to make sure that we have only ACORN patients
+    
+    source("./www/R/data/03_map_variables.R", local = TRUE)
+    source("./www/R/data/03_map_specimens.R", local = TRUE)
+    source("./www/R/data/04_map_organisms.R", local = TRUE)
+    source("./www/R/data/05_make_ast_group.R", local = TRUE)
+    source("./www/R/data/06_ast_interpretation.R", local = TRUE)
+    source("./www/R/data/07_ast_interpretation_nonstandard.R", local = TRUE)
+    
+    message("Other steps")
+    source("./www/R/data/08_odk_assembly.R", local = TRUE)
+    source("./www/R/data/09_link_clinical_assembly.R", local = TRUE)
+    source("./www/R/data/10_process_hai_survey_data.R", local = TRUE)
+    source("./www/R/data/11_prepare_data.R", local = TRUE)
+    source("./www/R/data/12_quality_control.R", local = TRUE)
+    
+    acorn_dta_saved = list(status = "ko", msg = ".acorn not saved")
+  })
+  
+  # On "Save ACORN" on server ----
+  observeEvent(input$save_acorn_server, { 
+    if(checklist_status$acorn_dta$status != "ok") {
+      showNotification("No .acorn data loaded.", type = "warning", duration = NULL)
+      return()
+    }
+    
+    showModal(modalDialog(
+      fluidRow(
+        column(6,
+               p(glue("The time of generation: {session_start_time} will be added to the file.")),
+               textInput("name_file", value = session_start_time, label = "Choose a name for the file"),
+               textInput("meta_acorn_user", label = "User:", value = Sys.info()["user"]),
+               textAreaInput("meta_acorn_comment", label = "(Optional) Comment")
+        ),
+        column(6,
+               actionButton("save_acorn_server_confirm", label = "Confirm Save on Server")
+        )
+      ),
+      
+      title = "Save acorn data",
+      footer = modalButton("Cancel"),
+      size = "l",
+      easyClose = FALSE,
+      fade = TRUE
+    ))
+    
+  })
+  
+  # Require confirmation and metadata
+  observeEvent(input$save_acorn_server_confirm, { 
+    name_file <- glue("{input$name_file}.acorn")
+    file <- file.path(tempdir(), name_file)
+    
+    patient <- patient()
+    microbio <- microbio()
+    hai.surveys <- hai_surveys()
+    corresp_org_antibio <- corresp_org_antibio()
+    
+    # generate meta
+    meta <- list()
+    meta$time_generation <- session_start_time
+    meta$app_version <- app_version
+    meta$user <- input$meta_acorn_user
+    meta$comment <- input$meta_acorn_comment
+    
+    save(patient, microbio, corresp_org_antibio, hai.surveys,
+         meta,
+         file = file)
+    
+    put_object(file = file,
+               object = name_file,
+               bucket = acorn_cred()$acorn_s3_bucket,
+               key =  acorn_cred()$acorn_s3_key,
+               secret = acorn_cred()$acorn_s3_secret,
+               region = acorn_cred()$acorn_s3_region)
+    
+    dta <- get_bucket(bucket = acorn_cred()$acorn_s3_bucket,
+                      key =  acorn_cred()$acorn_s3_key,
+                      secret = acorn_cred()$acorn_s3_secret,
+                      region = acorn_cred()$acorn_s3_region)
+    dta <- unlist(dta)
+    acorn_dates <- as.vector(dta[names(dta) == 'Contents.LastModified'])
+    ord_acorn_dates <- order(as.POSIXct(acorn_dates))
+    acorn_files <- rev(tail(as.vector(dta[names(dta) == 'Contents.Key'])[ord_acorn_dates], 10))
+    
+    checklist_status$acorn_dta_saved <- list(status = "okay", msg = "ACORN file saved")
+    
+    updatePickerInput(session, 'acorn_files_server', choices = acorn_files, selected = character(0))
+    removeModal()
+    show_toast(title = "File Saved on Server", type = "success", position = "top")
+  })
+  
+  # On "Save ACORN" locally ----
+  observeEvent(input$save_acorn_local, { 
+    showModal(modalDialog(
+      fluidRow(
+        column(6,
+               textInput("name_file_dup", value = session_start_time, label = "Choose a name for the file"),
+               textInput("meta_acorn_user_dup", label = "User:", value = Sys.info()["user"]),
+               textInput("meta_acorn_machine_dup", label = "Machine:", value = Sys.info()["nodename"]),
+               textAreaInput("meta_acorn_comment_dup", label = "(Optional) Comment"),
+               p(glue("The session id: {session_id} will be added to the file."))
+        ),
+        column(6,
+               downloadButton("save_acorn_local_confirm", label = "Confirm Save File")
+        )
+      ),
+      
+      title = "Save acorn data",
+      footer = modalButton("Cancel"),
+      size = "l",
+      easyClose = FALSE,
+      fade = TRUE
+    ))
+  })
+  
+  # Require confirmation and metadata
+  output$save_acorn_local_confirm <- downloadHandler(
+    filename = glue("{input$name_file_dup}.acorn"),
+    content = function(file) {
+      checklist_status$acorn_dta_saved <- list(status = "okay", msg = "ACORN file saved")
+      f01 <- acorn_dta_merged$f01
+      f02 <- acorn_dta_merged$f02
+      f03 <- acorn_dta_merged$f03
+      f04 <- acorn_dta_merged$f04
+      f05 <- acorn_dta_merged$f05
+      f06 <- acorn_dta_merged$f06
+      
+      f01_edit <- acorn_dta_merged$f01_edit
+      f02_edit <- acorn_dta_merged$f02_edit
+      f03_edit <- acorn_dta_merged$f03_edit
+      f04_edit <- acorn_dta_merged$f04_edit
+      f05_edit <- acorn_dta_merged$f05_edit
+      f06_edit <- acorn_dta_merged$f06_edit
+      
+      lab_dta <- acorn_dta_merged$lab_dta
+      
+      meta <- list(time_generation = session_start_time,
+                   session_id = session_id,
+                   app_version = app_version,
+                   user = input$meta_acorn_user_dup,
+                   machine = input$meta_acorn_machine_dup,
+                   comment = input$meta_acorn_comment_dup)
+      
+      save(f01, f02, f03, f04, f05, f06,
+           f01_edit, f02_edit, f03_edit, f04_edit, f05_edit, f06_edit,
+           lab_dta, meta,
+           file = file)
+    })
+  startAnim(session, 'float', 'bounce')
+}
 
 shinyApp(ui = ui, server = server)  # port 3872

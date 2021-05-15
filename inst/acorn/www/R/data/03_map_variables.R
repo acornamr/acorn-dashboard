@@ -1,7 +1,7 @@
 # bridge
 amr.loc <- lab_dta()
 
-# message("Source 02_map_variables.R")
+message("Source 03_map_variables.R")
 # 
 # # Alternative Start (Olivier)
 # use_acorn_name <- function(x, acorn_names, local_names) {

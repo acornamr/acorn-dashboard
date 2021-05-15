@@ -6,9 +6,7 @@ cols_sir <- c("#2c3e50", "#f39c12", "#e74c3c")  # resp. S, I, R
 # cols_sir <- c("#2166ac", "#fddbc7", "#b2182b")  # resp. S, I, R
 hc_export_kind <- c("downloadJPEG", "downloadCSV")
 
-# IMPORTANT: packages listed here should be synced to
-# run_app.R and DESCRIPTION
-
+# IMPORTANT: packages listed here should be synced with run_app.R and DESCRIPTION
 library(aws.s3)
 library(bslib)  # bs_theme()
 library(curl)
@@ -30,7 +28,7 @@ library(shiny.i18n)  # i18n$t()
 library(shinyjs)
 library(shinyWidgets)  # chooseSliderSkin()
 library(tidyverse)
-library(validate)  # TODO: remove validate package?
+library(writexl)
 
 session_start_time <- format(Sys.time(), "%Y-%m-%d_%HH%M")
 session_id <- glue("{glue_collapse(sample(LETTERS, 5, TRUE))}_{session_start_time}")
@@ -68,8 +66,8 @@ lab_code <- list(
 
 # It's safe to expose those since the acornamr-cred bucket content can only be listed + read 
 # and contains only encrypted files
-bucket_cred_k <- readRDS("./www/cred/bucket_cred_k.Rds")
-bucket_cred_s <- readRDS("./www/cred/bucket_cred_l.Rds")
+bucket_cred_key <- readRDS("./www/cred/bucket_cred/bucket_cred_key.Rds")
+bucket_cred_sec <- readRDS("./www/cred/bucket_cred/bucket_cred_sec.Rds")
 
 # contains all require i18n elements
 i18n <- Translator$new(translation_csvs_path = './www/translations/')
