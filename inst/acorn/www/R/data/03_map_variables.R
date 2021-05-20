@@ -1,77 +1,37 @@
-# bridge
-amr.loc <- lab_dta()
-
 message("Source 03_map_variables.R")
-# 
-# # Alternative Start (Olivier)
-# use_acorn_name <- function(x, acorn_names, local_names) {
-#   if(x %in% acorn_names)  return(x)
-#   if(x %in% local_names)  return(acorn_names[which(local_names == x)])
-#   return(paste0("NOT_ACORN_COLUMN_", x))
-# }
-# 
-# use_acorn_name <- Vectorize(use_acorn_name, vectorize.args = "x")
 
-# # Test of use_acorn_name()
-# data_dictionary$variables$acorn.code[2] <- "specid2"
-# data_dictionary$variables$local.code[2] <- "specid"
-# 
-# use_acorn_name("patid", acorn_names = data_dictionary$variables$acorn.code, 
-#                local_names = data_dictionary$variables$local.code)
-# use_acorn_name("specid", acorn_names = data_dictionary$variables$acorn.code, 
-#                local_names = data_dictionary$variables$local.code)
-# use_acorn_name("patid45", acorn_names = data_dictionary$variables$acorn.code, 
-#                local_names = data_dictionary$variables$local.code)
+# TODO: move this function at a higher level
+use_acorn_name <- function(x, acorn_names, local_names) {
+  if(x %in% local_names)  return(acorn_names[which(local_names == x)])
+  if(x %in% acorn_names)  return(x)
+  return(paste0("NOT_ACORN_COLUMN_", x))
+}
+use_acorn_name <- Vectorize(use_acorn_name, vectorize.args = "x")
 
-# amr <- lab_dta() %>%
-#   mutate_all(as.character) %>%
-#   rename_with(use_acorn_name,
-#               acorn_names = data_dictionary$variables$acorn.code,
-#               local_names = data_dictionary$variables$local.code) %>%
-#   select(! starts_with("NOT_ACORN_COLUMN_")) %>%
-#   mutate(specdate = parse_date_time(specdate, c("dmY", "Ymd", "dbY", "Ymd HMS"))) %>%
-#   # Create specid.acorn:
-#   mutate(specid_lowercase = tolower(specid)) %>%
-#   group_by(specid_lowercase) %>% mutate(spec_indice = row_number()) %>% ungroup() %>%
-#   mutate(specid.acorn = paste(specid_lowercase, spec_indice)) %>%
-#   select(-specid_lowercase, -spec_indice)
 
-# Alternative End (Olivier)
+amr <- lab_dta() %>%
+  mutate_all(as.character) %>%
+  rename_with(use_acorn_name,
+              acorn_names = data_dictionary$variables$acorn.code,
+              local_names = data_dictionary$variables$local.code) %>%
+  select(! starts_with("NOT_ACORN_COLUMN_")) %>%
+  mutate(specdate = parse_date_time(specdate, c("dmY", "Ymd", "dbY", "Ymd HMS"))) %>%
+  mutate(specid.lc = tolower(specid))
 
-# Map local variable names with acorn variable names (use "match" command)
-variable.names <- data_dictionary$variables %>%
-  select(acorn.code, local.code)
-amr.loc <- amr.loc %>% mutate_all(as.character)
-names(amr.loc) <- variable.names$acorn.code[match(names(amr.loc), variable.names$local.code)]
+# possible improvement of below START - TODO try, debug and test
+# amr <- amr %>% 
+#   mutate(specid.lc = tolower(specid)) %>%
+#   mutate(specid.acorn = as.numeric(as.factor(specid.lc))) %>%
+#   group_by(specid.acorn) %>% mutate(orgnum.acorn = 1:n()) %>% ungroup() %>%
+#   mutate(isol.id_2 = paste(amr$specid.acorn, amr$orgnum.acorn, sep = "-"))
 
-# Make a blank data frame in the correct format for analysis
-amr <- data.frame(matrix(vector(), nrow = 0, ncol = length(variable.names$acorn.code)))
-names(amr) <- variable.names$acorn.code
-amr <- amr %>% mutate_all(as.character) # Convert all columns to character
-
-# Merge in local data to the empty data frame (and keep the columns in order)
-# See: https://stackoverflow.com/questions/18003717/efficient-way-to-rbind-data-frames-with-different-columns
-amr <- as.data.frame(rbind(setDT(amr), setDT(amr.loc), fill = TRUE)) # Converts the data.frames into data.tables (and back again)
-
-# Remove columns with NA colnames (introduced if there are additional variables in the amr.loc data.frame that are not included in ACORN variable set (amr))
-amr <- subset(amr, select = (!is.na(colnames(amr))))
-
-# Make a copy of this original data.frame [UPDATED ACORN2]
-# - To maintain all the data in original format so re-interpretation / re-analysis can be done with local data re-extraction [if bugs identified or script updated for any reason]
-# - Will be filtered to only include ACORN enrollees and IDs will be hashed at the end
-amr.original <- amr
-
-# Format specimen date correctly
-print("[Log ACORN] guess the format of the specimen date variable")
-amr$specdate <- parse_date_time(amr$specdate, c("dmY", "Ymd", "dbY", "Ymd HMS"))
 
 # Make a new orgnum (do not rely on any orgnum imported as part of the dataset)
-amr$specid.lc <- tolower(amr$specid) # Make all specid lowercase (to avoid splitting specid based on inconsistent use of caps)
 specid <- subset(amr, select = c(specid.lc), subset = (!duplicated(specid.lc)))
 specid$specid.acorn <- seq_along(specid$specid.lc)
 
 amr <- left_join(amr, specid,
-                 by = "specid.lc") %>% 
+                 by = "specid.lc") %>%
   group_by(specid.lc) %>%
   mutate(orgnum.acorn = 1:n()) %>%
   ungroup() %>%

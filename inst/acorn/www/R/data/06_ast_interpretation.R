@@ -1,4 +1,4 @@
-print("Source 06_ast_interpretation.R")
+message("Source 06_ast_interpretation.R")
 # Combine into a single data.frame
 ast.codes <- rbind(lab_code$ast.aci, lab_code$ast.col, lab_code$ast.ent, lab_code$ast.hin, lab_code$ast.ngo, lab_code$ast.nmen, lab_code$ast.pae, lab_code$ast.sal, lab_code$ast.sau, lab_code$ast.shi, lab_code$ast.spn)
 
@@ -121,7 +121,7 @@ tmp.ast3$abx.cat.result[tmp.ast3$abx.cat.result == 0] <- NA
 # Convert AST data.frame from long back to wide format
 ast.final <- spread(tmp.ast3, abxname, abx.cat.result) # Make individual variables for each antibiotic (WHONET codes)
 
-# Merge categorised AST data back into amr.raw data.frame
+# Merge categorised AST data back into amr.raw data.frame (defined in 05_make_ast_group.R)
 amr <- left_join(amr.raw, ast.final, by = "isol.id")
 
 # Make a final data.frame with columns for all antibiotics in ACORN dataset (depending on sites, not all antibiotics will be tested / present in ast.final)
@@ -135,4 +135,7 @@ names(tmp.amr1) <-ast.varnames
 tmp.amr2 <- cbind(tmp.amr, tmp.amr1) # Combine both data.frames
 tmp.amr2 <- tmp.amr2 %>% mutate_all(as.character) # Convert all columns to character
 amr <- amr %>% mutate_all(as.character)
-amr <- as.data.frame(rbind(setDT(tmp.amr2), setDT(amr), fill = TRUE)) # Write in the data (converts the data.frames into data.tables (and back again))
+
+
+# amr <- as.data.frame(rbind(setDT(tmp.amr2), setDT(amr), fill = TRUE)) # Write in the data (converts the data.frames into data.tables (and back again))
+amr <- bind_rows(tmp.amr2, amr) # avoid the data.table package requirement

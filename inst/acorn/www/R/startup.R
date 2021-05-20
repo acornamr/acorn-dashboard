@@ -33,41 +33,9 @@ library(writexl)
 session_start_time <- format(Sys.time(), "%Y-%m-%d_%HH%M")
 session_id <- glue("{glue_collapse(sample(LETTERS, 5, TRUE))}_{session_start_time}")
 
-# Read data dictionnary, one unique file for all sites
-message("List data dictionaries files.")
-files_data_dictionary <- list.files('./www/data/data_dictionary/')
-
-# Read lab codes and AST breakpoint data
-message("Read lab codes and AST breakpoint data.")
-
-path_lab_code_file <- "www/data/ACORN2_lab_codes_2021-05-02.xlsx"
-read_lab_code <- function(sheet) read_excel(path_lab_code_file, sheet = sheet, 
-                                            col_types = c("text", "text", "text", "text", "text", "numeric", "numeric", "text", "text"), na = "NA")
-
-lab_code <- list(
-  whonet.spec = read_excel(path_lab_code_file, sheet = "spectypes.whonet"),
-  orgs.antibio = read_excel(path_lab_code_file, sheet = "orgs.antibio"),
-  whonet.orgs = read_excel(path_lab_code_file, sheet = "orgs.whonet"),
-  acorn.bccontaminants = read_excel(path_lab_code_file, sheet = "acorn.bccontaminants"), # [UPDATED ACORN2]
-  acorn.ast.groups = read_excel(path_lab_code_file, sheet = "acorn.ast.groups"),
-  ast.aci = read_lab_code(sheet = "aci"),  # Gram negatives - Acinetobacter
-  ast.col = read_lab_code(sheet = "col"),   # Enterobacteriaceae (all)
-  ast.hin = read_lab_code(sheet = "hin"),  # Haemophilus influenzae
-  ast.ngo = read_lab_code(sheet = "ngo"),  # Neisseria gonorrhoeae
-  ast.nmen = read_lab_code(sheet = "nmen"),  # Neisseria meningitidis
-  ast.pae = read_lab_code(sheet = "pae"),  # Pseudomonas aeruginosa
-  ast.sal = read_lab_code(sheet = "sal"),  # Salmonella sp (all)
-  ast.shi = read_lab_code(sheet = "shi"),  # Shigella sp
-  ast.ent = read_lab_code(sheet = "ent"),  # Gram positives - Enterococcus sp (all)
-  ast.sau = read_lab_code(sheet = "sau"),  # Staphylococcus aureus
-  ast.spn = read_lab_code(sheet = "spn"),  # Streptococcus pneumoniae
-  notes = read_excel(path_lab_code_file, sheet = "notes", skip = 1, col_names = paste("Notes", 1:3), col_types = "text")
-)
-
-# It's safe to expose those since the acornamr-cred bucket content can only be listed + read 
-# and contains only encrypted files
-bucket_cred_key <- readRDS("./www/cred/bucket_cred/bucket_cred_key.Rds")
-bucket_cred_sec <- readRDS("./www/cred/bucket_cred/bucket_cred_sec.Rds")
+# it's safe to expose those since the shared_acornamr bucket content can only be listed + read with these credentials
+shared_acornamr_key <- readRDS("./www/cred/bucket_cred/shared_acornamr_key.rds")
+shared_acornamr_sec <- readRDS("./www/cred/bucket_cred/shared_acornamr_sec.rds")
 
 # contains all require i18n elements
 i18n <- Translator$new(translation_csvs_path = './www/translations/')

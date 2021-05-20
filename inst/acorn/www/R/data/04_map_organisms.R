@@ -1,4 +1,4 @@
-print("Source 04_map_organisms.R") # [UPDATED ACORN2]
+message("Source 04_map_organisms.R")
 
 # Map local / WHO organism codes and names to ACORN organism names / groups
 whonet.orgs <- lab_code$whonet.orgs

@@ -1,4 +1,4 @@
-print("Source 09_link_clinical_assembly.R")
+message("Source 09_link_clinical_assembly.R")
 
 # Link the clincal data to the microbiology specimen data
 # Make a data.frame of microbiology specimen IDs

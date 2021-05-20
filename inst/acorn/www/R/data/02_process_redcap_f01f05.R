@@ -61,7 +61,10 @@ dl_redcap_f03 <- dl_redcap_dta %>%
 ## Test "Every recorded hospital outcome (F03) has a matching infection episode (F02)" ----
 ifelse(all(dl_redcap_f03$id_dmdtc %in% dl_redcap_f02$id_dmdtc), 
        { checklist_status$redcap_F03F02 <- list(status = "okay", msg = "Every recorded hospital outcome (F03) has a matching infection episode (F02)")},
-       { checklist_status$redcap_F03F02 <- list(status = "warning", msg = "Some hospital outcome (F03) do not have a matching infection episode (F02)")})
+       { 
+         checklist_status$redcap_F03F02 <- list(status = "warning", msg = "Some hospital outcome (F03) do not have a matching infection episode (F02)")
+         dl_redcap_f03 <- dl_redcap_f03 %>% filter(id_dmdtc %in% dl_redcap_f02$id_dmdtc)
+       })
 
 infection_episode <- full_join(dl_redcap_f02, 
                                dl_redcap_f03 %>% select(!recordid:redcap_repeat_instance),
@@ -98,13 +101,12 @@ if(all(patient_enrolment$siteid == patient_enrolment$siteid_cfm,
 
 
 # consolidate patient_enrolment & infection_episode in infection ----
-infection <- left_join(infection_episode %>%
-                         select(-c("f02odkreckey", "odkreckey", "id_dmdtc")), 
-                       patient_enrolment %>%
-                         select(-c("redcap_repeat_instrument", "redcap_repeat_instance", "f01odkreckey",
-                                   "acornid_odk", "adm_date_odk", "siteid_cfm", "usubjid_cfm", "acornid_cfm",
-                                   "hpd_adm_date_cfm", "f04odkreckey")), 
-                       by = "recordid")
+infection <- left_join(
+  infection_episode %>% select(-c("f02odkreckey", "odkreckey", "id_dmdtc")), 
+  patient_enrolment %>% select(-c("redcap_repeat_instrument", "redcap_repeat_instance", "f01odkreckey",
+                                  "acornid_odk", "adm_date_odk", "siteid_cfm", "usubjid_cfm", "acornid_cfm",
+                                  "hpd_adm_date_cfm", "f04odkreckey")), 
+  by = "recordid")
 
 
 
@@ -298,14 +300,42 @@ if(all(infection$age_year[infection$age_category == "Adult"] >= 18,
 
 
 # Define Clinical Severity
-# TODO: confirm with Paul the new definition of clinical_severity, now including neo_reduce, neo_fee, neo_convul
-infection$clinical_severity <- "Unknown"
-infection$clinical_severity[infection$age_year >= 18 & 
-                              (infection$adult_altered_mentation == "Yes" | infection$adult_respiratory_rate == "Yes" | 
-                                 infection$adult_blood_pressure == "Yes")] <- "Severe"
-infection$clinical_severity[infection$age_year <= 17 & 
-                              (infection$child_neo_abnormal_temp == "Yes" | infection$child_neo_inapp_tachycardia == "Yes" | 
-                                 infection$child_neo_alter_mental == "Yes" | infection$child_neo_reduce_pp == "Yes")] <- "Severe"
-infection$clinical_severity[infection$age_day <= 28 & 
-                              (infection$neo_reduce == "Yes" | infection$neo_feed == "Yes" | infection$neo_convul == "Yes")] <- "Severe"
+equal_yes <- function(x) replace_na(x, "No") == "Yes"
 
+infection$clinical_severity_score <- 
+  (infection$age_category == "Adult") * (
+      equal_yes(infection$adult_altered_mentation) + 
+      equal_yes(infection$adult_respiratory_rate) + 
+      equal_yes(infection$adult_blood_pressure)) +
+  (infection$age_category == "Child") * (
+      equal_yes(infection$child_neo_abnormal_temp) +
+      equal_yes(infection$child_neo_inapp_tachycardia) +
+      equal_yes(infection$child_neo_alter_mental) +
+      equal_yes(infection$child_neo_reduce_pp)
+  ) +
+  (infection$age_category == "Neonate") * (
+      equal_yes(infection$child_neo_abnormal_temp) +
+      equal_yes(infection$child_neo_inapp_tachycardia) +
+      equal_yes(infection$child_neo_alter_mental) +
+      equal_yes(infection$child_neo_reduce_pp) +
+      equal_yes(infection$neo_reduce) +
+      equal_yes(infection$neo_feed) +
+      equal_yes(infection$neo_convul)
+  )
+
+# Define Updated Charlson Comorbidity Index (uCCI)
+not_empty <- function(x) replace_na(x, "") != ""
+
+infection$cci <- (infection$age_category == "Adult") *
+  2 * not_empty(infection$cmb_cog) + 
+  2 * not_empty(infection$cmb_dem) +
+  not_empty(infection$cmb_cpd) +
+  not_empty(infection$cmb_rheu) +
+  2 * not_empty(infection$cmb_mld) +
+  not_empty(infection$cmb_diad) +
+  2 * not_empty(infection$cmb_hop) +
+  # TODO: add "Renal disease" once Ong has added it to the list of comorbidities
+  2 * not_empty(infection$cmb_onc) +
+  4 * not_empty(infection$cmb_liv) +
+  6 * not_empty(infection$cmb_mst) +
+  4 * not_empty(infection$cmb_aids) 

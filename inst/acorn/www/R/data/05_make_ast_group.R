@@ -1,4 +1,4 @@
-print("Source 05_make_ast_group.R")
+message("Source 05_make_ast_group.R")
 
 # Make an ast.group variable
 # - GLASS orgs, enterococci (WHO priority), Pseudomonas aeruginosa (WHO priority), 
@@ -91,34 +91,38 @@ for(i in amr.var$varname.ast[amr.var$cat.short == "E"]) {
 
 # Sort out SXT-VITEK MIC results [UPDATED ACORN2]
 # If results are recorded as trimethoprim + sulfamethoxazole (e.g. 40) rather than trimethoprim/sulfamethoxazole (e.g. 2/38)
-amr$SXT_NM[amr$SXT_NM == 10240] <- 512 # CLSI
-amr$SXT_NM[amr$SXT_NM == 5120] <- 256
-amr$SXT_NM[amr$SXT_NM == 2560] <- 128
-amr$SXT_NM[amr$SXT_NM == 1280] <- 64
-amr$SXT_NM[amr$SXT_NM == 640] <- 32
-amr$SXT_NM[amr$SXT_NM == 320] <- 16
-amr$SXT_NM[amr$SXT_NM == 160] <- 8
-amr$SXT_NM[amr$SXT_NM == 80] <- 4
-amr$SXT_NM[amr$SXT_NM == 40] <- 2
-amr$SXT_NM[amr$SXT_NM == 20] <- 1
-amr$SXT_NM[amr$SXT_NM == 10] <- 0.5
-amr$SXT_NM[amr$SXT_NM == 5] <- 0.25
-amr$SXT_NM[amr$SXT_NM == 2.4] <- 0.12
-amr$SXT_NM[amr$SXT_NM == 1.2] <- 0.06
-amr$SXT_NM[amr$SXT_NM == 0.6] <- 0.03
+if(!is.null(amr$SXT_NM)) {
+  amr$SXT_NM[amr$SXT_NM == 10240] <- 512 # CLSI
+  amr$SXT_NM[amr$SXT_NM == 5120] <- 256
+  amr$SXT_NM[amr$SXT_NM == 2560] <- 128
+  amr$SXT_NM[amr$SXT_NM == 1280] <- 64
+  amr$SXT_NM[amr$SXT_NM == 640] <- 32
+  amr$SXT_NM[amr$SXT_NM == 320] <- 16
+  amr$SXT_NM[amr$SXT_NM == 160] <- 8
+  amr$SXT_NM[amr$SXT_NM == 80] <- 4
+  amr$SXT_NM[amr$SXT_NM == 40] <- 2
+  amr$SXT_NM[amr$SXT_NM == 20] <- 1
+  amr$SXT_NM[amr$SXT_NM == 10] <- 0.5
+  amr$SXT_NM[amr$SXT_NM == 5] <- 0.25
+  amr$SXT_NM[amr$SXT_NM == 2.4] <- 0.12
+  amr$SXT_NM[amr$SXT_NM == 1.2] <- 0.06
+  amr$SXT_NM[amr$SXT_NM == 0.6] <- 0.03
+}
 
-amr$SXT_EM[amr$SXT_EM == 10240] <- 512 # EUCAST
-amr$SXT_EM[amr$SXT_EM == 5120] <- 256
-amr$SXT_EM[amr$SXT_EM == 2560] <- 128
-amr$SXT_EM[amr$SXT_EM == 1280] <- 64
-amr$SXT_EM[amr$SXT_EM == 640] <- 32
-amr$SXT_EM[amr$SXT_EM == 320] <- 16
-amr$SXT_EM[amr$SXT_EM == 160] <- 8
-amr$SXT_EM[amr$SXT_EM == 80] <- 4
-amr$SXT_EM[amr$SXT_EM == 40] <- 2
-amr$SXT_EM[amr$SXT_EM == 20] <- 1
-amr$SXT_EM[amr$SXT_EM == 10] <- 0.5
-amr$SXT_EM[amr$SXT_EM == 5] <- 0.25
-amr$SXT_EM[amr$SXT_EM == 2.4] <- 0.12
-amr$SXT_EM[amr$SXT_EM == 1.2] <- 0.06
-amr$SXT_EM[amr$SXT_EM == 0.6] <- 0.03
+if(!is.null(amr$SXT_EM)) {
+  amr$SXT_EM[amr$SXT_EM == 10240] <- 512 # EUCAST
+  amr$SXT_EM[amr$SXT_EM == 5120] <- 256
+  amr$SXT_EM[amr$SXT_EM == 2560] <- 128
+  amr$SXT_EM[amr$SXT_EM == 1280] <- 64
+  amr$SXT_EM[amr$SXT_EM == 640] <- 32
+  amr$SXT_EM[amr$SXT_EM == 320] <- 16
+  amr$SXT_EM[amr$SXT_EM == 160] <- 8
+  amr$SXT_EM[amr$SXT_EM == 80] <- 4
+  amr$SXT_EM[amr$SXT_EM == 40] <- 2
+  amr$SXT_EM[amr$SXT_EM == 20] <- 1
+  amr$SXT_EM[amr$SXT_EM == 10] <- 0.5
+  amr$SXT_EM[amr$SXT_EM == 5] <- 0.25
+  amr$SXT_EM[amr$SXT_EM == 2.4] <- 0.12
+  amr$SXT_EM[amr$SXT_EM == 1.2] <- 0.06
+  amr$SXT_EM[amr$SXT_EM == 0.6] <- 0.03
+}

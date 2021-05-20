@@ -242,11 +242,6 @@ ui <- fluidPage(
                                                conditionalPanel("input.format_lab_data == 'Tabular'",
                                                                 fileInput("file_lab_tab", NULL,  buttonLabel = "Browse for tabular file", accept = c(".csv", ".txt", ".xls", ".xlsx"))
                                                ),
-                                               
-                                               # pickerInput("select_data_dictionary", "Select lab data dictionary file",
-                                               #             choices = c("_", files_data_dictionary), 
-                                               #             multiple = FALSE),
-                                               
                                                fluidRow(
                                                  column(4, htmlOutput("message_lab_dta")),
                                                  column(8, htmlOutput("checklist_qc_lab"))
@@ -563,6 +558,7 @@ ui <- fluidPage(
 server <- function(input, output, session) {
   
   # Hide tabs on app launch ----
+  hideTab(inputId = "tabs", target = "data_management")
   hideTab(inputId = "tabs", target = "overview")
   hideTab(inputId = "tabs", target = "follow_up")
   hideTab(inputId = "tabs", target = "hai")
@@ -616,7 +612,7 @@ server <- function(input, output, session) {
   file_list <- list.files(path = "./www/R/outputs", pattern = "*.R", recursive = TRUE)
   for (file in file_list) source(paste0("./www/R/outputs/", file), local = TRUE)$value
   
-  # management of filters shortcuts ----
+  # (TODO) Management of filters shortcuts ----
   observeEvent(input$shortcut_filter_1, {
     # Patients with Pneumonia, BC only
     updatePrettyCheckboxGroup(session, "filter_diagnosis", selected = c("Pneumonia"))
@@ -752,23 +748,13 @@ server <- function(input, output, session) {
     Sys.sleep(1)
     
     if (input$cred_site == "demo") {
-      
-      # Stop is the password is wrong
+      # The demo should work offline
       cred <- readRDS("./www/cred/bucket_site/encrypted_cred_demo.rds")
-      key_user <- sha256(charToRaw(input$cred_password))
-      test <- try(unserialize(aes_cbc_decrypt(cred, key = key_user)), silent = TRUE)
-      
-      if(inherits(test, "try-error"))  {
-        showNotification("Wrong password", type = "error")
-        return()
-      }
-      
-      # Save into reactive element to be able to used later on
+      key_user <- sha256(charToRaw("demo"))
       cred <- unserialize(aes_cbc_decrypt(cred, key = key_user))
       
-      test <- (cred$site == input$cred_site)
-      if(!test)  {
-        showNotification("Something strange is happening", type = "error")
+      if(cred$site != input$cred_site)  {
+        showNotification("The credential file is corrupted. Please contact ACORN Data Management.", type = "error")
         return()
       }
       
@@ -776,11 +762,11 @@ server <- function(input, output, session) {
       acorn_cred(cred)
     }
     if (input$cred_site != "demo") {
-      file_cred <- glue("encrypted_cred_{input$cred_site}.rds")
-      # Feedback if the connection can't be established
-      connect <- try(get_bucket(bucket = "acornamr-cred", 
-                                key    = bucket_cred_key,
-                                secret = bucket_cred_sec,
+      file_cred <- glue("encrypted_cred_{tolower(input$cred_site)}_{input$cred_user}.rds")
+      # Stop if the connection can't be established
+      connect <- try(get_bucket(bucket = "shared-acornamr", 
+                                key    = shared_acornamr_key,
+                                secret = shared_acornamr_sec,
                                 region = "eu-west-3") %>% unlist(),
                      silent = TRUE)
       
@@ -790,39 +776,36 @@ server <- function(input, output, session) {
       }
       
       # Test if credentials for this user name exist
-      if (! file_cred %in% 
-          as.vector(connect[names(connect) == 'Contents.Key'])) {
-        showNotification("Couldn't find this user",
-                         type = "error")
+      if (! file_cred %in% as.vector(connect[names(connect) == "Contents.Key"])) {
+        showNotification("Couldn't find this user", type = "error")
         return()
       }
       
       # I can't find a way to pass those credentials directly in s3read_using()
-      Sys.setenv("AWS_ACCESS_KEY_ID" = bucket_cred_key,
-                 "AWS_SECRET_ACCESS_KEY" = bucket_cred_sec,
+      Sys.setenv("AWS_ACCESS_KEY_ID" = shared_acornamr_key,
+                 "AWS_SECRET_ACCESS_KEY" = shared_acornamr_sec,
                  "AWS_DEFAULT_REGION" = "eu-west-3")
       
-      cred <- s3read_using(FUN = readRDS_encrypted, 
+      cred <- try(s3read_using(FUN = readRDS_encrypted, 
                            pwd = input$cred_password,
                            object = file_cred,
-                           bucket = "acornamr-cred")
+                           bucket = "shared-acornamr"),
+                  silent = TRUE)
       
-      # To avoid issues during devel
-      Sys.setenv("AWS_ACCESS_KEY_ID" = "",
-                 "AWS_SECRET_ACCESS_KEY" = "",
-                 "AWS_DEFAULT_REGION" = "")
-      
-      test <- (cred$site == input$cred_site)
-      if(!test)  {
-        show_toast(title = "Something strange is happening", type = "error", position = "top")
+      if (inherits(cred, 'try-error')) {
+        showNotification("Wrong password.", type = "error")
         return()
       }
       
-      checklist_status$app_login <- list(status = "okay", msg = glue("Successfully logged in (as {cred$site})"))
+      # set back to default, blank values
+      Sys.setenv("AWS_ACCESS_KEY_ID" = "", "AWS_SECRET_ACCESS_KEY" = "", "AWS_DEFAULT_REGION" = "")
+      
+      
+      checklist_status$app_login <- list(status = "okay", msg = glue("Successfully logged in to {input$cred_site} (as {cred$user})"))
       acorn_cred(cred)
     }
     showNotification("Successfully logged in!")
-    updateTabsetPanel(inputId = "tabs", selected = "data_management")
+    showTab("tabs", target = "data_management")
     
     # Connect to AWS S3 server ----
     if(acorn_cred()$acorn_s3) {
@@ -834,7 +817,6 @@ server <- function(input, output, session) {
         region = acorn_cred()$acorn_s3_region)[1]
       
       if(connect_server_test) {
-        
         checklist_status$acorn_server_test <- list(status = "okay", msg = "Connection to .acorn server established")
         updateActionButton(session = session, 'get_redcap_data', icon = icon("cloud-download-alt"), label = "Get Clinical Data from REDCap server")
         
@@ -850,6 +832,7 @@ server <- function(input, output, session) {
         acorn_dates <- as.vector(dta[names(dta) == 'Contents.LastModified'])
         ord_acorn_dates <- order(as.POSIXct(acorn_dates))
         acorn_files <- rev(tail(as.vector(dta[names(dta) == 'Contents.Key'])[ord_acorn_dates], 10))
+        acorn_files <- acorn_files[endsWith(acorn_files, ".acorn")]
         
         updatePickerInput(session, 'acorn_files_server', choices = acorn_files, selected = acorn_files[1])
       }
@@ -866,7 +849,7 @@ server <- function(input, output, session) {
   
   # On "Load .acorn" file from server ----
   observeEvent(input$load_acorn_server, {
-    # laod content
+    # load content
     acorn_s3 <- get_object(object = input$acorn_files_server, 
                            bucket = acorn_cred()$acorn_s3_bucket,
                            key =  acorn_cred()$acorn_s3_key,
@@ -889,11 +872,11 @@ server <- function(input, output, session) {
     # TODO: provide more details in the notification on the file loaded - see info_acorn_file() for a start
     showNotification(".acorn file successfully loaded")
     
-    showTab(inputId = "tabs", target = "overview")
-    showTab(inputId = "tabs", target = "follow_up")
-    showTab(inputId = "tabs", target = "hai")
-    showTab(inputId = "tabs", target = "microbiology")
-    showTab(inputId = "tabs", target = "amr")
+    showTab("tabs", target = "overview")
+    showTab("tabs", target = "follow_up")
+    showTab("tabs", target = "hai")
+    showTab("tabs", target = "microbiology")
+    showTab("tabs", target = "amr")
     
     updateTabsetPanel(inputId = "tabs", selected = "overview")
   })
@@ -918,13 +901,13 @@ server <- function(input, output, session) {
     # TODO: provide more details in the notification on the file loaded - see info_acorn_file() for a start
     showNotification(".acorn file successfully loaded")
     
-    showTab(inputId = "tabs", target = "overview")
-    showTab(inputId = "tabs", target = "follow_up")
-    showTab(inputId = "tabs", target = "hai")
-    showTab(inputId = "tabs", target = "microbiology")
-    showTab(inputId = "tabs", target = "amr")
+    showTab("tabs", target = "overview")
+    showTab("tabs", target = "follow_up")
+    showTab("tabs", target = "hai")
+    showTab("tabs", target = "microbiology")
+    showTab("tabs", target = "amr")
     
-    updateTabsetPanel(inputId = "tabs", selected = "overview")
+    updateTabsetPanel("tabs", selected = "overview")
   })
   
   
@@ -944,7 +927,7 @@ server <- function(input, output, session) {
     showNotification("Lab data successfully provided.")
     checklist_status$lab_dta = list(status = "okay", msg = "Lab data provided")
     if(checklist_status$redcap_dta$status == "okay")  {
-      updateActionButton(session = session, inputId = "generate_acorn_data", label = HTML("Generate <em>.acorn</em>"), icon = icon("angle-right"))
+      updateActionButton(session = session, inputId = "generate_acorn_data", label = HTML("Generate <em>.acorn</em>"), icon = icon("angle-double-right"))
     }
   })
   
@@ -955,11 +938,11 @@ server <- function(input, output, session) {
       showNotification("REDCap server credentials not provided", type = "error")
       return()
     }
-    
     source("./www/R/data/01_read_redcap_f01f05.R", local = TRUE)
     source("./www/R/data/01_read_redcap_hai.R", local = TRUE)
     
     source("./www/R/data/02_process_redcap_f01f05.R", local = TRUE)
+    source("./www/R/data/02_process_redcap_hai.R", local = TRUE)
     
     # TODO: check that for a given enrollement, all infection episodes are on different dates
     if(any(checklist_status$redcap_not_empty$status == "ko",
@@ -981,9 +964,8 @@ server <- function(input, output, session) {
     
     redcap_dta(infection)
     
-    
     if(checklist_status$lab_dta$status == "okay")  {
-      updateActionButton(session = session, inputId = "generate_acorn_data", label = HTML("Generate <em>.acorn</em>"), icon = icon("angle-right"))
+      updateActionButton(session, "generate_acorn_data", HTML("Generate <em>.acorn</em>"), icon = icon("angle-double-right"))
     }
   })
   
@@ -996,20 +978,35 @@ server <- function(input, output, session) {
   
   # On "Generate ACORN" ----
   observeEvent(input$generate_acorn_data, {
-    message("Read data dictionary.")
-    source("./www/R/data/02_read_data_dic.R", local = TRUE)
+    message("Retrive ACORN lab codes from AWS.")
+    source("./www/R/data/01_read_lab_codes.R", local = TRUE)
     
-    if(! file.exists(data_dictionary$file_path))  {
+    message("Retrive site data dictionary from AWS.")
+    # TODO check if it also works on Windows (work on macOS)
+    # https://github.com/tidyverse/readxl/issues/278
+    ifelse(input$format_lab_data %in% c("WHONET .dBase", "WHONET .SQLite"),
+           format_data_dic <- "_WHONET",
+           format_data_dic <- "")
+    
+    file_dic <- try(save_object(object = glue("ACORN2_lab_data_dictionary_{acorn_cred()$site}{format_data_dic}.xlsx"), 
+                               bucket = acorn_cred()$acorn_s3_bucket,
+                               key =  acorn_cred()$acorn_s3_key,
+                               secret = acorn_cred()$acorn_s3_secret,
+                               region = acorn_cred()$acorn_s3_region,
+                               file = tempfile()),
+                   silent = TRUE)
+    
+    if (inherits(file_dic, 'try-error')) {
       showNotification("We couldn't find the lab data dictionary. Please contact ACORN Data Management.", type = "error", duration = NULL)
       return()
     }
     
+    data_dictionary <- list(file_path = file_dic)
     data_dictionary$variables <- read_excel(data_dictionary$file_path, sheet = "variables")
     data_dictionary$test.res <- read_excel(data_dictionary$file_path, sheet = "test.results")
     data_dictionary$local.spec <- read_excel(data_dictionary$file_path, sheet = "spec.types")
     data_dictionary$local.orgs <- read_excel(data_dictionary$file_path, sheet = "organisms")
     data_dictionary$notes <- read_excel(data_dictionary$file_path, sheet = "notes")
-    
     
     # the lab dataset should contain at minima:
     # if WHONET format: PATIENT_ID ; SPEC_NUM ; SPEC_DATE ; SPEC_CODE
@@ -1018,16 +1015,17 @@ server <- function(input, output, session) {
     
     message("Process lab data.")
     # filter lab data by id to make sure that we have only ACORN patients
-    
     source("./www/R/data/03_map_variables.R", local = TRUE)
     source("./www/R/data/03_map_specimens.R", local = TRUE)
     source("./www/R/data/04_map_organisms.R", local = TRUE)
+    
+    message("AST interpretation.")
     source("./www/R/data/05_make_ast_group.R", local = TRUE)
     source("./www/R/data/06_ast_interpretation.R", local = TRUE)
     source("./www/R/data/07_ast_interpretation_nonstandard.R", local = TRUE)
     
     message("Other steps")
-    source("./www/R/data/08_odk_assembly.R", local = TRUE)
+    browser()
     source("./www/R/data/09_link_clinical_assembly.R", local = TRUE)
     source("./www/R/data/10_process_hai_survey_data.R", local = TRUE)
     source("./www/R/data/11_prepare_data.R", local = TRUE)
@@ -1046,8 +1044,7 @@ server <- function(input, output, session) {
     showModal(modalDialog(
       fluidRow(
         column(6,
-               p(glue("The time of generation: {session_start_time} will be added to the file.")),
-               textInput("name_file", value = session_start_time, label = "Choose a name for the file"),
+               textInput("name_file", value = glue("{input$cred_site}_{session_start_time}"), label = "Choose a name for the file or (recommended) use default name"),
                textInput("meta_acorn_user", label = "User:", value = Sys.info()["user"]),
                textAreaInput("meta_acorn_comment", label = "(Optional) Comment")
         ),
