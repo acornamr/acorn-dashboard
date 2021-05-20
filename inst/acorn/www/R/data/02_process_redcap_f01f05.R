@@ -338,4 +338,7 @@ infection$cci <- (infection$age_category == "Adult") *
   2 * not_empty(infection$cmb_onc) +
   4 * not_empty(infection$cmb_liv) +
   6 * not_empty(infection$cmb_mst) +
-  4 * not_empty(infection$cmb_aids) 
+  4 * not_empty(infection$cmb_aids)
+
+
+
