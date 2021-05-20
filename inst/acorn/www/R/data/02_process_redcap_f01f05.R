@@ -326,19 +326,20 @@ infection$clinical_severity_score <-
 # Define Updated Charlson Comorbidity Index (uCCI)
 not_empty <- function(x) replace_na(x, "") != ""
 
-infection$cci <- (infection$age_category == "Adult") *
-  2 * not_empty(infection$cmb_cog) + 
-  2 * not_empty(infection$cmb_dem) +
-  not_empty(infection$cmb_cpd) +
-  not_empty(infection$cmb_rheu) +
-  2 * not_empty(infection$cmb_mld) +
-  not_empty(infection$cmb_diad) +
-  2 * not_empty(infection$cmb_hop) +
-  # TODO: add "Renal disease" once Ong has added it to the list of comorbidities
-  2 * not_empty(infection$cmb_onc) +
-  4 * not_empty(infection$cmb_liv) +
-  6 * not_empty(infection$cmb_mst) +
-  4 * not_empty(infection$cmb_aids)
+infection$cci <- (infection$age_category == "Adult") * (
+    2 * not_empty(infection$cmb_cog) + 
+    2 * not_empty(infection$cmb_dem) +
+    not_empty(infection$cmb_cpd) +
+    not_empty(infection$cmb_rheu) +
+    2 * not_empty(infection$cmb_mld) +
+    not_empty(infection$cmb_diad) +
+    2 * not_empty(infection$cmb_hop) +
+    # TODO: add "Renal disease" once Ong has added it to the list of comorbidities
+    2 * not_empty(infection$cmb_onc) +
+    4 * not_empty(infection$cmb_liv) +
+    6 * not_empty(infection$cmb_mst) +
+    4 * not_empty(infection$cmb_aids)
+)
 
 
 
