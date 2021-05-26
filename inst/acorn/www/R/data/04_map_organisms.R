@@ -21,8 +21,9 @@ rm(local.orgs) # Remove as no longer required
 
 
 # WHONET organism code matching
-# Note that some of the WHONET org codes (ORG) are duplicated so first create a subset just of the unique codes (will give these codes the appropriate acorn.org.code - either ACORN key species or Genus sp, e.g. "Bordetella sp")
-whonet.orgs.unique <- subset(whonet.orgs, subset = (!duplicated(whonet.orgs$ORG)))
+# Note that some of the WHONET org codes (ORG) are duplicated because of changes in nomenclature: so first create a subset just of the current code-name combos (STATUS == "C")
+# (will give these codes the appropriate acorn.org.code - either ACORN key species or Genus sp, e.g. "Bordetella sp")
+whonet.orgs.unique <- subset(whonet.orgs, subset = (whonet.orgs$STATUS == "C"))
 amr <- left_join(amr, 
                  whonet.orgs.unique %>% select(ORG, acorn.org.code),
                  by = c('org.whonet' = 'ORG'))
