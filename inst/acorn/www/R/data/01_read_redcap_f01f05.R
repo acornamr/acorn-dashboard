@@ -32,9 +32,9 @@ ifelse(nrow(dl_redcap_dta) == 0,
 
 
 # Test "REDCap dataset columns number" ----
-ifelse(ncol(dl_redcap_dta) != 210, 
-       { checklist_status$redcap_structure <- list(status = "ko", msg = "The REDCap dataset structure is not as expected (not 210 columns). Please contact ACORN data management.")}, 
-       { checklist_status$redcap_structure <- list(status = "okay", msg = "The REDCap dataset structure is as expected (210 columns)")})
+ifelse(ncol(dl_redcap_dta) != 211, 
+       { checklist_status$redcap_structure <- list(status = "ko", msg = "The REDCap dataset structure isn't as expected. Please contact ACORN data management.")}, 
+       { checklist_status$redcap_structure <- list(status = "okay", msg = "The REDCap dataset structure is as expected.")})
 
 # Test "REDCap dataset columns names" ----
 ifelse(all(names(dl_redcap_dta) == c("recordid", "redcap_repeat_instrument", "redcap_repeat_instance", 
@@ -48,7 +48,7 @@ ifelse(all(names(dl_redcap_dta) == c("recordid", "redcap_repeat_instrument", "re
                                      "cmb_comorbidities___diad", "cmb_comorbidities___hop", "cmb_comorbidities___hivwa", 
                                      "cmb_comorbidities___hivna", "cmb_comorbidities___mlr", "cmb_comorbidities___mal", 
                                      "cmb_comorbidities___mst", "cmb_comorbidities___mld", "cmb_comorbidities___liv", 
-                                     "cmb_comorbidities___pep", "cmb_comorbidities___tub", "cmb_overnight", 
+                                     "cmb_comorbidities___pep", "cmb_comorbidities___renal", "cmb_comorbidities___tub", "cmb_overnight", 
                                      "cmb_rhc", "cmb_surgery", "f01_deleted", "f01_enrolment_complete", 
                                      "f02odkreckey", "hpd_dmdtc", "hpd_agegroup", "ifd_surcate", "hpd_onset_date", 
                                      "hpd_adm_wardtype", "hpd_adm_ward", "ho_iv_anti_reason", "ser_gcs_under15", 

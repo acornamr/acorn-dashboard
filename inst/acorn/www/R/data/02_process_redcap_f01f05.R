@@ -261,6 +261,7 @@ infection <- infection %>% transmute(
   cmb_mld = recode(cmb_comorbidities___mld, "0" = "", "1" = "Mild liver disease"), 
   cmb_liv = recode(cmb_comorbidities___liv, "0" = "", "1" = "Moderate or severe liver disease"), 
   cmb_pep = recode(cmb_comorbidities___pep, "0" = "", "1" = "Peptic ulcer"), 
+  cmb_renal = recode(cmb_comorbidities___renal, "0" = "", "1" = "Renal disease"), 
   cmb_tub = recode(cmb_comorbidities___tub, "0" = "", "1" = "Tuberculosis"), 
   cmb_overnight = recode(cmb_comorbidities___none, "N" = "No", "Y" = "Yes"), 
   cmb_rhc = recode(cmb_rhc, "N" = "No", "Y" = "Yes"), 
@@ -334,12 +335,11 @@ infection$cci <- (infection$age_category == "Adult") * (
     2 * not_empty(infection$cmb_mld) +
     not_empty(infection$cmb_diad) +
     2 * not_empty(infection$cmb_hop) +
-    # TODO: add "Renal disease" once Ong has added it to the list of comorbidities
+    not_empty(infection$cmb_renal) +  
     2 * not_empty(infection$cmb_onc) +
     4 * not_empty(infection$cmb_liv) +
     6 * not_empty(infection$cmb_mst) +
     4 * not_empty(infection$cmb_aids)
 )
-
 
 
