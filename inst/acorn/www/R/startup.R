@@ -30,6 +30,7 @@ library(shinyWidgets)  # chooseSliderSkin()
 library(tidyverse)
 library(writexl)
 
+# TODO: ensure that those two elements are used when generating .acorn
 session_start_time <- format(Sys.time(), "%Y-%m-%d_%HH%M")
 session_id <- glue("{glue_collapse(sample(LETTERS, 5, TRUE))}_{session_start_time}")
 

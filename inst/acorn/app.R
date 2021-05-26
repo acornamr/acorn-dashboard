@@ -1,6 +1,8 @@
 # ACORN shiny app main script
 source('./www/R/startup.R', local = TRUE)
 
+# TODO: check that all .md are displayed in the app
+
 # Definition of UI ----
 ui <- fluidPage(
   title = 'ACORN | A Clinically Oriented antimicrobial Resistance Network',
@@ -636,11 +638,13 @@ server <- function(input, output, session) {
   
   # Definition of reactive elements for data ----
   
-  # Original datatsets
+  # Primary datatsets
   acorn_cred <- reactiveVal()
-  
   redcap_dta <- reactiveVal()
+  lab_dta <- reactiveVal()
+  acorn_dta_file <- reactiveValues()
   
+  # Secondary datasets created from original datasets (apart from meta)
   enrolment_log <- reactive({
     req(redcap_dta())
     
@@ -657,11 +661,6 @@ server <- function(input, output, session) {
                 "Actual Day-28 date" = d28_date)
   })
   
-  lab_dta <- reactiveVal()
-  
-  acorn_dta_file <- reactiveValues()
-  
-  # Secondary datasets created from original datasets (apart from meta)
   patient <- reactiveVal()
   microbio <- reactiveVal()
   hai_surveys <- reactiveVal()
@@ -690,7 +689,7 @@ server <- function(input, output, session) {
     )
   })
   
-  # Checklist, status can be: hidden/question/okay/warning/ko
+  # Status can be: hidden/question/okay/warning/ko
   checklist_status <- reactiveValues(
     internet_connection = list(status = "ko", msg = "Not connected to internet"),
     app_login = list(status = "ko", msg = "Not logged in"),
@@ -939,9 +938,8 @@ server <- function(input, output, session) {
       return()
     }
     source("./www/R/data/01_read_redcap_f01f05.R", local = TRUE)
-    source("./www/R/data/01_read_redcap_hai.R", local = TRUE)
-    
     source("./www/R/data/02_process_redcap_f01f05.R", local = TRUE)
+    source("./www/R/data/01_read_redcap_hai.R", local = TRUE)
     source("./www/R/data/02_process_redcap_hai.R", local = TRUE)
     
     # TODO: check that for a given enrollement, all infection episodes are on different dates
