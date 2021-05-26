@@ -25,11 +25,7 @@ if (! exists("dta")) {
   return()
 }
 
-n <- nrow(dta)
-
-if (n == 0) {
+if (nrow(dta) == 0) {
   showNotification("Something went wrong with the import of lab data.", type = "error")
   return()
 }
-
-checklist_status$lab_data_qc_1 <- list(status = "okay", msg = glue("The Lab dataset contains {n} rows"))

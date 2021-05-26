@@ -1,3 +1,5 @@
+# TODO: make sure that all elements of checklist_status are used
+
 output$checklist_status_load_server <- renderText(  
   text_checklist(checklist_status, vec = c("internet_connection", "app_login", "acorn_server_test"))
 ) 
@@ -12,11 +14,12 @@ output$checklist_qc_clinical <- renderText({
                                            "redcap_F02F01",
                                            "redcap_F03F01",
                                            "redcap_confirmed_match",
-                                           "redcap_age_category"))
+                                           "redcap_age_category",
+                                           "redcap_hai_dates"))
 })
 
 output$checklist_qc_lab <- renderText({
-  text_checklist(checklist_status, vec = paste0("lab_data_qc_", 1))
+  text_checklist(checklist_status, vec = paste0("lab_data_qc_", 1:2))
 })
 
 output$checklist_status_clinical <- renderText(

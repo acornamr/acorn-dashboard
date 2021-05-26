@@ -30,7 +30,7 @@ ui <- fluidPage(
              ## Header ----
              header = conditionalPanel(
                id = "header-filter",
-               condition = "input.tabs != 'welcome' & input.tabs != 'data_management'",
+               condition = "input.tabs != 'welcome' & input.tabs != 'data_management' & input.tabs != 'about'",
                div(
                  fluidRow(
                    column(12,
@@ -176,6 +176,7 @@ ui <- fluidPage(
              # Tab Data Management ----
              tabPanel(span(icon("database"), 'Data Management'), value = "data_management",
                       tabsetPanel(id = "data_management_tabs", type = "tabs",
+                                  ## Tab Load ----
                                   tab(value = "load", span("Load existing ", em(".acorn")),
                                       fluidRow(
                                         column(3,
@@ -209,6 +210,7 @@ ui <- fluidPage(
                                         )
                                       )
                                   ),
+                                  ## Tab Generate ----
                                   tab(value = "generate", span("Generate ", em(".acorn")),
                                       fluidRow(
                                         column(2,    
@@ -261,6 +263,7 @@ ui <- fluidPage(
                                         )
                                       )
                                   ),
+                                  ## Tab Save ----
                                   tab(value = "save", span("Save ", em(".acorn"), " file"),
                                       fluidRow(
                                         column(3,
@@ -552,6 +555,10 @@ ui <- fluidPage(
                           conditionalPanel(condition = "! output.test_other_sir", span(h4("There is no data to display.")))
                         )
                       )
+             ),
+             # Tab About
+             tabPanel("About", value = "about",
+                      includeMarkdown("./www/markdown/about_uCCI.md")
              )
   )
 )
@@ -566,12 +573,6 @@ server <- function(input, output, session) {
   hideTab(inputId = "tabs", target = "hai")
   hideTab(inputId = "tabs", target = "microbiology")
   hideTab(inputId = "tabs", target = "amr")
-  
-  
-  
-  observeEvent(input$link_to_generate, {
-    updateTabsetPanel(session, "management", "generate")
-  })
   
   # Management of CSS ----
   observe({
@@ -609,24 +610,19 @@ server <- function(input, output, session) {
     }
   })
   
-  # Misc stuff ----
-  # source files with code to generate outputs
-  file_list <- list.files(path = "./www/R/outputs", pattern = "*.R", recursive = TRUE)
-  for (file in file_list) source(paste0("./www/R/outputs/", file), local = TRUE)$value
-  
-  # (TODO) Management of filters shortcuts ----
+  # (TODO) Management of filters shortcuts
   observeEvent(input$shortcut_filter_1, {
     # Patients with Pneumonia, BC only
     updatePrettyCheckboxGroup(session, "filter_diagnosis", selected = c("Pneumonia"))
   })
   
-  observeEvent(input$shortcut_filter_2, {
-    
-  })
+  observeEvent(input$shortcut_filter_2, {})
+  observeEvent(input$shortcut_reset_filters, {})
   
-  observeEvent(input$shortcut_reset_filters, {
-    
-  })
+  # Misc stuff ----
+  # source files with code to generate outputs
+  file_list <- list.files(path = "./www/R/outputs", pattern = "*.R", recursive = TRUE)
+  for (file in file_list) source(paste0("./www/R/outputs/", file), local = TRUE)$value
   
   # allow debug on click
   observeEvent(input$debug, browser())
@@ -641,10 +637,12 @@ server <- function(input, output, session) {
   # Primary datatsets
   acorn_cred <- reactiveVal()
   redcap_dta <- reactiveVal()
+  hai_dta <- reactiveVal()
   lab_dta <- reactiveVal()
   acorn_dta_file <- reactiveValues()
+  meta <- reactiveVal()
   
-  # Secondary datasets created from original datasets (apart from meta)
+  # Secondary datasets (created from primary datasets)
   enrolment_log <- reactive({
     req(redcap_dta())
     
@@ -665,7 +663,7 @@ server <- function(input, output, session) {
   microbio <- reactiveVal()
   hai_surveys <- reactiveVal()
   corresp_org_antibio <- reactiveVal()
-  meta <- reactiveVal()
+  
   
   # Tertiary datasets
   # patient_filter <- reactive(patient() %>% fun_filter_patient(input = input))
@@ -689,6 +687,7 @@ server <- function(input, output, session) {
     )
   })
   
+  # Definition of checklist_status ----
   # Status can be: hidden/question/okay/warning/ko
   checklist_status <- reactiveValues(
     internet_connection = list(status = "ko", msg = "Not connected to internet"),
@@ -711,6 +710,7 @@ server <- function(input, output, session) {
     redcap_F03F01 = list(status = "hidden", msg = "Every hospital outcome form (F03) matches exactly one patient enrolment (F01)"),
     redcap_confirmed_match = list(status = "hidden", msg = "All confirmed entries match the original entry"),
     redcap_age_category = list(status = "hidden", msg = "(HIDDEN)"),
+    redcap_hai_dates = list(status = "hidden", msg = "(HIDDEN)"),
     # redcap_F05F01 = list(status = "hidden", msg = "Every BSI episode form (F05) matches exactly one patient enrolment (F01)"),
     
     redcap_dta = list(status = "ko", msg = "Clinical data not provided"),
@@ -920,11 +920,82 @@ server <- function(input, output, session) {
   })
   
   observeEvent(input$file_lab_tab, {
+    showNotification("Processing Lab data.", duration = NULL, id = "processing_lab_data")
     source("./www/R/data/01_read_lab_data.R", local = TRUE)
     
     lab_dta(dta)
-    showNotification("Lab data successfully provided.")
+    
+    
+    message("Retrive ACORN lab codes from AWS.")
+    source("./www/R/data/01_read_lab_codes.R", local = TRUE)
+    
+    message("Retrive site data dictionary from AWS.")
+    # TODO check if it also works on Windows (work on macOS)
+    # https://github.com/tidyverse/readxl/issues/278
+    ifelse(input$format_lab_data %in% c("WHONET .dBase", "WHONET .SQLite"),
+           format_data_dic <- "WHONET",
+           format_data_dic <- "TABULAR")
+    
+    file_dic <- try(save_object(object = glue("ACORN2_lab_data_dictionary_{acorn_cred()$site}_{format_data_dic}.xlsx"), 
+                                bucket = acorn_cred()$acorn_s3_bucket,
+                                key =  acorn_cred()$acorn_s3_key,
+                                secret = acorn_cred()$acorn_s3_secret,
+                                region = acorn_cred()$acorn_s3_region,
+                                file = tempfile()),
+                    silent = TRUE)
+    
+    if (inherits(file_dic, 'try-error')) {
+      removeNotification(id = "processing_lab_data")
+      showNotification("We couldn't download the lab data dictionary. Please contact ACORN Data Management.", type = "error", duration = NULL)
+      return()
+    }
+    
+    data_dictionary <- list(file_path = file_dic)
+    data_dictionary$variables <- read_excel(data_dictionary$file_path, sheet = "variables")
+    data_dictionary$test.res <- read_excel(data_dictionary$file_path, sheet = "test.results")
+    data_dictionary$local.spec <- read_excel(data_dictionary$file_path, sheet = "spec.types")
+    data_dictionary$local.orgs <- read_excel(data_dictionary$file_path, sheet = "organisms")
+    data_dictionary$notes <- read_excel(data_dictionary$file_path, sheet = "notes")
+    
+    message("Process lab data.")
+    # filter lab data by id to make sure that we have only ACORN patients
+    source("./www/R/data/03_map_variables.R", local = TRUE)
+    source("./www/R/data/04_map_specimens.R", local = TRUE)
+    source("./www/R/data/05_map_organisms.R", local = TRUE)
+    
+    message("AST interpretation.")
+    source("./www/R/data/06_make_ast_group.R", local = TRUE)
+    source("./www/R/data/07_ast_interpretation.R", local = TRUE)
+    source("./www/R/data/08_ast_interpretation_nonstandard.R", local = TRUE)
+    
+    
+    message("Other steps")
+    checklist_status$lab_data_qc_1 <- list(status = "okay", msg = glue("The Lab dataset contains {nrow(amr)} rows"))
+    
+    if(format_data_dic == "TABULAR") {
+      if(c("patid", "specid", "specdate", "spectype.local") %in% names(amr) %>% all()) {
+        checklist_status$lab_data_qc_2 = list(status = "okay", msg = "Lab dataset contains the minimal columns (TABULAR format: PATIENT_ID ; SPEC_NUM ; SPEC_DATE ; LOCAL_SPEC)")
+      }
+      else{
+        checklist_status$lab_data_qc_2 = list(status = "ko", msg = "Lab dataset does not contains the minimal columns (TABULAR format: PATIENT_ID ; SPEC_NUM ; SPEC_DATE ; LOCAL_SPEC)")
+      }
+    }
+    
+    if(format_data_dic == "WHONET") {
+      if(c("patid", "specid", "specdate", "spectype.whonet") %in% names(amr) %>% all()) {
+        checklist_status$lab_data_qc_2 = list(status = "okay", msg = "Lab dataset contains the minimal columns (WHONET format: PATIENT_ID ; SPEC_NUM ; SPEC_DATE ; SPEC_CODE)")
+      }
+      else{
+        checklist_status$lab_data_qc_2 = list(status = "ko", msg = "Lab dataset does not contains the minimal columns (WHONET format: PATIENT_ID ; SPEC_NUM ; SPEC_DATE ; SPEC_CODE)")
+      }
+    }
+    
+    lab_dta(amr)
+    
+    removeNotification(id = "processing_lab_data")
+    showNotification("Lab data successfully processsed")
     checklist_status$lab_dta = list(status = "okay", msg = "Lab data provided")
+    
     if(checklist_status$redcap_dta$status == "okay")  {
       updateActionButton(session = session, inputId = "generate_acorn_data", label = HTML("Generate <em>.acorn</em>"), icon = icon("angle-double-right"))
     }
@@ -933,14 +1004,26 @@ server <- function(input, output, session) {
   
   # On "Get REDCap data" ----
   observeEvent(input$get_redcap_data, {
-    if(is.null(acorn_cred()$redcap_server_api)) {
+    if(is.null(acorn_cred()$redcap_f01f05_api)) {
       showNotification("REDCap server credentials not provided", type = "error")
       return()
     }
+    
+    start_redcap <- Sys.time()
     source("./www/R/data/01_read_redcap_f01f05.R", local = TRUE)
     source("./www/R/data/02_process_redcap_f01f05.R", local = TRUE)
+    
     source("./www/R/data/01_read_redcap_hai.R", local = TRUE)
     source("./www/R/data/02_process_redcap_hai.R", local = TRUE)
+    message(glue("REDCap data downlaoded and processed in {round(difftime(Sys.time(), start_redcap, units = 'secs'), 1)} seconds."))
+    
+    
+    ## Test that dates of enrolment match across datasets
+    if(infection %>% filter(suveillance_category == "HAI") %>% pull(date_episode_enrolment) %in% dl_hai_dta$survey_date %>% all()) {
+      checklist_status$redcap_hai_dates <- list(status = "okay", msg = "All dates of enrolment for HAI patients have a matching date in the HAI survey dataset")
+    } else {
+      checklist_status$redcap_hai_dates <- list(status = "warning", msg = "Some dates of enrolment for HAI patients do have a matching date in the HAI survey dataset")
+    }
     
     # TODO: check that for a given enrollement, all infection episodes are on different dates
     if(any(checklist_status$redcap_not_empty$status == "ko",
@@ -960,7 +1043,9 @@ server <- function(input, output, session) {
     checklist_status$redcap_dta <- list(status = "okay", 
                                         msg = glue("Clinical data provided with {length(unique(infection$redcap_id))} patient enrolments and {nrow(infection)} infection episodes"))
     
+    # assign only when all tests were passed
     redcap_dta(infection)
+    hai_dta(dl_hai_dta)
     
     if(checklist_status$lab_dta$status == "okay")  {
       updateActionButton(session, "generate_acorn_data", HTML("Generate <em>.acorn</em>"), icon = icon("angle-double-right"))
@@ -976,65 +1061,20 @@ server <- function(input, output, session) {
   
   # On "Generate ACORN" ----
   observeEvent(input$generate_acorn_data, {
-    message("Retrive ACORN lab codes from AWS.")
-    source("./www/R/data/01_read_lab_codes.R", local = TRUE)
-    
-    message("Retrive site data dictionary from AWS.")
-    # TODO check if it also works on Windows (work on macOS)
-    # https://github.com/tidyverse/readxl/issues/278
-    ifelse(input$format_lab_data %in% c("WHONET .dBase", "WHONET .SQLite"),
-           format_data_dic <- "_WHONET",
-           format_data_dic <- "")
-    
-    file_dic <- try(save_object(object = glue("ACORN2_lab_data_dictionary_{acorn_cred()$site}{format_data_dic}.xlsx"), 
-                               bucket = acorn_cred()$acorn_s3_bucket,
-                               key =  acorn_cred()$acorn_s3_key,
-                               secret = acorn_cred()$acorn_s3_secret,
-                               region = acorn_cred()$acorn_s3_region,
-                               file = tempfile()),
-                   silent = TRUE)
-    
-    if (inherits(file_dic, 'try-error')) {
-      showNotification("We couldn't find the lab data dictionary. Please contact ACORN Data Management.", type = "error", duration = NULL)
-      return()
-    }
-    
-    data_dictionary <- list(file_path = file_dic)
-    data_dictionary$variables <- read_excel(data_dictionary$file_path, sheet = "variables")
-    data_dictionary$test.res <- read_excel(data_dictionary$file_path, sheet = "test.results")
-    data_dictionary$local.spec <- read_excel(data_dictionary$file_path, sheet = "spec.types")
-    data_dictionary$local.orgs <- read_excel(data_dictionary$file_path, sheet = "organisms")
-    data_dictionary$notes <- read_excel(data_dictionary$file_path, sheet = "notes")
-    
-    # the lab dataset should contain at minima:
-    # if WHONET format: PATIENT_ID ; SPEC_NUM ; SPEC_DATE ; SPEC_CODE
-    # if TABULAR format: PATIENT_ID ; SPEC_NUM ; SPEC_DATE ; LOCAL_SPEC
     
     
-    message("Process lab data.")
-    # filter lab data by id to make sure that we have only ACORN patients
-    source("./www/R/data/03_map_variables.R", local = TRUE)
-    source("./www/R/data/03_map_specimens.R", local = TRUE)
-    source("./www/R/data/04_map_organisms.R", local = TRUE)
-    
-    message("AST interpretation.")
-    source("./www/R/data/05_make_ast_group.R", local = TRUE)
-    source("./www/R/data/06_ast_interpretation.R", local = TRUE)
-    source("./www/R/data/07_ast_interpretation_nonstandard.R", local = TRUE)
-    
-    message("Other steps")
-    browser()
-    source("./www/R/data/09_link_clinical_assembly.R", local = TRUE)
-    source("./www/R/data/10_process_hai_survey_data.R", local = TRUE)
-    source("./www/R/data/11_prepare_data.R", local = TRUE)
-    source("./www/R/data/12_quality_control.R", local = TRUE)
+    # browser()
+    # source("./www/R/data/09_link_clinical_assembly.R", local = TRUE)
+    # source("./www/R/data/10_process_hai_survey_data.R", local = TRUE)
+    # source("./www/R/data/11_prepare_data.R", local = TRUE)
+    # source("./www/R/data/12_quality_control.R", local = TRUE)
     
     acorn_dta_saved = list(status = "ko", msg = ".acorn not saved")
   })
   
   # On "Save ACORN" on server ----
   observeEvent(input$save_acorn_server, { 
-    if(checklist_status$acorn_dta$status != "ok") {
+    if(checklist_status$acorn_dta$status != "okay") {
       showNotification("No .acorn data loaded.", type = "warning", duration = NULL)
       return()
     }

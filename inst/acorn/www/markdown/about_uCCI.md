@@ -1,9 +1,8 @@
-# Updated Charlson Comorbidity Index (uCCI)
+### Updated Charlson Comorbidity Index (uCCI)
 
 In ACORN, the CCI is calculated for adult patients (>= 18 y.o.) only.
 
-Key reference:
-**Ternavasio-de la Vega HG et al (2018). The updated Charlson comorbidity index is a useful predictor of mortality in patients with Staphylococcus aureus bacteraemia. Epidemiology and Infection 146, 122–2130. https://doi.org/10.1017/S0950268818002480**
+Key reference: *Ternavasio-de la Vega HG et al (2018). The updated Charlson comorbidity index is a useful predictor of mortality in patients with Staphylococcus aureus bacteraemia. Epidemiology and Infection 146, 122–2130. https://doi.org/10.1017/S0950268818002480*
 
 
 | Comorbid conditions                                                 | uCCI weights | ACORN comorbidity                         |
@@ -27,7 +26,7 @@ Key reference:
 | AIDS (excluded asymptomatic infection)                              | 4            | AIDS                                      |
 | Maximum comorbidity score                                           | 24           |                                           |
 
-
+</br></br>
 
 Additional ACORN comorbidities (these were requested to be included by WHO GLASS as LMIC relevant): should not be included as part of CCI
 

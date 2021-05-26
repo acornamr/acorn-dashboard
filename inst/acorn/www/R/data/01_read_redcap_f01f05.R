@@ -1,11 +1,11 @@
-showNotification("Trying to retrive REDCap data It might take a minute.", duration = NULL, id = "try_redcap")
+showNotification("Trying to retrive REDCap data (forms F01 to F05). It might take a minute.", duration = NULL, id = "try_redcap_f01f05")
 
 dl_redcap_dta <- try(
   withCallingHandlers({
-    shinyjs::html(id = "text_redcap_log", "<strong>REDCap data retrieval Log:</strong>")
+    shinyjs::html(id = "text_redcap_log", "<strong>REDCap data retrieval log:</strong>")
     redcap_read(
       redcap_uri = "https://m-redcap-test.tropmedres.ac/redcap_test/api/", 
-      token = acorn_cred()$redcap_server_api,
+      token = acorn_cred()$redcap_f01f05_api,
       col_types = cols(.default = col_character())
     )$data
   },
@@ -15,14 +15,14 @@ dl_redcap_dta <- try(
   )
 )
 
-removeNotification(id = "try_redcap")
+removeNotification(id = "try_redcap_f01f05")
 
 if(inherits(dl_redcap_dta, "try-error"))  {
-  showNotification("We couldn't retrive REDCap Data. Please try again.", type = "error")
+  showNotification("REDCap data (forms F01 to F05) wasn't retrived. Please try again.", type = "error")
   return()
 }
 
-showNotification("Clinical data successfully retrived from REDCap server.")
+showNotification("REDCap data (forms F01 to F05) successfully retrived.")
 shinyjs::html(id = "text_redcap_log", "<br/>", add = TRUE)
 
 # Test "REDCap dataset empty" ----
