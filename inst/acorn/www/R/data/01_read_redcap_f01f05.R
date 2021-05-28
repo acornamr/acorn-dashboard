@@ -2,7 +2,7 @@ showNotification("Trying to retrive REDCap data (forms F01 to F05). It might tak
 
 dl_redcap_dta <- try(
   withCallingHandlers({
-    shinyjs::html(id = "text_redcap_log", "<strong>REDCap data retrieval log:</strong>")
+    shinyjs::html(id = "text_redcap_f01f05_log", "</br><strong>REDCap F01 to F05 data retrieval log: </strong>")
     redcap_read(
       redcap_uri = "https://m-redcap-test.tropmedres.ac/redcap_test/api/", 
       token = acorn_cred()$redcap_f01f05_api,
@@ -10,7 +10,7 @@ dl_redcap_dta <- try(
     )$data
   },
   message = function(m) {
-    shinyjs::html(id = "text_redcap_log", html = m$message, add = TRUE)
+    shinyjs::html(id = "text_redcap_f01f05_log", html = m$message, add = TRUE)
   }
   )
 )
@@ -23,7 +23,7 @@ if(inherits(dl_redcap_dta, "try-error"))  {
 }
 
 showNotification("REDCap data (forms F01 to F05) successfully retrived.")
-shinyjs::html(id = "text_redcap_log", "<br/>", add = TRUE)
+shinyjs::html(id = "text_redcap_f01f05_log", "<br/>", add = TRUE)
 
 # Test "REDCap dataset empty" ----
 ifelse(nrow(dl_redcap_dta) == 0, 

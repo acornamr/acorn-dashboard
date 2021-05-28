@@ -1,4 +1,9 @@
-message("Source 09_link_clinical_assembly.R")
+message("10_link_clinical_assembly.R")
+
+
+# select only lab records of patients for which we have clinical data
+lab_dta(lab_dta() %>%
+          filter(patient_id %in% redcap_dta()$patient_id))
 
 # Link the clincal data to the microbiology specimen data
 # Make a data.frame of microbiology specimen IDs

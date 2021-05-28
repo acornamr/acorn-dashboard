@@ -2,7 +2,7 @@ showNotification("Trying to retrive REDCap data (HAI Ward form). It might take a
 
 dl_hai_dta <- try(
   withCallingHandlers({
-    shinyjs::html(id = "text_redcap_log", "<strong>REDCap data retrieval log:</strong>")
+    shinyjs::html(id = "text_redcap_hai_log", "<strong>REDCap HAI data retrieval log: </strong>")
     redcap_read(
       redcap_uri = "https://m-redcap-test.tropmedres.ac/redcap_test/api/", 
       token = acorn_cred()$redcap_hai_api,
@@ -10,7 +10,7 @@ dl_hai_dta <- try(
     )$data
   },
   message = function(m) {
-    shinyjs::html(id = "text_redcap_log", html = m$message, add = TRUE)
+    shinyjs::html(id = "text_redcap_hai_log", html = m$message, add = TRUE)
   }
   )
 )
@@ -23,4 +23,4 @@ if(inherits(dl_hai_dta, "try-error"))  {
 }
 
 showNotification("REDCap data (HAI Ward form) successfully retrived.")
-shinyjs::html(id = "text_redcap_log", "<br/>", add = TRUE)
+shinyjs::html(id = "text_redcap_hai_log", "<br/>", add = TRUE)

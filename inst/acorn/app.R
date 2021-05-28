@@ -219,7 +219,9 @@ ui <- fluidPage(
                                         column(10,
                                                htmlOutput("checklist_status_clinical"),
                                                actionButton("get_redcap_data", "Get Clinical Data from REDCap server", icon = icon('times-circle')),
-                                               textOutput("text_redcap_log"),
+                                               textOutput("text_redcap_f01f05_log"),
+                                               textOutput("text_redcap_hai_log"),
+                                               br(),
                                                fluidRow(
                                                  column(4, htmlOutput("message_redcap_dta")),
                                                  column(8, htmlOutput("checklist_qc_clinical"))
@@ -967,14 +969,15 @@ server <- function(input, output, session) {
     source("./www/R/data/06_make_ast_group.R", local = TRUE)
     source("./www/R/data/07_ast_interpretation.R", local = TRUE)
     source("./www/R/data/08_ast_interpretation_nonstandard.R", local = TRUE)
-    
+    source("./www/R/data/09_finalise_lab_data.R", local = TRUE)
+    lab_dta(amr)
     
     message("Other steps")
     checklist_status$lab_data_qc_1 <- list(status = "okay", msg = glue("The Lab dataset contains {nrow(amr)} rows"))
     
     if(format_data_dic == "TABULAR") {
       if(c("patid", "specid", "specdate", "spectype.local") %in% names(amr) %>% all()) {
-        checklist_status$lab_data_qc_2 = list(status = "okay", msg = "Lab dataset contains the minimal columns (TABULAR format: PATIENT_ID ; SPEC_NUM ; SPEC_DATE ; LOCAL_SPEC)")
+        checklist_status$lab_data_qc_2 = list(status = "okay", msg = "Lab dataset contains the minimal columns")
       }
       else{
         checklist_status$lab_data_qc_2 = list(status = "ko", msg = "Lab dataset does not contains the minimal columns (TABULAR format: PATIENT_ID ; SPEC_NUM ; SPEC_DATE ; LOCAL_SPEC)")
@@ -983,14 +986,38 @@ server <- function(input, output, session) {
     
     if(format_data_dic == "WHONET") {
       if(c("patid", "specid", "specdate", "spectype.whonet") %in% names(amr) %>% all()) {
-        checklist_status$lab_data_qc_2 = list(status = "okay", msg = "Lab dataset contains the minimal columns (WHONET format: PATIENT_ID ; SPEC_NUM ; SPEC_DATE ; SPEC_CODE)")
+        checklist_status$lab_data_qc_2 = list(status = "okay", msg = "Lab dataset contains the minimal columns")
       }
       else{
         checklist_status$lab_data_qc_2 = list(status = "ko", msg = "Lab dataset does not contains the minimal columns (WHONET format: PATIENT_ID ; SPEC_NUM ; SPEC_DATE ; SPEC_CODE)")
       }
     }
     
-    lab_dta(amr)
+    browser()
+    generation_status$log <- c(generation_status$log, 
+                               ifelse(all(!is.na(microbio$patid)), "Okay, all patients ids are provided",
+                                      paste0("Warning: there are ", sum(is.na(microbio$patid)), " rows with missing patid data.")))
+    
+    generation_status$log <- c(generation_status$log, 
+                               ifelse(all(!is.na(microbio$specid)), "Okay, all specid are provided",
+                                      paste0("Warning: there are ", sum(is.na(microbio$specid)), " rows with missing specid data.")))
+    
+    generation_status$log <- c(generation_status$log, 
+                               ifelse(all(!is.na(microbio$specdate)), "Okay: all specdate are provided",
+                                      paste0("Warning: there are ", sum(is.na(microbio$specdate)), " rows with missing specdate data.")))
+    
+    generation_status$log <- c(generation_status$log, 
+                               ifelse(microbio$specdate <= Sys.Date(), "Okay: all specdate happen today or before today",
+                                      paste0("Warning: there are ", sum(microbio$specdate > Sys.Date()), " rows with specdate after today.")))
+    
+    generation_status$log <- c(generation_status$log, 
+                               ifelse(all(!is.na(microbio$specgroup)), "Okay: all specgroup are provided",
+                                      paste0("Warning: there are ", sum(is.na(microbio$specgroup)), " rows with missing specgroup data.")))
+    
+    generation_status$log <- c(generation_status$log, 
+                               ifelse(all(!is.na(microbio$orgname)), "Okay: all orgname are provided",
+                                      paste0("Warning: there are ", sum(is.na(microbio$orgname)), " rows with missing orgname data.")))
+    
     
     removeNotification(id = "processing_lab_data")
     showNotification("Lab data successfully processsed")
@@ -1009,13 +1036,11 @@ server <- function(input, output, session) {
       return()
     }
     
-    start_redcap <- Sys.time()
     source("./www/R/data/01_read_redcap_f01f05.R", local = TRUE)
     source("./www/R/data/02_process_redcap_f01f05.R", local = TRUE)
     
     source("./www/R/data/01_read_redcap_hai.R", local = TRUE)
     source("./www/R/data/02_process_redcap_hai.R", local = TRUE)
-    message(glue("REDCap data downlaoded and processed in {round(difftime(Sys.time(), start_redcap, units = 'secs'), 1)} seconds."))
     
     
     ## Test that dates of enrolment match across datasets
@@ -1048,7 +1073,7 @@ server <- function(input, output, session) {
     hai_dta(dl_hai_dta)
     
     if(checklist_status$lab_dta$status == "okay")  {
-      updateActionButton(session, "generate_acorn_data", HTML("Generate <em>.acorn</em>"), icon = icon("angle-double-right"))
+      updateActionButton(session, "generate_acorn_data", HTML("Generate <em>.acorn</em>"), icon = icon("hand-point-right"))
     }
   })
   
@@ -1061,14 +1086,9 @@ server <- function(input, output, session) {
   
   # On "Generate ACORN" ----
   observeEvent(input$generate_acorn_data, {
+    browser()
     
-    
-    # browser()
-    # source("./www/R/data/09_link_clinical_assembly.R", local = TRUE)
-    # source("./www/R/data/10_process_hai_survey_data.R", local = TRUE)
-    # source("./www/R/data/11_prepare_data.R", local = TRUE)
-    # source("./www/R/data/12_quality_control.R", local = TRUE)
-    
+    source("./www/R/data/10_link_clinical_assembly.R", local = TRUE)
     acorn_dta_saved = list(status = "ko", msg = ".acorn not saved")
   })
   
