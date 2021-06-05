@@ -1,10 +1,11 @@
-showNotification("Trying to retrive REDCap data (forms F01 to F05). It might take a minute.", duration = NULL, id = "try_redcap_f01f05")
+showNotification("Trying to retrive REDCap data (forms F01 to F05). It might take a minute.", 
+                 duration = NULL, id = "try_redcap_f01f05")
 
 dl_redcap_dta <- try(
   withCallingHandlers({
     shinyjs::html(id = "text_redcap_f01f05_log", "</br><strong>REDCap F01 to F05 data retrieval log: </strong>")
     redcap_read(
-      redcap_uri = "https://m-redcap-test.tropmedres.ac/redcap_test/api/", 
+      redcap_uri = acorn_cred()$redcap_uri, 
       token = acorn_cred()$redcap_f01f05_api,
       col_types = cols(.default = col_character())
     )$data

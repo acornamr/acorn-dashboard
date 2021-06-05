@@ -1,5 +1,5 @@
 dl_hai_dta <- dl_hai_dta %>%
-  transmute(hospital_code = recordid, 
+  transmute(site_id = recordid, 
             # redcap_repeat_instrument, 
             # redcap_repeat_instance, 
             # f06odkreckey, 
@@ -20,3 +20,11 @@ dl_hai_dta <- dl_hai_dta %>%
             # f06_deleted, 
             # f06_hai_ward_complete
   )
+
+
+## Test that dates of enrolment match across datasets
+if(infection %>% filter(surveillance_category == "HAI") %>% pull(date_episode_enrolment) %in% dl_hai_dta$survey_date %>% all()) {
+  checklist_status$redcap_hai_dates <- list(status = "okay", msg = "All dates of enrolment for HAI patients have a matching date in the HAI survey dataset")
+} else {
+  checklist_status$redcap_hai_dates <- list(status = "warning", msg = "Some dates of enrolment for HAI patients do have a matching date in the HAI survey dataset")
+}

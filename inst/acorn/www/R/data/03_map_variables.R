@@ -1,14 +1,5 @@
 message("Source 03_map_variables.R")
 
-# TODO: move this function at a higher level
-use_acorn_name <- function(x, acorn_names, local_names) {
-  if(x %in% local_names)  return(acorn_names[which(local_names == x)])
-  if(x %in% acorn_names)  return(x)
-  return(paste0("NOT_ACORN_COLUMN_", x))
-}
-use_acorn_name <- Vectorize(use_acorn_name, vectorize.args = "x")
-
-
 amr <- lab_dta() %>%
   mutate_all(as.character) %>%
   rename_with(use_acorn_name,
@@ -42,10 +33,9 @@ amr <- left_join(amr, specid,
 amr$isol.id <- paste(amr$specid.acorn, amr$orgnum.acorn, sep = "-")
 
 # Map local beta-lactamase, inducible clindamycin resistance (ICR), ESBL, carbapenemase, MRSA, VRE test result codes to standard codes
-test.res <- data_dictionary$test.res
-
-test.res <- subset(test.res, select = c("acorn.test.code", "local.result.code"))
-test.res <- spread(test.res, acorn.test.code, local.result.code) # Make a wide data.frame of the positive / negative local test results
+test.res <- data_dictionary$test.res %>%
+  select(acorn.test.code, local.result.code) %>%
+  spread(acorn.test.code, local.result.code) # Make a wide data.frame of the positive / negative local test results
 
 amr$blac[amr$blac == test.res$blac.neg] <- "NEGATIVE"
 amr$blac[amr$blac == test.res$blac.pos] <- "POSITIVE"

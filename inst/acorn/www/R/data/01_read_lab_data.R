@@ -29,3 +29,5 @@ if (nrow(dta) == 0) {
   showNotification("Something went wrong with the import of lab data.", type = "error")
   return()
 }
+
+lab_dta(dta)

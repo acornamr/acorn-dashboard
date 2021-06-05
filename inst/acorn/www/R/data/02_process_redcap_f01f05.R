@@ -78,7 +78,7 @@ infection_episode <- full_join(dl_redcap_f02,
 recordid_no_matching_enrolment <- patient_enrolment$recordid[is.na(patient_enrolment$siteid)]
 ifelse(identical(recordid_no_matching_enrolment, character(0)), 
        { checklist_status$redcap_F02F01 <- list(status = "okay", msg = "Every infection episode (F02) has a matching patient enrolment (F01)") }, 
-       { checklist_status$redcap_F02F01 <- list(status = "warning", msg = paste("The following 'recordid' have an infection episode (F02) but not a matching patient enrolment (F01):",
+       { checklist_status$redcap_F02F01 <- list(status = "warning", msg = paste("The following records have an infection episode (F02) but not a matching patient enrolment (F01):",
                                                                                 paste(recordid_no_matching_enrolment, collapse = ", ")))
        patient_enrolment <- patient_enrolment %>% filter(!recordid %in% recordid_no_matching_enrolment)})
 
@@ -112,12 +112,12 @@ infection <- left_join(
 
 # rename / drop (by commenting) / recode columns
 infection <- infection %>% transmute(
-  redcap_id = as.character(md5(recordid)),
+  redcap_id = recordid,  #  as.character(md5(recordid)),
   # redcap_repeat_instance,
   # Start fields from F02
   date_episode_enrolment = as_date(hpd_dmdtc),
   age_category = recode(hpd_agegroup, "A" = "Adult", "P" = "Child", "N"  = "Neonate"),
-  suveillance_category = ifd_surcate,
+  surveillance_category = ifd_surcate,
   hai_date_symptom_onset = as_date(hpd_onset_date),
   ward_type = recode(hpd_adm_wardtype, MED = "Adult medical ward", SRG = "Adult surgical ward", 
                      ICU = "Adult intensive care unit", PMED = "Pediatric medical ward", 
@@ -222,7 +222,7 @@ infection <- infection %>% transmute(
                          UNK = "Unknown (not documented)", REJ = "Infection rejected (alternative diagnosis made)"),
   # End F03
   # Start fields from F01:
-  hospital_code = siteid, 
+  site_id = siteid, 
   date_enrolment = as_date(dmdtc), 
   patient_id = usubjid,  # as.character(md5(usubjid)), 
   acorn_id = acornid,  # as.character(md5(acornid)), 
@@ -291,12 +291,16 @@ infection$age_year <- round(infection$age_day / 365.25, 2) # to make a calculate
 infection <- infection %>% select(-birthday, -calc_age_day, -age_month)
 
 ## Test "Calculated age is consistent with 'Age Category'"
-if(all(infection$age_year[infection$age_category == "Adult"] >= 18,
-       infection$age_year[infection$age_category == "Child"] <= 17,
-       infection$age_day[infection$age_category == "Neonate"] <= 28)) {
+dta <- bind_rows(
+  infection %>% filter(age_category == "Adult", age_year < 18),
+  infection %>% filter(age_category == "Child", age_year > 17),
+  infection %>% filter(age_category == "Neonate", age_day > 28)
+)
+
+if(nrow(dta) == 0) {
   checklist_status$redcap_age_category <- list(status = "okay", msg = "Calculated age is consistent with 'Age Category'")
 } else {
-  checklist_status$redcap_age_category <- list(status = "ko", msg = "Calculated age isn't consistent with 'Age Category'")
+  checklist_status$redcap_age_category <- list(status = "warning", msg = glue("Calculated age isn't consistent with 'Age Category' for the following redcap id: {paste(dta$redcap_id, collapse = ',')}"))
 }
 
 
@@ -341,5 +345,4 @@ infection$cci <- (infection$age_category == "Adult") * (
     6 * not_empty(infection$cmb_mst) +
     4 * not_empty(infection$cmb_aids)
 )
-
 

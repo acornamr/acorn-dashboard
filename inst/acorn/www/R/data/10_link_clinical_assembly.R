@@ -1,39 +1,97 @@
-message("10_link_clinical_assembly.R")
+browser()
+
+test <- TRUE
+if(test) {
+  clin <- tribble(
+    ~patient_id, ~surveillance_category, ~date_admission, ~hai_date_symptom_onset,
+    "Paul",      "HAI",                  NA,              "2021-03-01",
+    "Paul",      "CAI",                  "2021-04-01",    NA,
+    "Liz",       "CAI",                  "2021-04-01",    NA,
+    "Olivier",   "CAI",                  "2021-01-01",    NA,
+    "Olivier",   "HAI",                  NA,              "2021-01-04"
+  ) %>%
+    mutate(date_admission = as.Date(date_admission),
+           hai_date_symptom_onset = as.Date(hai_date_symptom_onset))
+  
+  lab <- tribble(
+    ~patid, ~specdate,    ~isolate,
+    "Paul", "2021-02-28", "orange hipo",     # removed: specimen date before hai_date_symptom_onset
+    "Paul", "2021-03-02", "blue camel",      # kept
+    "Paul", "2021-03-02", "purple cat",      # kept
+    "Paul", "2021-04-01", "red squirrel",    # kept
+    "Paul", "2021-04-06", "white elephant",  # removed: no date to match
+    "Liz",  "2021-03-31", "yellow bird",     # kept
+    "Liz",  "2021-04-01", "black rat",       # kept
+    "Ong",  "2021-03-01", "green horse"      # removed: no matching patient in clin
+  ) %>%
+    mutate(specdate = as.Date(specdate))
+} else {
+  lab <- lab_dta()      # one row per isolate
+  clin <- redcap_dta()  # one row per infection
+}
 
 
-# select only lab records of patients for which we have clinical data
-lab_dta(lab_dta() %>%
-          filter(patient_id %in% redcap_dta()$patient_id))
+# remove case B
+clin %>% 
+  mutate(date_cai_hai = case_when(
+    surveillance_category == "HAI" ~ hai_date_symptom_onset,
+    surveillance_category == "CAI" ~ date_admission)) %>%
+  group_by(patient_id) %>%
+  filter(n() > 1) %>%
+  arrange(date_cai_hai) %>%
+  mutate(lag_days = date_cai_hai - lag(date_cai_hai)) %>%
+  ungroup()
 
-# Link the clincal data to the microbiology specimen data
-# Make a data.frame of microbiology specimen IDs
-amr.spec <- amr %>% 
-  select("patid", "specdate", "specid", "specgroup") %>% 
-  filter(!duplicated(specid)) # restrict to one row per specimen (i.e. remove specimens with multiple isolates)
+  # detect (B):
+  # patients with a CAI at day D0 and a stated HAI onset of admission before D3
+  lab %>%
+  group_by(episode_id) %>%
+  mutate(flag_case_B = any(hai_date_symptom_onset <= (date_admission + 3)))
 
-# Make a data.frame of clinical CAI episodes
-clin.cai.amr <- clin %>% 
-  select("LINK", "USUBJID", "DMDTC", "HPD_ADM_DATE", "IFD_SURCATE", "IFD_HAI_DATE") %>% 
-  filter(IFD_SURCATE == "CAI") %>% 
-  inner_join(amr.spec, by = c("USUBJID" = "patid")) %>% # link microbiology to these (will remove patients with no microbiology)
-  filter(specdate >= HPD_ADM_DATE-2 & specdate <= HPD_ADM_DATE+2) # restrict to specs within 48h of admission
+message("")
 
-# Make a data.frame of clinical HAI episodes
-clin.hai.amr <- clin %>% 
-  select("LINK", "USUBJID", "DMDTC", "HPD_ADM_DATE", "IFD_SURCATE", "IFD_HAI_DATE") %>% 
-  filter(IFD_SURCATE == "HAI") %>%
-  inner_join(amr.spec, by = c("USUBJID" = "patid")) %>% # link microbiology to these (will remove patients with no microbiology)
-  filter(specdate >= IFD_HAI_DATE & specdate <= IFD_HAI_DATE+2) # restrict to specs within the 48 following HAI symptom onset
 
-# Combine CAI + HAI
-# Monitor for duplicates, where specimens associate with patients in both groups: shouldn't happen if case defs are followed
-clin.cai.hai.amr <- rbind(clin.cai.amr, clin.hai.amr) %>% 
-  select("LINK", "specid") # restrict to the two key columns (patient episode ID and specimen ID)
 
-# Merge back into original clinical data.frame so now how clinical episodes + relevant microbiology specimens
-# If >1 specimen per enrolment then the number of rows will have increased
-clin.spec <- left_join(clin, clin.cai.hai.amr, by = "LINK") # clinical data.frame plus related specimen number(s)
 
-# Reduce just to have a small data.frame to link patients - infection episodes to their specimens
-clin.spec <- clin.spec %>% select("ACORN.ANONID", "ACORN.EPID", "specid") # no direct patient identifier
-amr <- inner_join(clin.spec, amr, by = ("specid"))
+# Make a data frame of CAI episodes
+dta_cai <- clin %>%
+  filter(surveillance_category == "CAI") %>%
+  inner_join(lab, by = c("patient_id" = "patid")) %>%
+  filter(specdate >= (date_admission - 2),
+         specdate <= (date_admission + 2))
+
+
+# Make a data frame of HAI episodes
+dta_hai <- clin %>%
+  filter(surveillance_category == "HAI") %>%
+  inner_join(lab, by = c("patient_id" = "patid")) %>%
+  filter(specdate >= hai_date_symptom_onset,
+         specdate <= (hai_date_symptom_onset + 2))
+
+acorn_dta <- bind_rows(dta_cai, dta_hai)
+
+
+
+
+
+
+# TODO: anonymise with md5()
+# TODO: rename acorn_dta?
+# careful that the acorn id WILL be duplicated between the sites
+# acorn id should be non hashed / patient id should be hashed / we should be able to get back the specimen id
+acorn_dta <- lab %>%
+  mutate(
+    patient_id = patid, # as.character(md5(patid)),
+    specimen_id = specid, # as.character(md5(specid)),
+    # episode_id = as.character(md5(ACORN.EPID)),  # TODO: clarify with Paul what is being done here?
+    date_specimen = as.Date(specdate),
+    specimen_type = recode(specgroup,
+                           blood = "Blood", csf = "CSF", sterile.fluid = "Sterile fluids", lower.resp = "Lower respiratory tract specimen",
+                           pleural.fluid = "Pleural fluid", throat = "Throat swab", urine = "Urine", gu = "Genito-urinary swab", stool = "Stool",
+                           other = "Other specimens"),
+    isolate_id = paste0(specid, orgnum.acorn), # as.character(md5(paste0(specid, orgnum.acorn))),
+    orgnum = orgnum.acorn,
+    organism = orgname,
+    organism_local = org.local,
+    organism_whonet = org.whonet,
+    ast_group = ast.group)

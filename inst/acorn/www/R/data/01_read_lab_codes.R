@@ -1,6 +1,3 @@
-# Read lab codes and AST breakpoint data
-message("Read lab codes and AST breakpoint data.")
-
 file_lab_code <- try(save_object(object = "ACORN2_lab_codes.xlsx",
                                  bucket = "shared-acornamr", 
                                  key    = shared_acornamr_key,

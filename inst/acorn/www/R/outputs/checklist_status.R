@@ -19,16 +19,16 @@ output$checklist_qc_clinical <- renderText({
 })
 
 output$checklist_qc_lab <- renderText({
-  text_checklist(checklist_status, vec = paste0("lab_data_qc_", 1:2))
+  text_checklist(checklist_status, vec = paste0("lab_data_qc_", 1:8))
 })
 
 output$checklist_status_clinical <- renderText(
   text_checklist(checklist_status, vec = c("internet_connection", "app_login", "redcap_server_cred"))
 )
 
-output$checklist_generate <- renderText(
-  text_checklist(checklist_status, vec = c("lab_dta", "redcap_dta"))
-)
+# output$checklist_generate <- renderText(
+#   text_checklist(checklist_status, vec = c("lab_dta", "redcap_dta"))
+# )
 
 output$checklist_save_local <- renderText(
   text_checklist(checklist_status, vec = c("acorn_dta_saved"))
