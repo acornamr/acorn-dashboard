@@ -1073,6 +1073,8 @@ server <- function(input, output, session) {
     name_file <- glue("{input$name_file}.acorn")
     file <- file.path(tempdir(), name_file)
     
+    
+    # TODO: save one with hashed info / one without hashed info
     patient <- patient()
     microbio <- microbio()
     hai.surveys <- hai_surveys()
