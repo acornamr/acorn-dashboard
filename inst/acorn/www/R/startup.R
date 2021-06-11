@@ -1,10 +1,11 @@
-message("Start ACORN shiny app.")
-
-app_version <- "prototype.001"  # IMPORTANT ensure that the version is identical in DESCRIPTION and README.md
+app_version <- "prototype.01"  # IMPORTANT ensure that the version is identical in DESCRIPTION
 
 cols_sir <- c("#2c3e50", "#f39c12", "#e74c3c")  # resp. S, I, R
-# cols_sir <- c("#2166ac", "#fddbc7", "#b2182b")  # resp. S, I, R
 hc_export_kind <- c("downloadJPEG", "downloadCSV")
+
+code_sites <- c("demo", "KH001", "GH001", "GH002", "ID001", "ID002", 
+                "KE001", "KE002", "LA001", "LA002", "MW001", "NP001", 
+                "NG001", "NG002", "VN001", "VN002", "VN003")
 
 # IMPORTANT: packages listed here should be synced with run_app.R and DESCRIPTION
 library(aws.s3)
@@ -32,9 +33,9 @@ library(writexl)
 
 # TODO: ensure that those two elements are used when generating .acorn
 session_start_time <- format(Sys.time(), "%Y-%m-%d_%HH%M")
-session_id <- glue("{glue_collapse(sample(LETTERS, 5, TRUE))}_{session_start_time}")
+session_id <- glue("{glue_collapse(sample(LETTERS, 5, TRUE))}_{format(Sys.time(), '%Y-%m-%d_%HH%M')}")
 
-# it's safe to expose those since the shared_acornamr bucket content can only be listed + read with these credentials
+# safe to expose since the shared_acornamr bucket can only be listed/read
 shared_acornamr_key <- readRDS("./www/cred/bucket_cred/shared_acornamr_key.rds")
 shared_acornamr_sec <- readRDS("./www/cred/bucket_cred/shared_acornamr_sec.rds")
 
@@ -42,7 +43,8 @@ shared_acornamr_sec <- readRDS("./www/cred/bucket_cred/shared_acornamr_sec.rds")
 i18n <- Translator$new(translation_csvs_path = './www/translations/')
 i18n$set_translation_language('en')
 
-for(file in list.files('./www/R/functions/'))  source(paste0('./www/R/functions/', file), local = TRUE)  # define all functions
+# define all functions
+for(file in list.files('./www/R/functions/'))  source(paste0('./www/R/functions/', file), local = TRUE)
 
 acorn_theme <- bs_theme(bootswatch = "flatly", version = 4, "border-width" = "2px")
 acorn_theme_la <- bs_theme(bootswatch = "flatly", version = 4, "border-width" = "2px", base_font = "Phetsarath OT")

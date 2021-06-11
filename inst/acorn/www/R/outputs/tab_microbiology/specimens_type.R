@@ -4,7 +4,7 @@ output$specimens_specimens_type <- renderHighchart({
   
   dta <- microbio_filter() %>%
     fun_deduplication(method = input$deduplication_method) %>%
-    group_by(specimen_id) %>%
+    group_by(specid) %>%
     slice(1) %>%
     ungroup() %>%
     group_by(specimen_type) %>%
@@ -31,14 +31,14 @@ output$culture_specimen_type <- renderHighchart({
   # Specimens with at least one element that has grown
   spec_grown <- microbio_filter() %>%
     fun_filter_growth_only() %>%
-    pull(specimen_id)
+    pull(specid)
   
   dta <- microbio_filter() %>%
     fun_deduplication(method = input$deduplication_method) %>%
-    mutate(growth = case_when(specimen_id %in% spec_grown ~ "Growth", TRUE ~ "No Growth")) %>%
+    mutate(growth = case_when(specid %in% spec_grown ~ "Growth", TRUE ~ "No Growth")) %>%
     mutate(culture_result = case_when(organism == "Not cultured" ~ "Not cultured", TRUE ~ growth)) %>%
     group_by(specimen_type, culture_result) %>%
-    summarise(n = n_distinct(specimen_id), .groups = "drop") %>%
+    summarise(n = n_distinct(specid), .groups = "drop") %>%
     complete(specimen_type, culture_result, fill = list(n = 0))
   
   dta <- left_join(dta,

@@ -19,11 +19,11 @@ highchart_sir_evolution <- function(data_input, organism_input, corresp, combine
   sir_results <- data_input %>% 
     filter(organism %in% organism_input) %>% 
     fun_deduplication(method = deduplication_method) %>%
-    select(specimen_id, date_specimen, 9:ncol(data_input)) %>%
-    pivot_longer(-c(specimen_id:date_specimen)) %>%
+    select(specid, specdate, 9:ncol(data_input)) %>%
+    pivot_longer(-c(specid:specdate)) %>%
     filter(value %in% c("S", "I", "R")) %>%
     mutate(
-      specimen_month = round_date(date_specimen, "month"),
+      specimen_month = round_date(specdate, "month"),
       value = factor(value, levels = c("S", "I", "R"), labels = c("Susceptible", "Susceptible", "Resistant"))
       ) %>%
     group_by(specimen_month, name) %>%
@@ -35,11 +35,11 @@ highchart_sir_evolution <- function(data_input, organism_input, corresp, combine
     sir_results <- data_input %>% 
       filter(organism %in% organism_input) %>% 
       fun_deduplication(method = deduplication_method) %>%
-      select(specimen_id, date_specimen, 9:ncol(data_input)) %>%
-      pivot_longer(-c(specimen_id:date_specimen)) %>%
+      select(specid, specdate, 9:ncol(data_input)) %>%
+      pivot_longer(-c(specid:specdate)) %>%
       filter(value %in% c("S", "I", "R")) %>%
       mutate(
-        specimen_month = round_date(date_specimen, "month"),
+        specimen_month = round_date(specdate, "month"),
         value = factor(value, levels = c("S", "I", "R"), labels = c("Susceptible", "Intermediate", "Resistant"))
       ) %>%
       group_by(specimen_month, name) %>%

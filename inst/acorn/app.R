@@ -27,7 +27,7 @@ ui <- fluidPage(
              title = a(img(src = "logo_acorn.png", style = "height: 40px; position: relative;")),
              collapsible = TRUE, inverse = FALSE, 
              position = "static-top",
-             ## Header ----
+             
              header = conditionalPanel(
                id = "header-filter",
                condition = "input.tabs != 'welcome' & input.tabs != 'data_management' & input.tabs != 'about'",
@@ -138,18 +138,12 @@ ui <- fluidPage(
                                      class = "well",
                                      h4(class = "text-center", "Please log in"),
                                      selectInput("cred_site", tagList(icon("hospital"), "Site"),
-                                                 choices = c("demo", "KH001", "GH001", "GH002", "ID001", "ID002", 
-                                                             "KE001", "KE002", "LA001", "LA002", "MW001", 
-                                                             "NP001", "NG001", "NG002", "VN001", "VN002", 
-                                                             "VN003")
-                                     ),
+                                                 choices = code_sites),
                                      conditionalPanel("input.cred_site != 'demo'", div(
                                        textInput("cred_user", tagList(icon("user"), "User"),
-                                                 placeholder = "Enter user"
-                                       ),
+                                                 placeholder = "Enter user"),
                                        passwordInput("cred_password", tagList(icon("unlock-alt"), "Password"), 
-                                                     placeholder = "Enter password"
-                                       )
+                                                     placeholder = "Enter password")
                                      )
                                      ), 
                                      div(class = "text-center",
@@ -214,20 +208,13 @@ ui <- fluidPage(
                                   tab(value = "generate", span("Generate ", em(".acorn")),
                                       fluidRow(
                                         column(3,    
-                                               h5("(1/3) Get Clinical data"), p("and generate enrolment log.")
+                                               h5("(1/3) Get Clinical data"), p("and generate enrolment log."),
+                                               htmlOutput("checklist_status_clinical"),
+                                               actionButton("get_redcap_data", "Get Clinical Data from REDCap", icon = icon('times-circle'))
                                         ),
                                         column(9,
-                                               fluidRow(
-                                                 column(3,
-                                                        htmlOutput("checklist_status_clinical"),
-                                                        actionButton("get_redcap_data", "Get Clinical Data from REDCap", icon = icon('times-circle')),
-                                                 ),
-                                                 column(9,
-                                                        textOutput("text_redcap_f01f05_log"),
-                                                        textOutput("text_redcap_hai_log")
-                                                 )
-                                               ),
-                                               br(),
+                                               textOutput("text_redcap_f01f05_log"),
+                                               textOutput("text_redcap_hai_log"),
                                                htmlOutput("message_redcap_dta"),
                                                htmlOutput("checklist_qc_clinical"),
                                                uiOutput("enrolment_log")
@@ -265,11 +252,11 @@ ui <- fluidPage(
                                       hr(),
                                       fluidRow(
                                         column(3, 
-                                               h5("(3/3) Combine Clinical and Lab data")
+                                               h5("(3/3) Combine Clinical and Lab data"),
+                                               actionButton("generate_acorn_data", span("Generate ", em(".acorn")))
                                         ),
                                         column(9,
-                                               # htmlOutput("checklist_generate"),
-                                               actionButton("generate_acorn_data", span("Generate ", em(".acorn")))
+                                               htmlOutput("checklist_generate")
                                         )
                                       )
                                   ),
@@ -729,6 +716,9 @@ server <- function(input, output, session) {
     redcap_hai_dates = list(status = "hidden", msg = "(HIDDEN)"),
     # redcap_F05F01 = list(status = "hidden", msg = "Every BSI episode form (F05) matches exactly one patient enrolment (F01)"),
     
+    linkage_caseB = list(status = "hidden", msg = ""),
+    linkage_caseC = list(status = "hidden", msg = ""),
+    
     redcap_dta = list(status = "warning", msg = "Clinical data not provided"),
     lab_dta = list(status = "warning", msg = "Lab data not provided"),
     lab_dic = list(status = "ko", msg = "Lab data dictionary not found"),
@@ -964,12 +954,13 @@ server <- function(input, output, session) {
     notify("Processing Lab data: quality checks.", id = id)
     source("./www/R/data/09_checklist_lab.R", local = TRUE)
     
+    browser()
     lab_dta(amr)
     showNotification("Lab data successfully processsed!", type = "message")
   })
   
   
-  # On "Get REDCap data" ----
+  # On "Get Clinical Data from REDCap server" ----
   observeEvent(input$get_redcap_data, {
     if(is.null(acorn_cred()$redcap_f01f05_api)) {
       showNotification("REDCap server credentials not provided", type = "error")
@@ -1034,7 +1025,7 @@ server <- function(input, output, session) {
     
     
     if(checklist_status$lab_dta$status == "okay" & checklist_status$redcap_dta$status == "okay") {
-      source("./www/R/data/09_link_clinical_assembly.R", local = TRUE)
+      source("./www/R/data/10_link_clinical_assembly.R", local = TRUE)
       showNotification("It's critical to save your acorn file", type = "warning", duration = NULL)
       acorn_dta_saved = list(status = "ko", msg = ".acorn not saved")
     }
@@ -1059,12 +1050,7 @@ server <- function(input, output, session) {
         )
       ),
       
-      title = "Save acorn data",
-      footer = modalButton("Cancel"),
-      size = "l",
-      easyClose = FALSE,
-      fade = TRUE
-    ))
+      title = "Save acorn data", footer = modalButton("Cancel"), size = "l", easyClose = FALSE, fade = TRUE))
     
   })
   
@@ -1087,6 +1073,8 @@ server <- function(input, output, session) {
     meta$user <- input$meta_acorn_user
     meta$comment <- input$meta_acorn_comment
     
+    
+    # acorn id should be non hashed / patient id should be hashed / we should be able to get back the specimen id
     save(patient, microbio, corresp_org_antibio, hai.surveys,
          meta,
          file = file)
@@ -1166,6 +1154,7 @@ server <- function(input, output, session) {
                    machine = input$meta_acorn_machine_dup,
                    comment = input$meta_acorn_comment_dup)
       
+      # acorn id should be non hashed / patient id should be hashed / we should be able to get back the specimen id
       save(f01, f02, f03, f04, f05, f06,
            f01_edit, f02_edit, f03_edit, f04_edit, f05_edit, f06_edit,
            lab_dta, meta,

@@ -14,7 +14,7 @@ amr <- lab_dta() %>%
 #   mutate(specid.lc = tolower(specid)) %>%
 #   mutate(specid.acorn = as.numeric(as.factor(specid.lc))) %>%
 #   group_by(specid.acorn) %>% mutate(orgnum.acorn = 1:n()) %>% ungroup() %>%
-#   mutate(isol.id_2 = paste(amr$specid.acorn, amr$orgnum.acorn, sep = "-"))
+#   mutate(isolateid_2 = paste(amr$specid.acorn, amr$orgnum.acorn, sep = "-"))
 
 
 # Make a new orgnum (do not rely on any orgnum imported as part of the dataset)
@@ -29,8 +29,8 @@ amr <- left_join(amr, specid,
   as.data.frame() %>%
   select(-specid.lc)
 
-# Make an isolate id variable (isol.id)
-amr$isol.id <- paste(amr$specid.acorn, amr$orgnum.acorn, sep = "-")
+# Make an isolate id variable (isolateid)
+amr$isolateid <- paste(amr$specid.acorn, amr$orgnum.acorn, sep = "-")
 
 # Map local beta-lactamase, inducible clindamycin resistance (ICR), ESBL, carbapenemase, MRSA, VRE test result codes to standard codes
 test.res <- data_dictionary$test.res %>%

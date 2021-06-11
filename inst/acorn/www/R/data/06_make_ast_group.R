@@ -21,7 +21,6 @@ amr$ast.group[is.na(amr$ast.group2)] <- amr$ast.group1[is.na(amr$ast.group2)] # 
 amr$acorn.genus <- NULL # Remove as no longer required
 amr$ast.group1 <- NULL # Remove as no longer required
 amr$ast.group2 <- NULL # Remove as no longer required
-rm(acorn.ast.groups) # Remove as no longer required
 
 # Make a variable data.frame to identify key AST variables
 # Mark the MIC / Etest variables

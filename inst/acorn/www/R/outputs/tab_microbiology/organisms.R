@@ -5,13 +5,13 @@ output$isolates_growth_gauge <- renderGauge({
   n <- microbio_filter() %>%
     fun_filter_growth_only() %>%
     fun_deduplication(method = input$deduplication_method) %>%
-    pull(specimen_id) %>% 
+    pull(specid) %>% 
     n_distinct()
   
   total <- microbio_filter() %>%
     fun_filter_cultured_only() %>%
     fun_deduplication(method = input$deduplication_method) %>%
-    pull(specimen_id) %>% 
+    pull(specid) %>% 
     n_distinct()
   
   gauge(n, min = 0, max = total, abbreviate = FALSE, gaugeSectors(colors = "#2c3e50"))
@@ -24,13 +24,13 @@ output$isolates_growth_pct <- renderText({
   n <- microbio_filter() %>%
     fun_filter_growth_only() %>%
     fun_deduplication(method = input$deduplication_method) %>%
-    pull(specimen_id) %>% 
+    pull(specid) %>% 
     n_distinct()
   
   total <- microbio_filter() %>%
     fun_filter_cultured_only() %>%
     fun_deduplication(method = input$deduplication_method) %>%
-    pull(specimen_id) %>% 
+    pull(specid) %>% 
     n_distinct()
   
   paste(br(), br(), h4(paste0(round(100*n/total, 1), "%")), span("of cultures have growth."))

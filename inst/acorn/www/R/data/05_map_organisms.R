@@ -1,6 +1,5 @@
-message("Source 04_map_organisms.R")
+message("Map local / WHO organism codes and names to ACORN organism names / groups.")
 
-# Map local / WHO organism codes and names to ACORN organism names / groups
 whonet.orgs <- lab_code$whonet.orgs
 whonet.orgs$genus.sp <- paste(whonet.orgs$GENUS, " sp", sep = "") # Make a genus/species variable
 whonet.orgs$genus.sp[whonet.orgs$genus.sp == "NA sp"] <- NA # Remove values from non-bacterial species (organism codes with no genus (e.g. viruses or "Acid fast bacilli"))
@@ -17,8 +16,6 @@ amr <- left_join(amr,
                  local.orgs %>% select(org.local, acorn.org.code), 
                  by = c('org.local.lower' = 'org.local'))
 names(amr)[names(amr) == "acorn.org.code"] <- "org.code1"
-rm(local.orgs) # Remove as no longer required
-
 
 # WHONET organism code matching
 # Note that some of the WHONET org codes (ORG) are duplicated because of changes in nomenclature: so first create a subset just of the current code-name combos (STATUS == "C")
@@ -28,8 +25,6 @@ amr <- left_join(amr,
                  whonet.orgs.unique %>% select(ORG, acorn.org.code),
                  by = c('org.whonet' = 'ORG'))
 names(amr)[names(amr) == "acorn.org.code"] <- "org.code2"
-rm(whonet.orgs.unique) # Remove as no longer required
-
 
 # WHONET organism name matching (matches WHONET organism name and returns the acorn.org.code)
 whonet.orgs$ORG_CLEAN_LOWER <- tolower(whonet.orgs$ORG_CLEAN)
@@ -37,7 +32,6 @@ amr <- left_join(amr,
                  whonet.orgs %>% select(acorn.org.code, ORG_CLEAN_LOWER), 
                  by = c('org.local.lower' = 'ORG_CLEAN_LOWER'))
 names(amr)[names(amr) == "acorn.org.code"] <- "org.code3"
-
 
 # Genus matching
 # https://stackoverflow.com/questions/25477920/get-characters-before-first-space
@@ -73,9 +67,7 @@ amr$contaminant[tolower(amr$genus.final) %in% tolower(lab_code$acorn.bccontamina
 amr$contaminant[amr$orgname %in% non.cont] <- "No"
 
 # Restrict contaminant call to blood cultures only
-amr$contaminant[amr$specgroup != "blood"] <- NA
-
-rm(non.cont) # Remove as no longer required
+amr$contaminant[amr$specgroup != "Blood"] <- NA
 
 # Remove columns that are no longer required [UPDATED ACORN2]
 amr <- amr %>% 

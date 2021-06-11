@@ -10,8 +10,7 @@ if(test) {
     "Olivier",   "CAI",                  "2021-01-01",    NA,           
     "Olivier",   "HAI",                  NA,              "2021-01-04",
     "Tam",       "CAI",                  "2021-05-01",    NA,
-    "Tam",       "CAI",                  "2021-05-04",    NA,
-  ) %>%
+    "Tam",       "CAI",                  "2021-05-04",    NA) %>%
     mutate(date_admission = as.Date(date_admission),
            hai_date_symptom_onset = as.Date(hai_date_symptom_onset))
   
@@ -27,21 +26,20 @@ if(test) {
     "Liz",  "2021-04-01", 1,        1, # kept
     "Ong",  "2021-03-01", 1,        1, # removed: no matching patient in clin
     "Tam",  "2021-05-03", 1,        1, # kept: will be duplicated before treatment of cases of type C
-    "Tam",  "2021-05-03", 1,        2, # kept: will be duplicated before treatment of cases of type C
-  ) %>%
+    "Tam",  "2021-05-03", 1,        2) %>% # kept: will be duplicated before treatment of cases of type C
     mutate(specid = glue("{patid}-{specdate}-{specid}")) %>%
     mutate(isolateid = glue("{specid}-{isolateid}")) %>%
     mutate(specdate = as.Date(specdate))
 } else {
-  lab <- lab_dta()      # one row per isolate
+  lab <- lab_dta() # one row per isolate
   clin <- redcap_dta()  # one row per infection
 }
 
 
-# Case B
+# Detection of cases B
 # TODO: inquire with Paul what we should do with those infection episodes:
 # warning in the app but no action? error in the app? remove the HAI episode from clin with warning? 
-clin %>% 
+caseB <- clin %>% 
   mutate(date_cai_hai = case_when(
     surveillance_category == "HAI" ~ hai_date_symptom_onset,
     surveillance_category == "CAI" ~ date_admission)) %>%
@@ -52,6 +50,10 @@ clin %>%
          lag_sc = lag(surveillance_category)) %>%
   ungroup() %>%
   filter(surveillance_category == "HAI", lag_sc == "CAI", lag_days == 3)
+
+ifelse(nrow(caseB) == 0, 
+       { checklist_status$linkage_caseB <- list(status = "okay", msg = "There are no atypical case (one CAI / early HAI but no overlap)") },
+       { checklist_status$linkage_caseB  <- list(status = "warning", msg = paste("The following patient id are atypical cases (one CAI / early HAI but no overlap):", paste(caseB$patient_id, collapse = ", "))) })
 
 # Make a data frame of CAI episodes / HAI episodes and merge
 dta_cai <- clin %>%
@@ -71,6 +73,21 @@ acorn_dta <- bind_rows(dta_cai, dta_hai)
 # remove case C - require to have an isolate id.
 # would not work with specid as specimens with several isolates 
 # would be removed by mistake
+
+caseC <- acorn_dta %>% 
+  mutate(date_cai_hai = case_when(
+    surveillance_category == "HAI" ~ hai_date_symptom_onset,
+    surveillance_category == "CAI" ~ date_admission)) %>%
+  group_by(isolateid) %>%
+  arrange(date_cai_hai) %>%
+  filter(row_number() > 1) %>%
+  pull(patient_id) %>%
+  unique()
+
+ifelse(is_empty(caseC), 
+       { checklist_status$linkage_caseC <- list(status = "okay", msg = "There are no problem case (overlapping specimen collection windows)") },
+       { checklist_status$linkage_caseC  <- list(status = "warning", msg = paste("The following patient id are problem case (overlapping specimen collection windows):", paste(caseC, collapse = ", "))) })
+
 acorn_dta <- acorn_dta %>% 
   mutate(date_cai_hai = case_when(
     surveillance_category == "HAI" ~ hai_date_symptom_onset,
@@ -81,20 +98,11 @@ acorn_dta <- acorn_dta %>%
   ungroup()
 
 
-# TODO: anonymise with md5()
+
 # careful that the acorn id WILL be duplicated between the sites
-# acorn id should be non hashed / patient id should be hashed / we should be able to get back the specimen id
 acorn_dta <- acorn_dta %>%
   mutate(
-    patient_id = patid, # as.character(md5(patid)),
-    specimen_id = specid, # as.character(md5(specid)),
-    # episode_id = as.character(md5(ACORN.EPID)),  # TODO: clarify with Paul what is being done here?
-    date_specimen = as.Date(specdate),
-    specimen_type = recode(specgroup,
-                           blood = "Blood", csf = "CSF", sterile.fluid = "Sterile fluids", lower.resp = "Lower respiratory tract specimen",
-                           pleural.fluid = "Pleural fluid", throat = "Throat swab", urine = "Urine", gu = "Genito-urinary swab", stool = "Stool",
-                           other = "Other specimens"),
-    isolate_id = paste0(specid, orgnum.acorn), # as.character(md5(paste0(specid, orgnum.acorn))),
+    specdate = as.Date(specdate),
     orgnum = orgnum.acorn,
     organism = orgname,
     organism_local = org.local,

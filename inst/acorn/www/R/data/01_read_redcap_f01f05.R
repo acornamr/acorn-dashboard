@@ -19,7 +19,7 @@ dl_redcap_dta <- try(
 removeNotification(id = "try_redcap_f01f05")
 
 if(inherits(dl_redcap_dta, "try-error"))  {
-  showNotification("REDCap data (forms F01 to F05) wasn't retrived. Please try again.", type = "error")
+  showNotification("REDCap data (forms F01 to F05) could not be retrived. Please try again.", type = "error")
   return()
 }
 
