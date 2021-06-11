@@ -10,14 +10,14 @@ highchart_sir <- function(data_input, organism_input, corresp, combine_SI, dedup
   if(str_detect(organism_input, "Salmonella")) matching_name_column <- "salmonella_species"
   
   if(organism_input == "Salmonella sp (not S. typhi or S. paratyphi)") {
-    vec <- unique(data_input$organism)
+    vec <- unique(data_input$orgname)
     organism_input <- vec[str_detect(vec, "Salmonella") & vec != "Salmonella typhi" & vec != "Salmonella paratyphi"]
   }
   
   if(combine_SI) {
     
     data <- data_input %>% 
-      filter(organism %in% organism_input) %>%
+      filter(orgname %in% organism_input) %>%
       fun_deduplication(method = deduplication_method) %>%
       select(specid, 9:ncol(data_input)) %>%
       pivot_longer(-specid) %>%
@@ -83,7 +83,7 @@ highchart_sir <- function(data_input, organism_input, corresp, combine_SI, dedup
   if(!combine_SI) {
     
     data <- data_input %>% 
-      filter(organism %in% organism_input) %>% 
+      filter(orgname %in% organism_input) %>% 
       fun_deduplication(method = deduplication_method) %>%
       select(specid, 9:ncol(data_input)) %>%
       pivot_longer(-specid) %>%

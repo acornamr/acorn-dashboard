@@ -36,7 +36,7 @@ output$culture_specimen_type <- renderHighchart({
   dta <- microbio_filter() %>%
     fun_deduplication(method = input$deduplication_method) %>%
     mutate(growth = case_when(specid %in% spec_grown ~ "Growth", TRUE ~ "No Growth")) %>%
-    mutate(culture_result = case_when(organism == "Not cultured" ~ "Not cultured", TRUE ~ growth)) %>%
+    mutate(culture_result = case_when(orgname == "Not cultured" ~ "Not cultured", TRUE ~ growth)) %>%
     group_by(specimen_type, culture_result) %>%
     summarise(n = n_distinct(specid), .groups = "drop") %>%
     complete(specimen_type, culture_result, fill = list(n = 0))

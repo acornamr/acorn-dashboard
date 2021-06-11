@@ -96,15 +96,3 @@ acorn_dta <- acorn_dta %>%
   arrange(date_cai_hai) %>%
   filter(row_number() == 1) %>%
   ungroup()
-
-
-
-# careful that the acorn id WILL be duplicated between the sites
-acorn_dta <- acorn_dta %>%
-  mutate(
-    specdate = as.Date(specdate),
-    orgnum = orgnum.acorn,
-    organism = orgname,
-    organism_local = org.local,
-    organism_whonet = org.whonet,
-    ast_group = ast.group)

@@ -20,7 +20,7 @@ fun_deduplication <- function(data, method = NULL) {
   if(method == "No deduplication of isolates")  return(data)
   
   if(method == "Deduplication by patient-episode") { 
-    data_dedup <- data %>% group_by(patient_id, episode_id, organism, specimen_type) %>% 
+    data_dedup <- data %>% group_by(patient_id, episode_id, orgname, specimen_type) %>% 
       slice(1) %>% ungroup()
     # print(paste0("Deduplication: before ", nrow(data), " isolates; after ", nrow(data_dedup), 
     #              " isolates (-",  nrow(data) - nrow(data_dedup), ")."))
@@ -28,7 +28,7 @@ fun_deduplication <- function(data, method = NULL) {
   }
   
   if(method == "Deduplication by patient ID") { 
-    data_dedup <- data %>% group_by(patient_id, organism, specimen_type) %>% 
+    data_dedup <- data %>% group_by(patient_id, orgname, specimen_type) %>% 
       slice(1) %>% ungroup()
     # print(paste0("Deduplication: before ", nrow(data), " isolates; after ", nrow(data_dedup), 
     #              " isolates (-",  nrow(data) - nrow(data_dedup), ")."))
@@ -38,11 +38,11 @@ fun_deduplication <- function(data, method = NULL) {
 
 # Function that removes organisms "No growth (specific organism)" and "No growth"
 # Note that "No significant growth" should be categorised as growth
-fun_filter_growth_only <- function(data) data %>% filter(! organism %in% c("No growth (specific organism)", "No growth"))
+fun_filter_growth_only <- function(data) data %>% filter(! orgname %in% c("No growth (specific organism)", "No growth"))
 
 
 # Function that removes organisms "No significant growth"
-fun_filter_signifgrowth_only <- function(data) data %>% filter(organism != "No significant growth")
+fun_filter_signifgrowth_only <- function(data) data %>% filter(orgname != "No significant growth")
 
 # Function that removes organisms "Not cultured"
-fun_filter_cultured_only <- function(data) data %>% filter(! organism == "Not cultured")
+fun_filter_cultured_only <- function(data) data %>% filter(! orgname == "Not cultured")

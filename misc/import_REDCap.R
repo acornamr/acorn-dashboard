@@ -1,5 +1,4 @@
 # Script to import data in REDCap
-
 rm(list = ls())
 library(lubridate)
 library(tidyverse)
@@ -73,6 +72,12 @@ f02 <- left_join(f02, f02rep, by = c("KEY" = "PARENT_KEY"))
 # Delete one record in f01 without any matching f02 record
 f01 <- f01[-which(!f01$USUBJID %in% f02$USUBJID), ]
 
+# duplicated(f01$USUBJID)
+# which(duplicated(f01$USUBJID))
+# f01$USUBJID[95]
+# f01 %>% filter(USUBJID == f01$USUBJID[95]) %>% pull(HPD_ADM_DATE)
+
+
 ## Reduce f01-f02-f03 to a single data.frame (1 infection episode enrolment per row) ----
 # Make linker variable (site - subject id - enrolment date)
 f01$LINK <- paste(f01$SITEID, f01$USUBJID, f01$DMDTC, sep = "-")
@@ -96,6 +101,9 @@ f01.f02.sel <- left_join(f01.sel, f02.sel, by = "LINK")
 
 clin <- left_join(f01.f02.sel, f03.sel, by = "LINK1")  # one row per admission
 rm(f01, f01.sel, f01.f02.sel, f02, f02.sel, f02rep, f03, f03.sel)
+
+
+which(duplicated(clin$USUBJID))
 
 # (Helper) for easy copy/paste of column names ----
 
@@ -133,8 +141,8 @@ template_f01 <- tibble(recordid = paste0("import-acorn1b-", 1:nb_clin))
 template_f01$f01odkreckey <- clin$KEY
 template_f01$acornid_odk <- ""
 template_f01$adm_date_odk <- ""
-template_f01$siteid <- clin$SITEID
-template_f01$siteid_cfm <- clin$SITEID
+template_f01$siteid <- "KH001"
+template_f01$siteid_cfm <- "KH001"
 template_f01$dmdtc <- clin$DMDTC
 template_f01$usubjid <- clin$USUBJID
 template_f01$usubjid_cfm <- clin$USUBJID
@@ -187,9 +195,9 @@ template_f01 <- template_f01  %>%
   mutate(across(everything(), as.character)) %>% 
   replace(is.na(.), "")
 
-write_csv(template_f01, file = "template_f01_REDCap_2021-05-03.csv")
-write_csv(template_f01 %>% filter(recordid %in% sample_10_records), 
-          file = "template_f01_REDCap_sample10rows_2021-05-03.csv")
+write_csv(template_f01, file = "template_f01_REDCap_2021-06-11.csv")
+# write_csv(template_f01 %>% filter(recordid %in% sample_10_records), 
+#           file = "template_f01_REDCap_sample10rows_2021-06-11.csv")
 
 # These are new and all set to NA
 # template_f01$f05odkreckey <- NA
@@ -345,9 +353,9 @@ template_f02 <- template_f02  %>%
   mutate(across(everything(), as.character)) %>% 
   replace(is.na(.), "")
 
-write_csv(template_f02, file = "template_f02_REDCap_2021-05-03.csv")
-write_csv(template_f02 %>% filter(recordid %in% sample_10_records), 
-          file = "template_f02_REDCap_sample10rows_2021-05-03.csv")
+write_csv(template_f02, file = "template_f02_REDCap_2021-06-11.csv")
+# write_csv(template_f02 %>% filter(recordid %in% sample_10_records), 
+#           file = "template_f02_REDCap_sample10rows_2021-06-11.csv")
 
 ## template_f03 ----
 template_f03 <- tibble(recordid = paste0("import-acorn1b-", 1:nb_clin))
@@ -382,9 +390,9 @@ template_f03 <- template_f03  %>%
   mutate(across(everything(), as.character)) %>% 
   replace(is.na(.), "")
 
-write_csv(template_f03, file = "template_f03_REDCap_2021-05-03.csv")
-write_csv(template_f03 %>% filter(recordid %in% sample_10_records), 
-          file = "template_f03_REDCap_sample10rows_2021-05-03.csv")
+write_csv(template_f03, file = "template_f03_REDCap_2021-06-11.csv")
+# write_csv(template_f03 %>% filter(recordid %in% sample_10_records), 
+#           file = "template_f03_REDCap_sample10rows_2021-06-11.csv")
 
 # template_hai ---- 
 nb_hai <- nrow(f04)
@@ -415,4 +423,4 @@ template_hai <- template_hai  %>%
   mutate(across(everything(), as.character)) %>% 
   replace(is.na(.), "")
 
-write_csv(template_hai, file = "template_hai_REDCap_2021-05-03.csv")
+write_csv(template_hai, file = "template_hai_REDCap_2021-06-11.csv")

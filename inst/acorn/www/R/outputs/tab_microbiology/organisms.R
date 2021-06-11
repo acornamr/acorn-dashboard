@@ -45,10 +45,10 @@ output$isolates_organism <- renderHighchart({
   df <- microbio_filter() %>%
     fun_filter_growth_only() %>%
     fun_filter_signifgrowth_only() %>%
-    filter(organism != "Mixed growth", organism != "Not cultured") %>%
+    filter(orgname != "Mixed growth", orgname != "Not cultured") %>%
     fun_deduplication(method = input$deduplication_method) %>%
     
-    group_by(organism) %>%
+    group_by(orgname) %>%
     summarise(y = n(), .groups = "drop") %>%
     arrange(desc(y)) %>% head(10) %>%
     mutate(freq = round(100*y / sum(y))) %>%
@@ -57,10 +57,10 @@ output$isolates_organism <- renderHighchart({
   highchart() %>% 
     hc_yAxis(title = "") %>%
     hc_colors("#969696") %>%
-    hc_xAxis(categories = as.list(df$organism)) %>%
-    hc_add_series(data = df, type = "bar", hcaes(x = organism, y = y),
+    hc_xAxis(categories = as.list(df$orgname)) %>%
+    hc_add_series(data = df, type = "bar", hcaes(x = orgname, y = y),
                   showInLegend = FALSE, tooltip = list(headerFormat = "", 
-                                                       pointFormat = "{point.y} isolates with {point.organism} ({point.freq} %).")) %>%
+                                                       pointFormat = "{point.y} isolates with {point.orgname} ({point.freq} %).")) %>%
     hc_exporting(enabled = TRUE, buttons = list(contextButton = list(menuItems = hc_export_kind)))
 })
 
@@ -71,13 +71,13 @@ output$isolates_organism_table <- renderDT({
   df <- microbio_filter() %>%
     fun_filter_growth_only() %>%
     fun_filter_signifgrowth_only() %>%
-    filter(organism != "Mixed growth", organism != "Not cultured") %>%
+    filter(orgname != "Mixed growth", orgname != "Not cultured") %>%
     fun_deduplication(method = input$deduplication_method) %>%
     
-    group_by(organism) %>%
+    group_by(orgname) %>%
     summarise(N = n(), .groups = "drop") %>%
     mutate(Frequency = N / sum(N)) %>%
-    rename(Organism = organism) %>%
+    rename(Organism = orgname) %>%
     arrange(desc(N))
 
   datatable(df,

@@ -1,4 +1,4 @@
-highchart_sir_evolution <- function(data_input, organism_input, corresp, combine_SI, 
+highchart_sir_evolution <- function(data_input, orgname_input, corresp, combine_SI, 
                                     filter_antibio = "", filter_group = "", deduplication_method) {
   
   # Column in the Organism-Antibiotic matrix
@@ -11,13 +11,13 @@ highchart_sir_evolution <- function(data_input, organism_input, corresp, combine
   if(str_detect(organism_input, "Salmonella")) matching_name_column <- "salmonella_species"
   
   if(organism_input == "Salmonella sp (not S. typhi or S. paratyphi)") {
-    vec <- unique(data_input$organism)
+    vec <- unique(data_input$orgname)
     organism_input <- vec[str_detect(vec, "Salmonella") & vec != "Salmonella typhi" & vec != "Salmonella paratyphi"]
   }
   
   if(combine_SI) {
   sir_results <- data_input %>% 
-    filter(organism %in% organism_input) %>% 
+    filter(orgname %in% organism_input) %>% 
     fun_deduplication(method = deduplication_method) %>%
     select(specid, specdate, 9:ncol(data_input)) %>%
     pivot_longer(-c(specid:specdate)) %>%
@@ -33,7 +33,7 @@ highchart_sir_evolution <- function(data_input, organism_input, corresp, combine
   
   if(! combine_SI) {
     sir_results <- data_input %>% 
-      filter(organism %in% organism_input) %>% 
+      filter(orgname %in% organism_input) %>% 
       fun_deduplication(method = deduplication_method) %>%
       select(specid, specdate, 9:ncol(data_input)) %>%
       pivot_longer(-c(specid:specdate)) %>%
