@@ -170,40 +170,6 @@ ui <- fluidPage(
              # Tab Data Management ----
              tabPanel(span(icon("database"), 'Data Management'), value = "data_management",
                       tabsetPanel(id = "data_management_tabs", type = "tabs",
-                                  ## Tab Load ----
-                                  tab(value = "load", span("Load existing ", em(".acorn")),
-                                      fluidRow(
-                                        column(3,
-                                               tags$div(
-                                                 materialSwitch(inputId = "load_switch", label = "Local", 
-                                                                inline = TRUE, status = "primary", value = TRUE),
-                                                 tags$span(icon("cloud"), "Server")
-                                               )
-                                        ),
-                                        column(9,
-                                               conditionalPanel("! input.load_switch",
-                                                                div(
-                                                                  p("You can upload a file from your PC"),
-                                                                  fileInput("load_acorn_local", label = NULL, buttonLabel =  HTML("Load <em>.acorn</em>"), accept = '.acorn'),
-                                                                )
-                                               ),
-                                               conditionalPanel("input.load_switch",
-                                                                div(
-                                                                  htmlOutput("checklist_status_load_server"),
-                                                                  br(),
-                                                                  
-                                                                  pickerInput('acorn_files_server', choices = NULL, label = NULL,
-                                                                              options = pickerOptions(actionsBox = TRUE, noneSelectedText = "No file selected", liveSearch = FALSE,
-                                                                                                      showTick = TRUE, header = "10 most recent files:")),
-                                                                  
-                                                                  conditionalPanel(condition = "input.acorn_files_server",
-                                                                                   actionButton('load_acorn_server', span(icon('cloud-download-alt'), HTML('Load <em>.acorn</em>')))
-                                                                  )
-                                                                )
-                                               )
-                                        )
-                                      )
-                                  ),
                                   ## Tab Generate ----
                                   tab(value = "generate", span("Generate ", em(".acorn")),
                                       fluidRow(
@@ -281,6 +247,40 @@ ui <- fluidPage(
                                                                 div(
                                                                   htmlOutput("checklist_save_server"),
                                                                   actionButton('save_acorn_server', span(icon('cloud-upload-alt'), HTML('Save <em>.acorn</em>')))
+                                                                )
+                                               )
+                                        )
+                                      )
+                                  ),
+                                  ## Tab Load ----
+                                  tab(value = "load", span("Load existing ", em(".acorn")),
+                                      fluidRow(
+                                        column(3,
+                                               tags$div(
+                                                 materialSwitch(inputId = "load_switch", label = "Local", 
+                                                                inline = TRUE, status = "primary", value = TRUE),
+                                                 tags$span(icon("cloud"), "Server")
+                                               )
+                                        ),
+                                        column(9,
+                                               conditionalPanel("! input.load_switch",
+                                                                div(
+                                                                  p("You can upload a file from your PC"),
+                                                                  fileInput("load_acorn_local", label = NULL, buttonLabel =  HTML("Load <em>.acorn</em>"), accept = '.acorn'),
+                                                                )
+                                               ),
+                                               conditionalPanel("input.load_switch",
+                                                                div(
+                                                                  htmlOutput("checklist_status_load_server"),
+                                                                  br(),
+                                                                  
+                                                                  pickerInput('acorn_files_server', choices = NULL, label = NULL,
+                                                                              options = pickerOptions(actionsBox = TRUE, noneSelectedText = "No file selected", liveSearch = FALSE,
+                                                                                                      showTick = TRUE, header = "10 most recent files:")),
+                                                                  
+                                                                  conditionalPanel(condition = "input.acorn_files_server",
+                                                                                   actionButton('load_acorn_server', span(icon('cloud-download-alt'), HTML('Load <em>.acorn</em>')))
+                                                                  )
                                                                 )
                                                )
                                         )
@@ -636,6 +636,7 @@ server <- function(input, output, session) {
   redcap_dta <- reactiveVal()
   hai_dta <- reactiveVal()
   lab_dta <- reactiveVal()
+  acorn_dta <- reactiveVal()
   acorn_dta_file <- reactiveValues()
   meta <- reactiveVal()
   
@@ -810,7 +811,7 @@ server <- function(input, output, session) {
       Sys.setenv("AWS_ACCESS_KEY_ID" = "", "AWS_SECRET_ACCESS_KEY" = "", "AWS_DEFAULT_REGION" = "")
       
       
-      checklist_status$app_login <- list(status = "okay", msg = glue("Successfully logged in to {input$cred_site} (as {cred$user})"))
+      checklist_status$app_login <- list(status = "okay", msg = glue("Logged into {input$cred_site} as {cred$user}"))
       acorn_cred(cred)
     }
     removeNotification(id = "notif_connection")
@@ -954,7 +955,10 @@ server <- function(input, output, session) {
     notify("Processing Lab data: quality checks.", id = id)
     source("./www/R/data/09_checklist_lab.R", local = TRUE)
     
-    browser()
+    # TODO: find a better place for this:
+    amr <- amr %>% 
+      mutate(specdate = as_date(specdate))
+    
     lab_dta(amr)
     showNotification("Lab data successfully processsed!", type = "message")
   })
@@ -1026,6 +1030,9 @@ server <- function(input, output, session) {
     
     if(checklist_status$lab_dta$status == "okay" & checklist_status$redcap_dta$status == "okay") {
       source("./www/R/data/10_link_clinical_assembly.R", local = TRUE)
+      
+      acorn_dta(acorn_dta)
+      
       showNotification("It's critical to save your acorn file", type = "warning", duration = NULL)
       acorn_dta_saved = list(status = "ko", msg = ".acorn not saved")
     }

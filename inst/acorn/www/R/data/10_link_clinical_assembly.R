@@ -1,6 +1,6 @@
-browser()
+message("Assembly of clinical and lab data.")
 
-test <- TRUE
+test <- FALSE
 if(test) {
   clin <- tribble(
     ~patient_id, ~surveillance_category, ~date_admission, ~hai_date_symptom_onset,

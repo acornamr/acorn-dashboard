@@ -1,4 +1,6 @@
-message("Map local / WHO organism codes and names to ACORN organism names / groups.")
+message("
+05_map_organisms.R: 
+        Map local / WHO organism codes and names to ACORN organism names / groups.")
 
 whonet.orgs <- lab_code$whonet.orgs
 whonet.orgs$genus.sp <- paste(whonet.orgs$GENUS, " sp", sep = "") # Make a genus/species variable
