@@ -1,9 +1,9 @@
 output$profile_outcome_diagnosis <- renderHighchart({
   
-  req(patient_filter())
-  req(nrow(patient_filter()) > 0)
+  req(redcap_f01f05_dta_filter())
+  req(nrow(redcap_f01f05_dta_filter()) > 0)
   
-  df <- patient_filter() %>%
+  df <- redcap_f01f05_dta_filter() %>%
     filter(clinical_outcome) %>%
     mutate(diag_final = replace_na(diag_final, "Unknown Final")) %>%
     group_by(surveillance_diag, diag_final) %>%

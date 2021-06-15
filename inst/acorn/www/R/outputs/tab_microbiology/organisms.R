@@ -1,14 +1,14 @@
 output$isolates_growth_gauge <- renderGauge({
-    req(microbio_filter())
-    req(nrow(microbio_filter()) > 0)
+    req(acorn_dta_filter())
+    req(nrow(acorn_dta_filter()) > 0)
   
-  n <- microbio_filter() %>%
+  n <- acorn_dta_filter() %>%
     fun_filter_growth_only() %>%
     fun_deduplication(method = input$deduplication_method) %>%
     pull(specid) %>% 
     n_distinct()
   
-  total <- microbio_filter() %>%
+  total <- acorn_dta_filter() %>%
     fun_filter_cultured_only() %>%
     fun_deduplication(method = input$deduplication_method) %>%
     pull(specid) %>% 
@@ -18,16 +18,16 @@ output$isolates_growth_gauge <- renderGauge({
 })
 
 output$isolates_growth_pct <- renderText({
-  req(patient_filter())
-  req(nrow(patient_filter()) > 0)
+  req(redcap_f01f05_dta_filter())
+  req(nrow(redcap_f01f05_dta_filter()) > 0)
   
-  n <- microbio_filter() %>%
+  n <- acorn_dta_filter() %>%
     fun_filter_growth_only() %>%
     fun_deduplication(method = input$deduplication_method) %>%
     pull(specid) %>% 
     n_distinct()
   
-  total <- microbio_filter() %>%
+  total <- acorn_dta_filter() %>%
     fun_filter_cultured_only() %>%
     fun_deduplication(method = input$deduplication_method) %>%
     pull(specid) %>% 
@@ -39,10 +39,10 @@ output$isolates_growth_pct <- renderText({
 
 
 output$isolates_organism <- renderHighchart({
-  req(microbio_filter())
-  req(nrow(microbio_filter()) > 0)
+  req(acorn_dta_filter())
+  req(nrow(acorn_dta_filter()) > 0)
   
-  df <- microbio_filter() %>%
+  df <- acorn_dta_filter() %>%
     fun_filter_growth_only() %>%
     fun_filter_signifgrowth_only() %>%
     filter(orgname != "Mixed growth", orgname != "Not cultured") %>%
@@ -65,10 +65,10 @@ output$isolates_organism <- renderHighchart({
 })
 
 output$isolates_organism_table <- renderDT({
-  req(microbio_filter())
-  req(nrow(microbio_filter()) > 0)
+  req(acorn_dta_filter())
+  req(nrow(acorn_dta_filter()) > 0)
 
-  df <- microbio_filter() %>%
+  df <- acorn_dta_filter() %>%
     fun_filter_growth_only() %>%
     fun_filter_signifgrowth_only() %>%
     filter(orgname != "Mixed growth", orgname != "Not cultured") %>%

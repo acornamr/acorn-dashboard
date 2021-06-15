@@ -1,10 +1,10 @@
 output$table_patients <- renderDT({
-  req(patient_filter())
+  req(redcap_f01f05_dta_filter())
   
   grouping_vars <- input$variables_table
   grouping_vars_sym <- rlang::syms(grouping_vars)
   
-  dta <- patient_filter() %>%
+  dta <- redcap_f01f05_dta_filter() %>%
     mutate(
       d28_outcome = as.character(d28_outcome),
       clinical_outcome = as.character(clinical_outcome),

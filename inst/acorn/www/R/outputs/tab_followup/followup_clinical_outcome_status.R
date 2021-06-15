@@ -1,34 +1,34 @@
 output$clinical_outcome_gauge <- renderGauge({
-  req(patient_filter())
-  req(nrow(patient_filter()) > 0)
+  req(redcap_f01f05_dta_filter())
+  req(nrow(redcap_f01f05_dta_filter()) > 0)
 
-  n <- patient_filter() %>%
+  n <- redcap_f01f05_dta_filter() %>%
     filter(clinical_outcome) %>%
     nrow()
-  total <- patient_filter() %>% nrow()
+  total <- redcap_f01f05_dta_filter() %>% nrow()
 
   gauge(n, min = 0, max = total, abbreviate = FALSE, gaugeSectors(colors = "#2c3e50"))
 })
 
 
 output$clinical_outcome_pct <- renderText({
-  req(patient_filter())
-  req(nrow(patient_filter()) > 0)
+  req(redcap_f01f05_dta_filter())
+  req(nrow(redcap_f01f05_dta_filter()) > 0)
   
-  n <- patient_filter() %>%
+  n <- redcap_f01f05_dta_filter() %>%
     filter(clinical_outcome) %>%
     nrow()
-  total <- patient_filter() %>% nrow()
+  total <- redcap_f01f05_dta_filter() %>% nrow()
   
-  paste(br(), h3(paste0(round(100*n/total, 1), "%")), span("of patient enrollments have a recorded clinical outcome."))
+  paste(br(), h3(paste0(round(100*n/total, 1), "%")), span("of patient enrolments have a recorded clinical outcome."))
 })
 
 
 output$clinical_outcome_status <- renderHighchart({
-  req(patient_filter())
-  req(nrow(patient_filter()) > 0)
+  req(redcap_f01f05_dta_filter())
+  req(nrow(redcap_f01f05_dta_filter()) > 0)
   
-  df <- patient_filter() %>%
+  df <- redcap_f01f05_dta_filter() %>%
     filter(clinical_outcome) %>%
     count(discharge_status) %>%
     mutate(discharge_status = replace_na(discharge_status, "Unknown")) %>%

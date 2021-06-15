@@ -7,7 +7,7 @@ library(tidyverse)
 # Import data ----
 setwd("/Users/olivier/Documents/Projets/ACORN/REDCap Import/")
 
-f01 <- read_csv("./Test_Data/ACORN_F01_ENROLLMENT.csv")
+f01 <- read_csv("./Test_Data/ACORN_F01_enrolment.csv")
 f02 <- read_csv("./Test_Data/ACORN_F02_HOSPOUTCOME.csv")
 f02rep <- read_csv("./Test_Data/ACORN_F02_HOSPOUTCOME-HO_REPEATEPISODE.csv")
 f03 <- read_csv("./Test_Data/ACORN_F03_D28.csv")

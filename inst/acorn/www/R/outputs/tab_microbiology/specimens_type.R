@@ -1,8 +1,8 @@
 output$specimens_specimens_type <- renderHighchart({
-  req(microbio_filter())
-  req(nrow(microbio_filter()) > 0)
+  req(acorn_dta_filter())
+  req(nrow(acorn_dta_filter()) > 0)
   
-  dta <- microbio_filter() %>%
+  dta <- acorn_dta_filter() %>%
     fun_deduplication(method = input$deduplication_method) %>%
     group_by(specid) %>%
     slice(1) %>%
@@ -25,15 +25,15 @@ output$specimens_specimens_type <- renderHighchart({
 })
 
 output$culture_specimen_type <- renderHighchart({
-  req(microbio_filter())
-  req(nrow(microbio_filter()) > 0)
+  req(acorn_dta_filter())
+  req(nrow(acorn_dta_filter()) > 0)
   
   # Specimens with at least one element that has grown
-  spec_grown <- microbio_filter() %>%
+  spec_grown <- acorn_dta_filter() %>%
     fun_filter_growth_only() %>%
     pull(specid)
   
-  dta <- microbio_filter() %>%
+  dta <- acorn_dta_filter() %>%
     fun_deduplication(method = input$deduplication_method) %>%
     mutate(growth = case_when(specid %in% spec_grown ~ "Growth", TRUE ~ "No Growth")) %>%
     mutate(culture_result = case_when(orgname == "Not cultured" ~ "Not cultured", TRUE ~ growth)) %>%

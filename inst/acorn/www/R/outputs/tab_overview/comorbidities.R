@@ -1,8 +1,8 @@
 output$profile_comorbidities <- renderHighchart({
-  req(patient_filter())
-  req(nrow(patient_filter()) > 0)
+  req(redcap_f01f05_dta_filter())
+  req(nrow(redcap_f01f05_dta_filter()) > 0)
   
-  df <- patient_filter() %>%
+  df <- redcap_f01f05_dta_filter() %>%
     mutate_at(vars(comorb_cancer:comorb_malnutrition), as.character) %>%
     mutate_at(vars(comorb_cancer:comorb_malnutrition), ~ ifelse(. == "", NA, .)) %>%
     unite(comorbidities, comorb_cancer:comorb_malnutrition, sep = " & ", na.rm = TRUE, remove = FALSE)

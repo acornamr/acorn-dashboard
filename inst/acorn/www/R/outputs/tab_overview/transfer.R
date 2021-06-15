@@ -1,7 +1,7 @@
 output$profile_transfer <- renderHighchart({
-  req(patient_filter())
+  req(redcap_f01f05_dta_filter())
   
-  patient_filter() %>%
+  redcap_f01f05_dta_filter() %>%
     count(transfer) %>%
     arrange(n) %>%
     mutate(freq = round(100*n / sum(n)),

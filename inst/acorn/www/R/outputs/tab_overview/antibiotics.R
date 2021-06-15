@@ -1,8 +1,8 @@
 output$profile_antibiotics <- renderHighchart({
-  req(patient_filter())
-  req(nrow(patient_filter()) > 0)
+  req(redcap_f01f05_dta_filter())
+  req(nrow(redcap_f01f05_dta_filter()) > 0)
 
-df <- patient_filter() %>% 
+df <- redcap_f01f05_dta_filter() %>% 
   select(Amikacin:Vancomycin) %>%
   pivot_longer(Amikacin:Vancomycin, names_to = "antibiotic", values_to = "taken") %>%
   filter(taken == "Yes") %>%

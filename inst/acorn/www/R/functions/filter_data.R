@@ -1,3 +1,16 @@
+fun_filter_enrolment <- function(data, input) {
+  return(data)
+}
+
+fun_filter_isolate <- function(data, input) {
+  return(data)
+}
+
+fun_filter_survey <- function(data, input) {
+  return(data)
+}
+
+
 # Function that returns a filtered dataset
 fun_filter_patient <- function(data, input) {
   

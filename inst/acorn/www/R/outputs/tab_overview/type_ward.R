@@ -1,9 +1,9 @@
 output$profile_type_ward <- renderHighchart({
-  req(patient_filter())
-  req(nrow(patient_filter()) > 0)
+  req(redcap_f01f05_dta_filter())
+  req(nrow(redcap_f01f05_dta_filter()) > 0)
   
   if(input$show_ward_breakdown) return({
-    df <- patient_filter() %>%
+    df <- redcap_f01f05_dta_filter() %>%
       mutate(ward = replace_na(ward, "Unspecified Type of Ward"),
              ward_text = replace_na(ward_text, "unspecified")) %>%
       mutate(ward_name = paste0(ward, ", ", ward_text)) %>%
@@ -21,7 +21,7 @@ output$profile_type_ward <- renderHighchart({
   })
   
   if(! input$show_ward_breakdown) return({
-    df <- patient_filter() %>%
+    df <- redcap_f01f05_dta_filter() %>%
       group_by(ward) %>%
       summarise(patients = n(), .groups = "drop") %>%
       mutate(ward = replace_na(ward, "Unknown Ward"),

@@ -1,7 +1,7 @@
 output$profile_diagnosis <- renderHighchart({
-  req(patient_filter(), nrow(patient_filter()) > 0)
+  req(redcap_f01f05_dta_filter(), nrow(redcap_f01f05_dta_filter()) > 0)
   
-  df <- patient_filter() %>%
+  df <- redcap_f01f05_dta_filter() %>%
     group_by(surveillance_diag) %>%
     summarise(y = n(), .groups = "drop") %>%
     mutate(color = surveillance_diag, freq = round(100*y / sum(y))) %>%
@@ -19,12 +19,12 @@ output$profile_diagnosis <- renderHighchart({
 
 
 output$profile_diagnosis_meningitis <- renderHighchart({
-  req(patient_filter())
-  req(nrow(patient_filter() %>% filter(surveillance_diag == "Meningitis")) > 0)
+  req(redcap_f01f05_dta_filter())
+  req(nrow(redcap_f01f05_dta_filter() %>% filter(surveillance_diag == "Meningitis")) > 0)
   
   csf_patient_id <- microbio() %>% filter(specimen_type == "CSF") %>% pull(patient_id)
   
-  patient_filter() %>%
+  redcap_f01f05_dta_filter() %>%
     filter(surveillance_diag == "Meningitis") %>%
     mutate(had_csf = as.character(patient_id %in% csf_patient_id)) %>%
     mutate(had_csf = recode(had_csf, "TRUE" = "Yes", "FALSE" = "No")) %>%
@@ -41,12 +41,12 @@ output$profile_diagnosis_meningitis <- renderHighchart({
 })
 
 output$profile_diagnosis_pneumonia <- renderHighchart({
-  req(patient_filter())
-  req(nrow(patient_filter() %>% filter(surveillance_diag == "Pneumonia")) > 0)
+  req(redcap_f01f05_dta_filter())
+  req(nrow(redcap_f01f05_dta_filter() %>% filter(surveillance_diag == "Pneumonia")) > 0)
   
   pf_patient_id <- microbio() %>% filter(specimen_type == "Lower respiratory tract specimen") %>% pull(patient_id)
   
-  patient_filter() %>%
+  redcap_f01f05_dta_filter() %>%
     filter(surveillance_diag == "Pneumonia") %>%
     mutate(had_pf = as.character(patient_id %in% pf_patient_id)) %>%
     mutate(had_pf = recode(had_pf, "TRUE" = "Yes", "FALSE" = "No")) %>%

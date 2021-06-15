@@ -1,8 +1,8 @@
 output$profile_blood <- renderHighchart({
-  req(patient_filter())
-  req(nrow(patient_filter()) > 0)
+  req(redcap_f01f05_dta_filter())
+  req(nrow(redcap_f01f05_dta_filter()) > 0)
   
-  df <- patient_filter() %>%
+  df <- redcap_f01f05_dta_filter() %>%
     mutate(blood_24 = replace_na(blood_24, "Unknown")) %>%
     count(blood_24) %>%
     arrange(n) %>%

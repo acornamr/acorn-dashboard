@@ -1,31 +1,6 @@
-/*
-Colors:
-
-Using ACORN logo:
-#654338
-
-http://colormind.io/bootstrap/
-# 1F131E
-# B34558
-# 8489A4
-# F4F7F4
-
-
-Ferra	#794d4c	Primary
-Gondola	#1f131e	Info
-Hippie Green	#5a924f	Success
-Meteor	#d78217	Warning
-Pomegranate	#f44336	Danger
-
-Does this color from the logo fits?
-#FDA93D
-*/
-
-/* .body {font-family: Phetsarath OT, Helvetica, sans-serif;} */
-
-
-/* since position = "fixed-top" inside navbarPage
-body {padding-top: 70px;}  */
+/* Reference: 
+https://bootswatch.com/flatly/
+https://bootswatch.com/4/flatly/bootstrap.css */
 
 #shiny-notification-panel {
   top: calc(50%);
@@ -278,21 +253,20 @@ body {padding-top: 70px;}  */
 }
 
 .box_outputs {
-  margin-top: 5px;
   margin-bottom: 45px;
-  border-color: #2c3e50;
-  border-width: 3px 0 0 0;
+  border-style: solid;
+  border-color: #7b8a8b;
+  background-color: rgba(0,0,0,0.03);
+  color: #212529;
+  border-radius: .25rem;
 }
 
-
 .h4_title {
-  color:  #ecf0f1;
-  background-color: #2c3e50;
-  border-radius: 10px 10px 0px 0px;
+  color: #ecf0f1;
+  background-color: #7b8a8b;
   text-align: center;
   font-weight: 400;
   font-size: 110%;
-  margin: 5px;
   padding: 7px;
 }
 
