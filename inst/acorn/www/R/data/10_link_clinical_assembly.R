@@ -85,8 +85,9 @@ caseC <- acorn_dta %>%
   unique()
 
 ifelse(is_empty(caseC), 
-       { checklist_status$linkage_caseC <- list(status = "okay", msg = "There are no problem case (overlapping specimen collection windows)") },
-       { checklist_status$linkage_caseC  <- list(status = "warning", msg = paste("The following patient id are problem case (overlapping specimen collection windows):", paste(caseC, collapse = ", "))) })
+       checklist_status$linkage_caseC <- list(status = "okay", msg = "There are no problem case (overlapping specimen collection windows)"),
+       checklist_status$linkage_caseC  <- list(status = "warning", msg = paste("The following patient id are problem case (overlapping specimen collection windows):", paste(caseC, collapse = ", ")))
+)
 
 acorn_dta <- acorn_dta %>% 
   mutate(date_cai_hai = case_when(
@@ -96,3 +97,8 @@ acorn_dta <- acorn_dta %>%
   arrange(date_cai_hai) %>%
   filter(row_number() == 1) %>%
   ungroup()
+
+ifelse(nrow(acorn_dta) >= 1,
+       checklist_status$linkage_result <- list(status = "okay", msg = "👏😀 Successfully combined clinical and lab data into .acorn file"),
+       checklist_status$linkage_result <- list(status = "ko", msg = "Error in combining clinical and lab data.")
+)

@@ -1,9 +1,4 @@
 # TODO: make sure that all elements of checklist_status are used
-
-output$checklist_status_load_server <- renderText(  
-  text_checklist(checklist_status, vec = c("internet_connection", "app_login", "acorn_server_test"))
-) 
-
 output$checklist_qc_clinical <- renderText({
   text_checklist(checklist_status, vec = c("redcap_not_empty",
                                            "redcap_structure",
@@ -15,26 +10,22 @@ output$checklist_qc_clinical <- renderText({
                                            "redcap_F03F01",
                                            "redcap_confirmed_match",
                                            "redcap_age_category",
-                                           "redcap_hai_dates"))
+                                           "redcap_hai_dates",
+                                           "redcap_dta"))
 })
 
 output$checklist_qc_lab <- renderText({
-  text_checklist(checklist_status, vec = paste0("lab_data_qc_", 1:8))
+  text_checklist(checklist_status, vec = c(paste0("lab_data_qc_", 1:8),
+                                           "lab_dta"))
 })
 
-output$checklist_status_clinical <- renderText(
-  text_checklist(checklist_status, vec = c("internet_connection", "app_login", "redcap_server_cred"))
-)
-
 output$checklist_generate <- renderText(
-  text_checklist(checklist_status, vec = c("linkage_caseB", "linkage_caseC"))
+  text_checklist(checklist_status, vec = c("linkage_caseB", 
+                                           "linkage_caseC",
+                                           "linkage_result"))
 )
 
-output$checklist_save_local <- renderText(
-  text_checklist(checklist_status, vec = c("acorn_dta_saved"))
-)
-
-output$checklist_save_server <- renderText(
-  text_checklist(checklist_status, vec = c("internet_connection", "app_login", "acorn_server_test",
-                                           "acorn_server_write", "acorn_dta_saved"))
+output$checklist_save <- renderText(
+  text_checklist(checklist_status, vec = c("acorn_dta_saved_local",
+                                           "acorn_dta_saved_server"))
 )

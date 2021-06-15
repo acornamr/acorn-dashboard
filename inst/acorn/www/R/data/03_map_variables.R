@@ -1,12 +1,11 @@
 message("Source 03_map_variables.R")
 
-amr <- lab_dta() %>%
+amr <- dta %>%
   mutate_all(as.character) %>%
   rename_with(use_acorn_name,
               acorn_names = data_dictionary$variables$acorn.code,
               local_names = data_dictionary$variables$local.code) %>%
   select(! starts_with("NOT_ACORN_COLUMN_")) %>%
-  mutate(specdate = parse_date_time(specdate, c("dmY", "Ymd", "dbY", "Ymd HMS"))) %>%
   mutate(specid.lc = tolower(specid))
 
 # possible improvement of below START - TODO try, debug and test

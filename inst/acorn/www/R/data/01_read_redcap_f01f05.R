@@ -1,10 +1,11 @@
-showNotification("Trying to retrive REDCap data (forms F01 to F05). It might take a minute.", 
-                 duration = NULL, id = "try_redcap_f01f05")
+# showNotification("Trying to retrive REDCap data (forms F01 to F05). It might take a minute.", 
+#                  duration = NULL, id = "try_redcap_f01f05")
 
 dl_redcap_dta <- try(
   withCallingHandlers({
     shinyjs::html(id = "text_redcap_f01f05_log", "</br><strong>REDCap F01 to F05 data retrieval log: </strong>")
     redcap_read(
+      batch_size = 500,
       redcap_uri = acorn_cred()$redcap_uri, 
       token = acorn_cred()$redcap_f01f05_api,
       col_types = cols(.default = col_character())
@@ -16,15 +17,15 @@ dl_redcap_dta <- try(
   )
 )
 
-removeNotification(id = "try_redcap_f01f05")
+# removeNotification(id = "try_redcap_f01f05")
 
 if(inherits(dl_redcap_dta, "try-error"))  {
   showNotification("REDCap data (forms F01 to F05) could not be retrived. Please try again.", type = "error")
   return()
 }
 
-showNotification("REDCap data (forms F01 to F05) successfully retrived.")
-shinyjs::html(id = "text_redcap_f01f05_log", "<br/>", add = TRUE)
+# showNotification("REDCap data (forms F01 to F05) successfully retrived.")
+shinyjs::html(id = "text_redcap_f01f05_log", "<hr/>", add = TRUE)
 
 # Test "REDCap dataset empty" ----
 ifelse(nrow(dl_redcap_dta) == 0, 

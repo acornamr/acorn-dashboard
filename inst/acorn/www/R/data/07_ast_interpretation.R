@@ -137,7 +137,7 @@ tmp.amr2 <- cbind(tmp.amr, tmp.amr1) # Combine both data.frames
 
 amr <- bind_rows(tmp.amr2 %>% mutate_all(as.character), 
                  amr %>% mutate_all(as.character)) %>%
-  mutate(specdate = as.Date(specdate),
+  mutate(specdate = parse_date_time(specdate, c("dmY", "Ymd", "dbY", "Ymd HMS")),
          spectype.whonet = as.numeric(spectype.whonet),
          specid.acorn = as.numeric(specid.acorn ),
          orgnum.acorn = as.numeric(orgnum.acorn))
