@@ -1,7 +1,6 @@
 # TODO: make sure that all elements of checklist_status are used
 output$checklist_qc_clinical <- renderText({
   text_checklist(checklist_status, vec = c("redcap_not_empty",
-                                           "redcap_structure",
                                            "redcap_columns",
                                            "redcap_acornid",
                                            "redcap_F04F01",
@@ -11,7 +10,7 @@ output$checklist_qc_clinical <- renderText({
                                            "redcap_confirmed_match",
                                            "redcap_age_category",
                                            "redcap_hai_dates",
-                                           "redcap_dta"))
+                                           "redcap_f01f05_dta"))
 })
 
 output$checklist_qc_lab <- renderText({

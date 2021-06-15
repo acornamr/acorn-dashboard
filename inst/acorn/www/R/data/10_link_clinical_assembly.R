@@ -32,7 +32,7 @@ if(test) {
     mutate(specdate = as.Date(specdate))
 } else {
   lab <- lab_dta() # one row per isolate
-  clin <- redcap_dta()  # one row per infection
+  clin <- redcap_f01f05_dta()  # one row per infection
 }
 
 

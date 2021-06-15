@@ -1,5 +1,5 @@
 output$table_enrolment_log <- renderDT({
-  req(redcap_dta())
+  req(redcap_f01f05_dta())
   req(enrolment_log())
   
   datatable(enrolment_log(), 

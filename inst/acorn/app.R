@@ -278,6 +278,7 @@ ui <- fluidPage(
              ),
              # Tab Overview ----
              tabPanel("Overview", value = "overview", 
+                      a(id = "anchor_header", style = "visibility: hidden", ""),
                       br(), br(),
                       fluidRow(
                         column(5,
@@ -562,12 +563,6 @@ server <- function(input, output, session) {
     )
   })
   
-  # TODO: activate in production:
-  # hideTab("tabs", "data_visualisation")
-  # observe(
-  #   if (checklist_status$acorn_file_loaded$status == "okay")  showTab("tabs", "data_visualisation")
-  # )
-  
   # Management of filters ----
   # change color based on if filtered or not
   observe({
@@ -617,18 +612,20 @@ server <- function(input, output, session) {
   
   # Primary datatsets
   acorn_cred <- reactiveVal()
-  redcap_dta <- reactiveVal()
-  hai_dta <- reactiveVal()
+  
+  redcap_f01f05_dta <- reactiveVal()
+  redcap_hai_dta <- reactiveVal()
   lab_dta <- reactiveVal()
   acorn_dta <- reactiveVal()
+  
   acorn_dta_file <- reactiveValues()
   meta <- reactiveVal()
   
   # Secondary datasets (created from primary datasets)
   enrolment_log <- reactive({
-    req(redcap_dta())
+    req(redcap_f01f05_dta())
     
-    redcap_dta() %>%
+    redcap_f01f05_dta() %>%
       transmute("Category" = surveillance_category,
                 "Patient ID" = patient_id, 
                 "ACORN ID" = acorn_id,
@@ -689,37 +686,28 @@ server <- function(input, output, session) {
     lab_data_qc_7 = list(status = "hidden", msg = ""),
     lab_data_qc_8 = list(status = "hidden", msg = ""),
     
-    redcap_not_empty = list(status = "hidden", msg = "REDCap dataset empty"),
-    redcap_structure = list(status = "hidden", msg = "REDCap dataset columns number"),
-    redcap_columns = list(status = "hidden", msg = "REDCap dataset columns names"),
-    redcap_acornid = list(status = "hidden", msg = "All records have an ACORN id."),
-    redcap_F04F01 = list(status = "hidden", msg = "Every D28 form (F04) matches exactly one patient enrolment (F01)"),
-    redcap_F03F02 = list(status = "hidden", msg = "Every hospital outcome (F03) has a matching infection episode (F02)"),
-    redcap_F02F01 = list(status = "hidden", msg = "Every infection episode (F02) has a matching patient enrolment (F01)"),
-    redcap_F03F01 = list(status = "hidden", msg = "Every hospital outcome form (F03) matches exactly one patient enrolment (F01)"),
-    redcap_confirmed_match = list(status = "hidden", msg = "All confirmed entries match the original entry"),
-    redcap_age_category = list(status = "hidden", msg = ""),
-    redcap_hai_dates = list(status = "hidden", msg = ""),
+    redcap_not_empty       = list(status = "hidden", msg = ""),
+    redcap_columns         = list(status = "hidden", msg = ""),
+    redcap_acornid         = list(status = "hidden", msg = ""),
+    redcap_F04F01          = list(status = "hidden", msg = ""),
+    redcap_F03F02          = list(status = "hidden", msg = ""),
+    redcap_F02F01          = list(status = "hidden", msg = ""),
+    redcap_F03F01          = list(status = "hidden", msg = ""),
+    redcap_confirmed_match = list(status = "hidden", msg = ""),
+    redcap_age_category    = list(status = "hidden", msg = ""),
+    redcap_hai_dates       = list(status = "hidden", msg = ""),
     # redcap_F05F01 = list(status = "hidden", msg = "Every BSI episode form (F05) matches exactly one patient enrolment (F01)"),
     
     linkage_caseB = list(status = "hidden", msg = ""),
     linkage_caseC = list(status = "hidden", msg = ""),
     linkage_result = list(status = "info", msg = "No .acorn has been generated"),
     
-    redcap_dta = list(status = "info", msg = "Clinical data not provided"),
+    redcap_f01f05_dta = list(status = "info", msg = "Clinical data not provided"),
     lab_dta = list(status = "info", msg = "Lab data not provided"),
     
     acorn_dta_saved_local = list(status = "hidden", msg = ""),
     acorn_dta_saved_server = list(status = "info", msg = "No .acorn has been saved")
   )
-
-  
-  # output$state_write_s3 <- reactive(checklist_status$acorn_server_write$status == "okay")
-  # outputOptions(output, 'state_write_s3', suspendWhenHidden = FALSE)
-  
-  # output$state_dta_available <- reactive(checklist_status$acorn_dta$status == "okay")
-  # outputOptions(output, 'state_dta_available', suspendWhenHidden = FALSE)
-  
   
   # On connection ----
   observeEvent(input$cred_login, {
@@ -770,7 +758,7 @@ server <- function(input, output, session) {
                  "AWS_SECRET_ACCESS_KEY" = shared_acornamr_sec,
                  "AWS_DEFAULT_REGION" = "eu-west-3")
       
-      cred <- try(s3read_using(FUN = readRDS_encrypted, 
+      cred <- try(s3read_using(FUN = read_encrypted_cred, 
                                pwd = input$cred_password,
                                object = file_cred,
                                bucket = "shared-acornamr"),
@@ -826,7 +814,7 @@ server <- function(input, output, session) {
   
   # On "Load .acorn" file from server ----
   observeEvent(input$load_acorn_server, {
-    # load content
+
     acorn_s3 <- get_object(object = input$acorn_files_server, 
                            bucket = acorn_cred()$acorn_s3_bucket,
                            key =  acorn_cred()$acorn_s3_key,
@@ -849,13 +837,7 @@ server <- function(input, output, session) {
     # TODO: provide more details in the notification on the file loaded - see info_acorn_file() for a start
     showNotification(".acorn file successfully loaded")
     
-    showTab("tabs", target = "overview")
-    showTab("tabs", target = "follow_up")
-    showTab("tabs", target = "hai")
-    showTab("tabs", target = "microbiology")
-    showTab("tabs", target = "amr")
-    
-    updateTabsetPanel(inputId = "tabs", selected = "overview")
+    focus_analysis()
   })
   
   # On "Load .acorn" file from local ----
@@ -878,13 +860,7 @@ server <- function(input, output, session) {
     # TODO: provide more details in the notification on the file loaded - see info_acorn_file() for a start
     showNotification(".acorn file successfully loaded")
     
-    showTab("tabs", target = "overview")
-    showTab("tabs", target = "follow_up")
-    showTab("tabs", target = "hai")
-    showTab("tabs", target = "microbiology")
-    showTab("tabs", target = "amr")
-    
-    updateTabsetPanel("tabs", selected = "overview")
+    focus_analysis()
   })
   
   # On "Get Clinical Data from REDCap server" ----
@@ -900,9 +876,7 @@ server <- function(input, output, session) {
     }
     
     showModal(modalDialog(
-      title = "Retriving data from REDCap server.",
-      footer = NULL,
-      size = "l",
+      title = "Retriving data from REDCap server.", footer = NULL, size = "l",
       div(
         p("It might take a couple of minutes. This window will close on completion."),
         textOutput("text_redcap_f01f05_log"),
@@ -918,7 +892,6 @@ server <- function(input, output, session) {
     
     # TODO: check that for a given enrollement, all infection episodes are on different dates
     if(any(c(checklist_status$redcap_not_empty$status,
-             checklist_status$redcap_structure$status,
              checklist_status$redcap_columns$status,
              checklist_status$redcap_acornid$status,
              checklist_status$redcap_F04F01$status,
@@ -927,21 +900,20 @@ server <- function(input, output, session) {
              checklist_status$redcap_F03F01$status,
              checklist_status$redcap_confirmed_match$status,
              checklist_status$redcap_age_category$status) == "ko")) {
-      checklist_status$redcap_dta <- list(status = "ko", msg = "")
+      checklist_status$redcap_f01f05_dta <- list(status = "ko", msg = "")
       
-      showNotification("There is a critical issue with clinical data.
-                       The issue should be fixed in REDCap.", type = "error", duration = NULL)
+      showNotification("There is a critical issue with clinical data. The issue should be fixed in REDCap.", type = "error", duration = NULL)
     } else {
-      checklist_status$redcap_dta <- list(status = "okay", 
+      checklist_status$redcap_f01f05_dta <- list(status = "okay", 
                                           msg = glue("👏😀 Clinical data (F01-F05) provided with {length(unique(infection$redcap_id))} patient enrolments and {nrow(infection)} infection episodes"))
       # showNotification("Clinical data successfully provided.", type = "message", duration = 5)
       # TODO: modify this to ensure that HAI data is okay before announcing that clinical data is provided
     }
-    redcap_dta(infection)
-    hai_dta(dl_hai_dta)
+    redcap_f01f05_dta(infection)
+    redcap_hai_dta(dl_hai_dta)
   })
   
-  # On "Download Enrolment Log"
+  # On "Download Enrolment Log" ----
   output$download_enrolment_log <- downloadHandler(
     filename = glue("enrolment_log_{format(Sys.time(), '%Y-%m-%d_%H%M')}.xlsx"),
     content = function(file)  writexl::write_xlsx(enrolment_log(), path = file)
@@ -980,26 +952,11 @@ server <- function(input, output, session) {
   
   # On "Generate ACORN" ----
   observeEvent(input$generate_acorn_data, {
-    if(checklist_status$redcap_dta$status == "warning")  {
-      showNotification("Aborted: clinical data not provided.", type = "warning", duration = NULL)
-    }
+    if(checklist_status$redcap_f01f05_dta$status != "okay")  showNotification("Aborted: clinical data not provided.", type = "warning", duration = NULL)
+    if(checklist_status$lab_dta$status != "okay")     showNotification("Aborted: lab data not provided.", type = "warning", duration = NULL)
     
-    if(checklist_status$lab_dta$status == "warning")  {
-      showNotification("Aborted: lab data not provided.", type = "warning", duration = NULL)
-    }
-    
-    if(checklist_status$redcap_dta$status == "ko") {
-      showNotification("Aborted: there are critical issues with provided clinical data.", type = "error", duration = NULL)
-    }
-    
-    if(checklist_status$lab_dta$status == "ko") {
-      showNotification("Aborted: there are critical issues with provided lab data.", type = "error", duration = NULL)
-    }
-    
-    
-    if(checklist_status$lab_dta$status == "okay" & checklist_status$redcap_dta$status == "okay") {
+    if(checklist_status$lab_dta$status == "okay" & checklist_status$redcap_f01f05_dta$status == "okay") {
       source("./www/R/data/10_link_clinical_assembly.R", local = TRUE)
-      
       acorn_dta(acorn_dta)
       checklist_status$acorn_dta_saved = list(status = "warning", msg = ".acorn not saved")
     }
@@ -1058,7 +1015,7 @@ server <- function(input, output, session) {
                  user = input$cred_user,
                  comment = input$meta_acorn_comment)
     
-    # Anonymised
+    # Anonymised data
     acorn_dta_anonymised <- acorn_dta() %>%
       transmute(patient_id = md5(patient_id))
     name_file <- glue("{input$name_file}.acorn")
@@ -1073,7 +1030,7 @@ server <- function(input, output, session) {
                secret = acorn_cred()$acorn_s3_secret,
                region = acorn_cred()$acorn_s3_region)
     
-    # Non anonymised
+    # Non anonymised data
     acorn_dta_non_anonymised <- acorn_dta()
     name_file_non_anonymised <- glue("{input$name_file}.acorn_non_anonymised")
     file_non_anonymised <- file.path(tempdir(), name_file_non_anonymised)
@@ -1102,13 +1059,7 @@ server <- function(input, output, session) {
     checklist_status$acorn_dta_saved_server <- list(status = "okay", msg = "👏😀 .acorn file saved on server")
     notify("👏😀 Successfully saved .acorn file in the cloud. You can now explore acorn data.", id = id)
     
-    showTab("tabs", target = "overview")
-    showTab("tabs", target = "follow_up")
-    showTab("tabs", target = "hai")
-    showTab("tabs", target = "microbiology")
-    showTab("tabs", target = "amr")
-    
-    updateTabsetPanel(inputId = "tabs", selected = "overview")
+    focus_analysis()
   })
   
   
@@ -1135,12 +1086,7 @@ server <- function(input, output, session) {
         checklist_status$acorn_dta_saved_server <- list(status = "warning", msg = "Consider saving .acorn file on the cloud for additional security.")
       }
       
-      showTab("tabs", target = "overview")
-      showTab("tabs", target = "follow_up")
-      showTab("tabs", target = "hai")
-      showTab("tabs", target = "microbiology")
-      showTab("tabs", target = "amr")
-      updateTabsetPanel(inputId = "tabs", selected = "overview")
+      focus_analysis()
     })
 }
 

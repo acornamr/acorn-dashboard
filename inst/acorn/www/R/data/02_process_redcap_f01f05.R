@@ -1,6 +1,6 @@
 # TODO: remove this snippet when it's clear
 # Exploration:
-# dl_redcap_dta %>%
+# dl_redcap_f01f05_dta %>%
 #   select(recordid, acornid, redcap_repeat_instrument) %>%
 #   View()
 # acornid can be NA if the record is incomplete; the row is a F02 record.
@@ -11,7 +11,7 @@
 # patient_enrolment ----
 
 ## Create patient_enrolment dataframe with data from F01 and F04 - one row per enrolment ----
-patient_enrolment <- dl_redcap_dta %>% 
+patient_enrolment <- dl_redcap_f01f05_dta %>% 
   select(c(recordid:redcap_repeat_instance, 
            f01odkreckey:f01_enrolment_complete, 
            f04odkreckey:f04_d28_complete)) %>%
@@ -21,7 +21,7 @@ patient_enrolment <- dl_redcap_dta %>%
 ifelse(any(is.na(patient_enrolment$acornid)), 
        { checklist_status$redcap_acornid <- list(status = "okay", msg = "All records have an 'ACORN id'") },
        { recordid_na_acornid <- patient_enrolment$recordid[is.na(patient_enrolment$acornid)]
-       checklist_status$redcap_acornid <- list(status = "warning", msg = paste("(TODO: TRANSFORM IN ERROR) The following records do not have an 'ACORN id': "), paste(recordid_na_acornid, collapse = ", ")) })
+       checklist_status$redcap_acornid <- list(status = "ko", msg = paste("The following records do not have an 'ACORN id': "), paste(recordid_na_acornid, collapse = ", ")) })
 
 ## Test that "Every D28 form (F04) matches exactly one patient enrolment (F01)" ----
 # for every recordid, when d28_date is filled (mandatory field in F04), siteid should be filled (mandatory field in F01)
@@ -35,13 +35,13 @@ ifelse(! any(is.na(patient_enrolment$siteid[patient_enrolment$recordid %in% reco
 
 ## Create infection_episode dataframe with one row per infection episode ----
 # by combining F02 and F03
-dl_redcap_f02 <- dl_redcap_dta %>% 
+dl_redcap_f02 <- dl_redcap_f01f05_dta %>% 
   select(c(recordid:redcap_repeat_instance,
            f02odkreckey:f02_infected_episode_complete)) %>%
   filter(!is.na(redcap_repeat_instrument)) %>%
   mutate(id_dmdtc = glue("{recordid}-{hpd_dmdtc}"))
 
-dl_redcap_f03 <- dl_redcap_dta %>% 
+dl_redcap_f03 <- dl_redcap_f01f05_dta %>% 
   select(c(recordid:redcap_repeat_instance, 
            odkreckey:f03_infection_hospital_outcome_complete)) %>%
   filter(is.na(redcap_repeat_instrument)) %>%

@@ -1,7 +1,7 @@
 # showNotification("Trying to retrive REDCap data (forms F01 to F05). It might take a minute.", 
 #                  duration = NULL, id = "try_redcap_f01f05")
 
-dl_redcap_dta <- try(
+dl_redcap_f01f05_dta <- try(
   withCallingHandlers({
     shinyjs::html(id = "text_redcap_f01f05_log", "</br><strong>REDCap F01 to F05 data retrieval log: </strong>")
     redcap_read(
@@ -19,7 +19,7 @@ dl_redcap_dta <- try(
 
 # removeNotification(id = "try_redcap_f01f05")
 
-if(inherits(dl_redcap_dta, "try-error"))  {
+if(inherits(dl_redcap_f01f05_dta, "try-error"))  {
   showNotification("REDCap data (forms F01 to F05) could not be retrived. Please try again.", type = "error")
   return()
 }
@@ -28,18 +28,12 @@ if(inherits(dl_redcap_dta, "try-error"))  {
 shinyjs::html(id = "text_redcap_f01f05_log", "<hr/>", add = TRUE)
 
 # Test "REDCap dataset empty" ----
-ifelse(nrow(dl_redcap_dta) == 0, 
+ifelse(nrow(dl_redcap_f01f05_dta) == 0, 
        { checklist_status$redcap_not_empty <- list(status = "ko", msg = "The REDCap dataset is empty. Please contact ACORN data management.")},
        { checklist_status$redcap_not_empty <- list(status = "okay", msg = glue("The REDCap dataset contains data."))})
 
-
-# Test "REDCap dataset columns number" ----
-ifelse(ncol(dl_redcap_dta) != 211, 
-       { checklist_status$redcap_structure <- list(status = "ko", msg = "The REDCap dataset structure isn't as expected. Please contact ACORN data management.")}, 
-       { checklist_status$redcap_structure <- list(status = "okay", msg = "The REDCap dataset structure is as expected.")})
-
 # Test "REDCap dataset columns names" ----
-ifelse(all(names(dl_redcap_dta) == c("recordid", "redcap_repeat_instrument", "redcap_repeat_instance", 
+ifelse(ncol(dl_redcap_f01f05_dta) == 211 & all(names(dl_redcap_f01f05_dta) == c("recordid", "redcap_repeat_instrument", "redcap_repeat_instance", 
                                      "f01odkreckey", "acornid_odk", "adm_date_odk", "siteid", "siteid_cfm", 
                                      "dmdtc", "usubjid", "usubjid_cfm", "acornid", "acornid_cfm", 
                                      "brthdtc", "agey", "agem", "aged", "sex", "hpd_adm_date", "hpd_adm_date_cfm", 
