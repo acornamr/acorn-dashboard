@@ -22,7 +22,7 @@ fun_filter_patient <- function(data, input) {
 }
 
 # Function that keeps only "Blood" specimen types
-fun_filter_blood_only <- function(data)  data %>% filter(specimen_type == "Blood")
+fun_filter_blood_only <- function(data)  data %>% filter(specgroup == "Blood")
 
 
 # Function that returns a deduplicated dataset following the provided method: by patient-episode or by patient Id
@@ -33,7 +33,7 @@ fun_deduplication <- function(data, method = NULL) {
   if(method == "No deduplication of isolates")  return(data)
   
   if(method == "Deduplication by patient-episode") { 
-    data_dedup <- data %>% group_by(patient_id, episode_id, orgname, specimen_type) %>% 
+    data_dedup <- data %>% group_by(patient_id, episode_id, orgname, specgroup) %>% 
       slice(1) %>% ungroup()
     # print(paste0("Deduplication: before ", nrow(data), " isolates; after ", nrow(data_dedup), 
     #              " isolates (-",  nrow(data) - nrow(data_dedup), ")."))
@@ -41,7 +41,7 @@ fun_deduplication <- function(data, method = NULL) {
   }
   
   if(method == "Deduplication by patient ID") { 
-    data_dedup <- data %>% group_by(patient_id, orgname, specimen_type) %>% 
+    data_dedup <- data %>% group_by(patient_id, orgname, specgroup) %>% 
       slice(1) %>% ungroup()
     # print(paste0("Deduplication: before ", nrow(data), " isolates; after ", nrow(data_dedup), 
     #              " isolates (-",  nrow(data) - nrow(data_dedup), ")."))

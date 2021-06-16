@@ -4,11 +4,11 @@ output$profile_outcome_diagnosis <- renderHighchart({
   req(nrow(redcap_f01f05_dta_filter()) > 0)
   
   df <- redcap_f01f05_dta_filter() %>%
-    filter(clinical_outcome) %>%
-    mutate(diag_final = replace_na(diag_final, "Unknown Final")) %>%
-    group_by(surveillance_diag, diag_final) %>%
+    filter(has_clinical_outcome) %>%
+    mutate(ho_final_diag = replace_na(ho_final_diag, "Unknown Final")) %>%
+    group_by(surveillance_diag, ho_final_diag) %>%
     count() %>%
-    rename(from = surveillance_diag, to = diag_final, weight = n) %>% 
+    rename(from = surveillance_diag, to = ho_final_diag, weight = n) %>% 
     mutate(color = NA, id = paste0(from, " - ", to, ": ", weight))
   
   df$color[df$from == "Meningitis"] <- "#1f78b4"

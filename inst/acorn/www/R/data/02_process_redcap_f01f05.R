@@ -126,7 +126,7 @@ infection <- infection %>% transmute(
                      NICU = "Neonatal intensive care unit", OBS = "Obstetrics / Gynaecology ward",
                      HON = "Haematology / Oncology ward", EMR = "Emergency department"),
   ward = toupper(hpd_adm_ward), 
-  suspected_infection = recode(ho_iv_anti_reason, BJ = "Bone / Joint", CVS = "Cardiovascular system",
+  surveillance_diag = recode(ho_iv_anti_reason, BJ = "Bone / Joint", CVS = "Cardiovascular system",
                                CNS = "Central nervous system", URTI = "ENT / Upper respiratory tract",
                                EYE = "Eye", FN = "Febrile neutropenia", GI = "Gastrointestinal",
                                GU = "Genital", IA = "Intra-abdominal", LRTI = "Lower respiratory tract",
@@ -230,7 +230,7 @@ infection <- infection %>% transmute(
   age_year = as.numeric(agey),
   age_month = as.numeric(agem),
   age_day = as.numeric(aged), 
-  sex = recode(sex, "M" = "Male", "F" = "Female"),
+  sex = recode(sex, "M" = "Male", "F" = "Female", "OTH" = "Other", "UNK" = "Unknown sex"),
   date_admission = as_date(hpd_adm_date), 
   # cal_agey, 
   transfer_hospital = recode(hpd_is_hosp_date, "Y" = "Yes", "N" = "No", "UNK" = "Unknown"),
@@ -278,7 +278,14 @@ infection <- infection %>% transmute(
   # f04_deleted, 
   # f04_d28_complete
   # End F04
-)
+) %>%
+  mutate(has_clinical_outcome = !is.na(ho_discharge_date),
+         has_d28_outcome = !is.na(d28_date)) %>%
+  replace_na(list(surveillance_diag = "Unknown diagnosis", 
+                  ward_type = "Unknwon type of ward", 
+                  ward = "Unknown ward",
+                  sex = "Unknown sex",
+                  blood_collect = "Unknown"))
 
 # Summarise the age with age_year and age_day
 infection$age_day[is.na(infection$age_day) & is.na(infection$birthday)] <- 0
@@ -290,7 +297,7 @@ infection$age_day <- infection$calc_age_day # to replace in the original locatio
 infection$age_year <- round(infection$age_day / 365.25, 2) # to make a calculated age in years based on age_day: this is age in years at date of enrolment
 infection <- infection %>% select(-birthday, -calc_age_day, -age_month)
 
-## Test "Calculated age is consistent with 'Age Category'"
+## Test that "Calculated age is consistent with 'Age Category'"
 dta <- bind_rows(
   infection %>% filter(age_category == "Adult", age_year < 18),
   infection %>% filter(age_category == "Child", age_year > 17),

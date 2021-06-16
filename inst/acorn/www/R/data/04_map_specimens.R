@@ -1,4 +1,4 @@
-message("Map local / WHO specimen codes and types to ACORN specimen groups.")
+message("04_map_specimens.R: map local / WHO specimen codes and types to ACORN specimen groups.")
 
 amr <- left_join(amr %>%
                    mutate(spectype.whonet = as.numeric(spectype.whonet)), 

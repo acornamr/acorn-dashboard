@@ -1,15 +1,13 @@
 output$hai_rate_ward <- renderPlot({
   req(input$filter_type_ward)
-  req(hai_surveys_filter())
-  req(nrow(hai_surveys_filter() > 0))
+  req(redcap_hai_dta_filter())
+  req(nrow(redcap_hai_dta_filter() > 0))
   
   dta <- left_join(
-    hai_surveys_filter() %>%
-      mutate(beds = as.numeric(beds),
-             patients = as.numeric(patients)) %>%
-      mutate(occupancy = round(100*patients / beds)) %>%
+    redcap_hai_dta_filter() %>%
+      mutate(occupancy = round(100*ward_patients / ward_beds)) %>%
       select(-ward) %>%
-      rename(date_enrolment = date_survey, ward = ward_type) %>%
+      rename(date_enrolment = survey_date, ward = ward_type) %>%
       group_by(date_enrolment, ward) %>%
       summarise(total_patients = sum(patients), .groups = "drop") %>%
       complete(ward, date_enrolment, fill = list(total_patients = 9999999999)),

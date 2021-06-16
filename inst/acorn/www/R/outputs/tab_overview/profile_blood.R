@@ -3,10 +3,9 @@ output$profile_blood <- renderHighchart({
   req(nrow(redcap_f01f05_dta_filter()) > 0)
   
   df <- redcap_f01f05_dta_filter() %>%
-    mutate(blood_24 = replace_na(blood_24, "Unknown")) %>%
-    count(blood_24) %>%
+    count(blood_collect) %>%
     arrange(n) %>%
-    rename(y = n, name = blood_24) %>%
+    rename(y = n, name = blood_collect) %>%
     mutate(freq = round(100*y / sum(y)), color = NA)
   
   df$color[df$name == "Yes"] <- "#fb9a99"

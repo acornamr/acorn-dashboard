@@ -5,7 +5,7 @@ focus_analysis <- function() {
   showTab("tabs", target = "microbiology")
   showTab("tabs", target = "amr")
   
-  # updateTabsetPanel(inputId = "tabs", selected = "overview")
-  # Sys.sleep(1)
+  updateTabsetPanel(inputId = "tabs", selected = "overview")
+  Sys.sleep(2)
   runjs('document.getElementById("anchor_header").scrollIntoView();')
 }

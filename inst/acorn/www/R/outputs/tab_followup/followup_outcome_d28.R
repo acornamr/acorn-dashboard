@@ -3,7 +3,7 @@ output$d28_outcome_gauge <- renderGauge({
   req(nrow(redcap_f01f05_dta_filter()) > 0)
   
   n <- redcap_f01f05_dta_filter() %>%
-    filter(d28_outcome) %>%
+    filter(has_d28_outcome) %>%
     nrow()
   total <- redcap_f01f05_dta_filter() %>% nrow()
   
@@ -15,7 +15,7 @@ output$d28_outcome_pct <- renderText({
   req(nrow(redcap_f01f05_dta_filter()) > 0)
   
   n <- redcap_f01f05_dta_filter() %>%
-    filter(d28_outcome) %>%
+    filter(has_d28_outcome) %>%
     nrow()
   total <- redcap_f01f05_dta_filter() %>% nrow()
   
@@ -29,10 +29,10 @@ output$d28_outcome_status <- renderHighchart({
   req(nrow(redcap_f01f05_dta_filter()) > 0)
   
   df <- redcap_f01f05_dta_filter() %>%
-    filter(d28_outcome) %>%
-    count(status_d28) %>%
-    mutate(status_d28 = replace_na(status_d28, "Unknown")) %>%
-    rename(y = n, name = status_d28) %>%
+    filter(has_d28_outcome) %>%
+    count(d28_status) %>%
+    mutate(d28_status = replace_na(d28_status, "Unknown")) %>%
+    rename(y = n, name = d28_status) %>%
     mutate(freq = round(100*y / sum(y)), color = NA)
   
   df$color[df$name == "Dead"] <- "black"

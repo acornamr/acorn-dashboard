@@ -1,20 +1,19 @@
 output$bed_occupancy_ward_title <- renderText({
   req(input$filter_type_ward)
-  req(hai_surveys_filter())
-  req(nrow(hai_surveys_filter() > 0))
+  req(redcap_hai_dta_filter())
+  req(nrow(redcap_hai_dta_filter() > 0))
   
-  return(paste0(br(), p("All ", paste0(input$filter_type_ward, collapse = " & "), " wards. Use filters to narrow by date range, type of ward or ward.")))
+  return(paste0(br(), p("All ", paste0(input$filter_type_ward, collapse = " & "), 
+                        " wards. Use filters to narrow by date range, type of ward or ward.")))
 })
 
 output$bed_occupancy_ward <- renderPlot({
   req(input$filter_type_ward)
-  req(hai_surveys_filter())
-  req(nrow(hai_surveys_filter() > 0))
+  req(redcap_hai_dta_filter())
+  req(nrow(redcap_hai_dta_filter() > 0))
   
-  dta <- hai_surveys_filter() %>%
-    mutate(beds = as.numeric(beds),
-           patients = as.numeric(patients)) %>%
-    mutate(occupancy = round(100*patients / beds)) %>%
+  dta <- redcap_hai_dta_filter() %>%
+    mutate(occupancy = round(100*ward_patients / ward_beds)) %>%
     select(-ward) %>%
     rename(date_enrolment = date_survey, ward = ward_type)
 

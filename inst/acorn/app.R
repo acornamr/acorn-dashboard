@@ -31,6 +31,7 @@ ui <- fluidPage(
                id = "header-filter",
                condition = "input.tabs != 'welcome' & input.tabs != 'data_management'",
                div(
+                 a(id = "anchor_header", style = "visibility: hidden", ""),
                  fluidRow(
                    column(12,
                           div(id = "filter_box", class = "well",
@@ -167,8 +168,7 @@ ui <- fluidPage(
                       )
              ),
              # Tab Data Management ----
-             tabPanel(span(icon("database"), 'Data Management'), value = "data_management",
-                      a(id = "anchor_header", style = "visibility: hidden", ""),
+             tabPanel(div(id = "menu_data_management", span(icon("database"), 'Data Management')), value = "data_management",
                       tabsetPanel(id = "data_management_tabs", type = "tabs",
                                   ## Tab Generate ----
                                   tab(value = "generate", span("Generate ", em(".acorn")),
@@ -278,46 +278,50 @@ ui <- fluidPage(
                       )
              ),
              # Tab Overview ----
-             tabPanel("Overview", value = "overview", 
+             tabPanel("Clinical Overview", value = "overview", 
                       br(), br(),
                       fluidRow(
                         column(6,
                                div(class = "box_outputs",
                                    h4_title("Enrolments with Blood Culture"),
-                                   highchartOutput("evolution_blood_culture"),
-                                   em("TODO: automtically switch to per quarter / per year when the number of bars is too important")
+                                   highchartOutput("enrolment_blood_culture"),
+                                   em("TODO: automatically switch to per quarter/year when more than 12 bars.")
                                )),
                         column(6,
                                div(class = "box_outputs",
-                                   h4_title("Number of Patients"),
-                                   pickerInput("variables_table", label = "Table Columns:", 
-                                               multiple = TRUE, width = "300px",
-                                               choices = c("Place of Infection" = "surveillance_cat", "Type of Ward" = "ward", "Ward" = "ward_text", "Clinical Outcome" = "clinical_outcome", "Day-28 Outcome" = "d28_outcome"), 
-                                               selected = c("surveillance_cat", "ward", "ward_text")),
-                                   
+                                   h4_title("Distribution of Enrolments"),
+                                   fluidRow(
+                                     column(3, "Variables in Table:"),
+                                     column(9,
+                                            checkboxGroupButtons("variables_table", label = NULL, 
+                                                                 size = "sm", status = "primary", checkIcon = list(yes = icon("check-square"), no = icon("square-o")), individual = TRUE,
+                                                                 choices = c("Place of Infection" = "surveillance_category", "Type of Ward" = "ward_type", "Ward" = "ward", "Clinical Outcome" = "clinical_outcome", "Day-28 Outcome" = "d28_outcome"), 
+                                                                 selected = c("surveillance_category", "ward_type", "ward", "clinical_outcome", "d28_outcome"))
+                                     )
+                                   ),
                                    DTOutput("table_patients", width = "95%")
                                )
                         )
                       ),
                       div(class = 'box_outputs',
-                          h4_title(icon('stethoscope'), "Patients Diagnosis"),
+                          h4_title("Diagnosis at Enrolment"),
                           fluidRow(
                             column(6, highchartOutput("profile_diagnosis")),
-                            column(3, highchartOutput("profile_diagnosis_meningitis")),
-                            column(3, highchartOutput("profile_diagnosis_pneumonia"))
+                            column(3, p("Meningitis diagnosis:"), highchartOutput("profile_diagnosis_meningitis")),
+                            column(3, p("Pneumonia diagnosis:"), highchartOutput("profile_diagnosis_pneumonia"))
                           )
                       ),
                       fluidRow(
                         column(6,
                                div(class = 'box_outputs',
-                                   h4_title("Enrolled Cases by Ward / Type of Ward"),
+                                   h4_title("Enrolments by (type of) Ward"),
                                    prettySwitch(inputId = "show_ward_breakdown", label = "See Breakdown by Ward", status = "primary"),
                                    highchartOutput("profile_type_ward")
                                )
                         ),
                         column(6,
                                div(class = 'box_outputs',
-                                   h4_title(icon("tint"), "Patients with Blood Culture"),
+                                   h4_title(icon("tint"), "Enrolments with Blood Culture"),
                                    fluidRow(
                                      column(6, gaugeOutput("profile_blood_culture_gauge", width = "100%", height = "100px")),
                                      column(6, htmlOutput("profile_blood_culture_pct", width = "100%", height = "100px"))
@@ -645,7 +649,7 @@ server <- function(input, output, session) {
   output$enrolment_log_table <- renderUI({
     req(enrolment_log())
     tagList(
-      strong("Enrolment Log:"),
+      p("Log of all enrolments retrived from REDCap:"),
       DTOutput("table_enrolment_log")
     )
   })
@@ -759,11 +763,12 @@ server <- function(input, output, session) {
       
       acorn_cred(cred)
     }
-    notify(glue("Successfully logged in / {input$cred_site} as {cred$user}"), id = id, type = "warning")
+    notify(glue("Successfully logged as {cred$user} ({input$cred_site})"), id = id)
     
     # removeNotification(id = "notif_connection")
     # showNotification("Successfully logged in!")
     showTab("tabs", target = "data_management")
+    startAnim(session, 'menu_data_management', 'shake')
     
     # Connect to AWS S3 server ----
     if(acorn_cred()$acorn_s3) {
@@ -888,11 +893,11 @@ server <- function(input, output, session) {
   # input$file_lab_dba | input$file_lab_sql | 
   observeEvent(c(input$file_lab_tab, input$file_lab_dba, input$file_lab_sql), 
                {
-                 id <- notify("Processing Lab data: reading")
+                 id <- notify("Reading lab data")
                  on.exit({Sys.sleep(3); removeNotification(id)}, add = TRUE)
                  source("./www/R/data/01_read_lab_data.R", local = TRUE)
                  
-                 notify("Read lab codes and AST breakpoint data.", id = id)
+                 notify("Reading lab codes and AST breakpoint data", id = id)
                  source("./www/R/data/01_read_lab_codes.R", local = TRUE)
                  corresp_org_antibio(lab_code$orgs.antibio)
                  source("./www/R/data/01_read_data_dic.R", local = TRUE)
@@ -916,12 +921,17 @@ server <- function(input, output, session) {
   
   # On "Generate ACORN" ----
   observeEvent(input$generate_acorn_data, {
+    id <- notify("Generating .acorn")
+    on.exit({Sys.sleep(3); removeNotification(id)}, add = TRUE)
+    
     if(checklist_status$redcap_f01f05_dta$status != "okay")  showNotification("Aborted: clinical data not provided.", type = "warning", duration = NULL)
     if(checklist_status$lab_dta$status != "okay")     showNotification("Aborted: lab data not provided.", type = "warning", duration = NULL)
     
     if(checklist_status$lab_dta$status == "okay" & checklist_status$redcap_f01f05_dta$status == "okay") {
       source("./www/R/data/10_link_clinical_assembly.R", local = TRUE)
+      
       acorn_dta(acorn_dta)
+      notify(".acorn data successfully generated!", id = id)
       checklist_status$acorn_dta_saved = list(status = "warning", msg = ".acorn not saved")
     }
   })

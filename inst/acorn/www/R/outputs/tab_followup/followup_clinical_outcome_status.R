@@ -3,7 +3,7 @@ output$clinical_outcome_gauge <- renderGauge({
   req(nrow(redcap_f01f05_dta_filter()) > 0)
 
   n <- redcap_f01f05_dta_filter() %>%
-    filter(clinical_outcome) %>%
+    filter(has_clinical_outcome) %>%
     nrow()
   total <- redcap_f01f05_dta_filter() %>% nrow()
 
@@ -16,7 +16,7 @@ output$clinical_outcome_pct <- renderText({
   req(nrow(redcap_f01f05_dta_filter()) > 0)
   
   n <- redcap_f01f05_dta_filter() %>%
-    filter(clinical_outcome) %>%
+    filter(has_clinical_outcome) %>%
     nrow()
   total <- redcap_f01f05_dta_filter() %>% nrow()
   
@@ -29,10 +29,10 @@ output$clinical_outcome_status <- renderHighchart({
   req(nrow(redcap_f01f05_dta_filter()) > 0)
   
   df <- redcap_f01f05_dta_filter() %>%
-    filter(clinical_outcome) %>%
-    count(discharge_status) %>%
-    mutate(discharge_status = replace_na(discharge_status, "Unknown")) %>%
-    rename(y = n, name = discharge_status) %>%
+    filter(has_clinical_outcome) %>%
+    count(ho_discharge_status) %>%
+    mutate(ho_discharge_status = replace_na(ho_discharge_status, "Unknown")) %>%
+    rename(y = n, name = ho_discharge_status) %>%
     mutate(freq = round(100*y / sum(y)), color = NA)
   
   df$color[df$name == "Dead"] <- "black"

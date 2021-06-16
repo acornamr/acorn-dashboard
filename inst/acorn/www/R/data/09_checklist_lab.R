@@ -54,4 +54,4 @@ if(all(!is.na(amr$orgname))) {
   checklist_status$lab_data_qc_8 <- list(status = "warning", msg = glue("Warning: there are {sum(is.na(amr$orgname))} rows with missing orgname."))
 }
 
-checklist_status$lab_dta = list(status = "okay", msg = "👏😀 Lab data provided")
+checklist_status$lab_dta = list(status = "okay", msg = "👏😀 Lab data successfully provided")

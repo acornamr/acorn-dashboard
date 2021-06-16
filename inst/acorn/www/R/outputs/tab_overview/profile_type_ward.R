@@ -4,10 +4,8 @@ output$profile_type_ward <- renderHighchart({
   
   if(input$show_ward_breakdown) return({
     df <- redcap_f01f05_dta_filter() %>%
-      mutate(ward = replace_na(ward, "Unspecified Type of Ward"),
-             ward_text = replace_na(ward_text, "unspecified")) %>%
-      mutate(ward_name = paste0(ward, ", ", ward_text)) %>%
-      group_by(ward, ward_text, ward_name) %>%
+      mutate(ward_name = paste0(ward_type, ", ", ward)) %>%
+      group_by(ward_type, ward, ward_name) %>%
       summarise(patients = n(), .groups = "drop") %>%
       mutate(color = ifelse(ward %in% c("NICU", "PICU", "Paediatric"), "#1f78b4", "#a6cee3"))
     

@@ -1,4 +1,4 @@
-output$evolution_blood_culture <- renderHighchart({
+output$enrolment_blood_culture <- renderHighchart({
   req(acorn_dta_filter())
   req(acorn_dta_filter() %>% nrow() > 0)
   
