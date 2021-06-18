@@ -1,43 +1,79 @@
 output$nb_enrolments <- renderText({
-  prop <- round(100 * redcap_f01f05_dta_filter() %>% nrow() / redcap_f01f05_dta() %>% nrow(), 1)
+  req(acorn_dta())
+  nb_enrolments <-  n_distinct(redcap_f01f05_dta()$redcap_id)
+  nb_enrolments_filter <- n_distinct(redcap_f01f05_dta_filter()$redcap_id)
+  
+  prop <- round(100 * nb_enrolments_filter / nb_enrolments, 1)
   
   as.character(
     div(class = "box_summary", 
-        span(class = "numb", redcap_f01f05_dta_filter() %>% nrow()), 
+        span(class = "numb", nb_enrolments_filter), 
         span(class = "smallcaps", "Patient enrolments"),
-        span(class = "badge badge-light f-100 right", ifelse(prop < 100, glue("{prop}% of {redcap_f01f05_dta() %>% nrow()}"), ""))
+        span(class = "badge badge-light f-100 right", ifelse(prop < 100, glue("{prop}% of {nb_enrolments} total"), ""))
     )
   )
 })
 
 output$nb_patients_microbiology <- renderText({
+  req(acorn_dta())
+  nb_enrolments_filter <- n_distinct(redcap_f01f05_dta_filter()$redcap_id)
+  nb_microbiology_filter <- n_distinct(acorn_dta_filter()$redcap_id)
+  
+  prop <- round(100 * nb_microbiology_filter / nb_enrolments_filter, 1)
+  
   as.character(
     div(class = "box_summary", 
-        span(class = "numb", "145"), 
-        span(class = "smallcaps", "enrolments With Microbiology"),
-        span(class = "badge badge-light f-100 right", "81% of 180")
+        span(class = "numb", nb_microbiology_filter), 
+        span(class = "smallcaps", "With Microbiology"),
+        span(class = "badge badge-light f-100 right", glue("{prop}% of {nb_enrolments_filter}"))
     )
   )
 })
 
 output$nb_specimens <- renderText({
+  req(acorn_dta())
+  
+  nb_specimens <- n_distinct(acorn_dta_filter()$specid)
+  nb_enrolments_filter <- n_distinct(redcap_f01f05_dta_filter()$redcap_id)
+  nb_per <- round(nb_specimens / nb_enrolments_filter, 1)
+  
   as.character(
     div(class = "box_summary", 
-        span(class = "numb", "98"), 
+        span(class = "numb", nb_specimens), 
         span(class = "smallcaps", "Specimens Collected"),
-        span("1.43 per enrolment"),
-        span(class = "badge badge-light f-100 right", "98% of 180")
+        span(class = "badge badge-light f-100 right", glue("{nb_per} specimens per enrolment"))
     )
   )
 })
 
-output$nb_isolates <- renderText({
+output$nb_isolates_growth <- renderText({
+  req(acorn_dta())
+  nb_isolates <- acorn_dta_filter() %>% 
+    fun_filter_growth_only() %>% 
+    fun_deduplication(method = input$deduplication_method) %>% 
+    pull(isolateid) %>% 
+    n_distinct()
+  
   as.character(
     div(class = "box_summary", 
-        span(class = "numb", "10"), 
+        span(class = "numb", nb_isolates), 
         span(class = "smallcaps", "Isolates"),
-        span("from cultures that have growth"),
-        span(class = "badge badge-light f-100 right", "5 of Target Pathogens")
+        span("from cultures that have growth")
+    )
+  )
+})
+
+output$nb_isolates_target <- renderText({
+  req(acorn_dta())
+  nb_isolates <- acorn_dta_filter() %>% 
+    fun_filter_target_pathogens() %>% 
+    nrow()
+  
+  as.character(
+    div(class = "box_summary", 
+        span(class = "numb", nb_isolates), 
+        span(class = "smallcaps", "Isolates"),
+        span("of Target Pathogens")
     )
   )
 })

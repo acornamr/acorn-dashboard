@@ -14,7 +14,7 @@ ui <- fluidPage(
   
   div(id = 'float',
       dropMenu(
-        actionButton("checklist_show", icon = icon("question-circle"), label = NULL, class = "btn-success"),
+        actionButton("checklist_show", label = "About App/Data", class = "btn-success"),
         theme = "light-border",
         class = "checklist",
         placement = "bottom-end",
@@ -32,105 +32,91 @@ ui <- fluidPage(
                condition = "input.tabs != 'welcome' & input.tabs != 'data_management'",
                div(
                  a(id = "anchor_header", style = "visibility: hidden", ""),
+                 # fluidRow(
+                 #   column(12,
+                 # div(id = "filter_more",
+                 #     dropMenu(
+                 #       class = "filter_box_small",
+                 #       actionButton("filterito", "Filters", icon = icon("sliders-h"), class = "btn-success"),
+                 #       actionLink("shortcut_filter_1", label = span(icon("filter"), " Patients with Pneumonia, BC only")),
+                 #       br(),
+                 #       actionLink("shortcut_filter_2", label = span(icon("filter"), " Below 5 y.o. HAI")),
+                 #     )
+                 # ),
                  fluidRow(
-                   column(12,
+                   column(9,
                           div(id = "filter_box", class = "well",
-                              div(id = "filter_more",
-                                  dropMenu(
-                                    class = "filter_box_small",
-                                    actionButton("filterito", "Filters", icon = icon("sliders-h"), class = "btn-success"),
-                                    actionLink("shortcut_filter_1", label = span(icon("filter"), " Patients with Pneumonia, BC only")),
-                                    br(),
-                                    actionLink("shortcut_filter_2", label = span(icon("filter"), " Below 5 y.o. HAI")),
-                                  )
-                              ),
                               fluidRow(
                                 column(8,
                                        div(class = "smallcaps", class = "centerara", span(icon("hospital-user"), "Enrolments")),
                                        fluidRow(
-                                         column(4,
-                                                checkboxGroupButtons("filter_data",
-                                                                     choices = c("Surveillance Category", "Type of Ward", "Date of Enrolment", "Patient Age", "Patient Diagnosis",
-                                                                                 "Clinical/D28 Outcome", "Comorbidities", "Antibiotics Prescribed"),
-                                                                     status = "light", direction = "vertical", size = "sm",
+                                         column(5,
+                                                checkboxGroupButtons("filter_enrolments",
+                                                                     choices = c("Surveillance Category", "Type of Ward", "Date of Enrolment", "Age Category", "Patient Diagnosis",
+                                                                                 "Clinical/D28 Outcome"),
+                                                                     status = "light", direction = "vertical", size = "sm", 
                                                                      checkIcon = list(yes = icon("filter"))
-                                                )),
-                                         column(8,
-                                                conditionalPanel("input.filter_data.includes('Surveillance Category')",
-                                                                 prettyRadioButtons("filter_surveillance_cat", NULL, choices = c("CAI + HAI", "CAI", "HAI"), inline = TRUE, status = "primary", fill = FALSE)
+                                                )
+                                         ),
+                                         column(7,
+                                                conditionalPanel("input.filter_enrolments.includes('Surveillance Category')",
+                                                                 prettyCheckboxGroup("filter_surveillance_cat", NULL, shape = "curve", status = "primary",
+                                                                                     choiceNames = c("Community Acquired Infection", "Hospital Acquired Infection"), 
+                                                                                     choiceValues = c("CAI", "HAI"), 
+                                                                                     selected = c("CAI", "HAI"), inline = TRUE)
                                                 ),
-                                                conditionalPanel("input.filter_data.includes('Type of Ward')",
-                                                                 fluidRow(column(4, "(b):"),
-                                                                          column(8, pickerInput("filter_ward_type", NULL, choices = vec_ward_types, selected = vec_ward_types, options = list(`actions-box` = TRUE), multiple = TRUE))
-                                                                 )
+                                                conditionalPanel("input.filter_enrolments.includes('Type of Ward')",
+                                                                 pickerInput("filter_ward_type", NULL, choices = vec_ward_types, selected = vec_ward_types, options = list(`actions-box` = TRUE), multiple = TRUE)
                                                 ),
-                                                conditionalPanel("input.filter_data.includes('Date of Enrolment')",
-                                                                 fluidRow(column(4, "(c):"),
-                                                                          column(8, dateRangeInput("filter_date_enrolment", NULL, startview = "year"))
-                                                                 )
+                                                conditionalPanel("input.filter_enrolments.includes('Date of Enrolment')",
+                                                                 dateRangeInput("filter_date_enrolment", NULL, startview = "year")
                                                 ),
-                                                conditionalPanel("input.filter_data.includes('Patient Age')",
-                                                                 fluidRow(column(4, "Patient Age:"),
-                                                                          column(8, 
-                                                                                 fluidRow(
-                                                                                   column(4, numericInput("filter_age_min", label = "", min = 0, value = 0)),
-                                                                                   column(4, numericInput("filter_age_max", label = "", min = 0, value = 99),),
-                                                                                   column(4, selectInput("filter_age_unit", label = "", choices = c("days", "months", "years"), selected = "years"))
-                                                                                 ),
-                                                                                 prettySwitch("filter_age_na", label = "Include Unknown Ages", status = "primary", value = TRUE, slim = TRUE)
-                                                                          )
-                                                                 )
+                                                conditionalPanel("input.filter_enrolments.includes('Age Category')",
+                                                                 prettyCheckboxGroup("filter_age_cat", NULL, shape = "curve", status = "primary",
+                                                                                     choices = c("Adult", "Child", "Neonate"), selected = c("Adult", "Child", "Neonate"), inline = TRUE)
                                                 ),
-                                                conditionalPanel("input.filter_data.includes('Patient Diagnosis')",
-                                                                 fluidRow(column(4, "Patient Diagnosis:"),
-                                                                          column(8, 
-                                                                                 prettyCheckboxGroup("filter_diagnosis", label = "Patient Diagnosis:", shape = "curve", status = "primary",
-                                                                                                     choices = c("Meningitis", "Pneumonia", "Sepsis"), selected = c("Meningitis", "Pneumonia", "Sepsis"),
-                                                                                                     inline = TRUE),
-                                                                                 prettyRadioButtons("confirmed_diagnosis", label = "Diagnosis confirmation (if clinical outcome):",
-                                                                                                    choices = c("Diagnosis confirmed", "Diagnosis rejected", "No filter on diagnosis confirmation"),
-                                                                                                    selected = "No filter on diagnosis confirmation"),
-                                                                          )
-                                                                 )
+                                                conditionalPanel("input.filter_enrolments.includes('Patient Diagnosis')",
+                                                                 pickerInput("filter_patient_diagnosis", NULL, choices = vec_diagnosis, selected = vec_diagnosis, options = list(`actions-box` = TRUE), multiple = TRUE)
                                                 ),
-                                                conditionalPanel("input.filter_data.includes('Clinical/D28 Outcome')",
-                                                                 fluidRow(column(4, "Clinical/D28 Outcome:"),
-                                                                          column(8, 
-                                                                                 prettySwitch("filter_outcome_clinical", label = "Only with Clinical Outcome", status = "primary", value = FALSE, slim = TRUE),
-                                                                                 prettySwitch("filter_outcome_d28", label = "Only with Day-28 Outcome", status = "primary", value = FALSE, slim = TRUE)
-                                                                          )
-                                                                 )
+                                                conditionalPanel("input.filter_enrolments.includes('Clinical/D28 Outcome')",
+                                                                 prettySwitch("filter_outcome_clinical", label = "Only with Clinical Outcome", status = "primary", value = FALSE, slim = TRUE),
+                                                                 prettySwitch("filter_outcome_d28", label = "Only with Day-28 Outcome", status = "primary", value = FALSE, slim = TRUE)
+                                                                 
                                                 )
                                          )
                                        )
                                 ),
-                                column(4, class = "vl",
-                                       div(class = "smallcaps", class = "centerara", span(icon("vial"), " Specimens")),
-                                       pickerInput("filter_method_other", label = "Method of Collection:", multiple = TRUE,
-                                                   choices = c("Blood Culture", "CSF", "Genito-urinary swab"), 
-                                                   selected = c("Blood Culture", "CSF", "Genito-urinary swab"),
-                                                   options = list(`actions-box` = TRUE, 
-                                                                  `deselect-all-text` = "None...",
-                                                                  `select-all-text` = "All Methods", 
-                                                                  `none-selected-text` = "None Selected",
-                                                                  `multiple-separator` = " + "),
-                                                   choicesOpt = list(content = c("<span class = 'filter_blood'>Blood Culture</span>", "CSF", "Genito-urinary swab")),
+                                column(4,
+                                       div(class = "smallcaps", class = "centerara", span(icon("vial"), " Specimens, Isolates")),
+                                       
+                                       prettyCheckboxGroup(inputId = "filter_method_collection", label = NULL,  shape = "curve", status = "primary", inline = TRUE,
+                                                           choices = c("Blood culture" = "blood", "Other Specimens:" = "other_not_blood"), 
+                                                           selected = c("blood", "other_not_blood")),
+                                       conditionalPanel("input.filter_method_collection.includes('other_not_blood')",
+                                                        pickerInput("filter_method_other", NULL, multiple = TRUE,
+                                                                    choices = "", selected = NULL,
+                                                                    options = list(style = "btn-primary",
+                                                                                   `actions-box` = TRUE, `deselect-all-text` = "None...",
+                                                                                   `select-all-text` = "Select All", `none-selected-text` = "None Selected"))
                                        ),
-                                       div(class = "smallcaps", class = "centerara", span(icon("microscope"), " Isolates")),
-                                       pickerInput("deduplication_method", label = "Deduplication:", 
+                                       br(),
+                                       pickerInput("deduplication_method", label = NULL, 
                                                    choices = c("No deduplication of isolates", "Deduplication by patient-episode", "Deduplication by patient ID"))
                                 )
                               )
                           )
                    ),
-                   actionLink("filter_summary", label = "No filters")
+                   column(3,
+                          htmlOutput("nb_enrolments"),
+                          htmlOutput("nb_patients_microbiology"),
+                          br(),
+                          htmlOutput("nb_specimens"),
+                          br(),
+                          htmlOutput("nb_isolates_growth"),
+                          htmlOutput("nb_isolates_target")
+                   )
                  ),
-                 fluidRow(
-                   column(3, htmlOutput("nb_enrolments")),
-                   column(3, htmlOutput("nb_patients_microbiology")),
-                   column(3, htmlOutput("nb_specimens")),
-                   column(3, htmlOutput("nb_isolates"))
-                 )
+                 fluidRow(column(12, actionLink("filter_summary", label = "No filters")))
                )
              ),
              
@@ -182,18 +168,16 @@ ui <- fluidPage(
              # Tab Data Management ----
              tabPanel(div(id = "menu_data_management", span(icon("database"), 'Data Management')), value = "data_management",
                       # tabsetPanel(id = "data_management_tabs", type = "tabs",
-                      radioGroupButtons(
-                        "choice_datamanagement",
-                        label = "What do you want to do?",
-                        choices = c("Generate .acorn", "Load existing .acorn"),
-                        individual = TRUE,
-                        checkIcon = list(
-                          yes = icon("ok", lib = "glyphicon"))
+                      radioGroupButtons("choice_datamanagement", "What do you want to do?",
+                                        choices = c("Generate .acorn from clinical and lab data", "Load existing .acorn"),
+                                        selected = NULL,
+                                        individual = TRUE,
+                                        checkIcon = list(yes = icon("ok", lib = "glyphicon"))
                       ),
                       hr(),
                       ## Tab Generate ----
                       # tab(value = "generate", span("Generate ", em(".acorn")),
-                      conditionalPanel("input.choice_datamanagement == 'Generate .acorn'",
+                      conditionalPanel("input.choice_datamanagement == 'Generate .acorn from clinical and lab data'",
                                        div(
                                          fluidRow(
                                            column(4,    
@@ -582,7 +566,7 @@ server <- function(input, output, session) {
   
   # Hide tabs on app launch ----
   hideTab("tabs", target = "data_management")
-  # hideTab("tabs", target = "overview")
+  hideTab("tabs", target = "overview")
   hideTab("tabs", target = "follow_up")
   hideTab("tabs", target = "hai")
   hideTab("tabs", target = "microbiology")
@@ -604,12 +588,12 @@ server <- function(input, output, session) {
   })
   
   observe({
-    if(is.null(input$filter_data))  {
+    if(is.null(input$filter_enrolments))  {
       updateActionLink(session = session, "filter_summary", label = "No Filters", icon = NULL)
     }
     
-    if(!is.null(input$filter_data))  {
-      label <- paste("Filters:", " Enrolments : ", paste(input$filter_data, collapse = ", "))
+    if(!is.null(input$filter_enrolments))  {
+      label <- paste("Filters:", " Enrolments : ", paste(input$filter_enrolments, collapse = ", "))
       updateActionLink(session = session, "filter_summary", label = label, icon = icon("eye"))
     }
   })
@@ -675,7 +659,7 @@ server <- function(input, output, session) {
   # Secondary datasets (derived from primary datasets)
   redcap_f01f05_dta_filter <- reactive(redcap_f01f05_dta() %>% fun_filter_enrolment(input = input))
   redcap_hai_dta_filter <- reactive(redcap_hai_dta() %>% fun_filter_survey(input = input))
-  acorn_dta_filter <- reactive(acorn_dta() %>% fun_filter_isolate(input = input))
+  acorn_dta_filter <- reactive(acorn_dta() %>% fun_filter_enrolment(input = input) %>% fun_filter_isolate(input = input))
   
   # Enrolment log
   enrolment_log <- reactive({
@@ -863,6 +847,12 @@ server <- function(input, output, session) {
     acorn_dta(acorn_dta)
     corresp_org_antibio(corresp_org_antibio)
     
+    updatePickerInput(session, "filter_method_other", choices = sort(setdiff(unique(acorn_dta()$specgroup), "Blood")), 
+                      selected = sort(setdiff(unique(acorn_dta()$specgroup), "Blood")))
+    updatePrettyCheckboxGroup(session, "filter_ward_type", choices = sort(unique(acorn_dta()$ward_type)), selected = sort(unique(acorn_dta()$ward_type)), 
+                              inline = TRUE, prettyOptions = list(status = "primary"))
+    updateDateRangeInput(session, "filter_date_enrolment", start = min(acorn_dta()$date_enrollment), end = max(acorn_dta()$date_enrollment))
+    
     showNotification(glue("Successfully loaded data. Data generated on the {meta()$time_generation}; by {meta$user}. {meta$comment}"))
     focus_analysis()
   })
@@ -876,6 +866,12 @@ server <- function(input, output, session) {
     redcap_hai_dta(redcap_hai_dta)
     acorn_dta(acorn_dta)
     corresp_org_antibio(corresp_org_antibio)
+    
+    updatePickerInput(session, "filter_method_other", choices = sort(setdiff(unique(acorn_dta()$specgroup), "Blood")), 
+                      selected = sort(setdiff(unique(acorn_dta()$specgroup), "Blood")))
+    updatePrettyCheckboxGroup(session, "filter_ward_type", choices = sort(unique(acorn_dta()$ward_type)), selected = sort(unique(acorn_dta()$ward_type)), 
+                              inline = TRUE, prettyOptions = list(status = "primary"))
+    updateDateRangeInput(session, "filter_date_enrolment", start = min(acorn_dta()$date_enrollment), end = max(acorn_dta()$date_enrollment))
     
     showNotification(glue("Successfully loaded data. Data generated on the {meta()$time_generation}; by {meta$user}. {meta$comment}"))
     focus_analysis()
@@ -980,6 +976,13 @@ server <- function(input, output, session) {
       source("./www/R/data/10_link_clinical_assembly.R", local = TRUE)
       
       acorn_dta(acorn_dta)
+      
+      updatePickerInput(session, "filter_method_other", choices = sort(setdiff(unique(acorn_dta()$specgroup), "Blood")), 
+                        selected = sort(setdiff(unique(acorn_dta()$specgroup), "Blood")))
+      updatePrettyCheckboxGroup(session, "filter_ward_type", choices = sort(unique(acorn_dta()$ward_type)), selected = sort(unique(acorn_dta()$ward_type)), 
+                                inline = TRUE, prettyOptions = list(status = "primary"))
+      updateDateRangeInput(session, "filter_date_enrolment", start = min(acorn_dta()$date_enrollment), end = max(acorn_dta()$date_enrollment))
+      
       notify(".acorn data successfully generated!", id = id)
       checklist_status$acorn_dta_saved = list(status = "warning", msg = ".acorn not saved")
     }

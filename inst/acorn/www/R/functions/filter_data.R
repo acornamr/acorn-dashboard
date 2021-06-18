@@ -2,7 +2,8 @@ fun_filter_enrolment <- function(data, input) {
   if( is.null(data) ) return(NULL)
   
   # Origin of Infection
-  if(input$filter_surveillance_cat != "CAI + HAI")  data <- data %>% filter(surveillance_category == input$filter_surveillance_cat)
+  data <- data %>% 
+    filter(surveillance_category %in% input$filter_surveillance_cat)
   
   # Type of Ward
   data <- data %>%
@@ -49,9 +50,12 @@ fun_deduplication <- function(data, method = NULL) {
 # Note that "No significant growth" should be categorised as growth
 fun_filter_growth_only <- function(data) data %>% filter(! orgname %in% c("No growth (specific organism)", "No growth"))
 
-
 # Function that removes organisms "No significant growth"
 fun_filter_signifgrowth_only <- function(data) data %>% filter(orgname != "No significant growth")
 
 # Function that removes organisms "Not cultured"
 fun_filter_cultured_only <- function(data) data %>% filter(! orgname == "Not cultured")
+
+# Function that keeps only target pathogens
+fun_filter_target_pathogens <- function(data)  data %>% filter(orgname %in% c("Acinetobacter baumannii", "Escherichia coli", "Klebsiella pneumoniae", 
+                                                                               "Staphylococcus aureus", "Streptococcus pneumoniae") | str_detect(orgname, "Salmonella"))

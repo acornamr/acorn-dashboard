@@ -21,6 +21,25 @@ vec_ward_types <- c("Adult medical ward",
                     "Emergency department",
                     "Unknwon type of ward")
 
+vec_diagnosis <- c("Bone / Joint", 
+                   "Cardiovascular system",
+                   "Central nervous system", 
+                   "ENT / Upper respiratory tract",
+                   "Eye",
+                   "Febrile neutropenia",
+                   "Gastrointestinal",
+                   "Genital", 
+                   "Intra-abdominal", 
+                   "Lower respiratory tract",
+                   "Necrotising enterocolitis", 
+                   "Pneumonia", 
+                   "Sepsis (source unclear)", 
+                   "Skin / Soft tissue", 
+                   "Surgical site",
+                   "Urinary tract",
+                   "Other (diagnosis documented)", 
+                   "Unknown (not documented)")
+
 # IMPORTANT: packages listed here should be synced with run_app.R and DESCRIPTION
 library(aws.s3)
 library(bslib)  # bs_theme()
