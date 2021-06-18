@@ -7,6 +7,20 @@ code_sites <- c("demo", "KH001", "GH001", "GH002", "ID001", "ID002",
                 "KE001", "KE002", "LA001", "LA002", "MW001", "NP001", 
                 "NG001", "NG002", "VN001", "VN002", "VN003")
 
+vec_ward_types <- c("Adult medical ward",
+                    "Adult surgical ward",
+                    "Adult intensive care unit",
+                    "Pediatric medical ward",
+                    "Pediatric surgical ward",
+                    "Pediatric intensive care unit",
+                    "Neonatal medical ward",
+                    "Neonatal surgical ward",
+                    "Neonatal intensive care unit",
+                    "Obstetrics / Gynaecology ward",
+                    "Haematology / Oncology ward",
+                    "Emergency department",
+                    "Unknwon type of ward")
+
 # IMPORTANT: packages listed here should be synced with run_app.R and DESCRIPTION
 library(aws.s3)
 library(bslib)  # bs_theme()

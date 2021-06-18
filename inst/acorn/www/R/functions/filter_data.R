@@ -1,5 +1,12 @@
 fun_filter_enrolment <- function(data, input) {
-  return(data)
+  if( is.null(data) ) return(NULL)
+  
+  # Origin of Infection
+  if(input$filter_surveillance_cat != "CAI + HAI")  data <- data %>% filter(surveillance_category == input$filter_surveillance_cat)
+  
+  # Type of Ward
+  data <- data %>%
+    filter(ward_type %in% input$filter_ward_type)
 }
 
 fun_filter_isolate <- function(data, input) {
@@ -7,17 +14,6 @@ fun_filter_isolate <- function(data, input) {
 }
 
 fun_filter_survey <- function(data, input) {
-  return(data)
-}
-
-
-# Function that returns a filtered dataset
-fun_filter_patient <- function(data, input) {
-  
-  if( is.null(data) ) return(NULL)
-  
-  if(input$filter_origin_infection != "All Origins") data <- data %>% filter(surveillance_cat == input$filter_origin_infection)
-  
   return(data)
 }
 
