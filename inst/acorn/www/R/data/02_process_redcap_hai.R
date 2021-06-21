@@ -3,7 +3,7 @@ dl_hai_dta <- dl_hai_dta %>%
             # redcap_repeat_instrument, 
             # redcap_repeat_instance, 
             # f06odkreckey, 
-            survey_date, 
+            survey_date = as_date(survey_date), 
             ward_type = recode(wardtype, MED = "Adult medical ward", SRG = "Adult surgical ward", 
                                ICU = "Adult intensive care unit", PMED = "Pediatric medical ward", 
                                PSRG = "Pediatric surgical ward", PICU = "Pediatric intensive care unit", 

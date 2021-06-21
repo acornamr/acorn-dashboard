@@ -108,8 +108,6 @@ infection <- left_join(
                                   "hpd_adm_date_cfm", "f04odkreckey")), 
   by = "recordid")
 
-
-
 # rename / drop (by commenting) / recode columns
 infection <- infection %>% transmute(
   redcap_id = recordid,  #  as.character(md5(recordid)),
@@ -263,9 +261,9 @@ infection <- infection %>% transmute(
   cmb_pep = recode(cmb_comorbidities___pep, "0" = "", "1" = "Peptic ulcer"), 
   cmb_renal = recode(cmb_comorbidities___renal, "0" = "", "1" = "Renal disease"), 
   cmb_tub = recode(cmb_comorbidities___tub, "0" = "", "1" = "Tuberculosis"), 
-  cmb_overnight = recode(cmb_comorbidities___none, "N" = "No", "Y" = "Yes"), 
-  cmb_rhc = recode(cmb_rhc, "N" = "No", "Y" = "Yes"), 
-  cmb_surgery = recode(cmb_surgery, "N" = "No", "Y" = "Yes"), 
+  cmb_other_overnight = recode(cmb_overnight, "N" = "No", "Y" = "Yes"), 
+  cmb_other_rhc = recode(cmb_rhc, "N" = "No", "Y" = "Yes"), 
+  cmb_other_surgery = recode(cmb_surgery, "N" = "No", "Y" = "Yes"), 
   # f01_deleted, 
   # f01_enrolment_complete, 
   # End F01
@@ -281,11 +279,15 @@ infection <- infection %>% transmute(
 ) %>%
   mutate(has_clinical_outcome = !is.na(ho_discharge_date),
          has_d28_outcome = !is.na(d28_date)) %>%
-  replace_na(list(surveillance_diag = "Unknown diagnosis", 
-                  ward_type = "Unknwon type of ward", 
-                  ward = "Unknown ward",
-                  sex = "Unknown sex",
-                  blood_collect = "Unknown"))
+mutate(across(cmb_aids:cmb_tub, ~ ifelse(. == "", NA, .))) %>%
+unite(comorbidities, cmb_aids:cmb_tub, sep = " & ", na.rm = TRUE, remove = FALSE) %>%
+replace_na(list(surveillance_diag = "Unknown diagnosis",
+                ward_type = "Unknown type of ward",
+                ward = "Unknown ward",
+                sex = "Unknown sex",
+                blood_collect = "Unknown",
+                transfer_hospital = "Unknown"))
+
 
 # Summarise the age with age_year and age_day
 infection$age_day[is.na(infection$age_day) & is.na(infection$birthday)] <- 0

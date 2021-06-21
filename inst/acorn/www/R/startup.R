@@ -19,7 +19,7 @@ vec_ward_types <- c("Adult medical ward",
                     "Obstetrics / Gynaecology ward",
                     "Haematology / Oncology ward",
                     "Emergency department",
-                    "Unknwon type of ward")
+                    "Unknown type of ward")
 
 vec_diagnosis <- c("Bone / Joint", 
                    "Cardiovascular system",

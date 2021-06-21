@@ -1,4 +1,4 @@
-output$report_generation <- renderText({
+output$about <- renderText({
   
   # report <- ifelse(pandoc_available(),
   #                  paste(tagList(downloadLink("report", label = span(icon("file-word"), "Generate Report (.docx)")))),

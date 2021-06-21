@@ -3,8 +3,8 @@
 output$abaumannii_sir <- renderHighchart({
   req(acorn_dta_filter())
   organism_input <- "Acinetobacter baumannii"
-  highchart_sir(data_input = acorn_dta_filter(), organism_input = organism_input, corresp = corresp_org_antibio(), combine_SI = input$combine_SI,
-                deduplication_method = input$deduplication_method)
+  highchart_sir(data_input = acorn_dta_filter(), organism_input = organism_input, corresp = corresp_org_antibio(), 
+                combine_SI = input$combine_SI, deduplication_method = input$deduplication_method)
 })
 
 output$abaumannii_sir_evolution <- renderHighchart({
@@ -241,7 +241,7 @@ output$test_other_sir <- reactive({
   ifelse (nrow(acorn_dta_filter() %>% 
                  filter(orgname == organism_input) %>% 
                  fun_deduplication(method = input$deduplication_method) %>% 
-                 filter_at(vars(AMK:thirdgenceph), any_vars(!is.na(.)))) == 0, FALSE, TRUE)
+                 filter_at(vars(any_of(corresp_org_antibio()$antibio_code)), any_vars(!is.na(.)))) == 0, FALSE, TRUE)
 })
 outputOptions(output, "test_other_sir", suspendWhenHidden = FALSE)
 

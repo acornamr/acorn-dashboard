@@ -1,7 +1,8 @@
 # ACORN shiny app main script
 source('./www/R/startup.R', local = TRUE)
 
-# TODO: check that all .md are displayed in the app
+# TODO: check that all .md are displayed in the app# TODO: check that all .md are displayed in the app
+# TODO: consider using https://github.com/datastorm-open/shinymanager, https://rinterface.github.io/bs4Dash/index.html
 
 # Definition of UI ----
 ui <- fluidPage(
@@ -18,7 +19,7 @@ ui <- fluidPage(
         theme = "light-border",
         class = "checklist",
         placement = "bottom-end",
-        htmlOutput("report_generation")
+        htmlOutput("about")
       )
   ),
   
@@ -32,17 +33,15 @@ ui <- fluidPage(
                condition = "input.tabs != 'welcome' & input.tabs != 'data_management'",
                div(
                  a(id = "anchor_header", style = "visibility: hidden", ""),
-                 # fluidRow(
-                 #   column(12,
-                 # div(id = "filter_more",
-                 #     dropMenu(
-                 #       class = "filter_box_small",
-                 #       actionButton("filterito", "Filters", icon = icon("sliders-h"), class = "btn-success"),
-                 #       actionLink("shortcut_filter_1", label = span(icon("filter"), " Patients with Pneumonia, BC only")),
-                 #       br(),
-                 #       actionLink("shortcut_filter_2", label = span(icon("filter"), " Below 5 y.o. HAI")),
-                 #     )
-                 # ),
+                 div(id = "filter_more",
+                     dropMenu(
+                       class = "filter_box_small",
+                       actionButton("filterito", "Filters", icon = icon("sliders-h"), class = "btn-success"),
+                       actionLink("shortcut_filter_1", label = span(icon("filter"), " Patients with Pneumonia, BC only")),
+                       br(),
+                       actionLink("shortcut_filter_2", label = span(icon("filter"), " Below 5 y.o. HAI")),
+                     )
+                 ),
                  fluidRow(
                    column(9,
                           div(id = "filter_box", class = "well",
@@ -90,7 +89,7 @@ ui <- fluidPage(
                                        div(class = "smallcaps", class = "centerara", span(icon("vial"), " Specimens, Isolates")),
                                        
                                        prettyCheckboxGroup(inputId = "filter_method_collection", label = NULL,  shape = "curve", status = "primary", inline = TRUE,
-                                                           choices = c("Blood culture" = "blood", "Other Specimens:" = "other_not_blood"), 
+                                                           choices = c("Blood Culture" = "blood", "Other (not BC):" = "other_not_blood"), 
                                                            selected = c("blood", "other_not_blood")),
                                        conditionalPanel("input.filter_method_collection.includes('other_not_blood')",
                                                         pickerInput("filter_method_other", NULL, multiple = TRUE,
@@ -364,19 +363,11 @@ ui <- fluidPage(
                                ),
                                div(class = 'box_outputs',
                                    h4_title("Patients Comorbidities"),
-                                   pickerInput(width = '100%',
-                                               options = pickerOptions(style = "primary"),
-                                               "comorbidities",
-                                               choices = list(
-                                                 Syndromes = c("Cancer", "Chronic renal failure", "Chronic lung disease", "Diabetes mellitus", "Malnutrition"),
-                                                 Options = c("Display Comorbidities", "Show Patients with No Recorded Syndrom")
-                                               ),
-                                               selected = c("Cancer", "Chronic renal failure", "Chronic lung disease", "Diabetes mellitus", "Malnutrition"),
-                                               multiple = TRUE),
+                                   prettySwitch("overlaping_comorbidities", label = "Show overlaping comorbidities", status = "primary", value = FALSE, slim = TRUE),
                                    highchartOutput("profile_comorbidities")
                                ),
                                div(class = 'box_outputs',
-                                   h4_title(icon("arrows-alt-h"), "Patients Transfered"),
+                                   h4_title(icon("arrows-alt-h"), "Patients Transfered (HAI only)"),
                                    highchartOutput("profile_transfer_hospital")
                                ),
                                br(), br(), br()
@@ -422,11 +413,9 @@ ui <- fluidPage(
              tabPanel("HAI", value = "hai", 
                       div(class = 'box_outputs',
                           h4_title("Wards Occupancy Rates"),
-                          htmlOutput("bed_occupancy_ward_title"),
                           plotOutput("bed_occupancy_ward", width = "80%")
                       ),
                       plotOutput("hai_rate_ward", width = "80%")
-                      # )
              ),
              # Tab Microbiology ----
              tabPanel("Microbiology", value = "microbiology", 
@@ -442,7 +431,7 @@ ui <- fluidPage(
                                div(class = 'box_outputs',
                                    h4_title("Specimen Types"),
                                    p("Number of specimens per specimen type"),
-                                   highchartOutput("specimens_specimens_type", height = "350px"),
+                                   highchartOutput("culture_specgroup", height = "350px"),
                                    p("Culture results per specimen type"),
                                    highchartOutput("culture_specimen_type", height = "400px")
                                )
@@ -834,6 +823,8 @@ server <- function(input, output, session) {
   # On "Load .acorn" file from server ----
   observeEvent(input$load_acorn_server, {
     
+    showNotification("Trying to load data (TODO: improve message)")
+    
     acorn_file <- get_object(object = input$acorn_files_server, 
                              bucket = acorn_cred()$acorn_s3_bucket,
                              key =  acorn_cred()$acorn_s3_key,
@@ -847,12 +838,7 @@ server <- function(input, output, session) {
     acorn_dta(acorn_dta)
     corresp_org_antibio(corresp_org_antibio)
     
-    updatePickerInput(session, "filter_method_other", choices = sort(setdiff(unique(acorn_dta()$specgroup), "Blood")), 
-                      selected = sort(setdiff(unique(acorn_dta()$specgroup), "Blood")))
-    updatePrettyCheckboxGroup(session, "filter_ward_type", choices = sort(unique(acorn_dta()$ward_type)), selected = sort(unique(acorn_dta()$ward_type)), 
-                              inline = TRUE, prettyOptions = list(status = "primary"))
-    updateDateRangeInput(session, "filter_date_enrolment", start = min(acorn_dta()$date_enrollment), end = max(acorn_dta()$date_enrollment))
-    
+    source('./www/R/update_input_widgets.R', local = TRUE)
     showNotification(glue("Successfully loaded data. Data generated on the {meta()$time_generation}; by {meta$user}. {meta$comment}"))
     focus_analysis()
   })
@@ -867,12 +853,7 @@ server <- function(input, output, session) {
     acorn_dta(acorn_dta)
     corresp_org_antibio(corresp_org_antibio)
     
-    updatePickerInput(session, "filter_method_other", choices = sort(setdiff(unique(acorn_dta()$specgroup), "Blood")), 
-                      selected = sort(setdiff(unique(acorn_dta()$specgroup), "Blood")))
-    updatePrettyCheckboxGroup(session, "filter_ward_type", choices = sort(unique(acorn_dta()$ward_type)), selected = sort(unique(acorn_dta()$ward_type)), 
-                              inline = TRUE, prettyOptions = list(status = "primary"))
-    updateDateRangeInput(session, "filter_date_enrolment", start = min(acorn_dta()$date_enrollment), end = max(acorn_dta()$date_enrollment))
-    
+    source('./www/R/update_input_widgets.R', local = TRUE)
     showNotification(glue("Successfully loaded data. Data generated on the {meta()$time_generation}; by {meta$user}. {meta$comment}"))
     focus_analysis()
   })
@@ -977,12 +958,7 @@ server <- function(input, output, session) {
       
       acorn_dta(acorn_dta)
       
-      updatePickerInput(session, "filter_method_other", choices = sort(setdiff(unique(acorn_dta()$specgroup), "Blood")), 
-                        selected = sort(setdiff(unique(acorn_dta()$specgroup), "Blood")))
-      updatePrettyCheckboxGroup(session, "filter_ward_type", choices = sort(unique(acorn_dta()$ward_type)), selected = sort(unique(acorn_dta()$ward_type)), 
-                                inline = TRUE, prettyOptions = list(status = "primary"))
-      updateDateRangeInput(session, "filter_date_enrolment", start = min(acorn_dta()$date_enrollment), end = max(acorn_dta()$date_enrollment))
-      
+      source('./www/R/update_input_widgets.R', local = TRUE)
       notify(".acorn data successfully generated!", id = id)
       checklist_status$acorn_dta_saved = list(status = "warning", msg = ".acorn not saved")
     }

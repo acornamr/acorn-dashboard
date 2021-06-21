@@ -2,7 +2,7 @@ highchart_sir <- function(data_input, organism_input, corresp, combine_SI, dedup
   
   # Column in the Organism-Antibiotic matrix
   matching_name_column <- "all_other_organisms"
-  if(organism_input == "Acinetobacter baumannii") matching_name_column <- "a_baumannii"
+  if(organism_input == "Acinetobacter baumannii") matching_name_column <- "acinetobacter_species"
   if(organism_input == "Escherichia coli") matching_name_column <- "e_coli"
   if(organism_input == "Klebsiella pneumoniae") matching_name_column <- "k_pneumoniae"
   if(organism_input == "Staphylococcus aureus") matching_name_column <- "s_aureus"
@@ -19,7 +19,7 @@ highchart_sir <- function(data_input, organism_input, corresp, combine_SI, dedup
     data <- data_input %>% 
       filter(orgname %in% organism_input) %>%
       fun_deduplication(method = deduplication_method) %>%
-      select(specid, 9:ncol(data_input)) %>%
+      select(c("specid", any_of(corresp$antibio_code))) %>%
       pivot_longer(-specid) %>%
       filter(value != "Not Tested") %>%
       mutate(value = recode(value, I = "S")) %>%
@@ -39,7 +39,7 @@ highchart_sir <- function(data_input, organism_input, corresp, combine_SI, dedup
       mutate(resistance = factor(resistance, levels = c("Susceptible", "Resistant"))) %>%
       complete(resistance, nesting(name))
     
-      
+    
     sir_results <- left_join(sir_results, corresp, by = c('name' = 'antibio_code')) %>%
       filter(UQ(as.symbol(matching_name_column)) == "show") %>%
       ungroup() %>%
@@ -85,7 +85,7 @@ highchart_sir <- function(data_input, organism_input, corresp, combine_SI, dedup
     data <- data_input %>% 
       filter(orgname %in% organism_input) %>% 
       fun_deduplication(method = deduplication_method) %>%
-      select(specid, 9:ncol(data_input)) %>%
+      select(c("specid", any_of(corresp$antibio_code))) %>%
       pivot_longer(-specid) %>%
       filter(value != "Not Tested") %>%
       group_by(name) %>%
