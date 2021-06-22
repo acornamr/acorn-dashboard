@@ -1,7 +1,7 @@
 Package: acorn
 Type: Package
 Title: A Dashboard for ACORN AMR Data
-Version: 0.0.001
+Version: 0.0.01
 Authors@R: c(person(given = "Olivier", family = "Celhay", 
                 email = "olivier.celhay@gmail.com", 
                 role = c("aut", "cre"), comment = c(ORCID = "https://orcid.org/0000-0002-2971-9110")),
@@ -20,14 +20,23 @@ Imports:
     aws.s3,
     bslib,
     curl,
+    DBI,
     DT,
+    flexdashboard,
     glue,
+    highcharter,
+    lubridate,
     openssl,
+    readr,
+    readxl,
     REDCapR,
+    rmarkdown,
+    RSQLite,
     shiny,
     shinyanimate,
     shiny.i18n,
     shinyjs,
     shinyWidgets,
     tidyverse,
+    writexl,
 RoxygenNote: 7.1.1

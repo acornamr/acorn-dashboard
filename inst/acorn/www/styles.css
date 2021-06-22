@@ -1,51 +1,84 @@
+/* Reference: 
+https://bootswatch.com/flatly/
+https://bootswatch.com/4/flatly/bootstrap.css */
+
+#shiny-notification-panel {
+  top: calc(50%);
+  left: calc(30%);
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  height: 100%;
+  font-size: 120%;
+  opacity = 0.2;
+}
+
+.shiny-notification {
+  opacity: 1;
+  max-width: 600px;
+}
+
+
 /*
-Colors:
-
-Using ACORN logo:
-#654338
-
-http://colormind.io/bootstrap/
-# 1F131E
-# B34558
-# 8489A4
-# F4F7F4
-
-
-Ferra	#794d4c	Primary
-Gondola	#1f131e	Info
-Hippie Green	#5a924f	Success
-Meteor	#d78217	Warning
-Pomegranate	#f44336	Danger
-
-Does this color from the logo fits?
-#FDA93D
+.shiny-notification {
+  height: 100%;
+  width: 100%; 
+  top: 0;
+  left: 0;
+  position:fixed;
+  font-size: 250%;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+}
 */
 
-/* .body {font-family: Phetsarath OT, Helvetica, sans-serif;} */
-
-
-/* since position = "fixed-top" inside navbarPage
-body {padding-top: 70px;}  */
+#map_sites {
+  margin-top: 5px;
+  width: 100%;
+  border: 1px solid grey;
+}
 
 .vl {
-  border-left: 1px solid gray;
-  padding-left: 5px;
+  border-style: hidden hidden hidden solid;
+  border-color: rgb(213, 213, 213);
+  padding-left: 15px;
+  padding-right: 15px;
 }
 
 .cl-success {
-  color: green;
+  color: #2c3e50;
 }
 
-.cl-question {
-  color: gray;
+.cl-info {
+  color: #f39c12;
 }
 
 .cl-warning {
-  color: orange;
+  color: #f39c12;
 }
 
 .cl-fail {
-  color: red;
+  color: #e74c3c;
+}
+
+/* https://bootswatch.com/4/flatly/bootstrap.css */
+.filer_all {
+  padding: 1px;
+  border-radius: 1px;
+}
+
+
+.filer_choice {
+  background: #e74c3c; 
+  color: white;
+  padding: 1px;
+  border-radius: 1px;
+}
+
+.filter_blood {
+  color: #e74c3c; 
+  font-weight: bold;
 }
 
 /*
@@ -92,12 +125,39 @@ body {padding-top: 70px;}  */
 
 .box_filter {
   padding: 2px;
-  border: 3px solid #f5f5f5;
+  /* border: 3px solid #f5f5f5;*/
 }
 
 .filter_on {
   border: 3px solid red;
   background-color: orange;
+}
+
+/* Otherwise the navbar is very tall */
+.navbar-static-top{
+  height: 60px;
+}
+
+#filter_box {
+  min-width: 100%;
+  /*
+  border: 3px solid #2c3e50;
+  border-radius: 5px;
+  background-color: #ecf0f1;
+  */
+  padding-top: 2px;
+  padding-right: 15px;
+  padding-bottom: 2px;
+  padding-left: 15px;
+  position: relative;
+}
+
+
+#filter_more {
+  position: absolute;
+  top: -12px;
+  left: -5px;
+  z-index: 999999999;
 }
 
 #filter_by {
@@ -109,6 +169,11 @@ body {padding-top: 70px;}  */
   color:red;
 }
 
+
+#additional_filter_btn{
+  float: right;
+  margin: 10px;
+}
 
 #language-box {
   float: right;
@@ -136,6 +201,10 @@ body {padding-top: 70px;}  */
   */
 }
 
+#header-filter {
+  width: 100%
+}
+
 /*
 #acorn-logo {
    height: 40px;
@@ -154,14 +223,28 @@ body {padding-top: 70px;}  */
 }
 
 #float-debug {
-  top: calc(10%);;
-  right: calc(1%);;
+  bottom: calc(1%);;
+  left: calc(1%);;
   padding: 10px;
   z-index: 999999999;
   position: absolute;
 }
 
+#filter_age_min {
+  margin: 0px;
+  padding: 0px;
+  text-align: center;
+}
+
 .checklist {
+  width: 300px;
+}
+
+.filter_box {
+  width: 500px;
+}
+
+.filter_box_small {
   width: 300px;
 }
 
@@ -169,28 +252,69 @@ body {padding-top: 70px;}  */
   text-align: center;
 }
 
+.box_outputs {
+  margin-bottom: 45px;
+  border-style: solid;
+  border-color: #7b8a8b;
+  background-color: rgba(0,0,0,0.03);
+  color: #212529;
+  border-radius: .25rem;
+}
+
+.h4_title {
+  color: #ecf0f1;
+  background-color: #7b8a8b;
+  text-align: center;
+  font-weight: 400;
+  font-size: 110%;
+  padding: 7px;
+}
+
+.summary_filter_start {
+  text-align: center;
+}
+
+.summary_filter_end {
+  color: gray;
+  text-align: center;
+}
+
+.box_summary {
+  border: 2px solid #2c3e50;
+  padding: 5px;
+  border-radius: 6px;
+  margin: 5px;
+  background-color: rgba(0,0,0,0.03);
+}
+
+.right {
+  float: right;
+}
+
+.numb {
+   font-size: 150%; 
+   color: #e74c3c;
+}
+
 /* quick access to different font sizes */
 .f-50 { font-size: 50%; }
 .f-60 { font-size: 60%;}
 .f-75 { font-size: 75%;}
 .f-85 { font-size: 85%;}
+.f-100 { font-size: 100%; }
+.f-115 { font-size: 115%; }
+.f-125 { font-size: 125%; }
 .f-150 { font-size: 150%; }
 .f-200 { font-size: 200%; }
+
+.smallcaps {
+  font-variant: small-caps;
+  font-weight: 900;
+  font-size: 125%;
+}
 
 /* quick access to width */
 .w-25 { width: 25%; }
 .w-33 { width: 33%; }
 .w-50 { width: 50%; }
 .w-100 { width: 100%; }
-
-/* fixed footer */
-.footer {
-  position: fixed;
-  bottom: 0;
-  background-color: #FFFFFF;
-  color: black;
-  text-align: right;
-  width: 100%;
-  padding-right: 50px;
-}
-
