@@ -181,7 +181,7 @@ ui <- fluidPage(
                                          fluidRow(
                                            column(4,    
                                                   h5("(1/4) Download Clinical data"), p("and generate enrolment log."),
-                                                  actionButton("get_redcap_data", "Get data from REDCap", icon = icon('times-circle'))
+                                                  actionButton("get_redcap_data", "Get data from REDCap", icon = icon('cloud-download-alt'))
                                            ),
                                            column(8,
                                                   htmlOutput("checklist_qc_clinical")
@@ -668,6 +668,7 @@ server <- function(input, output, session) {
   })
   
   output$enrolment_log_table <- renderUI({
+    # TODO: hide if .acorn has been loaded and not generated
     req(enrolment_log())
     tagList(
       p("Log of all enrolments retrived from REDCap:"),
@@ -676,6 +677,7 @@ server <- function(input, output, session) {
   })
   
   output$enrolment_log_dl <- renderUI({
+    # TODO: hide if .acorn has been loaded and not generated
     req(enrolment_log())
     tagList(
       br(), br(),
@@ -705,14 +707,13 @@ server <- function(input, output, session) {
     redcap_confirmed_match = list(status = "hidden", msg = ""),
     redcap_age_category    = list(status = "hidden", msg = ""),
     redcap_hai_dates       = list(status = "hidden", msg = ""),
-    # redcap_F05F01 = list(status = "hidden", msg = "Every BSI episode form (F05) matches exactly one patient enrolment (F01)"),
     
-    linkage_caseB = list(status = "hidden", msg = ""),
-    linkage_caseC = list(status = "hidden", msg = ""),
+    linkage_caseB  = list(status = "hidden", msg = ""),
+    linkage_caseC  = list(status = "hidden", msg = ""),
     linkage_result = list(status = "info", msg = "No .acorn has been generated"),
     
     redcap_f01f05_dta = list(status = "info", msg = "Clinical data not provided"),
-    lab_dta = list(status = "info", msg = "Lab data not provided"),
+    lab_dta           = list(status = "info", msg = "Lab data not provided"),
     
     acorn_dta_saved_local = list(status = "hidden", msg = ""),
     acorn_dta_saved_server = list(status = "info", msg = "No .acorn has been saved")
@@ -723,7 +724,6 @@ server <- function(input, output, session) {
     id <- notify("Attempting to connect")
     on.exit({Sys.sleep(2); removeNotification(id)}, add = TRUE)
     # showNotification("Attempting to connect", id = "notif_connection")
-    Sys.sleep(1)
     
     if (input$cred_site == "demo") {
       # The demo should work offline
@@ -802,14 +802,12 @@ server <- function(input, output, session) {
         region = acorn_cred()$acorn_s3_region)[1]
       
       if(connect_server_test) {
-        updateActionButton(session = session, 'get_redcap_data', icon = icon("cloud-download-alt"), label = "Get Clinical Data")
-        
         # Update select list with .acorn files on the server
         dta <- get_bucket(bucket = acorn_cred()$acorn_s3_bucket,
                           key =  acorn_cred()$acorn_s3_key,
                           secret = acorn_cred()$acorn_s3_secret,
-                          region = acorn_cred()$acorn_s3_region)
-        dta <- unlist(dta)
+                          region = acorn_cred()$acorn_s3_region) %>%
+          unlist()
         acorn_dates <- as.vector(dta[names(dta) == 'Contents.LastModified'])
         ord_acorn_dates <- order(as.POSIXct(acorn_dates))
         acorn_files <- rev(tail(as.vector(dta[names(dta) == 'Contents.Key'])[ord_acorn_dates], 10))
@@ -920,7 +918,7 @@ server <- function(input, output, session) {
   observeEvent(c(input$file_lab_tab, input$file_lab_dba, input$file_lab_sql), 
                {
                  id <- notify("Reading lab data")
-                 on.exit({Sys.sleep(3); removeNotification(id)}, add = TRUE)
+                 on.exit({Sys.sleep(2); removeNotification(id)}, add = TRUE)
                  source("./www/R/data/01_read_lab_data.R", local = TRUE)
                  
                  notify("Reading lab codes and AST breakpoint data", id = id)
@@ -948,7 +946,7 @@ server <- function(input, output, session) {
   # On "Generate ACORN" ----
   observeEvent(input$generate_acorn_data, {
     id <- notify("Generating .acorn")
-    on.exit({Sys.sleep(3); removeNotification(id)}, add = TRUE)
+    on.exit({Sys.sleep(2); removeNotification(id)}, add = TRUE)
     
     if(checklist_status$redcap_f01f05_dta$status != "okay")  showNotification("Aborted: clinical data not provided.", type = "warning", duration = NULL)
     if(checklist_status$lab_dta$status != "okay")     showNotification("Aborted: lab data not provided.", type = "warning", duration = NULL)
@@ -1009,7 +1007,7 @@ server <- function(input, output, session) {
   observeEvent(input$save_acorn_server_confirm, { 
     removeModal()
     id <- notify("Trying to save .acorn file on server")
-    on.exit({Sys.sleep(3); removeNotification(id)}, add = TRUE)
+    on.exit({Sys.sleep(2); removeNotification(id)}, add = TRUE)
     
     meta <- list(time_generation = session_start_time,
                  app_version = app_version,
