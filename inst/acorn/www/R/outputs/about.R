@@ -5,11 +5,22 @@ output$about <- renderText({
   #                  paste(tagList(span("To generate a report", a("install pandoc", href = "https://pandoc.org/installing.html", target = "_blank"), " and restart the app."))))
   
   
-  paste(glue("App version {app_version}"), br(),
-        a("ACORN Project website", href = "https://acornamr.net/", class='js-external-link', target="_blank"), br(), br(),
-        # report,
-        actionLink("debug", label = "(Debug)"),
-        p("TODO: link ./www/markdown/about_uCCI.md")
-        # includeMarkdown("./www/markdown/about_uCCI.md")
+  about_data <- ifelse(is.null(meta()),
+                       "No data available",
+                       glue("Data generated on the {meta()$time_generation}; by {meta()$user}. {meta()$comment}")
+  )
+  
+  paste(glue("ACORN App {app_version}"), 
+        br(),
+        about_data,
+        br(), br(),
+        span("Questions about the App? ", actionLink("show_faq", "explore the FAQ.")),
+        br(), br(),
+        span(a("Learn more about the ACORN project", href = "https://acornamr.net/", target = "_blank"), 
+             " and ", 
+             a("contact us.", href = "https://acornamr.net/#/contact.md", target = "_blank")),
+        
+        br(), br(),
+        actionLink("debug", label = "(Debug, developer only)")
   )
 })

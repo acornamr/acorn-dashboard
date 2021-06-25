@@ -15,7 +15,7 @@ ui <- fluidPage(
   
   div(id = 'float',
       dropMenu(
-        actionButton("checklist_show", label = "About App/Data", class = "btn-success"),
+        actionButton("checklist_show", label = "About", class = "btn-success"),
         theme = "light-border",
         class = "checklist",
         placement = "bottom-end",
@@ -152,12 +152,6 @@ ui <- fluidPage(
                                )
                         ),
                         column(9,
-                               # div(id = 'language-box', class = "well",
-                               #     selectInput(
-                               #       'selected_language', label = span(icon('language'), i18n$t('Language')),
-                               #       choices = i18n$get_languages(), selected = i18n$get_key_translation(), width = "150px"
-                               #     )
-                               # ),
                                h4('Welcome!'),
                                includeMarkdown("./www/markdown/lorem_ipsum.md"),
                                span(img(src = "./images/Map-ACORN-Sites-Global.png", id = "map_sites"))
@@ -560,6 +554,13 @@ server <- function(input, output, session) {
   hideTab("tabs", target = "hai")
   hideTab("tabs", target = "microbiology")
   hideTab("tabs", target = "amr")
+  
+  # Management of help links
+  observeEvent(input$show_faq,
+    showModal(modalDialog(
+      includeMarkdown("./www/markdown/faq.md"),
+      title = "FAQ", size = "l", easyClose = TRUE))
+  )
   
   # Management of CSS ----
   observe({
