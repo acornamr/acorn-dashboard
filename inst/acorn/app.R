@@ -335,19 +335,19 @@ ui <- fluidPage(
                       ),
                       fluidRow(
                         column(6,
-                               div(class = 'box_outputs', h4_title("Patients Age Distribution"),
+                               div(class = 'box_outputs', h4_title("Patient Age Distribution"),
                                    highchartOutput("profile_age")
                                ),
-                               div(class = 'box_outputs', h4_title("Patients Sex"),
+                               div(class = 'box_outputs', h4_title("Patient Sex"),
                                    highchartOutput("profile_sex")
                                ),
-                               div(class = 'box_outputs', h4_title("Blood culture collected within 24h"),
+                               div(class = 'box_outputs', h4_title("Blood culture collected within 24 hours of admission (CAI) / symptom onset (HAI)"),
                                    highchartOutput("profile_blood")
                                )
                                
                         ),
                         column(6,
-                               div(class = 'box_outputs', h4_title(icon("calendar-check"), "Date of enrolment"),
+                               div(class = 'box_outputs', h4_title(icon("calendar-check"), "Date of Enrolment"),
                                    prettySwitch("show_date_week", label = "See by Week", status = "primary"),
                                    highchartOutput("profile_date_enrolment")
                                ),
@@ -356,12 +356,12 @@ ui <- fluidPage(
                                    highchartOutput("profile_antibiotics")
                                ),
                                div(class = 'box_outputs',
-                                   h4_title("Patients Comorbidities"),
+                                   h4_title("Patient Comorbidities"),
                                    prettySwitch("overlaping_comorbidities", label = "Show overlaping comorbidities", status = "primary", value = FALSE, slim = TRUE),
                                    highchartOutput("profile_comorbidities")
                                ),
                                div(class = 'box_outputs',
-                                   h4_title(icon("arrows-alt-h"), "Patients Transfered (HAI only)"),
+                                   h4_title(icon("arrows-alt-h"), "Patients Transferred"),
                                    highchartOutput("profile_transfer_hospital")
                                ),
                                br(), br(), br()
