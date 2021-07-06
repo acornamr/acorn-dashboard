@@ -148,7 +148,9 @@ ui <- fluidPage(
                                          # TODO: add an option to log out
                                          # actionButton("cred_logout", label = "Log out", class = "btn-primary")
                                      )
-                                   )
+                                   ),
+                                   br(),
+                                   span("or ", actionLink("direct_upload_acorn", "upload a local acorn file."))
                                )
                         ),
                         column(9,
@@ -162,14 +164,13 @@ ui <- fluidPage(
              tabPanel(div(id = "menu_data_management", span(icon("database"), 'Data Management')), value = "data_management",
                       # tabsetPanel(id = "data_management_tabs", type = "tabs",
                       radioGroupButtons("choice_datamanagement", "What do you want to do?",
-                                        choices = c("Generate .acorn from clinical and lab data", "Load existing .acorn"),
+                                        choices = c("Generate .acorn from clinical and lab data", "Load existing .acorn from cloud", "Load existing .acorn from local file"),
                                         selected = NULL,
                                         individual = TRUE,
                                         checkIcon = list(yes = icon("ok", lib = "glyphicon"))
                       ),
                       hr(),
-                      ## Tab Generate ----
-                      # tab(value = "generate", span("Generate ", em(".acorn")),
+                      ## Choice Generate ----
                       conditionalPanel("input.choice_datamanagement == 'Generate .acorn from clinical and lab data'",
                                        div(
                                          fluidRow(
@@ -246,39 +247,25 @@ ui <- fluidPage(
                                          )
                                        )
                       ),
-                      ## Tab Load ----
-                      conditionalPanel("input.choice_datamanagement == 'Load existing .acorn'",
-                                       div(
-                                         # tab(value = "load", span("Load existing ", em(".acorn")),
-                                         fluidRow(
-                                           column(3,
-                                                  tags$div(
-                                                    materialSwitch("load_switch", label = "Local", 
-                                                                   inline = TRUE, status = "primary", value = TRUE),
-                                                    tags$span(icon("cloud"), "Server")
+                      ## Choice Load cloud ----
+                      conditionalPanel("input.choice_datamanagement == 'Load existing .acorn from cloud'",
+                                       fluidRow(
+                                         column(12,
+                                                div(
+                                                  pickerInput('acorn_files_server', choices = NULL, label = NULL,
+                                                              options = pickerOptions(actionsBox = TRUE, noneSelectedText = "No file selected", liveSearch = FALSE,
+                                                                                      showTick = TRUE, header = "10 most recent files:")),
+                                                  
+                                                  conditionalPanel(condition = "input.acorn_files_server",
+                                                                   actionButton('load_acorn_server', span(icon('cloud-download-alt'), HTML('Load <em>.acorn</em>')))
                                                   )
-                                           ),
-                                           column(9,
-                                                  conditionalPanel("! input.load_switch",
-                                                                   div(
-                                                                     p("You can upload a file from your PC"),
-                                                                     fileInput("load_acorn_local", label = NULL, buttonLabel =  HTML("Load <em>.acorn</em>"), accept = '.acorn'),
-                                                                   )
-                                                  ),
-                                                  conditionalPanel("input.load_switch",
-                                                                   div(
-                                                                     pickerInput('acorn_files_server', choices = NULL, label = NULL,
-                                                                                 options = pickerOptions(actionsBox = TRUE, noneSelectedText = "No file selected", liveSearch = FALSE,
-                                                                                                         showTick = TRUE, header = "10 most recent files:")),
-                                                                     
-                                                                     conditionalPanel(condition = "input.acorn_files_server",
-                                                                                      actionButton('load_acorn_server', span(icon('cloud-download-alt'), HTML('Load <em>.acorn</em>')))
-                                                                     )
-                                                                   )
-                                                  )
-                                           )
+                                                )
                                          )
                                        )
+                      ),
+                      ## Choice Load local ----
+                      conditionalPanel("input.choice_datamanagement == 'Load existing .acorn from local file'",
+                                       fileInput("load_acorn_local", label = NULL, buttonLabel =  HTML("Load <em>.acorn</em>"), accept = '.acorn')
                       )
              ),
              # Tab Overview ----
@@ -557,9 +544,9 @@ server <- function(input, output, session) {
   
   # Management of help links
   observeEvent(input$show_faq,
-    showModal(modalDialog(
-      includeMarkdown("./www/markdown/faq.md"),
-      title = "FAQ", size = "l", easyClose = TRUE))
+               showModal(modalDialog(
+                 includeMarkdown("./www/markdown/faq.md"),
+                 title = "FAQ", size = "l", easyClose = TRUE))
   )
   
   # Management of CSS ----
@@ -633,6 +620,18 @@ server <- function(input, output, session) {
   # update language based on dropdown choice
   observeEvent(input$selected_language, {
     update_lang(session, input$selected_language)
+  })
+  
+  # allow to upload acorn file and not being logged
+  observeEvent(input$direct_upload_acorn, {
+    showTab("tabs", target = "data_management")
+    updateTabsetPanel(session = session, "tabs", selected = "data_management")
+    
+    updateRadioGroupButtons(session = session, "choice_datamanagement", "What do you want to do?",
+                      choices = "Load existing .acorn from local file",
+                      selected = NULL,
+                      checkIcon = list(yes = icon("ok", lib = "glyphicon")))
+    
   })
   
   # Definition of reactive elements for data ----
@@ -791,7 +790,14 @@ server <- function(input, output, session) {
     # removeNotification(id = "notif_connection")
     # showNotification("Successfully logged in!")
     showTab("tabs", target = "data_management")
-    startAnim(session, "menu_data_management", type = "tada")
+    updateTabsetPanel(session = session, "tabs", selected = "data_management")
+    
+    updateRadioGroupButtons(session = session, "choice_datamanagement", "What do you want to do?",
+                            choices = c("Generate .acorn from clinical and lab data", "Load existing .acorn from cloud", "Load existing .acorn from local file"),
+                            selected = NULL,
+                            checkIcon = list(yes = icon("ok", lib = "glyphicon")))
+    
+    # startAnim(session, "menu_data_management", type = "tada")
     
     # Connect to AWS S3 server ----
     if(acorn_cred()$acorn_s3) {
