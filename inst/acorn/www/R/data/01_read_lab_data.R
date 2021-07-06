@@ -1,5 +1,5 @@
 try({
-  if (input$format_lab_data == "WHONET dBase") {
+  if (input$format_lab_data == "WHONET .dBase") {
     path_lab_file <- input$file_lab_dba[[1, 'datapath']]
     dta <- foreign::read.dbf(path_lab_file, as.is = TRUE)
   }
