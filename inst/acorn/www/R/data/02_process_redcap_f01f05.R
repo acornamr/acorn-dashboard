@@ -286,7 +286,8 @@ replace_na(list(surveillance_diag = "Unknown diagnosis",
                 ward = "Unknown ward",
                 sex = "Unknown sex",
                 blood_collect = "Unknown",
-                transfer_hospital = "Unknown"))
+                transfer_hospital = "Unknown",
+                ho_final_diag, "Unknown diagnosis"))
 
 
 # Summarise the age with age_year and age_day
