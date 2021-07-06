@@ -4,32 +4,28 @@ output$profile_type_ward <- renderHighchart({
   
   if(input$show_ward_breakdown) return({
     df <- redcap_f01f05_dta_filter() %>%
-      mutate(ward_name = paste0(ward_type, ", ", ward)) %>%
-      group_by(ward_type, ward, ward_name) %>%
+      group_by(ward) %>%
       summarise(patients = n(), .groups = "drop") %>%
-      mutate(color = ifelse(ward %in% c("NICU", "PICU", "Paediatric"), "#1f78b4", "#a6cee3"))
+      arrange(desc(patients))
     
-
-    hchart(df, type = "bar", hcaes(x = "ward_name", y = "patients", color = "color")) %>%
+    hchart(df, type = "bar", hcaes(x = "ward", y = "patients")) %>%
       hc_yAxis(title = "") %>% hc_xAxis(title = "") %>%
       hc_tooltip(headerFormat = "",
-                 pointFormat = "{point.patients} patients in {point.ward_name}") %>%
+                 pointFormat = "{point.patients} patients in {point.ward}.") %>%
       hc_plotOptions(series = list(stacking = 'normal')) %>%
       hc_exporting(enabled = TRUE, buttons = list(contextButton = list(menuItems = hc_export_kind)))
   })
   
   if(! input$show_ward_breakdown) return({
     df <- redcap_f01f05_dta_filter() %>%
-      group_by(ward) %>%
+      group_by(ward_type) %>%
       summarise(patients = n(), .groups = "drop") %>%
-      mutate(ward = replace_na(ward, "Unknown Ward"),
-             color = ifelse(ward %in% c("NICU", "PICU", "Paediatric"), "#1f78b4", "#a6cee3")) %>%
       arrange(desc(patients))
     
-    hchart(df, type = "bar", hcaes(x = "ward", y = "patients", color = "color")) %>%
+    hchart(df, type = "bar", hcaes(x = "ward_type", y = "patients")) %>%
       hc_yAxis(title = "") %>% hc_xAxis(title = "") %>%
       hc_tooltip(headerFormat = "",
-                 pointFormat = "{point.patients} patients in a {point.ward} ward.") %>%
+                 pointFormat = "{point.patients} patients in {point.ward_type}.") %>%
       hc_plotOptions(series = list(stacking = 'normal')) %>%
       hc_exporting(enabled = TRUE, buttons = list(contextButton = list(menuItems = hc_export_kind)))
   })
