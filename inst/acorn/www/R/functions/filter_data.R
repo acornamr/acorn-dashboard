@@ -18,12 +18,26 @@ fun_filter_enrolment <- function(data, input) {
   return(data)
 }
 
+fun_filter_specimen <- function(data, input) { 
+  if( is.null(data) ) return(NULL)
+  
+  if(! "blood" %in% input$filter_method_collection)           data <- data %>% filter(specgroup != "Blood")
+  if(! "other_not_blood" %in% input$filter_method_collection) data <- data %>% filter(specgroup == "Blood")
+  data <- data %>% filter(specgroup %in% c("Blood", input$filter_method_other))
+  
+  return(data)
+}
+
 fun_filter_isolate <- function(data, input) {
   return(data)
 }
 
 fun_filter_survey <- function(data, input) {
-  return(data)
+  if( is.null(data) ) return(NULL)
+  
+  data %>% filter(ward_type %in% input$filter_ward_type,
+                  survey_date >= input$filter_date_enrolment[1],
+                  survey_date <= input$filter_date_enrolment[2])
 }
 
 # Function that keeps only "Blood" specimen types
@@ -65,4 +79,4 @@ fun_filter_cultured_only <- function(data) data %>% filter(! orgname == "Not cul
 
 # Function that keeps only target pathogens
 fun_filter_target_pathogens <- function(data)  data %>% filter(orgname %in% c("Acinetobacter baumannii", "Escherichia coli", "Klebsiella pneumoniae", 
-                                                                               "Staphylococcus aureus", "Streptococcus pneumoniae") | str_detect(orgname, "Salmonella"))
+                                                                              "Staphylococcus aureus", "Streptococcus pneumoniae") | str_detect(orgname, "Salmonella"))

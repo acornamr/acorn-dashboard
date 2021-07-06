@@ -52,7 +52,7 @@ ui <- fluidPage(
                                        fluidRow(
                                          column(5,
                                                 checkboxGroupButtons("filter_enrolments",
-                                                                     choices = c("Surveillance Category", "Type of Ward", "Date of Enrolment", "Age Category", 
+                                                                     choices = c("Surveillance Category", "Type of Ward", "Date of Enrolment/Survey", "Age Category", 
                                                                                  "Initial Diagnosis", "Final Diagnosis", "Severity Score", "Clinical/D28 Outcome"),
                                                                      status = "light", direction = "vertical", size = "sm", 
                                                                      checkIcon = list(yes = icon("filter"))
@@ -68,7 +68,7 @@ ui <- fluidPage(
                                                 conditionalPanel("input.filter_enrolments.includes('Type of Ward')",
                                                                  pickerInput("filter_ward_type", NULL, choices = NULL, selected = NULL, options = list(`actions-box` = TRUE), multiple = TRUE)
                                                 ),
-                                                conditionalPanel("input.filter_enrolments.includes('Date of Enrolment')",
+                                                conditionalPanel("input.filter_enrolments.includes('Date of Enrolment/Survey')",
                                                                  dateRangeInput("filter_date_enrolment", NULL, startview = "year")
                                                 ),
                                                 conditionalPanel("input.filter_enrolments.includes('Age Category')",
@@ -672,9 +672,14 @@ server <- function(input, output, session) {
   corresp_org_antibio <- reactiveVal()
   
   # Secondary datasets (derived from primary datasets)
-  redcap_f01f05_dta_filter <- reactive(redcap_f01f05_dta() %>% fun_filter_enrolment(input = input))
-  redcap_hai_dta_filter <- reactive(redcap_hai_dta() %>% fun_filter_survey(input = input))
-  acorn_dta_filter <- reactive(acorn_dta() %>% fun_filter_enrolment(input = input) %>% fun_filter_isolate(input = input))
+  redcap_f01f05_dta_filter <- reactive(redcap_f01f05_dta() %>% 
+                                         fun_filter_enrolment(input = input))
+  redcap_hai_dta_filter <- reactive(redcap_hai_dta() %>% 
+                                      fun_filter_survey(input = input))
+  acorn_dta_filter <- reactive(acorn_dta() %>% 
+                                 fun_filter_enrolment(input = input) %>% 
+                                 fun_filter_specimen(input = input) %>%
+                                 fun_filter_isolate(input = input))
   
   # Enrolment log
   enrolment_log <- reactive({
