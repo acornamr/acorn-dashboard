@@ -2,7 +2,7 @@ output$profile_comorbidities <- renderHighchart({
   req(redcap_f01f05_dta_filter())
   req(nrow(redcap_f01f05_dta_filter()) > 0)
   
-  if(! input$overlaping_comorbidities) return({
+  if(! input$comorbidities_combinations) return({
     tibble(
       symptom = c("AIDS", "Cancer / leukaemia", "Chronic pulmonary disease", "Congestive heart failure", 
                   "Connective tissue / rheumatologic disease", "Dementia", "Diabetes", "Diabetes with end organ damage",
@@ -20,7 +20,7 @@ output$profile_comorbidities <- renderHighchart({
       hc_exporting(enabled = TRUE, buttons = list(contextButton = list(menuItems = hc_export_kind)))
   })
   
-  if(input$overlaping_comorbidities) return({
+  if(input$comorbidities_combinations) return({
     redcap_f01f05_dta_filter() %>% 
       count(comorbidities) %>% 
       filter(comorbidities != "") %>%

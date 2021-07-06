@@ -344,7 +344,7 @@ ui <- fluidPage(
                                ),
                                div(class = 'box_outputs',
                                    h4_title("Patient Comorbidities"),
-                                   prettySwitch("overlaping_comorbidities", label = "Show overlaping comorbidities", status = "primary", value = FALSE, slim = TRUE),
+                                   prettySwitch("comorbidities_combinations", label = "Show comorbidities combinations", status = "primary", value = FALSE, slim = TRUE),
                                    highchartOutput("profile_comorbidities")
                                ),
                                div(class = 'box_outputs',
