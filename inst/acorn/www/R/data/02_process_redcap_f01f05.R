@@ -287,7 +287,7 @@ replace_na(list(surveillance_diag = "Unknown diagnosis",
                 sex = "Unknown sex",
                 blood_collect = "Unknown",
                 transfer_hospital = "Unknown",
-                ho_final_diag, "Unknown diagnosis"))
+                ho_final_diag = "Unknown diagnosis"))
 
 
 # Summarise the age with age_year and age_day
@@ -300,10 +300,19 @@ infection$age_day <- infection$calc_age_day # to replace in the original locatio
 infection$age_year <- round(infection$age_day / 365.25, 2) # to make a calculated age in years based on age_day: this is age in years at date of enrolment
 infection <- infection %>% select(-birthday, -calc_age_day, -age_month)
 
+# Infer age_category when missing from age_day and age_year
+infection <- infection %>% mutate(age_category_calc = case_when(
+  age_day <= 28 ~ "Neonate",
+  age_year <= 17 ~ "Child",
+  age_year > 18 ~ "Adult",
+  TRUE ~ "Unknown"))
+
+infection$age_category[is.na(infection$age_category)] <- infection$age_category_calc[is.na(infection$age_category)]
+
 ## Test that "Calculated age is consistent with 'Age Category'"
 dta <- bind_rows(
   infection %>% filter(age_category == "Adult", age_year < 18),
-  infection %>% filter(age_category == "Child", age_year > 17),
+  infection %>% filter(age_category == "Child", age_year > 17 | age_day <= 28),  # TODO: consider adding  | age_day <= 28
   infection %>% filter(age_category == "Neonate", age_day > 28)
 )
 

@@ -1,13 +1,21 @@
 fun_filter_enrolment <- function(data, input) {
   if( is.null(data) ) return(NULL)
   
-  # Origin of Infection
   data <- data %>% 
-    filter(surveillance_category %in% input$filter_surveillance_cat)
+    filter(surveillance_category %in% input$filter_surveillance_cat,
+           ward_type %in% input$filter_ward_type,
+           date_episode_enrolment >= input$filter_date_enrolment[1],
+           date_episode_enrolment <= input$filter_date_enrolment[2],
+           age_category %in% input$filter_age_cat,
+           surveillance_diag %in% input$filter_diagnosis_initial,
+           ho_final_diag %in% input$filter_diagnosis_final,
+           clinical_severity_score >= input$filter_severity[1],
+           clinical_severity_score <= input$filter_severity[2])
   
-  # Type of Ward
-  data <- data %>%
-    filter(ward_type %in% input$filter_ward_type)
+  if(input$filter_outcome_clinical) data <- data %>% filter(has_clinical_outcome)
+  if(input$filter_outcome_d28)      data <- data %>% filter(has_d28_outcome)
+  
+  return(data)
 }
 
 fun_filter_isolate <- function(data, input) {
@@ -20,7 +28,6 @@ fun_filter_survey <- function(data, input) {
 
 # Function that keeps only "Blood" specimen types
 fun_filter_blood_only <- function(data)  data %>% filter(specgroup == "Blood")
-
 
 # Function that returns a deduplicated dataset following the provided method: by patient-episode or by patient Id
 # It's essential to use this only once possible other filters (surveillance type...) have already been applied

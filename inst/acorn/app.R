@@ -48,11 +48,12 @@ ui <- fluidPage(
                               fluidRow(
                                 column(8,
                                        div(class = "smallcaps", class = "centerara", span(icon("hospital-user"), "Enrolments")),
+                                       p("TODO: reset filter when a filter is desactivated."),
                                        fluidRow(
                                          column(5,
                                                 checkboxGroupButtons("filter_enrolments",
-                                                                     choices = c("Surveillance Category", "Type of Ward", "Date of Enrolment", "Age Category", "Patient Diagnosis",
-                                                                                 "Clinical/D28 Outcome"),
+                                                                     choices = c("Surveillance Category", "Type of Ward", "Date of Enrolment", "Age Category", 
+                                                                                 "Initial Diagnosis", "Final Diagnosis", "Severity Score", "Clinical/D28 Outcome"),
                                                                      status = "light", direction = "vertical", size = "sm", 
                                                                      checkIcon = list(yes = icon("filter"))
                                                 )
@@ -65,7 +66,7 @@ ui <- fluidPage(
                                                                                      selected = c("CAI", "HAI"), inline = TRUE)
                                                 ),
                                                 conditionalPanel("input.filter_enrolments.includes('Type of Ward')",
-                                                                 pickerInput("filter_ward_type", NULL, choices = vec_ward_types, selected = vec_ward_types, options = list(`actions-box` = TRUE), multiple = TRUE)
+                                                                 pickerInput("filter_ward_type", NULL, choices = NULL, selected = NULL, options = list(`actions-box` = TRUE), multiple = TRUE)
                                                 ),
                                                 conditionalPanel("input.filter_enrolments.includes('Date of Enrolment')",
                                                                  dateRangeInput("filter_date_enrolment", NULL, startview = "year")
@@ -74,8 +75,16 @@ ui <- fluidPage(
                                                                  prettyCheckboxGroup("filter_age_cat", NULL, shape = "curve", status = "primary",
                                                                                      choices = c("Adult", "Child", "Neonate"), selected = c("Adult", "Child", "Neonate"), inline = TRUE)
                                                 ),
-                                                conditionalPanel("input.filter_enrolments.includes('Patient Diagnosis')",
-                                                                 pickerInput("filter_patient_diagnosis", NULL, choices = vec_diagnosis, selected = vec_diagnosis, options = list(`actions-box` = TRUE), multiple = TRUE)
+                                                conditionalPanel("input.filter_enrolments.includes('Initial Diagnosis')",
+                                                                 pickerInput("filter_diagnosis_initial", NULL, choices = NULL, 
+                                                                             selected = NULL, options = list(`actions-box` = TRUE), multiple = TRUE)
+                                                ),
+                                                conditionalPanel("input.filter_enrolments.includes('Final Diagnosis')",
+                                                                 pickerInput("filter_diagnosis_final", NULL, choices = NULL, 
+                                                                             selected = NULL, options = list(`actions-box` = TRUE), multiple = TRUE)
+                                                ),
+                                                conditionalPanel("input.filter_enrolments.includes('Severity Score')",
+                                                                 sliderInput("filter_severity", NULL, min = 0, max = 7, value = c(0, 7))
                                                 ),
                                                 conditionalPanel("input.filter_enrolments.includes('Clinical/D28 Outcome')",
                                                                  prettySwitch("filter_outcome_clinical", label = "Only with Clinical Outcome", status = "primary", value = FALSE, slim = TRUE),
@@ -353,6 +362,7 @@ ui <- fluidPage(
                         column(6, 
                                div(class = "box_outputs",
                                    h4_title("Enrolments with Blood Culture"),
+                                   p("TODO: check numerator/denominator - issue when filters applied"),
                                    highchartOutput("enrolment_blood_culture"),
                                    em("TODO: automatically switch to per quarter/year when more than 12 bars.")
                                )
