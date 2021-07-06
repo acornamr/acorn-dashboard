@@ -62,3 +62,23 @@ The file contains the same objects as NAME.acorn, but with patient ids NOT hashe
 - `lab_dta`: one row per isolate as per the lab file provided on generation of the .acorn file.
 
 
+### How to modify ACORN Dashboard theme
+
+Every site can customize the ACORN dashboard.
+
+You can update ACORN logo by providing a logo (pgn format)
+
+You can ask for changes in the theme by providing a list of values for variables:
+
+- Base theme is flatly: https://bootswatch.com/flatly/; [CSS](https://bootswatch.com/4/flatly/bootstrap.css)
+- List of BS4 variables: https://github.com/rstudio/bslib/blob/master/inst/lib/bs/scss/_variables.scss 
+
+Please contact the ACORN team for more information.
+
+### Clinical and Lab data linkage
+
+TODD: complete using Paul 'ACORN2 Clinical and Laboratory data linkage.docx'
+
+
+
+
