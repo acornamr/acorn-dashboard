@@ -1,3 +1,5 @@
+# TODO: remove if confirmed not displayed in app
+
 output$profile_sex <- renderHighchart({
   req(redcap_f01f05_dta_filter())
   req(nrow(redcap_f01f05_dta_filter()) > 0)

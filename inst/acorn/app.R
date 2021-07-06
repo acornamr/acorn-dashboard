@@ -273,11 +273,11 @@ ui <- fluidPage(
                       br(), br(),
                       fluidRow(
                         column(6,
-                               div(class = "box_outputs",
-                                   h4_title("Enrolments with Blood Culture"),
-                                   highchartOutput("enrolment_blood_culture"),
-                                   em("TODO: automatically switch to per quarter/year when more than 12 bars.")
-                               )),
+                               div(class = 'box_outputs', h4_title(icon("calendar-check"), "Date of Enrolment"),
+                                   prettySwitch("show_date_week", label = "See by Week", status = "primary"),
+                                   highchartOutput("profile_date_enrolment")
+                               )
+                        ),
                         column(6,
                                div(class = "box_outputs",
                                    h4_title("Distribution of Enrolments"),
@@ -294,23 +294,8 @@ ui <- fluidPage(
                                )
                         )
                       ),
-                      div(class = 'box_outputs',
-                          h4_title("Diagnosis at Enrolment"),
-                          fluidRow(
-                            column(6, highchartOutput("profile_diagnosis")),
-                            column(3, p("Meningitis diagnosis:"), highchartOutput("profile_diagnosis_meningitis")),
-                            column(3, p("Pneumonia diagnosis:"), highchartOutput("profile_diagnosis_pneumonia"))
-                          )
-                      ),
                       fluidRow(
-                        column(6,
-                               div(class = 'box_outputs',
-                                   h4_title("Enrolments by (type of) Ward"),
-                                   prettySwitch("show_ward_breakdown", label = "See Breakdown by Ward", status = "primary"),
-                                   highchartOutput("profile_type_ward")
-                               )
-                        ),
-                        column(6,
+                        column(12,
                                div(class = 'box_outputs',
                                    h4_title(icon("tint"), "Enrolments with Blood Culture"),
                                    fluidRow(
@@ -318,40 +303,65 @@ ui <- fluidPage(
                                      column(6, htmlOutput("profile_blood_culture_pct", width = "100%", height = "100px"))
                                    )
                                )
+                        ),
+                      ),
+                      
+                      fluidRow(
+                        column(6, 
+                               div(class = 'box_outputs',
+                                   h4_title("Enrolments by (type of) Ward"),
+                                   prettySwitch("show_ward_breakdown", label = "See Breakdown by Ward", status = "primary"),
+                                   highchartOutput("profile_type_ward")
+                               )
+                        ),
+                        column(6, 
+                               div(class = 'box_outputs', h4_title("Patient Age Distribution"),
+                                   highchartOutput("profile_age")
+                               )
                         )
                       ),
                       fluidRow(
-                        column(6,
-                               div(class = 'box_outputs', h4_title("Patient Age Distribution"),
-                                   highchartOutput("profile_age")
-                               ),
-                               div(class = 'box_outputs', h4_title("Patient Sex"),
-                                   highchartOutput("profile_sex")
-                               ),
-                               div(class = 'box_outputs', h4_title("Blood culture collected within 24 hours of admission (CAI) / symptom onset (HAI)"),
-                                   highchartOutput("profile_blood")
+                        column(6, 
+                               div(class = 'box_outputs',
+                                   h4_title("Diagnosis at Enrolment"),
+                                   highchartOutput("profile_diagnosis")
                                )
-                               
                         ),
-                        column(6,
-                               div(class = 'box_outputs', h4_title(icon("calendar-check"), "Date of Enrolment"),
-                                   prettySwitch("show_date_week", label = "See by Week", status = "primary"),
-                                   highchartOutput("profile_date_enrolment")
-                               ),
+                        column(6, 
                                div(class = 'box_outputs',
                                    h4_title("Empiric Antibiotics Prescribed"),
                                    highchartOutput("profile_antibiotics")
-                               ),
+                               )
+                        )
+                      ),
+                      fluidRow(
+                        column(6, 
+                               div(class = 'box_outputs',
+                                   h4_title(icon("arrows-alt-h"), "Patients Transferred"),
+                                   highchartOutput("profile_transfer_hospital")
+                               )
+                        ),
+                        column(6, 
                                div(class = 'box_outputs',
                                    h4_title("Patient Comorbidities"),
                                    prettySwitch("comorbidities_combinations", label = "Show comorbidities combinations", status = "primary", value = FALSE, slim = TRUE),
                                    highchartOutput("profile_comorbidities")
-                               ),
-                               div(class = 'box_outputs',
-                                   h4_title(icon("arrows-alt-h"), "Patients Transferred"),
-                                   highchartOutput("profile_transfer_hospital")
-                               ),
-                               br(), br(), br()
+                               )
+                        )
+                      ),
+                      fluidRow(
+                        column(6, 
+                               div(class = "box_outputs",
+                                   h4_title("Enrolments with Blood Culture"),
+                                   highchartOutput("enrolment_blood_culture"),
+                                   em("TODO: automatically switch to per quarter/year when more than 12 bars.")
+                               )
+                               
+                        ),
+                        column(6, 
+                               div(class = 'box_outputs', h4_title("Blood culture collected within 24 hours of admission (CAI) / symptom onset (HAI)"),
+                                   highchartOutput("profile_blood")
+                               )
                         )
                       )
              ),
@@ -628,9 +638,9 @@ server <- function(input, output, session) {
     updateTabsetPanel(session = session, "tabs", selected = "data_management")
     
     updateRadioGroupButtons(session = session, "choice_datamanagement", "What do you want to do?",
-                      choices = "Load existing .acorn from local file",
-                      selected = NULL,
-                      checkIcon = list(yes = icon("ok", lib = "glyphicon")))
+                            choices = "Load existing .acorn from local file",
+                            selected = NULL,
+                            checkIcon = list(yes = icon("ok", lib = "glyphicon")))
     
   })
   
