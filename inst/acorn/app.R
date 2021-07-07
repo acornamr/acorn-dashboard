@@ -441,10 +441,13 @@ ui <- fluidPage(
                                ),
                                div(class = 'box_outputs',
                                    h4_title("Specimen Types"),
-                                   p("Culture results per specimen type"),
-                                   highchartOutput("culture_specgroup", height = "350px"),
+                                   prettySwitch("filter_rm_contaminant", label = "Remove Contaminants", status = "primary", value = FALSE, slim = TRUE),
+                                   
                                    p("Number of specimens per specimen type"),
-                                   highchartOutput("culture_specimen_type", height = "400px")
+                                   highchartOutput("culture_specimen_type", height = "400px"),
+                                   
+                                   p("Culture results per specimen type"),
+                                   highchartOutput("culture_specgroup", height = "350px")
                                )
                         ),
                         column(6,
