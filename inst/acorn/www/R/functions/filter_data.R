@@ -51,18 +51,18 @@ fun_deduplication <- function(data, method = NULL) {
   if(method == "No deduplication of isolates")  return(data)
   
   if(method == "Deduplication by patient-episode") { 
-    data_dedup <- data %>% group_by(patient_id, episode_id, orgname, specgroup) %>% 
+    # TODO: confirm with Paul that substitution of episode_id with acorn_id is correct:
+    # ACORN 1: data_dedup <- data %>% group_by(patient_id, episode_id, orgname, specgroup) %>% 
+    data_dedup <- data %>% group_by(patient_id, acorn_id, orgname, specgroup) %>% 
       slice(1) %>% ungroup()
-    # print(paste0("Deduplication: before ", nrow(data), " isolates; after ", nrow(data_dedup), 
-    #              " isolates (-",  nrow(data) - nrow(data_dedup), ")."))
+
     return(data_dedup)
   }
   
   if(method == "Deduplication by patient ID") { 
     data_dedup <- data %>% group_by(patient_id, orgname, specgroup) %>% 
       slice(1) %>% ungroup()
-    # print(paste0("Deduplication: before ", nrow(data), " isolates; after ", nrow(data_dedup), 
-    #              " isolates (-",  nrow(data) - nrow(data_dedup), ")."))
+
     return(data_dedup)
   }
 }
