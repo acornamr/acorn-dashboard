@@ -9,9 +9,9 @@ highchart_sir <- function(data_input, organism_input, corresp, combine_SI, dedup
   if(organism_input == "Streptococcus pneumoniae") matching_name_column <- "s_pneumoniae"
   if(str_detect(organism_input, "Salmonella")) matching_name_column <- "salmonella_species"
   
-  if(organism_input == "Salmonella sp (not S. typhi or S. paratyphi)") {
+  if(organism_input == "Salmonella sp (not S. Typhi or S. Paratyphi)") {
     vec <- unique(data_input$orgname)
-    organism_input <- vec[str_detect(vec, "Salmonella") & vec != "Salmonella typhi" & vec != "Salmonella paratyphi"]
+    organism_input <- vec[str_detect(vec, "Salmonella") & vec != "Salmonella Typhi" & !str_detect(vec, "Salmonella Paratyphi")]
   }
   
   if(combine_SI) {

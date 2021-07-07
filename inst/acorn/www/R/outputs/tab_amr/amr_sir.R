@@ -199,13 +199,14 @@ output$salmonella_sir_evolution_fluo <- renderHighchart({
                           deduplication_method = input$deduplication_method)
 })
 
+# TODO: test Salmonella Paratyphi (new in ACORN 2: several Paratyphi types)
 output$test_salmonella_sir <- reactive({
   req(acorn_dta_filter())
   organism_input <- input$select_salmonella
   
-  if(organism_input == "Salmonella sp (not S. typhi or S. paratyphi)") {
-    vec <- unique(acorn_dta_filter()$organism)
-    organism_input <- vec[str_detect(vec, "Salmonella") & vec != "Salmonella typhi" & vec != "Salmonella paratyphi"]
+  if(organism_input == "Salmonella sp (not S. Typhi or S. Paratyphi)") {
+    vec <- unique(acorn_dta_filter()$orgname)
+    organism_input <- vec[str_detect(vec, "Salmonella") & vec != "Salmonella Typhi" & !str_detect(vec, "Salmonella Paratyphi")]
   }
   
   ifelse (nrow(acorn_dta_filter() %>% filter(orgname %in% organism_input)) == 0, FALSE, TRUE)
@@ -216,9 +217,9 @@ output$nb_isolates_salmonella <- renderText({
   req(acorn_dta_filter())
   organism_input <- input$select_salmonella
   
-  if(organism_input == "Salmonella sp (not S. typhi or S. paratyphi)") {
-    vec <- unique(acorn_dta_filter()$organism)
-    organism_input <- vec[str_detect(vec, "Salmonella") & vec != "Salmonella typhi" & vec != "Salmonella paratyphi"]
+  if(organism_input == "Salmonella sp (not S. Typhi or S. Paratyphi)") {
+    vec <- unique(acorn_dta_filter()$orgname)
+    organism_input <- vec[str_detect(vec, "Salmonella") & vec != "Salmonella Typhi" & !str_detect(vec, "Salmonella Paratyphi")]
   }
   
   req(acorn_dta_filter() %>% filter(orgname %in% organism_input))

@@ -1,4 +1,4 @@
-app_version <- "prototype.01"  # IMPORTANT ensure that the version is identical in DESCRIPTION
+app_version <- "prototype.02"  # IMPORTANT ensure that the version is identical in DESCRIPTION
 
 cols_sir <- c("#2c3e50", "#f39c12", "#e74c3c")  # resp. S, I, R
 hc_export_kind <- c("downloadJPEG", "downloadCSV")
