@@ -79,6 +79,12 @@ Please contact the ACORN team for more information.
 
 TODD: complete using Paul 'ACORN2 Clinical and Laboratory data linkage.docx'
 
+### Enrolment Log
+
+#### Expected Day-28 date
+
+The expected 28 day follow-up date is 28 days following the final enrolment date for the admission (i.e. if 3 enrolments / infection episodes in admission, the 28 day follow-up was 28 days after enrolment #3).
+
 
 
 

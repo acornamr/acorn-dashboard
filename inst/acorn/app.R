@@ -685,7 +685,12 @@ server <- function(input, output, session) {
   enrolment_log <- reactive({
     req(redcap_f01f05_dta())
     
-    redcap_f01f05_dta() %>%
+    # calculate the expected Day-28 date: one acorn_id/redcap_id per enrolment but some acorn_id are missing so we prefer to group by redcap_id
+    left_join(redcap_f01f05_dta(),
+              redcap_f01f05_dta() %>% 
+                group_by(redcap_id) %>%
+                summarise(expected_d28_date = max(date_episode_enrolment) + 28, .groups = "drop"),
+              by = "redcap_id") %>%
       transmute("Category" = surveillance_category,
                 "Patient ID" = patient_id, 
                 "ACORN ID" = acorn_id,
@@ -694,7 +699,7 @@ server <- function(input, output, session) {
                 "Date of episode enrolment" = date_episode_enrolment, 
                 "Discharge date" = ho_discharge_date, 
                 "Discharge status" = ho_discharge_status,
-                "Expected Day-28 date" =  date_episode_enrolment + 28,
+                "Expected Day-28 date" =  expected_d28_date,
                 "Actual Day-28 date" = d28_date)
   })
   
@@ -829,6 +834,20 @@ server <- function(input, output, session) {
                             checkIcon = list(yes = icon("ok", lib = "glyphicon")))
     
     # startAnim(session, "menu_data_management", type = "tada")
+    
+    # reinitiate everything so that previousely loaded .acorn data isn't there anymore
+    meta(NULL)
+    redcap_f01f05_dta(NULL)
+    redcap_hai_dta(NULL)
+    lab_dta(NULL)
+    acorn_dta(NULL)
+    corresp_org_antibio(NULL)
+    
+    hideTab("tabs", target = "overview")
+    hideTab("tabs", target = "follow_up")
+    hideTab("tabs", target = "hai")
+    hideTab("tabs", target = "microbiology")
+    hideTab("tabs", target = "amr")
     
     # Connect to AWS S3 server ----
     if(acorn_cred()$acorn_s3) {
