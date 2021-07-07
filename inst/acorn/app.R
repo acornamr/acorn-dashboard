@@ -33,15 +33,6 @@ ui <- fluidPage(
                condition = "input.tabs != 'welcome' & input.tabs != 'data_management'",
                div(
                  a(id = "anchor_header", style = "visibility: hidden", ""),
-                 div(id = "filter_more",
-                     dropMenu(
-                       class = "filter_box_small",
-                       actionButton("filterito", "Filters", icon = icon("sliders-h"), class = "btn-success"),
-                       actionLink("shortcut_filter_1", label = span(icon("filter"), " Patients with Pneumonia, BC only")),
-                       br(),
-                       actionLink("shortcut_filter_2", label = span(icon("filter"), " Below 5 y.o. HAI")),
-                     )
-                 ),
                  fluidRow(
                    column(9,
                           div(id = "filter_box", class = "well",
@@ -111,6 +102,17 @@ ui <- fluidPage(
                                        pickerInput("deduplication_method", label = NULL, 
                                                    choices = c("No deduplication of isolates", "Deduplication by patient-episode", "Deduplication by patient ID"))
                                 )
+                              ),
+                              dropMenu(
+                                class = "filter_box_small",
+                                actionLink("quick_filters", "Quick Filters", icon = icon("sliders-h")),
+                                p("TODO: find if there is a need for shortcut filters. If yes, make the two links work."),
+                                actionLink("shortcut_filter_1", label = span(icon("filter"), " Patients with Pneumonia, BC only")),
+                                br(),
+                                actionLink("shortcut_filter_2", label = span(icon("filter"), " Below 5 y.o. HAI")),
+                                br(),
+                                br(),
+                                actionLink("shortcut_reset_filters", label = span(icon("ban"), " Reset All Filters")),
                               )
                           )
                    ),
@@ -123,8 +125,7 @@ ui <- fluidPage(
                           htmlOutput("nb_isolates_growth"),
                           htmlOutput("nb_isolates_target")
                    )
-                 ),
-                 fluidRow(column(12, actionLink("filter_summary", label = "No filters")))
+                 )
                )
              ),
              
@@ -589,56 +590,8 @@ server <- function(input, output, session) {
     )
   })
   
-  # Management of filters ----
-  # change color based on if filtered or not
-  observe({
-    req(input$Id094, input$filter_sex)
-    toggleClass(id = "filter-1", class = "filter_on", condition = length(input$Id094) != 5)
-    toggleClass(id = "filter-2", class = "filter_on", condition = length(input$filter_sex) != 2)
-  })
-  
-  observe({
-    if(is.null(input$filter_enrolments))  {
-      updateActionLink(session = session, "filter_summary", label = "No Filters", icon = NULL)
-    }
-    
-    if(!is.null(input$filter_enrolments))  {
-      label <- paste("Filters:", " Enrolments : ", paste(input$filter_enrolments, collapse = ", "))
-      updateActionLink(session = session, "filter_summary", label = label, icon = icon("eye"))
-    }
-  })
-  
-  observeEvent(input$filter_summary, {
-    if( input$filter_summary == 0 )  shinyjs::show(id = "filter_box")
-    
-    if( input$filter_summary %% 2 == 0 ) {
-      shinyjs::show(id = "filter_box")
-    } else {
-      shinyjs::hide(id = "filter_box")
-    }
-  })
-  
-  # To have it hidden on start of the app
-  # observe(
-  #   if( input$additional_filter_1 == 0 )  shinyjs::hide(id = "box_additional_filter_1")
-  # )
-  # 
-  # observeEvent(input$additional_filter_1, {
-  #   if( input$additional_filter_1 %% 2 == 1 ) {
-  #     shinyjs::show(id = "box_additional_filter_1")
-  #     updateActionButton(session = session, "additional_filter_1", icon = icon("minus"))
-  #   } else {
-  #     shinyjs::hide(id = "box_additional_filter_1")
-  #     updateActionButton(session = session, "additional_filter_1", icon = icon("plus"))
-  #   }
-  # })
-  
-  # (TODO) Management of filters shortcuts
-  observeEvent(input$shortcut_filter_1, {
-    # Patients with Pneumonia, BC only
-    updatePrettyCheckboxGroup(session, "filter_diagnosis", selected = c("Pneumonia"))
-  })
-  
+  # (TODO) Management of filters shortcuts ----
+  observeEvent(input$shortcut_filter_1, {})
   observeEvent(input$shortcut_filter_2, {})
   observeEvent(input$shortcut_reset_filters, {})
   
