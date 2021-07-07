@@ -133,12 +133,10 @@ ui <- fluidPage(
                       fluidRow(
                         column(3,
                                uiOutput('site_logo'),
-                               br(),
                                selectInput(
                                  'selected_language', label = span(icon('language'), i18n$t('Language')),
                                  choices = i18n$get_languages(), selected = i18n$get_key_translation(), width = "150px"
                                ),
-                               br(),
                                div(id = "login-basic", 
                                    div(
                                      class = "well",
@@ -158,14 +156,20 @@ ui <- fluidPage(
                                          # actionButton("cred_logout", label = "Log out", class = "btn-primary")
                                      )
                                    ),
-                                   br(),
                                    span("or ", actionLink("direct_upload_acorn", "upload a local acorn file."))
                                )
                         ),
                         column(9,
-                               h4('Welcome!'),
-                               includeMarkdown("./www/markdown/lorem_ipsum.md"),
-                               span(img(src = "./images/Map-ACORN-Sites-Global.png", id = "map_sites"))
+                               fluidRow(
+                                 column(4,
+                                        h4('Welcome!'),
+                                        includeMarkdown("./www/markdown/lorem_ipsum.md")
+                                 ),
+                                 column(8,
+                                        h5('ACORN Participating Countries'),
+                                        span(img(src = "./images/Map-ACORN-Sites-Global.png", id = "map_sites"))
+                                 )
+                               )
                         )
                       )
              ),
@@ -427,7 +431,7 @@ ui <- fluidPage(
              # Tab Microbiology ----
              tabPanel("Microbiology", value = "microbiology", 
                       fluidRow(
-                        column(5,
+                        column(6,
                                div(class = 'box_outputs',
                                    h4_title("Growth / No Growth"),
                                    fluidRow(
@@ -437,13 +441,13 @@ ui <- fluidPage(
                                ),
                                div(class = 'box_outputs',
                                    h4_title("Specimen Types"),
-                                   p("Number of specimens per specimen type"),
-                                   highchartOutput("culture_specgroup", height = "350px"),
                                    p("Culture results per specimen type"),
+                                   highchartOutput("culture_specgroup", height = "350px"),
+                                   p("Number of specimens per specimen type"),
                                    highchartOutput("culture_specimen_type", height = "400px")
                                )
                         ),
-                        column(6, offset = 1,
+                        column(6,
                                div(class = 'box_outputs',
                                    h4_title("Isolates"),
                                    p("Most frequent 10 organisms in the plot and complete listing in the table."),
