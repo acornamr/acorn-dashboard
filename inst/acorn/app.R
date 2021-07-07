@@ -284,7 +284,6 @@ ui <- fluidPage(
              ),
              # Tab Overview ----
              tabPanel("Clinical Overview", value = "overview", 
-                      br(), br(),
                       fluidRow(
                         column(6,
                                div(class = 'box_outputs', h4_title(icon("calendar-check"), "Date of Enrolment"),
