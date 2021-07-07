@@ -38,7 +38,7 @@ ui <- fluidPage(
                           div(id = "filter_box", class = "well",
                               fluidRow(
                                 column(8,
-                                       div(class = "smallcaps", class = "centerara", span(icon("hospital-user"), "Enrolments")),
+                                       div(class = "smallcaps", class = "center", span(icon("hospital-user"), "Enrolments")),
                                        p("TODO: reset filter when a filter is desactivated."),
                                        fluidRow(
                                          column(5,
@@ -86,7 +86,7 @@ ui <- fluidPage(
                                        )
                                 ),
                                 column(4,
-                                       div(class = "smallcaps", class = "centerara", span(icon("vial"), " Specimens, Isolates")),
+                                       div(class = "smallcaps", class = "center", span(icon("vial"), " Specimens, Isolates")),
                                        
                                        prettyCheckboxGroup(inputId = "filter_method_collection", label = NULL,  shape = "curve", status = "primary", inline = TRUE,
                                                            choices = c("Blood Culture" = "blood", "Other (not BC):" = "other_not_blood"), 
@@ -176,12 +176,12 @@ ui <- fluidPage(
              ),
              # Tab Data Management ----
              tabPanel(span(icon("database"), 'Data Management'), value = "data_management",
-                      # tabsetPanel(id = "data_management_tabs", type = "tabs",
-                      radioGroupButtons("choice_datamanagement", "What do you want to do?",
-                                        choices = c("Generate .acorn from clinical and lab data", "Load existing .acorn from cloud", "Load existing .acorn from local file"),
-                                        selected = NULL,
-                                        individual = TRUE,
-                                        checkIcon = list(yes = icon("ok", lib = "glyphicon"))
+                      p("What do you want to do?"),
+                      div(class = "center",
+                          radioGroupButtons("choice_datamanagement", NULL,
+                                            choices = c("Generate .acorn from clinical and lab data", "Load existing .acorn from cloud", "Load existing .acorn from local file"),
+                                            selected = NULL, individual = TRUE,
+                                            checkIcon = list(yes = icon("hand-point-right")))
                       ),
                       hr(),
                       ## Choice Generate ----
@@ -616,8 +616,7 @@ server <- function(input, output, session) {
     updateRadioGroupButtons(session = session, "choice_datamanagement", "What do you want to do?",
                             choices = "Load existing .acorn from local file",
                             selected = NULL,
-                            checkIcon = list(yes = icon("ok", lib = "glyphicon")))
-    
+                            checkIcon = list(yes = icon("hand-point-right")))
   })
   
   # Definition of reactive elements for data ----
@@ -791,7 +790,7 @@ server <- function(input, output, session) {
     updateRadioGroupButtons(session = session, "choice_datamanagement", "What do you want to do?",
                             choices = c("Generate .acorn from clinical and lab data", "Load existing .acorn from cloud", "Load existing .acorn from local file"),
                             selected = NULL,
-                            checkIcon = list(yes = icon("ok", lib = "glyphicon")))
+                            checkIcon = list(yes = icon("hand-point-right")))
     
     startAnim(session, "float_about", type = "tada")
     
