@@ -13,7 +13,7 @@ ui <- fluidPage(
   usei18n(i18n),  # for translation
   useShinyjs(),
   
-  div(id = 'float',
+  div(id = 'float_about',
       dropMenu(
         actionButton("checklist_show", label = "About", class = "btn-success"),
         theme = "light-border",
@@ -174,7 +174,7 @@ ui <- fluidPage(
                       )
              ),
              # Tab Data Management ----
-             tabPanel(div(id = "menu_data_management", span(icon("database"), 'Data Management')), value = "data_management",
+             tabPanel(span(icon("database"), 'Data Management'), value = "data_management",
                       # tabsetPanel(id = "data_management_tabs", type = "tabs",
                       radioGroupButtons("choice_datamanagement", "What do you want to do?",
                                         choices = c("Generate .acorn from clinical and lab data", "Load existing .acorn from cloud", "Load existing .acorn from local file"),
@@ -840,7 +840,8 @@ server <- function(input, output, session) {
                             selected = NULL,
                             checkIcon = list(yes = icon("ok", lib = "glyphicon")))
     
-    # startAnim(session, "menu_data_management", type = "tada")
+    startAnim(session, "float_about", type = "tada")
+    
     
     # reinitiate everything so that previousely loaded .acorn data isn't there anymore
     meta(NULL)

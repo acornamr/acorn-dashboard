@@ -208,26 +208,12 @@ https://bootswatch.com/4/flatly/bootstrap.css */
 */
 
 
-#float {
+#float_about {
   top: calc(2%);;
   right: calc(1%);;
   padding: 10px;
   z-index: 999999999;
   position: absolute;
-}
-
-#float-debug {
-  bottom: calc(1%);;
-  left: calc(1%);;
-  padding: 10px;
-  z-index: 999999999;
-  position: absolute;
-}
-
-#filter_age_min {
-  margin: 0px;
-  padding: 0px;
-  text-align: center;
 }
 
 .checklist {
