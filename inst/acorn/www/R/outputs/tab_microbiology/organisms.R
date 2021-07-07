@@ -84,11 +84,8 @@ output$isolates_organism_table <- renderDT({
             rownames = FALSE,
             filter = "top",
             style = "bootstrap",
-            options = list(searching = TRUE,
-                           scrollX = TRUE,
-                           scrollY = 300,
-                           paging = FALSE)) %>%
-    formatStyle('N', background = styleColorBar(c(0, df$N), 'lightblue'), backgroundSize = '100%', 
+            options = list(scrollX = TRUE, scrollY = 300, paging = FALSE, dom = "lrtip")) %>%
+    formatStyle('N', background = styleColorBar(c(0, df$N), "#969696"), backgroundSize = '100%', 
                 backgroundRepeat = 'no-repeat', backgroundPosition = 'center') %>%
     formatPercentage('Frequency', digits = 1)
 })
