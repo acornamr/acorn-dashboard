@@ -44,7 +44,7 @@ ui <- fluidPage(
                                          column(5,
                                                 checkboxGroupButtons("filter_enrolments",
                                                                      choices = c("Surveillance Category", "Type of Ward", "Date of Enrolment/Survey", "Age Category", 
-                                                                                 "Initial Diagnosis", "Final Diagnosis", "Severity Score", "Clinical/D28 Outcome"),
+                                                                                 "Initial Diagnosis", "Final Diagnosis", "Clinical Severity", "Clinical/D28 Outcome"),
                                                                      status = "light", direction = "vertical", size = "sm", 
                                                                      checkIcon = list(yes = icon("filter"))
                                                 )
@@ -74,7 +74,7 @@ ui <- fluidPage(
                                                                  pickerInput("filter_diagnosis_final", NULL, choices = NULL, 
                                                                              selected = NULL, options = list(`actions-box` = TRUE), multiple = TRUE)
                                                 ),
-                                                conditionalPanel("input.filter_enrolments.includes('Severity Score')",
+                                                conditionalPanel("input.filter_enrolments.includes('Clinical Severity')",
                                                                  sliderInput("filter_severity", NULL, min = 0, max = 7, value = c(0, 7))
                                                 ),
                                                 conditionalPanel("input.filter_enrolments.includes('Clinical/D28 Outcome')",
@@ -632,6 +632,41 @@ server <- function(input, output, session) {
   acorn_dta <- reactiveVal()
   corresp_org_antibio <- reactiveVal()
   
+  # checklist_status' status can be: hidden/question/okay/warning/ko
+  checklist_status <- reactiveValues(
+    log_errors = tibble(issue = character(), redcap_id = character()),
+    
+    lab_data_qc_1 = list(status = "hidden", msg = ""),
+    lab_data_qc_2 = list(status = "hidden", msg = ""),
+    lab_data_qc_3 = list(status = "hidden", msg = ""),
+    lab_data_qc_4 = list(status = "hidden", msg = ""),
+    lab_data_qc_5 = list(status = "hidden", msg = ""),
+    lab_data_qc_6 = list(status = "hidden", msg = ""),
+    lab_data_qc_7 = list(status = "hidden", msg = ""),
+    lab_data_qc_8 = list(status = "hidden", msg = ""),
+    
+    redcap_not_empty           = list(status = "hidden", msg = ""),
+    redcap_columns             = list(status = "hidden", msg = ""),
+    redcap_acornid             = list(status = "hidden", msg = ""),
+    redcap_F04F01              = list(status = "hidden", msg = ""),
+    redcap_F03F02              = list(status = "hidden", msg = ""),
+    redcap_F02F01              = list(status = "hidden", msg = ""),
+    redcap_F03F01              = list(status = "hidden", msg = ""),
+    redcap_consistent_outcomes = list(status = "hidden", msg = ""),
+    redcap_age_category        = list(status = "hidden", msg = ""),
+    redcap_hai_dates           = list(status = "hidden", msg = ""),
+    
+    linkage_caseB  = list(status = "hidden", msg = ""),
+    linkage_caseC  = list(status = "hidden", msg = ""),
+    linkage_result = list(status = "info", msg = "No .acorn has been generated"),
+    
+    redcap_f01f05_dta = list(status = "info", msg = "Clinical data not provided"),
+    lab_dta           = list(status = "info", msg = "Lab data not provided"),
+    
+    acorn_dta_saved_local = list(status = "hidden", msg = ""),
+    acorn_dta_saved_server = list(status = "info", msg = "No .acorn has been saved")
+  )
+  
   # Secondary datasets (derived from primary datasets)
   redcap_f01f05_dta_filter <- reactive(redcap_f01f05_dta() %>% 
                                          fun_filter_enrolment(input = input))
@@ -667,54 +702,18 @@ server <- function(input, output, session) {
   output$enrolment_log_table <- renderUI({
     # TODO: hide if .acorn has been loaded and not generated
     req(enrolment_log())
-    tagList(
-      p("Log of all enrolments retrived from REDCap:"),
-      DTOutput("table_enrolment_log")
-    )
+    DTOutput("table_enrolment_log")
   })
   
   output$enrolment_log_dl <- renderUI({
     # TODO: hide if .acorn has been loaded and not generated
     req(enrolment_log())
     tagList(
-      br(), br(),
-      downloadButton("download_enrolment_log", "Download Enrolment Log (.xlsx)")
+      br(), br(), br(),
+      downloadButton("download_enrolment_log", "Download Enrolment Log (.xlsx)"),
+      p("First sheet is the log of all enrolments retrived from REDCap (as per adjacent table). The second sheet is a listing of all flagged elements.")
     )
   })
-  
-  # Definition of checklist_status ----
-  # status can be: hidden/question/okay/warning/ko
-  checklist_status <- reactiveValues(
-    lab_data_qc_1 = list(status = "hidden", msg = ""),
-    lab_data_qc_2 = list(status = "hidden", msg = ""),
-    lab_data_qc_3 = list(status = "hidden", msg = ""),
-    lab_data_qc_4 = list(status = "hidden", msg = ""),
-    lab_data_qc_5 = list(status = "hidden", msg = ""),
-    lab_data_qc_6 = list(status = "hidden", msg = ""),
-    lab_data_qc_7 = list(status = "hidden", msg = ""),
-    lab_data_qc_8 = list(status = "hidden", msg = ""),
-    
-    redcap_not_empty       = list(status = "hidden", msg = ""),
-    redcap_columns         = list(status = "hidden", msg = ""),
-    redcap_acornid         = list(status = "hidden", msg = ""),
-    redcap_F04F01          = list(status = "hidden", msg = ""),
-    redcap_F03F02          = list(status = "hidden", msg = ""),
-    redcap_F02F01          = list(status = "hidden", msg = ""),
-    redcap_F03F01          = list(status = "hidden", msg = ""),
-    redcap_confirmed_match = list(status = "hidden", msg = ""),
-    redcap_age_category    = list(status = "hidden", msg = ""),
-    redcap_hai_dates       = list(status = "hidden", msg = ""),
-    
-    linkage_caseB  = list(status = "hidden", msg = ""),
-    linkage_caseC  = list(status = "hidden", msg = ""),
-    linkage_result = list(status = "info", msg = "No .acorn has been generated"),
-    
-    redcap_f01f05_dta = list(status = "info", msg = "Clinical data not provided"),
-    lab_dta           = list(status = "info", msg = "Lab data not provided"),
-    
-    acorn_dta_saved_local = list(status = "hidden", msg = ""),
-    acorn_dta_saved_server = list(status = "info", msg = "No .acorn has been saved")
-  )
   
   # On login ----
   observeEvent(input$cred_login, {
@@ -910,9 +909,9 @@ server <- function(input, output, session) {
              checklist_status$redcap_F03F02$status,
              checklist_status$redcap_F02F01$status,
              checklist_status$redcap_F03F01$status,
-             checklist_status$redcap_confirmed_match$status,
+             checklist_status$redcap_consistent_outcomes$status,
              checklist_status$redcap_age_category$status) == "ko")) {
-      checklist_status$redcap_f01f05_dta <- list(status = "ko", msg = "")
+      checklist_status$redcap_f01f05_dta <- list(status = "ko", msg = "Critical errors with clinical data.")
       
       showNotification("There is a critical issue with clinical data. The issue should be fixed in REDCap.", type = "error", duration = NULL)
     } else {
@@ -928,7 +927,11 @@ server <- function(input, output, session) {
   # On "Download Enrolment Log" ----
   output$download_enrolment_log <- downloadHandler(
     filename = glue("enrolment_log_{format(Sys.time(), '%Y-%m-%d_%H%M')}.xlsx"),
-    content = function(file)  writexl::write_xlsx(enrolment_log(), path = file)
+    content = function(file)  writexl::write_xlsx(
+      list(
+        enrolment_log(),
+        checklist_status$log_errors
+      ), path = file)
   )
   
   

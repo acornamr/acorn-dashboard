@@ -18,18 +18,26 @@ patient_enrolment <- dl_redcap_f01f05_dta %>%
   filter(is.na(redcap_repeat_instrument))
 
 ## Test that "Every record has an ACORN id" ----
-ifelse(any(is.na(patient_enrolment$acornid)), 
-       { checklist_status$redcap_acornid <- list(status = "okay", msg = "All records have an 'ACORN id'") },
-       { recordid_na_acornid <- patient_enrolment$recordid[is.na(patient_enrolment$acornid)]
-       checklist_status$redcap_acornid <- list(status = "ko", msg = paste("The following records do not have an 'ACORN id': "), paste(recordid_na_acornid, collapse = ", ")) })
+test_redcap_id <- patient_enrolment$recordid[is.na(patient_enrolment$acornid)]
+ifelse(is_empty(test_redcap_id), 
+       { checklist_status$redcap_acornid <- list(status = "okay", msg = "All records have an 'ACORN id'.") }, 
+       { 
+         checklist_status$redcap_acornid <- list(status = "warning", msg = "Some records do not have an 'ACORN id'.") 
+         checklist_status$log_errors <- bind_rows(checklist_status$log_errors, 
+                                                  tibble(issue = "Missing ACORN id", redcap_id = test_redcap_id))
+       })
 
 ## Test that "Every D28 form (F04) matches exactly one patient enrolment (F01)" ----
 # for every recordid, when d28_date is filled (mandatory field in F04), siteid should be filled (mandatory field in F01)
 recordid_F04 <- patient_enrolment$recordid[!is.na(patient_enrolment$d28_date)]
-
-ifelse(! any(is.na(patient_enrolment$siteid[patient_enrolment$recordid %in% recordid_F04])),
-       { checklist_status$redcap_F04F01 <- list(status = "okay", msg = "Every D28 form (F04) matches exactly one patient enrolment (F01)") },
-       { checklist_status$redcap_F04F01 <- list(status = "warning", msg = "Some D28 form (F04) do not have a matching patient enrolment (F01)") })
+test_redcap_id <- patient_enrolment$recordid[is.na(patient_enrolment$siteid[patient_enrolment$recordid %in% recordid_F04])]
+ifelse(is_empty(test_redcap_id), 
+       { checklist_status$redcap_F04F01 <- list(status = "okay", msg = "Every D28 record (F04) matches exactly one patient enrolment (F01).") },
+       { 
+         checklist_status$redcap_F04F01 <- list(status = "warning", msg = "Some D28 records (F04) don't have a matching patient enrolment (F01).") 
+         checklist_status$log_errors <- bind_rows(checklist_status$log_errors, 
+                                                  tibble(issue = "F04 record without matching F01", redcap_id = test_redcap_id))
+       })
 
 # infection_episode ----
 
@@ -58,11 +66,14 @@ dl_redcap_f03 <- dl_redcap_f01f05_dta %>%
   filter(!is.na(ho_dmdtc)) %>%
   mutate(id_dmdtc = glue("{recordid}-{ho_dmdtc}"))
 
-## Test "Every recorded hospital outcome (F03) has a matching infection episode (F02)" ----
-ifelse(all(dl_redcap_f03$id_dmdtc %in% dl_redcap_f02$id_dmdtc), 
-       { checklist_status$redcap_F03F02 <- list(status = "okay", msg = "Every recorded hospital outcome (F03) has a matching infection episode (F02)")},
+## Test "Every hospital outcome record (F03) has a matching infection episode record (F02)" ----
+test_redcap_id <- dl_redcap_f03$recordid[! dl_redcap_f03$id_dmdtc %in% dl_redcap_f02$id_dmdtc]
+ifelse(is_empty(test_redcap_id), 
+       { checklist_status$redcap_F03F02 <- list(status = "okay", msg = "Every hospital outcome record (F03) has a matching infection episode (F02).")},
        { 
-         checklist_status$redcap_F03F02 <- list(status = "warning", msg = "Some hospital outcome (F03) do not have a matching infection episode (F02)")
+         checklist_status$redcap_F03F02 <- list(status = "warning", msg = "Some hospital outcome records (F03) don't have a matching infection episode (F02). These records have been removed.")
+         checklist_status$log_errors <- bind_rows(checklist_status$log_errors, 
+                                                  tibble(issue = "F03 record without matching F02", redcap_id = test_redcap_id))
          dl_redcap_f03 <- dl_redcap_f03 %>% filter(id_dmdtc %in% dl_redcap_f02$id_dmdtc)
        })
 
@@ -75,29 +86,26 @@ infection_episode <- full_join(dl_redcap_f02,
 ## Test that "Every infection episode (F02) has a matching patient enrolment (F01)" ----
 # we detect that by finding recordid for which siteid (required value) is missing
 # if it happens, we elminate any recordid of all datasets and warn
-recordid_no_matching_enrolment <- patient_enrolment$recordid[is.na(patient_enrolment$siteid)]
-ifelse(identical(recordid_no_matching_enrolment, character(0)), 
-       { checklist_status$redcap_F02F01 <- list(status = "okay", msg = "Every infection episode (F02) has a matching patient enrolment (F01)") }, 
-       { checklist_status$redcap_F02F01 <- list(status = "warning", msg = paste("The following records have an infection episode (F02) but not a matching patient enrolment (F01):",
-                                                                                paste(recordid_no_matching_enrolment, collapse = ", ")))
-       patient_enrolment <- patient_enrolment %>% filter(!recordid %in% recordid_no_matching_enrolment)})
+test_redcap_id <- patient_enrolment$recordid[is.na(patient_enrolment$siteid)]
+ifelse(is_empty(test_redcap_id), 
+       { checklist_status$redcap_F02F01 <- list(status = "okay", msg = "Every infection episode record (F02) has a matching patient enrolment (F01).") }, 
+       { 
+         checklist_status$redcap_F02F01 <- list(status = "warning", msg = "Some infection episode records (F02) don't have a matching patient enrolment (F01). These records have been removed.")
+         checklist_status$log_errors <- bind_rows(checklist_status$log_errors, 
+                                                  tibble(issue = "F02 record without matching F01", redcap_id = test_redcap_id))
+         patient_enrolment <- patient_enrolment %>% filter(!recordid %in% test_redcap_id)
+       })
 
 
-## Test that "Every hospital outcome form (F03) matches exactly one patient enrolment (F01)"
-ifelse(all(dl_redcap_f03$recordid %in% patient_enrolment$recordid), 
-       { checklist_status$redcap_F03F01 <- list(status = "okay", msg = "Every hospital outcome form (F03) matches exactly one patient enrolment (F01)") },
-       { checklist_status$redcap_F03F01 <- list(status = "warning", msg = "Some hospital outcome (F03) do not have a matching patient enrolment (F01)") })
-
-
-## Test "All confirmed entries match the original entry"
-if(all(patient_enrolment$siteid == patient_enrolment$siteid_cfm,
-       patient_enrolment$usubjid == patient_enrolment$usubjid_cfm,
-       patient_enrolment$acornid == patient_enrolment$acornid_cfm,
-       patient_enrolment$hpd_adm_date == patient_enrolment$hpd_adm_date_cfm, na.rm = TRUE)) {
-  checklist_status$redcap_confirmed_match <- list(status = "okay", msg = "All confirmed entries match the original entry")
-} else {
-  checklist_status$redcap_confirmed_match <- list(status = "ko", msg = "Some confirmed entries do not match the original entry")
-}
+## Test that "Every hospital outcome form (F03) has a matching patient enrolment (F01)"
+test_redcap_id <- dl_redcap_f03$recordid[! dl_redcap_f03$recordid %in% patient_enrolment$recordid]
+ifelse(is_empty(test_redcap_id), 
+       { checklist_status$redcap_F03F01 <- list(status = "okay", msg = "Every hospital outcome record (F03) has a matching patient enrolment (F01).") },
+       { 
+         checklist_status$redcap_F03F01 <- list(status = "warning", msg = "Some hospital outcome records (F03) don't have a matching patient enrolment (F01).") 
+         checklist_status$log_errors <- bind_rows(checklist_status$log_errors, 
+                                                  tibble(issue = "F03 record without matching F01", redcap_id = test_redcap_id))
+       })
 
 
 # consolidate patient_enrolment & infection_episode in infection ----
@@ -110,7 +118,7 @@ infection <- left_join(
 
 # rename / drop (by commenting) / recode columns
 infection <- infection %>% transmute(
-  redcap_id = recordid,  #  as.character(md5(recordid)),
+  redcap_id = recordid,
   # redcap_repeat_instance,
   # Start fields from F02
   date_episode_enrolment = as_date(hpd_dmdtc),
@@ -125,13 +133,13 @@ infection <- infection %>% transmute(
                      HON = "Haematology / Oncology ward", EMR = "Emergency department"),
   ward = toupper(hpd_adm_ward), 
   surveillance_diag = recode(ho_iv_anti_reason, BJ = "Bone / Joint", CVS = "Cardiovascular system",
-                               CNS = "Central nervous system", URTI = "ENT / Upper respiratory tract",
-                               EYE = "Eye", FN = "Febrile neutropenia", GI = "Gastrointestinal",
-                               GU = "Genital", IA = "Intra-abdominal", LRTI = "Lower respiratory tract",
-                               NEC = "Necrotising enterocolitis", PNEU = "Pneumonia", 
-                               SEPSIS = "Sepsis (source unclear)", SSTI = "Skin / Soft tissue", 
-                               SSI = "Surgical site", UTI = "Urinary tract",
-                               OTH = "Other (diagnosis documented)", UNK = "Unknown (not documented)"),
+                             CNS = "Central nervous system", URTI = "ENT / Upper respiratory tract",
+                             EYE = "Eye", FN = "Febrile neutropenia", GI = "Gastrointestinal",
+                             GU = "Genital", IA = "Intra-abdominal", LRTI = "Lower respiratory tract",
+                             NEC = "Necrotising enterocolitis", PNEU = "Pneumonia", 
+                             SEPSIS = "Sepsis (source unclear)", SSTI = "Skin / Soft tissue", 
+                             SSI = "Surgical site", UTI = "Urinary tract",
+                             OTH = "Other (diagnosis documented)", UNK = "Unknown (not documented)"),
   adult_altered_mentation = recode(ser_gcs_under15, "Y" = "Yes", "N" = "No", "UNK" = "Unknown"), 
   adult_respiratory_rate = recode(ser_rr_22up, "Y" = "Yes", "N" = "No", "UNK" = "Unknown"), 
   adult_blood_pressure = recode(ser_sbp_under100, "Y" = "Yes", "N" = "No", "UNK" = "Unknown"), 
@@ -222,8 +230,8 @@ infection <- infection %>% transmute(
   # Start fields from F01:
   site_id = siteid, 
   date_enrolment = as_date(dmdtc), 
-  patient_id = usubjid,  # as.character(md5(usubjid)), 
-  acorn_id = acornid,  # as.character(md5(acornid)), 
+  patient_id = usubjid,
+  acorn_id = acornid,
   birthday = as_date(brthdtc),
   age_year = as.numeric(agey),
   age_month = as.numeric(agem),
@@ -278,18 +286,30 @@ infection <- infection %>% transmute(
   # f04_d28_complete
   # End F04
 ) %>%
-  mutate(has_clinical_outcome = !is.na(ho_discharge_date),
+  mutate(
+    episode_id = paste0(acorn_id, date_enrolment),
+    has_clinical_outcome = !is.na(ho_discharge_date),
          has_d28_outcome = !is.na(d28_date)) %>%
-mutate(across(cmb_aids:cmb_tub, ~ ifelse(. == "", NA, .))) %>%
-unite(comorbidities, cmb_aids:cmb_tub, sep = " & ", na.rm = TRUE, remove = FALSE) %>%
-replace_na(list(surveillance_diag = "Unknown diagnosis",
-                ward_type = "Unknown type of ward",
-                ward = "Unknown ward",
-                sex = "Unknown sex",
-                blood_collect = "Unknown",
-                transfer_hospital = "Unknown",
-                ho_final_diag = "Unknown diagnosis"))
+  mutate(across(cmb_aids:cmb_tub, ~ ifelse(. == "", NA, .))) %>%
+  unite(comorbidities, cmb_aids:cmb_tub, sep = " & ", na.rm = TRUE, remove = FALSE) %>%
+  replace_na(list(surveillance_diag = "Unknown diagnosis",
+                  ward_type = "Unknown type of ward",
+                  ward = "Unknown ward",
+                  sex = "Unknown sex",
+                  blood_collect = "Unknown",
+                  transfer_hospital = "Unknown",
+                  ho_final_diag = "Unknown diagnosis"))
 
+
+# Flag if Day28 is not dead and clinical outcome is dead
+test_redcap_id <- infection %>% filter(ho_discharge_status == "Dead", d28_status != "Dead") %>% pull(redcap_id)
+ifelse(is_empty(test_redcap_id), 
+       { checklist_status$redcap_consistent_outcomes <- list(status = "okay", msg = "Clinical and day-28 outcomes are consistent.") },
+       {
+         checklist_status$redcap_consistent_outcomes <- list(status = "warning", msg = "Clinical and day-28 outcomes aren't consistent for some dead patients.")
+         checklist_status$log_errors <- bind_rows(checklist_status$log_errors, 
+                                                  tibble(issue = "Clinical and day-28 outcomes not consistent", redcap_id = test_redcap_id))
+       })
 
 # Summarise the age with age_year and age_day
 infection$age_day[is.na(infection$age_day) & is.na(infection$birthday)] <- 0
@@ -311,17 +331,18 @@ infection <- infection %>% mutate(age_category_calc = case_when(
 infection$age_category[is.na(infection$age_category)] <- infection$age_category_calc[is.na(infection$age_category)]
 
 ## Test that "Calculated age is consistent with 'Age Category'"
-dta <- bind_rows(
-  infection %>% filter(age_category == "Adult", age_year < 18),
-  infection %>% filter(age_category == "Child", age_year > 17 | age_day <= 28),  # TODO: consider adding  | age_day <= 28
-  infection %>% filter(age_category == "Neonate", age_day > 28)
-)
+test_redcap_id <- bind_rows(infection %>% filter(age_category == "Adult", age_year < 18),
+                            infection %>% filter(age_category == "Child", age_year > 17 | age_day <= 28),
+                            infection %>% filter(age_category == "Neonate", age_day > 28)) %>% 
+  pull(redcap_id)
 
-if(nrow(dta) == 0) {
-  checklist_status$redcap_age_category <- list(status = "okay", msg = "Calculated age is consistent with 'Age Category'")
-} else {
-  checklist_status$redcap_age_category <- list(status = "warning", msg = glue("Calculated age isn't consistent with 'Age Category' for the following redcap id: {paste(dta$redcap_id, collapse = ',')}"))
-}
+ifelse(is_empty(test_redcap_id), 
+       { checklist_status$redcap_age_category <- list(status = "okay", msg = "Calculated age is consistent with 'Age Category'") },
+       { 
+         checklist_status$redcap_age_category <- list(status = "warning", msg = "Calculated age isn't always consistent with 'Age Category'")
+         checklist_status$log_errors <- bind_rows(checklist_status$log_errors, 
+                                                  tibble(issue = "Calculated age not consistent with 'Age Category'", redcap_id = test_redcap_id))
+       })
 
 
 # Define Clinical Severity, qSOFA score
@@ -329,17 +350,17 @@ equal_yes <- function(x) replace_na(x, "No") == "Yes"
 
 infection$clinical_severity_score <- 
   (infection$age_category == "Adult") * (
-      equal_yes(infection$adult_altered_mentation) + 
+    equal_yes(infection$adult_altered_mentation) + 
       equal_yes(infection$adult_respiratory_rate) + 
       equal_yes(infection$adult_blood_pressure)) +
   (infection$age_category == "Child") * (
-      equal_yes(infection$child_neo_abnormal_temp) +
+    equal_yes(infection$child_neo_abnormal_temp) +
       equal_yes(infection$child_neo_inapp_tachycardia) +
       equal_yes(infection$child_neo_alter_mental) +
       equal_yes(infection$child_neo_reduce_pp)
   ) +
   (infection$age_category == "Neonate") * (
-      equal_yes(infection$child_neo_abnormal_temp) +
+    equal_yes(infection$child_neo_abnormal_temp) +
       equal_yes(infection$child_neo_inapp_tachycardia) +
       equal_yes(infection$child_neo_alter_mental) +
       equal_yes(infection$child_neo_reduce_pp) +
@@ -352,7 +373,7 @@ infection$clinical_severity_score <-
 not_empty <- function(x) replace_na(x, "") != ""
 
 infection$cci <- (infection$age_category == "Adult") * (
-    2 * not_empty(infection$cmb_cog) + 
+  2 * not_empty(infection$cmb_cog) + 
     2 * not_empty(infection$cmb_dem) +
     not_empty(infection$cmb_cpd) +
     not_empty(infection$cmb_rheu) +
