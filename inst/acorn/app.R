@@ -216,7 +216,7 @@ ui <- fluidPage(
                                                               selected = NULL),
                                                   
                                                   conditionalPanel("input.format_lab_data == 'WHONET .dBase'",
-                                                                   fileInput("file_lab_dba", NULL,  buttonLabel = "Browse for dBase file", accept = c(".ahc", ".dbf"))
+                                                                   fileInput("file_lab_dba", NULL,  buttonLabel = "Browse for dBase file")
                                                   ),
                                                   conditionalPanel("input.format_lab_data == 'WHONET .SQLite'",
                                                                    fileInput("file_lab_sql", NULL,  buttonLabel = "Browse for sqlite file", accept = c(".sqlite3", ".sqlite", ".db"))
@@ -283,7 +283,7 @@ ui <- fluidPage(
                       )
              ),
              # Tab Overview ----
-             tabPanel("Clinical Overview", value = "overview", 
+             tabPanel("Overview", value = "overview", 
                       fluidRow(
                         column(6,
                                div(class = 'box_outputs', h4_title(icon("calendar-check"), "Date of Enrolment"),
@@ -414,7 +414,7 @@ ui <- fluidPage(
                         column(12, 
                                div(class = 'box_outputs',
                                    h4_title("Initial & Final Surveillance Diagnosis"),
-                                   p("The 10 most common initial*final diagnosis:"),
+                                   p("The 10 most common initial-final diagnosis combinations:"),
                                    highchartOutput("profile_outcome_diagnosis", height = "500px")
                                )
                         )
@@ -423,10 +423,13 @@ ui <- fluidPage(
              # Tab HAI ----
              tabPanel("HAI", value = "hai", 
                       div(class = 'box_outputs',
-                          h4_title("Wards Occupancy Rates"),
+                          h4_title("Ward Occupancy Rates"),
                           plotOutput("bed_occupancy_ward", width = "80%")
                       ),
-                      plotOutput("hai_rate_ward", width = "80%")
+                      div(class = 'box_outputs',
+                          h4_title("HAI Prevalence"),
+                          plotOutput("hai_rate_ward", width = "80%")
+                      )
              ),
              # Tab Microbiology ----
              tabPanel("Microbiology", value = "microbiology", 
