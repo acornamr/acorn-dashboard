@@ -269,9 +269,10 @@ infection <- infection %>% transmute(
   # End F01
   # Start fields from F04
   d28_date = as_date(d28_date), 
-  d28_status = recode(d28_status, "ALIVE" = "(TBC) Alive - completely recovered", 
-                      "ABALIVE" = "(TBC) Alive - not back to normal activities", 
-                      "DEAD" = "(TBC) Dead"), # TODO: confime with updated data dic from Ong
+  d28_status = recode(d28_status, "ALIVE" = "Alive - completely recovered", 
+                      "ABALIVE" = "Alive - not back to normal activities", 
+                      "DEAD" = "Dead",
+                      "UTC" = "Unable to contact"),
   d28_death_date = as_date(d28_death_date)
   # f04_deleted, 
   # f04_d28_complete
@@ -323,7 +324,7 @@ if(nrow(dta) == 0) {
 }
 
 
-# Define Clinical Severity
+# Define Clinical Severity, qSOFA score
 equal_yes <- function(x) replace_na(x, "No") == "Yes"
 
 infection$clinical_severity_score <- 
