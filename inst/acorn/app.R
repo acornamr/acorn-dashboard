@@ -39,17 +39,13 @@ ui <- fluidPage(
                               fluidRow(
                                 column(8,
                                        div(class = "smallcaps", class = "center", span(icon("hospital-user"), "Enrolments")),
-                                       p("TODO: reset filter when a filter is desactivated."),
                                        fluidRow(
-                                         column(5,
+                                         column(12,
                                                 checkboxGroupButtons("filter_enrolments",
                                                                      choices = c("Surveillance Category", "Type of Ward", "Date of Enrolment/Survey", "Age Category", 
                                                                                  "Initial Diagnosis", "Final Diagnosis", "Clinical Severity", "Clinical/D28 Outcome"),
-                                                                     status = "light", direction = "vertical", size = "sm", 
-                                                                     checkIcon = list(yes = icon("filter"))
-                                                )
-                                         ),
-                                         column(7,
+                                                                     status = "light", direction = "horizontal", size = "sm", individual = TRUE,
+                                                                     checkIcon = list(yes = icon("filter"))),
                                                 conditionalPanel("input.filter_enrolments.includes('Surveillance Category')",
                                                                  prettyCheckboxGroup("filter_surveillance_cat", NULL, shape = "curve", status = "primary",
                                                                                      choiceNames = c("Community Acquired Infection", "Hospital Acquired Infection"), 
@@ -80,7 +76,6 @@ ui <- fluidPage(
                                                 conditionalPanel("input.filter_enrolments.includes('Clinical/D28 Outcome')",
                                                                  prettySwitch("filter_outcome_clinical", label = "Only with Clinical Outcome", status = "primary", value = FALSE, slim = TRUE),
                                                                  prettySwitch("filter_outcome_d28", label = "Only with Day-28 Outcome", status = "primary", value = FALSE, slim = TRUE)
-                                                                 
                                                 )
                                          )
                                        )
@@ -94,26 +89,26 @@ ui <- fluidPage(
                                        conditionalPanel("input.filter_method_collection.includes('other_not_blood')",
                                                         pickerInput("filter_method_other", NULL, multiple = TRUE,
                                                                     choices = "", selected = NULL,
-                                                                    options = list(style = "btn-primary",
-                                                                                   `actions-box` = TRUE, `deselect-all-text` = "None...",
+                                                                    options = list(`actions-box` = TRUE, `deselect-all-text` = "None...",
                                                                                    `select-all-text` = "Select All", `none-selected-text` = "None Selected"))
                                        ),
-                                       br(),
+                                       prettySwitch("filter_rm_contaminant", label = "Remove BC Contaminants", status = "primary", value = FALSE, slim = TRUE),
                                        pickerInput("deduplication_method", label = NULL, 
                                                    choices = c("No deduplication of isolates", "Deduplication by patient-episode", "Deduplication by patient ID"))
                                 )
-                              ),
-                              dropMenu(
-                                class = "filter_box_small",
-                                actionLink("quick_filters", "Quick Filters", icon = icon("sliders-h")),
-                                p("TODO: find if there is a need for shortcut filters. If yes, make the two links work."),
-                                actionLink("shortcut_filter_1", label = span(icon("filter"), " Patients with Pneumonia, BC only")),
-                                br(),
-                                actionLink("shortcut_filter_2", label = span(icon("filter"), " Below 5 y.o. HAI")),
-                                br(),
-                                br(),
-                                actionLink("shortcut_reset_filters", label = span(icon("ban"), " Reset All Filters")),
                               )
+                          ),
+                          dropMenu(
+                            class = "filter_box_small",
+                            actionLink("quick_filters", "Quick Filters", icon = icon("sliders-h")),
+                            p("TODO: reset filter when a filter is desactivated."),
+                            p("TODO: find if there is a need for shortcut filters. If yes, make the two links work."),
+                            actionLink("shortcut_filter_1", label = span(icon("filter"), " Patients with Pneumonia, BC only")),
+                            br(),
+                            actionLink("shortcut_filter_2", label = span(icon("filter"), " Below 5 y.o. HAI")),
+                            br(),
+                            br(),
+                            actionLink("shortcut_reset_filters", label = span(icon("ban"), " Reset All Filters")),
                           )
                    ),
                    column(3,
@@ -444,7 +439,6 @@ ui <- fluidPage(
                                ),
                                div(class = 'box_outputs',
                                    h4_title("Specimen Types"),
-                                   prettySwitch("filter_rm_contaminant", label = "Remove Contaminants", status = "primary", value = FALSE, slim = TRUE),
                                    
                                    p("Number of specimens per specimen type"),
                                    highchartOutput("culture_specimen_type", height = "400px"),
