@@ -7,20 +7,20 @@ output$about <- renderText({
   
   about_data <- ifelse(is.null(meta()),
                        "No data available",
-                       glue("Data generated on the {meta()$time_generation}; by {meta()$user}. {meta()$comment}")
+                       glue("Data generated on the {meta()$time_generation}; </br> 
+                            - ACORN App version {meta()$app_version};</br>
+                            - ACORN site: {meta()$site}</br> 
+                            - ACORN user: {meta()$user}</br> 
+                            - Comments: {meta()$comment}")
   )
   
-  paste(glue("ACORN App {app_version}"), 
-        br(),
+  paste(p(glue("App version: {app_version}")), 
         about_data,
         br(), br(),
-        span("Questions about the App? ", actionLink("show_faq", "explore the FAQ.")),
-        br(), br(),
-        span(a("Learn more about the ACORN project", href = "https://acornamr.net/", target = "_blank"), 
-             " and ", 
-             a("contact us.", href = "https://acornamr.net/#/contact.md", target = "_blank")),
-        
-        br(), br(),
-        actionLink("debug", label = "(Debug, developer only)")
+        p("Questions about the App? ", actionLink("show_faq", "explore the FAQ.")),
+        p(a("Learn more about the ACORN project", href = "https://acornamr.net/", target = "_blank"), 
+          " and ", 
+          a("contact us.", href = "https://acornamr.net/#/contact.md", target = "_blank")),
+        hr(), actionLink("debug", label = "(Debug, developer only)")
   )
 })
