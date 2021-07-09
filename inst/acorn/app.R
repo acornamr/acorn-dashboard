@@ -15,7 +15,7 @@ ui <- fluidPage(
   
   div(id = 'float_about',
       dropMenu(
-        actionButton("checklist_show", label = "About", class = "btn-success"),
+        actionButton("checklist_show", icon = icon("caret-down"), label = "About", class = "btn-success"),
         theme = "light-border",
         class = "checklist",
         placement = "bottom-end",
@@ -71,7 +71,9 @@ ui <- fluidPage(
                                                                              selected = NULL, options = list(`actions-box` = TRUE), multiple = TRUE)
                                                 ),
                                                 conditionalPanel("input.filter_enrolments.includes('Clinical Severity')",
-                                                                 sliderInput("filter_severity", NULL, min = 0, max = 7, value = c(0, 7))
+                                                                 sliderInput("filter_severity_adult", "Adult qSOFA score", min = 0, max = 3, value = c(0, 3)),
+                                                                 prettySwitch("filter_severity_child_0", label = "Include Child/Neonate with 0 criteria", status = "primary", value = TRUE, slim = TRUE),
+                                                                 prettySwitch("filter_severity_child_1", label = "Include Child/Neonate with ≥ 1 criteria", status = "primary", value = TRUE, slim = TRUE)
                                                 ),
                                                 conditionalPanel("input.filter_enrolments.includes('Clinical/D28 Outcome')",
                                                                  prettySwitch("filter_outcome_clinical", label = "Only with Clinical Outcome", status = "primary", value = FALSE, slim = TRUE),
@@ -82,7 +84,6 @@ ui <- fluidPage(
                                 ),
                                 column(4,
                                        div(class = "smallcaps", class = "center", span(icon("vial"), " Specimens, Isolates")),
-                                       
                                        prettyCheckboxGroup(inputId = "filter_method_collection", label = NULL,  shape = "curve", status = "primary", inline = TRUE,
                                                            choices = c("Blood Culture" = "blood", "Other (not BC):" = "other_not_blood"), 
                                                            selected = c("blood", "other_not_blood")),
@@ -259,15 +260,14 @@ ui <- fluidPage(
                       ## Choice Load cloud ----
                       conditionalPanel("input.choice_datamanagement == 'Load existing .acorn from cloud'",
                                        fluidRow(
-                                         column(12,
-                                                div(
-                                                  pickerInput('acorn_files_server', choices = NULL, label = NULL,
-                                                              options = pickerOptions(actionsBox = TRUE, noneSelectedText = "No file selected", liveSearch = FALSE,
-                                                                                      showTick = TRUE, header = "10 most recent files:")),
-                                                  
-                                                  conditionalPanel(condition = "input.acorn_files_server",
-                                                                   actionButton('load_acorn_server', span(icon('cloud-download-alt'), HTML('Load <em>.acorn</em>')))
-                                                  )
+                                         column(3,
+                                                pickerInput('acorn_files_server', choices = NULL, label = NULL,
+                                                            options = pickerOptions(actionsBox = TRUE, noneSelectedText = "No file selected", liveSearch = FALSE,
+                                                                                    showTick = TRUE, header = "10 most recent files:"))
+                                         ),
+                                         column(9,
+                                                conditionalPanel(condition = "input.acorn_files_server",
+                                                                 actionButton('load_acorn_server', span(icon('cloud-download-alt'), HTML('Load selected <em>.acorn</em>')))
                                                 )
                                          )
                                        )
@@ -611,7 +611,7 @@ server <- function(input, output, session) {
     
     updateRadioGroupButtons(session = session, "choice_datamanagement", "What do you want to do?",
                             choices = "Load existing .acorn from local file",
-                            selected = NULL,
+                            selected = NULL, status = "success",
                             checkIcon = list(yes = icon("hand-point-right")))
   })
   
@@ -784,7 +784,7 @@ server <- function(input, output, session) {
     
     updateRadioGroupButtons(session = session, "choice_datamanagement", "What do you want to do?",
                             choices = c("Generate .acorn from clinical and lab data", "Load existing .acorn from cloud", "Load existing .acorn from local file"),
-                            selected = NULL,
+                            selected = NULL, status = "success",
                             checkIcon = list(yes = icon("hand-point-right")))
     
     startAnim(session, "float_about", type = "tada")

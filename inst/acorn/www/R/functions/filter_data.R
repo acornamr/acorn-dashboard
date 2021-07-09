@@ -8,9 +8,18 @@ fun_filter_enrolment <- function(data, input) {
            date_episode_enrolment <= input$filter_date_enrolment[2],
            age_category %in% input$filter_age_cat,
            surveillance_diag %in% input$filter_diagnosis_initial,
-           ho_final_diag %in% input$filter_diagnosis_final,
-           clinical_severity_score >= input$filter_severity[1],
-           clinical_severity_score <= input$filter_severity[2])
+           ho_final_diag %in% input$filter_diagnosis_final)
+  
+  
+  data <- bind_rows(data %>% 
+                      filter(age_category == "Adult",
+                             clinical_severity_score >= input$filter_severity_adult[1],
+                             clinical_severity_score <= input$filter_severity_adult[2]),
+                    data %>% 
+                      filter(age_category %in% c("Child", "Neonate"),
+                             clinical_severity_score >= 1 - input$filter_severity_child_0,
+                             clinical_severity_score <= 7 * (1 - (! input$filter_severity_child_1)))
+  )
   
   if(input$filter_outcome_clinical) data <- data %>% filter(has_clinical_outcome)
   if(input$filter_outcome_d28)      data <- data %>% filter(has_d28_outcome)
@@ -53,14 +62,14 @@ fun_deduplication <- function(data, method = NULL) {
   if(method == "Deduplication by patient-episode") { 
     data_dedup <- data %>% group_by(patient_id, episode_id, orgname, specgroup) %>% 
       slice(1) %>% ungroup()
-
+    
     return(data_dedup)
   }
   
   if(method == "Deduplication by patient ID") { 
     data_dedup <- data %>% group_by(patient_id, orgname, specgroup) %>% 
       slice(1) %>% ungroup()
-
+    
     return(data_dedup)
   }
 }
