@@ -72,8 +72,8 @@ ui <- fluidPage(
                                                 ),
                                                 conditionalPanel("input.filter_enrolments.includes('Clinical Severity')",
                                                                  sliderInput("filter_severity_adult", "Adult qSOFA score", min = 0, max = 3, value = c(0, 3)),
-                                                                 prettySwitch("filter_severity_child_0", label = "Include Child/Neonate with 0 criteria", status = "primary", value = TRUE, slim = TRUE),
-                                                                 prettySwitch("filter_severity_child_1", label = "Include Child/Neonate with ≥ 1 criteria", status = "primary", value = TRUE, slim = TRUE)
+                                                                 prettySwitch("filter_severity_child_0", label = "Include Child/Neonate with 0 severity criteria", status = "primary", value = TRUE, slim = TRUE),
+                                                                 prettySwitch("filter_severity_child_1", label = "Include Child/Neonate with ≥ 1 severity criteria", status = "primary", value = TRUE, slim = TRUE)
                                                 ),
                                                 conditionalPanel("input.filter_enrolments.includes('Clinical/D28 Outcome')",
                                                                  prettySwitch("filter_outcome_clinical", label = "Only with Clinical Outcome", status = "primary", value = FALSE, slim = TRUE),
@@ -93,7 +93,6 @@ ui <- fluidPage(
                                                                     options = list(`actions-box` = TRUE, `deselect-all-text` = "None...",
                                                                                    `select-all-text` = "Select All", `none-selected-text` = "None Selected"))
                                        ),
-                                       prettySwitch("filter_rm_contaminant", label = "Remove BC Contaminants", status = "primary", value = FALSE, slim = TRUE),
                                        pickerInput("deduplication_method", label = NULL, 
                                                    choices = c("No deduplication of isolates", "Deduplication by patient-episode", "Deduplication by patient ID"))
                                 )
@@ -428,13 +427,14 @@ ui <- fluidPage(
              ),
              # Tab Microbiology ----
              tabPanel("Microbiology", value = "microbiology", 
+                      prettySwitch("filter_rm_contaminant", label = "Remove BC Contaminants in underneath visualisations", status = "primary", value = FALSE, slim = TRUE),
                       fluidRow(
                         column(6,
                                div(class = 'box_outputs',
-                                   h4_title("Growth / No Growth"),
+                                   h4_title("Blood Culture Contaminants"),
                                    fluidRow(
-                                     column(6, gaugeOutput("isolates_growth_gauge", width = "100%", height = "100px")),
-                                     column(6, htmlOutput("isolates_growth_pct", width = "100%", height = "100px"))
+                                     column(6, gaugeOutput("contaminants_gauge", width = "100%", height = "100px")),
+                                     column(6, htmlOutput("contaminants_pct", width = "100%", height = "100px"))
                                    )
                                ),
                                div(class = 'box_outputs',
@@ -448,6 +448,13 @@ ui <- fluidPage(
                                )
                         ),
                         column(6,
+                               div(class = 'box_outputs',
+                                   h4_title("Growth / No Growth"),
+                                   fluidRow(
+                                     column(6, gaugeOutput("isolates_growth_gauge", width = "100%", height = "100px")),
+                                     column(6, htmlOutput("isolates_growth_pct", width = "100%", height = "100px"))
+                                   )
+                               ),
                                div(class = 'box_outputs',
                                    h4_title("Isolates"),
                                    p("Most frequent 10 organisms in the plot and complete listing in the table."),
