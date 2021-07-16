@@ -2,8 +2,13 @@ output$culture_specgroup <- renderHighchart({
   req(acorn_dta_filter())
   req(nrow(acorn_dta_filter()) > 0)
   
-  dta <- acorn_dta_filter()
-  if(input$filter_rm_contaminant)  dta <- dta %>% replace_na(list(contaminant = "No")) %>% filter(contaminant == "No")
+  ifelse(input$filter_rm_contaminant, {
+    dta <- acorn_dta_filter() %>% 
+      replace_na(list(contaminant = "No")) %>% filter(contaminant == "No")
+  }, 
+  {
+    dta <- acorn_dta_filter() 
+  })
   
   # Specimens with at least one element that has grown
   spec_grown <- dta %>%
