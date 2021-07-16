@@ -21,14 +21,13 @@ dl_hai_dta <- dl_hai_dta %>%
             # f06_hai_ward_complete
   )
 
-
 ## Test that dates of enrolment match across datasets
 infection_hai <- infection %>% filter(surveillance_category == "HAI")
-test_redcap_id <- infection_hai[! infection_hai %>% pull(date_episode_enrolment) %in% dl_hai_dta$survey_date, "redcap_id"]
+test <- infection_hai[! (infection_hai %>% pull(date_episode_enrolment) %in% dl_hai_dta$survey_date), c("redcap_id", "acorn_id")]
 
-ifelse(is_empty(test_redcap_id), 
+ifelse(is_empty(test), 
        { checklist_status$redcap_hai_dates <- list(status = "okay", msg = "All dates of enrolment for HAI patients have a matching date in the HAI survey dataset") },
        { checklist_status$redcap_hai_dates <- list(status = "warning", msg = "Some dates of enrolment for HAI patients do have a matching date in the HAI survey dataset")
        checklist_status$log_errors <- bind_rows(checklist_status$log_errors, 
-                                                tibble(issue = "Date of HAI enrolment not in HAI survey dataset ", redcap_id = test_redcap_id))
+                                                tibble(issue = "Date of HAI enrolment not in HAI survey dataset ", redcap_id = test$redcap_id, acorn_id = test$acorn_id))
        })

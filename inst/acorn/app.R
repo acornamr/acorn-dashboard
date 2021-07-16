@@ -635,7 +635,7 @@ server <- function(input, output, session) {
   
   # checklist_status' status can be: hidden/question/okay/warning/ko
   checklist_status <- reactiveValues(
-    log_errors = tibble(issue = character(), redcap_id = character()),
+    log_errors = tibble(issue = character(), redcap_id = character(), acorn_id = character()),
     
     lab_data_qc_1 = list(status = "hidden", msg = ""),
     lab_data_qc_2 = list(status = "hidden", msg = ""),
@@ -1037,6 +1037,7 @@ server <- function(input, output, session) {
                  site = input$cred_site,
                  user = input$cred_user,
                  comment = input$meta_acorn_comment)
+    meta(meta)
     
     ## Anonymised data ----
     redcap_f01f05_dta <- redcap_f01f05_dta() %>% mutate(patient_id = md5(patient_id))
@@ -1107,6 +1108,7 @@ server <- function(input, output, session) {
                    site = input$cred_site,
                    user = input$cred_user,
                    comment = input$meta_acorn_comment_dup)
+      meta(meta)
       
       # Anonymised
       redcap_f01f05_dta <- redcap_f01f05_dta() %>% mutate(patient_id = md5(patient_id))

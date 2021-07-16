@@ -9,7 +9,6 @@
 
 
 # patient_enrolment ----
-
 ## Create patient_enrolment dataframe with data from F01 and F04 - one row per enrolment ----
 patient_enrolment <- dl_redcap_f01f05_dta %>% 
   select(c(recordid:redcap_repeat_instance, 
@@ -18,25 +17,25 @@ patient_enrolment <- dl_redcap_f01f05_dta %>%
   filter(is.na(redcap_repeat_instrument))
 
 ## Test that "Every record has an ACORN id" ----
-test_redcap_id <- patient_enrolment$recordid[is.na(patient_enrolment$acornid)]
-ifelse(is_empty(test_redcap_id), 
+test <- patient_enrolment[is.na(patient_enrolment$acornid), c("recordid", "acornid")]
+ifelse(is_empty(test), 
        { checklist_status$redcap_acornid <- list(status = "okay", msg = "All records have an 'ACORN id'.") }, 
        { 
          checklist_status$redcap_acornid <- list(status = "warning", msg = "Some records do not have an 'ACORN id'.") 
          checklist_status$log_errors <- bind_rows(checklist_status$log_errors, 
-                                                  tibble(issue = "Missing ACORN id", redcap_id = test_redcap_id))
+                                                  tibble(issue = "Missing ACORN id", redcap_id = test$recordid, acorn_id = test$acornid))
        })
 
 ## Test that "Every D28 form (F04) matches exactly one patient enrolment (F01)" ----
 # for every recordid, when d28_date is filled (mandatory field in F04), siteid should be filled (mandatory field in F01)
 recordid_F04 <- patient_enrolment$recordid[!is.na(patient_enrolment$d28_date)]
-test_redcap_id <- patient_enrolment$recordid[is.na(patient_enrolment$siteid[patient_enrolment$recordid %in% recordid_F04])]
-ifelse(is_empty(test_redcap_id), 
+test <- patient_enrolment[is.na(patient_enrolment$siteid[patient_enrolment$recordid %in% recordid_F04]), c("recordid", "acornid")]
+ifelse(is_empty(test), 
        { checklist_status$redcap_F04F01 <- list(status = "okay", msg = "Every D28 record (F04) matches exactly one patient enrolment (F01).") },
        { 
          checklist_status$redcap_F04F01 <- list(status = "warning", msg = "Some D28 records (F04) don't have a matching patient enrolment (F01).") 
          checklist_status$log_errors <- bind_rows(checklist_status$log_errors, 
-                                                  tibble(issue = "F04 record without matching F01", redcap_id = test_redcap_id))
+                                                  tibble(issue = "F04 record without matching F01", redcap_id = test$recordid, acorn_id = test$acornid))
        })
 
 # infection_episode ----
@@ -67,13 +66,13 @@ dl_redcap_f03 <- dl_redcap_f01f05_dta %>%
   mutate(id_dmdtc = glue("{recordid}-{ho_dmdtc}"))
 
 ## Test "Every hospital outcome record (F03) has a matching infection episode record (F02)" ----
-test_redcap_id <- dl_redcap_f03$recordid[! dl_redcap_f03$id_dmdtc %in% dl_redcap_f02$id_dmdtc]
-ifelse(is_empty(test_redcap_id), 
+test <- dl_redcap_f03$recordid[! dl_redcap_f03$id_dmdtc %in% dl_redcap_f02$id_dmdtc]
+ifelse(is_empty(test), 
        { checklist_status$redcap_F03F02 <- list(status = "okay", msg = "Every hospital outcome record (F03) has a matching infection episode (F02).")},
        { 
          checklist_status$redcap_F03F02 <- list(status = "warning", msg = "Some hospital outcome records (F03) don't have a matching infection episode (F02). These records have been removed.")
          checklist_status$log_errors <- bind_rows(checklist_status$log_errors, 
-                                                  tibble(issue = "F03 record without matching F02", redcap_id = test_redcap_id))
+                                                  tibble(issue = "F03 record without matching F02", redcap_id = test, acorn_id = NA))
          dl_redcap_f03 <- dl_redcap_f03 %>% filter(id_dmdtc %in% dl_redcap_f02$id_dmdtc)
        })
 
@@ -86,25 +85,25 @@ infection_episode <- full_join(dl_redcap_f02,
 ## Test that "Every infection episode (F02) has a matching patient enrolment (F01)" ----
 # we detect that by finding recordid for which siteid (required value) is missing
 # if it happens, we elminate any recordid of all datasets and warn
-test_redcap_id <- patient_enrolment$recordid[is.na(patient_enrolment$siteid)]
-ifelse(is_empty(test_redcap_id), 
+test <- patient_enrolment[is.na(patient_enrolment$siteid), c("recordid", "acornid")]
+ifelse(is_empty(test), 
        { checklist_status$redcap_F02F01 <- list(status = "okay", msg = "Every infection episode record (F02) has a matching patient enrolment (F01).") }, 
        { 
          checklist_status$redcap_F02F01 <- list(status = "warning", msg = "Some infection episode records (F02) don't have a matching patient enrolment (F01). These records have been removed.")
          checklist_status$log_errors <- bind_rows(checklist_status$log_errors, 
-                                                  tibble(issue = "F02 record without matching F01", redcap_id = test_redcap_id))
-         patient_enrolment <- patient_enrolment %>% filter(!recordid %in% test_redcap_id)
+                                                  tibble(issue = "F02 record without matching F01", redcap_id = test$recordid, acorn_id = test$acornid))
+         patient_enrolment <- patient_enrolment %>% filter(!recordid %in% test)
        })
 
 
 ## Test that "Every hospital outcome form (F03) has a matching patient enrolment (F01)"
-test_redcap_id <- dl_redcap_f03$recordid[! dl_redcap_f03$recordid %in% patient_enrolment$recordid]
-ifelse(is_empty(test_redcap_id), 
+test <- dl_redcap_f03$recordid[! dl_redcap_f03$recordid %in% patient_enrolment$recordid]
+ifelse(is_empty(test), 
        { checklist_status$redcap_F03F01 <- list(status = "okay", msg = "Every hospital outcome record (F03) has a matching patient enrolment (F01).") },
        { 
          checklist_status$redcap_F03F01 <- list(status = "warning", msg = "Some hospital outcome records (F03) don't have a matching patient enrolment (F01).") 
          checklist_status$log_errors <- bind_rows(checklist_status$log_errors, 
-                                                  tibble(issue = "F03 record without matching F01", redcap_id = test_redcap_id))
+                                                  tibble(issue = "F03 record without matching F01", redcap_id = test, acorn_id = NA))
        })
 
 
@@ -302,13 +301,13 @@ infection <- infection %>% transmute(
 
 
 # Flag if Day28 is not dead and clinical outcome is dead
-test_redcap_id <- infection %>% filter(ho_discharge_status == "Dead", d28_status != "Dead") %>% pull(redcap_id)
-ifelse(is_empty(test_redcap_id), 
+test <- infection %>% filter(ho_discharge_status == "Dead", d28_status != "Dead") %>% select(redcap_id, acorn_id)
+ifelse(is_empty(test), 
        { checklist_status$redcap_consistent_outcomes <- list(status = "okay", msg = "Clinical and day-28 outcomes are consistent.") },
        {
          checklist_status$redcap_consistent_outcomes <- list(status = "warning", msg = "Clinical and day-28 outcomes aren't consistent for some dead patients.")
          checklist_status$log_errors <- bind_rows(checklist_status$log_errors, 
-                                                  tibble(issue = "Clinical and day-28 outcomes not consistent", redcap_id = test_redcap_id))
+                                                  tibble(issue = "Clinical and day-28 outcomes not consistent", redcap_id = test$redcap_id, acorn_id = test$acorn_id))
        })
 
 # Summarise the age with age_year and age_day
@@ -331,17 +330,17 @@ infection <- infection %>% mutate(age_category_calc = case_when(
 infection$age_category[is.na(infection$age_category)] <- infection$age_category_calc[is.na(infection$age_category)]
 
 ## Test that "Calculated age is consistent with 'Age Category'"
-test_redcap_id <- bind_rows(infection %>% filter(age_category == "Adult", age_year < 18),
+test <- bind_rows(infection %>% filter(age_category == "Adult", age_year < 18),
                             infection %>% filter(age_category == "Child", age_year > 17 | age_day <= 28),
                             infection %>% filter(age_category == "Neonate", age_day > 28)) %>% 
-  pull(redcap_id)
+  select(redcap_id, acorn_id)
 
-ifelse(is_empty(test_redcap_id), 
+ifelse(is_empty(test), 
        { checklist_status$redcap_age_category <- list(status = "okay", msg = "Calculated age is consistent with 'Age Category'") },
        { 
          checklist_status$redcap_age_category <- list(status = "warning", msg = "Calculated age isn't always consistent with 'Age Category'")
          checklist_status$log_errors <- bind_rows(checklist_status$log_errors, 
-                                                  tibble(issue = "Calculated age not consistent with 'Age Category'", redcap_id = test_redcap_id))
+                                                  tibble(issue = "Calculated age not consistent with 'Age Category'", redcap_id = test$redcap_id, acorn_id = test$acorn_id))
        })
 
 
