@@ -44,12 +44,14 @@ Additional ACORN comorbidities (these were requested to be included by WHO GLASS
 
 .acorn files can be read and loaded in memory with the command `base::load`.
 
-for example `load(file = "/Users/olivier/Desktop/KH001_2021-06-24_01H59.acorn")` loads the following R objects:
+for example `load(file = "/Users/olivier/Desktop/KH001_2023-08-24_01H59.acorn")` loads the following R objects:
 
 - `redcap_f01f05_dta`: one patient enrolment per row. patient_id is hashed.
 - `redcap_hai_dta`: one survey element per row.
-- `corresp_org_antibio`: matrix of antibiotics and bugs.
+- `corresp_org_antibio`: matrix of antibiotics and bugs as per the 
 - `acorn_dta`: one isolate per row. Contains only isolates that can be linked to a patient enrolment in `redcap_f01f05_dta`. patient_id is hashed.
+- `data_dictionary`: all data of the site lab data dictionary file that has been used during the generation of the .acorn file.
+- `lab_code`: all data of the ACORN2 lab code file that has been used during the generation of the .acorn file.
 - `meta`: metadata collected on generation of the .acorn file.
 
 
