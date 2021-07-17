@@ -1,19 +1,12 @@
-# TODO: remove this snippet when it's clear
-# Exploration:
-# dl_redcap_f01f05_dta %>%
-#   select(recordid, acornid, redcap_repeat_instrument) %>%
-#   View()
-# acornid can be NA if the record is incomplete; the row is a F02 record.
-# a non F02 record without an acornid should trigger a warning and be ignored
-# the recordid should be used to complete F02 records with an acornid
-
+message("02_process_redcap_f01f05.R")
 
 # patient_enrolment ----
 ## Create patient_enrolment dataframe with data from F01 and F04 - one row per enrolment ----
 patient_enrolment <- dl_redcap_f01f05_dta %>% 
-  select(c(recordid:redcap_repeat_instance, 
-           f01odkreckey:f01_enrolment_complete, 
-           f04odkreckey:f04_d28_complete)) %>%
+  select(recordid:redcap_repeat_instance, 
+         f01odkreckey:f01_enrolment_complete, 
+         f04odkreckey:f04_d28_complete,
+         f05odkreckey:f05_bsi_complete) %>%
   filter(is.na(redcap_repeat_instrument))
 
 ## Test that "Every record has an ACORN id" ----
@@ -280,15 +273,42 @@ infection <- infection %>% transmute(
                       "ABALIVE" = "Alive - not back to normal activities", 
                       "DEAD" = "Dead",
                       "UTC" = "Unable to contact"),
-  d28_death_date = as_date(d28_death_date)
+  d28_death_date = as_date(d28_death_date),
   # f04_deleted, 
   # f04_d28_complete
   # End F04
+  # Start fields from F05
+  # f05odkreckey, 
+  bsi_ward_type = wardtype, 
+  bsi_ward = ward, 
+  bsi_culture_date,
+  bsi_pahtogen, bsi_ast_date, bsi_ast_date_unknown___unk,
+  bsi_immune_hiv, bsi_immune_endstage, bsi_immune_insulin,
+  bsi_immune_malignant, bsi_immune_cytotoxic, bsi_immune_prednisolone,
+  bsi_immune_cirrhosis, bsi_immune_neutropenia, bsi_immune_haema,
+  bsi_immune_organtran, bsi_score_temp, bsi_score_temp_unknown___unk,
+  bsi_score_resprate, bsi_score_resprate_unknown___unk, bsi_score_hrate,
+  bsi_score_hrate_unknown___unk, bsi_score_sys, bsi_score_sys_unknown___unk,
+  bsi_mentalstatus, bsi_acute_hypo, bsi_48h_intvas, bsi_48h_mv,
+  bsi_48h_ca, bsi_antibiotic_count, bsi_antibiotic1_name,
+  bsi_antibiotic1_name_other, bsi_antibiotic1_startdate, bsi_antibiotic1_enddate,
+  bsi_antibiotic1_route, bsi_antibiotic2_name, bsi_antibiotic2_name_other,
+  bsi_antibiotic2_startdate, bsi_antibiotic2_enddate, bsi_antibiotic2_route,
+  bsi_antibiotic3_name, bsi_antibiotic3_name_other, bsi_antibiotic3_startdate,
+  bsi_antibiotic3_enddate, bsi_antibiotic3_route, bsi_antibiotic4_name,
+  bsi_antibiotic4_name_other, bsi_antibiotic4_startdate, bsi_antibiotic4_enddate,
+  bsi_antibiotic4_route, bsi_antibiotic5_name, bsi_antibiotic5_name_oth,
+  bsi_antibiotic5_startdate, bsi_antibiotic5_enddate, bsi_antibiotic5_route,
+  bsi_is_primary, bsi_sec_source, bsi_sec_source_oth, bsi_is_com_implant,
+  bsi_is_com_2days, bsi_is_com_fever
+  # f05_deleted, 
+  # f05_bsi_complete
+  # End F05
 ) %>%
   mutate(
     episode_id = paste0(acorn_id, date_enrolment),
     has_clinical_outcome = !is.na(ho_discharge_date),
-         has_d28_outcome = !is.na(d28_date)) %>%
+    has_d28_outcome = !is.na(d28_date)) %>%
   mutate(across(cmb_aids:cmb_tub, ~ ifelse(. == "", NA, .))) %>%
   unite(comorbidities, cmb_aids:cmb_tub, sep = " & ", na.rm = TRUE, remove = FALSE) %>%
   replace_na(list(surveillance_diag = "Unknown diagnosis",
@@ -331,8 +351,8 @@ infection$age_category[is.na(infection$age_category)] <- infection$age_category_
 
 ## Test that "Calculated age is consistent with 'Age Category'"
 test <- bind_rows(infection %>% filter(age_category == "Adult", age_year < 18),
-                            infection %>% filter(age_category == "Child", age_year > 17 | age_day <= 28),
-                            infection %>% filter(age_category == "Neonate", age_day > 28)) %>% 
+                  infection %>% filter(age_category == "Child", age_year > 17 | age_day <= 28),
+                  infection %>% filter(age_category == "Neonate", age_day > 28)) %>% 
   select(redcap_id, acorn_id)
 
 ifelse(is_empty(test), 
@@ -386,3 +406,71 @@ infection$cci <- (infection$age_category == "Adult") * (
     4 * not_empty(infection$cmb_aids)
 )
 
+# Reorder columns for save into .acorn
+infection <- infection %>% 
+  select("redcap_id", "episode_id",
+         # F01:
+         "site_id", "date_enrolment", "patient_id", "acorn_id", "age_year", 
+         "age_day", "sex", "date_admission", "transfer_hospital", "transfer_facility", 
+         "date_hospitalisation", "admission_type", "admission_reason", 
+         "cmb_none", "comorbidities", "cmb_aids", "cmb_onc", "cmb_cpd", 
+         "cmb_cog", "cmb_rheu", "cmb_dem", "cmb_diab", "cmb_diad", "cmb_hop", 
+         "cmb_hivwa", "cmb_hivna", "cmb_mlr", "cmb_mal", "cmb_mst", "cmb_mld", 
+         "cmb_liv", "cmb_pep", "cmb_renal", "cmb_tub", "cmb_other_overnight", 
+         "cmb_other_rhc", "cmb_other_surgery",
+         # F02:
+         "date_episode_enrolment", "age_category", 
+         "age_category_calc",
+         "surveillance_category", 
+         "hai_date_symptom_onset", "ward_type", "ward", "surveillance_diag", 
+         "adult_altered_mentation", "adult_respiratory_rate", "adult_blood_pressure", 
+         "adult_abnormal_temp", "child_neo_abnormal_temp", "child_neo_inapp_tachycardia", 
+         "child_neo_alter_mental", "child_neo_reduce_pp", "neo_reduce", 
+         "neo_feed", "neo_convul", "clinical_severity_score", "cci",
+         "med_device_none", "med_device_pcv", 
+         "med_device_cvc", "med_device_iuc", "med_device_vent", "icu_48_hai", 
+         "surgery_hai", "blood_collect", "received_antibio", "antibiotic_j01gb06", 
+         "antibiotic_j01ca04", "antibiotic_j01cr02", "antibiotic_j01ca01", 
+         "antibiotic_j01cr01", "antibiotic_j01fa10", "antibiotic_j01ce01", 
+         "antibiotic_j01de01", "antibiotic_j01dd08", "antibiotic_j01dd01", 
+         "antibiotic_j01dd02", "antibiotic_j01dd04", "antibiotic_j01db01", 
+         "antibiotic_j01ma02", "antibiotic_j01fa09", "antibiotic_j01ff01", 
+         "antibiotic_j01cf02", "antibiotic_j01ee01", "antibiotic_j01xx09", 
+         "antibiotic_j01dh04", "antibiotic_j01aa02", "antibiotic_j01dh03", 
+         "antibiotic_j01fa01", "antibiotic_j01gb03", "antibiotic_j01dh51", 
+         "antibiotic_j01ma12", "antibiotic_j01xx08", "antibiotic_j01dh02", 
+         "antibiotic_j01xd01", "antibiotic_j01ma14", "antibiotic_j01ma06", 
+         "antibiotic_j01ma01", "antibiotic_j01ce02", "antibiotic_j01cr05", 
+         "antibiotic_j01fa06", "antibiotic_j01xa02", "antibiotic_j01aa07", 
+         "antibiotic_j01aa12", "antibiotic_j01xa01", "antibiotic_unknown", 
+         "antibiotic_any_other", "antibiotic_other_text", 
+         # F03
+         "has_clinical_outcome",
+         "total_infection_episode_nb", 
+         "ho_discharge_status", "ho_discharge_to", "ho_discharge_date", 
+         "ho_days_icu", "infection_episode_nb", "ho_date_enrolment", "ho_final_diag", 
+         # F04
+         "has_d28_outcome",
+         "d28_date", "d28_status", 
+         "d28_death_date", 
+         # F05
+         "bsi_ward_type", "bsi_ward", "bsi_culture_date", 
+         "bsi_pahtogen", "bsi_ast_date", "bsi_ast_date_unknown___unk", 
+         "bsi_immune_hiv", "bsi_immune_endstage", "bsi_immune_insulin", 
+         "bsi_immune_malignant", "bsi_immune_cytotoxic", "bsi_immune_prednisolone", 
+         "bsi_immune_cirrhosis", "bsi_immune_neutropenia", "bsi_immune_haema", 
+         "bsi_immune_organtran", "bsi_score_temp", "bsi_score_temp_unknown___unk", 
+         "bsi_score_resprate", "bsi_score_resprate_unknown___unk", "bsi_score_hrate", 
+         "bsi_score_hrate_unknown___unk", "bsi_score_sys", "bsi_score_sys_unknown___unk", 
+         "bsi_mentalstatus", "bsi_acute_hypo", "bsi_48h_intvas", "bsi_48h_mv", 
+         "bsi_48h_ca", "bsi_antibiotic_count", "bsi_antibiotic1_name", 
+         "bsi_antibiotic1_name_other", "bsi_antibiotic1_startdate", "bsi_antibiotic1_enddate", 
+         "bsi_antibiotic1_route", "bsi_antibiotic2_name", "bsi_antibiotic2_name_other", 
+         "bsi_antibiotic2_startdate", "bsi_antibiotic2_enddate", "bsi_antibiotic2_route", 
+         "bsi_antibiotic3_name", "bsi_antibiotic3_name_other", "bsi_antibiotic3_startdate", 
+         "bsi_antibiotic3_enddate", "bsi_antibiotic3_route", "bsi_antibiotic4_name", 
+         "bsi_antibiotic4_name_other", "bsi_antibiotic4_startdate", "bsi_antibiotic4_enddate", 
+         "bsi_antibiotic4_route", "bsi_antibiotic5_name", "bsi_antibiotic5_name_oth", 
+         "bsi_antibiotic5_startdate", "bsi_antibiotic5_enddate", "bsi_antibiotic5_route", 
+         "bsi_is_primary", "bsi_sec_source", "bsi_sec_source_oth", "bsi_is_com_implant", 
+         "bsi_is_com_2days", "bsi_is_com_fever")
