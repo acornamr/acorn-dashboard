@@ -1,4 +1,4 @@
-message("Assembly of clinical and lab data.")
+message("10_link_clinical_assembly.R")
 
 test <- FALSE
 if(test) {

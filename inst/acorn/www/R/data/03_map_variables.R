@@ -1,4 +1,4 @@
-message("Source 03_map_variables.R")
+message("03_map_variables.R")
 
 amr <- dta %>%
   mutate_all(as.character) %>%

@@ -1,3 +1,5 @@
+message("09_checklist_lab.R")
+
 checklist_status$lab_data_qc_1 <- list(status = "okay", msg = glue("The Lab dataset contains {nrow(amr)} rows"))
 
 if(format_data_dic == "TABULAR") {

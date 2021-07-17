@@ -1,3 +1,5 @@
+message("02_process_redcap_hai.R")
+
 dl_hai_dta <- dl_hai_dta %>%
   transmute(site_id = recordid, 
             # redcap_repeat_instrument, 
