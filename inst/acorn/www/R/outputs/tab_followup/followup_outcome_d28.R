@@ -35,10 +35,11 @@ output$d28_outcome_status <- renderHighchart({
     rename(y = n, name = d28_status) %>%
     mutate(freq = round(100*y / sum(y)), color = NA)
   
-  df$color[df$name == "Dead"] <- "black"
-  df$color[df$name == "Alive"] <- "#a6cee3"
-  df$color[df$name == "Unable to Contact"] <- "#969696"
-  df$color[df$name == "Unknown"] <- "#969696"
+  df$color[df$name == "Dead"] <- "#000000"
+  df$color[df$name == "Alive - completely recovered"] <- "#a6cee3"
+  df$color[df$name == "Alive - not back to normal activities"] <- "#a6cee3"
+  df$color[df$name == "Unable to contact"] <- "#999DA0"
+  df$color[df$name == "Unknown"] <- "#999DA0"
   
   
   highchart() %>%

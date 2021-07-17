@@ -35,11 +35,12 @@ output$clinical_outcome_status <- renderHighchart({
     rename(y = n, name = ho_discharge_status) %>%
     mutate(freq = round(100*y / sum(y)), color = NA)
   
-  df$color[df$name == "Dead"] <- "black"
+  df$color[df$name == "Dead"] <- "#000000"
   df$color[df$name == "Alive"] <- "#a6cee3"
-  df$color[df$name == "Discharged to die at home"] <- "black"
-  df$color[df$name == "Left against medical advice"] <- "coral"
-  df$color[df$name == "Transferred"] <- "coral"
+  df$color[df$name == "Discharged to die at home"] <- "#000000"
+  df$color[df$name == "Left against medical advice"] <- "#FF8362"
+  df$color[df$name == "Transferred"] <- "#FF8362"
+  df$color[df$name == "Unknown"] <- "#999DA0"
   
   
   highchart() %>%

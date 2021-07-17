@@ -381,31 +381,32 @@ ui <- fluidPage(
                                    h4_title("Clinical Outcome"),
                                    fluidRow(
                                      column(6, gaugeOutput("clinical_outcome_gauge", width = "100%", height = "100px")),
-                                     column(6, htmlOutput("clinical_outcome_pct", width = "100%", height = "100px"))
-                                   )
-                               ),
-                               div(class = 'box_outputs',
-                                   h4_title("Clinical Outcome Status"),
+                                     column(6, htmlOutput("clinical_outcome_pct", width = "100%", height = "70px"))
+                                   ),
+                                   h5("Clinical Outcome Status:"),
                                    highchartOutput("clinical_outcome_status", height = "250px")
-                               )
-                               
+                               ),
                         ),
                         column(6,
                                div(class = 'box_outputs',
                                    h4_title("Day 28"),
                                    fluidRow(
                                      column(6, gaugeOutput("d28_outcome_gauge", width = "100%", height = "100px")),
-                                     column(6, htmlOutput("d28_outcome_pct", width = "100%", height = "100px"))
-                                   )
+                                     column(6, htmlOutput("d28_outcome_pct", width = "100%", height = "70px"))
+                                   ),
+                                   h5("Day 28 Status:"),
+                                   highchartOutput("d28_outcome_status", height = "250px")
                                ),
-                               div(class = 'box_outputs',
-                                   h4_title("Day 28 Status"),
-                                   highchartOutput("d28_outcome_status", height = "200px")
-                               )
                         )
                       ),
                       fluidRow(
-                        column(12, 
+                        column(4,
+                               div(class = 'box_outputs',
+                                   h4_title("Bloodstream Infection (BSI)"),
+                                   htmlOutput("bsi_summary")
+                               )
+                        ),
+                        column(8, 
                                div(class = 'box_outputs',
                                    h4_title("Initial & Final Surveillance Diagnosis"),
                                    p("The 10 most common initial-final diagnosis combinations:"),
