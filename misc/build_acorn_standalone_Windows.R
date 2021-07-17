@@ -1,3 +1,4 @@
+# work on 2021-07-17
 # Perform (once per machine) a manual installation of nodejs (https://nodejs.org/en/).
 
 # Install latest version of shinybox.
@@ -12,6 +13,7 @@ library(shinybox)
 # Check that the package is working.
 remotes::install_github("acornamr/acorn-dashboard", ref = "master")
 acorn::run_app()
+# if needed rebuild NAMSEPACE (somehow macOS is less stringent about this)
 
 # Create a directory for the app.
 time <- format(Sys.time(), "%Y-%m-%d_%H%M%S")
@@ -22,18 +24,14 @@ shinybox(
   app_name = "ACORN",
   author = "Olivier Celhay, Paul Turner",
   description = "A Dashboard for ACORN AMR Data",
-  semantic_version = "v0.0.1", # format vx.y.z
-  mran_date = "2020-12-01",
-  cran_like_url = NULL,
-  mac_url = NULL,
+  semantic_version = "v0.0.2", # format vx.y.z
+  cran_like_url = "https://cran.microsoft.com/snapshot/2021-07-01",
   git_host = "github",
   git_repo = "acornamr/acorn-dashboard",
-  function_name = "run_app",
+  function_name = "run_app", 
   local_package_path = NULL,
   package_install_opts = list(type = "binary"),
   build_path = build_path,
   rtools_path_win = "C:\\rtools40\\usr\\bin",
   nodejs_path = "C:/Program Files/nodejs/",
-  nodejs_version = "v14.7.0",
-  permission = TRUE,
   run_build = TRUE)
