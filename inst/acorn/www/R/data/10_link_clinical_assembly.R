@@ -99,6 +99,6 @@ acorn_dta <- acorn_dta %>%
   ungroup()
 
 ifelse(nrow(acorn_dta) >= 1,
-       checklist_status$linkage_result <- list(status = "okay", msg = "👏😀 Successfully combined clinical and lab data into .acorn file"),
+       checklist_status$linkage_result <- list(status = "okay", msg = "Successfully combined clinical and lab data into .acorn file"),
        checklist_status$linkage_result <- list(status = "ko", msg = "Error in combining clinical and lab data.")
 )

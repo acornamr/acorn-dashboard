@@ -797,9 +797,6 @@ server <- function(input, output, session) {
                             selected = NULL, status = "success",
                             checkIcon = list(yes = icon("hand-point-right")))
     
-    startAnim(session, "float_about", type = "tada")
-    
-    
     # reinitiate everything so that previousely loaded .acorn data isn't there anymore
     meta(NULL)
     redcap_f01f05_dta(NULL)
@@ -861,7 +858,8 @@ server <- function(input, output, session) {
     corresp_org_antibio(corresp_org_antibio)
     
     source('./www/R/update_input_widgets.R', local = TRUE)
-    showNotification(glue("Successfully loaded data. Data generated on the {meta()$time_generation}; by {meta$user}. {meta$comment}"))
+    showNotification("Successfully loaded data.")
+    startAnim(session, "float_about", type = "swing")
     focus_analysis()
   })
   
@@ -876,7 +874,8 @@ server <- function(input, output, session) {
     corresp_org_antibio(corresp_org_antibio)
     
     source('./www/R/update_input_widgets.R', local = TRUE)
-    showNotification(glue("Successfully loaded data. Data generated on the {meta()$time_generation}; by {meta$user}. {meta$comment}"))
+    showNotification("Successfully loaded data.")
+    startAnim(session, "float_about", type = "swing")
     focus_analysis()
   })
   
@@ -922,7 +921,7 @@ server <- function(input, output, session) {
       showNotification("There is a critical issue with clinical data. The issue should be fixed in REDCap.", type = "error", duration = NULL)
     } else {
       checklist_status$redcap_f01f05_dta <- list(status = "okay", 
-                                                 msg = glue("👏😀 Clinical data (F01-F05) provided with {length(unique(infection$redcap_id))} patient enrolments and {nrow(infection)} infection episodes"))
+                                                 msg = glue("Clinical data provided with {length(unique(infection$redcap_id))} patient enrolments and {nrow(infection)} infection episodes."))
       # showNotification("Clinical data successfully provided.", type = "message", duration = 5)
       # TODO: modify this to ensure that HAI data is okay before announcing that clinical data is provided
     }
@@ -1122,9 +1121,9 @@ server <- function(input, output, session) {
                    
                    updatePickerInput(session, 'acorn_files_server', choices = acorn_files, selected = acorn_files[1])
                    
-                   checklist_status$acorn_dta_saved_server <- list(status = "okay", msg = "👏😀 .acorn file saved on server")
-                   notify("👏😀 Successfully saved .acorn file in the cloud. You can now explore acorn data.", id = id)
-                   
+                   checklist_status$acorn_dta_saved_server <- list(status = "okay", msg = ".acorn file saved on server")
+                   notify("Successfully saved .acorn file in the cloud. You can now explore acorn data.", id = id)
+                   startAnim(session, "float_about", type = "swing")
                    focus_analysis()
                  })
                  
@@ -1152,13 +1151,13 @@ server <- function(input, output, session) {
                      save(meta, redcap_f01f05_dta, redcap_hai_dta, acorn_dta, corresp_org_antibio, lab_code, data_dictionary,
                           file = file)
                      checklist_status$acorn_dta_saved_local <- list(status = "okay", msg = "Successfully saved .acorn file locally")
-                     showNotification("👏😀 Successfully saved .acorn file locally. You can now explore acorn data.", duration = 5)
+                     showNotification("Successfully saved .acorn file locally. You can now explore acorn data.", duration = 5)
+                     startAnim(session, "float_about", type = "swing")
+                     focus_analysis()
                      
                      if(checklist_status$acorn_dta_saved_server$status != "okay")  {
                        checklist_status$acorn_dta_saved_server <- list(status = "warning", msg = "Consider saving .acorn file on the cloud for additional security.")
                      }
-                     
-                     focus_analysis()
                    })
                  }
 
