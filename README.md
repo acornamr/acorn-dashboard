@@ -20,7 +20,7 @@ The app is available in three forms: a web app, a standalone app (Windows OS onl
 
 (1) (Windows OS, macOS or Linux) The latest release of the web app can be accessed at https://moru.shinyapps.io/acorn-prototype/.
 
-(2) (Windows OS) A standalone version of the app can be downloaded from [this repository' releases section](https://github.com/acorn/acornamr/releases/).
+(2) (Windows OS) A standalone version of the app can be downloaded from [this repository' releases section](https://github.com/acornamr/acorn-dashboard/releases).
 
 (3) (Windows, macOS or Linux) The app can also be run as an R package.
 
