@@ -1,4 +1,4 @@
-### Updated Charlson Comorbidity Index (uCCI)
+### Definition of Updated Charlson Comorbidity Index (uCCI)
 
 In ACORN, the CCI is calculated for adult patients (>= 18 y.o.) only.
 
@@ -26,21 +26,31 @@ Key reference: *Ternavasio-de la Vega HG et al (2018). The updated Charlson como
 | AIDS (excluded asymptomatic infection)                              | 4            | AIDS                                      |
 | Maximum comorbidity score                                           | 24           |                                           |
 
-</br></br>
+</br>
 
-Additional ACORN comorbidities (these were requested to be included by WHO GLASS as LMIC relevant): should not be included as part of CCI
+Additional ACORN comorbidities, which were requested to be included by the WHO GLASS team as LMIC relevant, are not be included as part of the uCCI: malaria, malnutrition, peptic ulcer\*, diabetes\*, tuberculosis, HIV on ART, HIV without ART (those marked with an \* were included in the original CCI).
 
-- Malaria
-- Malnutrition
-- Peptic Ulcer
-- Diabetes
-- Tuberculosis
-- HIV on ART
-- HIV without ART
+### Deduplication of culture / bacterial isolate data
+
+By patient-episode
+
+This filter restricts to the first isolation of each species by specimen type and patient infection episode. For example, if E. coli was isolated from three blood cultures and one urine culture during a single CAI episode, the filter would select just the first blood culture isolate and the urine culture isolate.
+
+By patient ID
+
+This filter restricts to the first isolation of each species by patient, specimen type, and infection category (CAI or HAI). For example, if a patient was admitted two times during the surveillance period and had two episodes of community-acquired E. coli urosepsis (two E. coli urine cultures and one E. coli bacteraemia) and one hospital acquired E. coli bacteraemia secondary to a surgical complication, the filter would select just the earliest isolate from each specimen type and infection category (i.e. the E. coli from the first positive urine culture and the first positive blood culture [CAI] plus the E. coli from the first positive blood culture [HAI]).
+
+### Antimicrobial resistance reporting
+Class-level resistance to fluoroquinolones, 3rd generation cephalosporins, and carbapenems is calculated automatically for selected target organisms. Organism appropriate AST results are combined such that if any drug in the group is resistant, then the class is labelled resistant. Results of extended spectrum beta-lactamase and carbapenemase tests are included. For this calculation, the intermediate category is counted as susceptible, thus providing a conservative estimate of resistance.
+Where included in the laboratory testing repertoire and data file, results of beta-lactamase and inducible clindamycin testing are incorporated into reporting of beta-lactam (penicillin / ampicillin) and macrolide susceptibility results. 
+Meningitis and non-meningitis breakpoints are reported separately for Streptococcus pneumoniae and penicillin, ceftriaxone, and cefotaxime.
+
+### Blood culture contaminants
+It is possible to remove bacterial species which have a high probability of being a skin contaminant from the microbiology organism lists and tables. The following genera / species are considered contaminants:
+Blood cultures with of growth of >= 1 contaminant organism are labelled as contaminated, irrespective of growth of pathogens.
 
 
-
-### How to read .acorn files in R
+### Read .acorn files in R
 
 .acorn files can be read and loaded in memory with the command `base::load`.
 
@@ -64,7 +74,10 @@ The file contains the same objects as NAME.acorn, but with patient ids NOT hashe
 - `lab_dta`: one row per isolate as per the lab file provided on generation of the .acorn file.
 
 
-### How to modify ACORN Dashboard theme
+The non_anonmyised `.acorn` files must be handled carefully and securely, as they contain raw patient identifiers: these files may be used by local investigators to link data / bacterial isolates to additional research projects / quality improvement activities. Please contact the ACORN team for more information.
+
+
+### Modify the dashboard theme/language
 
 Every site can customize the ACORN dashboard.
 
@@ -77,16 +90,40 @@ You can ask for changes in the theme by providing a list of values for variables
 
 Please contact the ACORN team for more information.
 
+TODO: provide link to template to modify language.
+
 ### Clinical and Lab data linkage
 
-TODD: complete using Paul 'ACORN2 Clinical and Laboratory data linkage.docx'
+TODO: complete using Paul 'ACORN2 Clinical and Laboratory data linkage.docx'
 
-### Enrolment Log
+### Enrolment/Error Log
 
-#### Expected Day-28 date
+The enrolment log provides a real-time summary of all patient enrolments and infection episodes.
 
+Expected Day-28 date
 The expected 28 day follow-up date is 28 days following the final enrolment date for the admission (i.e. if 3 enrolments / infection episodes in admission, the 28 day follow-up was 28 days after enrolment #3).
 
+Error log.
+
+The second tab of the enrolment log Excel file contains a high-level summary of structural data errors, such as where an F02 (Infection episode form), F03 (Infection hospital outcome form), F04 (D28 form), or F05 (BSI episode form) cannot be linked to a F01 (Enrolment form). These errors can be further investigated by logging into the ACORN REDCap database and/or by discussion with the ACORN data manager.
 
 
+### Contact ACORN Team
+
+For technical questions or feedback on the App, [please fill this form](https://docs.google.com/forms/d/1xdyLQgESr7H6iBpEWlTCeNZ1RGmRdH8nenBGNfq4yjI/). If you have questions about the project, please contact ACORN investigators [Prof Paul Turner](mailto:Pault@tropmedres.ac) or [Prof Rogier van Doorn](mailto:rvandoorn@oucru.org).
+
+
+### Acknowledgments and Credits
+
+App Development Team: [Olivier Celhay](https://olivier.celhay.net), [Paul Turner](mailto:Pault@tropmedres.ac). With contributions from Naomi Waithira, Prapass Wannapinij, Elizabeth Ashley, Rogier van Doorn. 
+
+Software:
+
+- R Core Team (2021). R: A language and environment for statistical computing. R Foundation for Statistical
+  Computing, Vienna, Austria. URL https://www.R-project.org/.
+- Winston Chang, Joe Cheng, JJ Allaire, Carson Sievert, Barret Schloerke, Yihui Xie, Jeff Allen, Jonathan McPherson,
+  Alan Dipert and Barbara Borges (2021). shiny: Web Application Framework for R. R package version 1.6.0.
+  https://CRAN.R-project.org/package=shiny
+- Will Beasley (2020). REDCapR: Interaction Between R and REDCap. R package version 0.11.0.
+  https://CRAN.R-project.org/package=REDCapR
 

@@ -18,32 +18,14 @@ https://bootswatch.com/4/flatly/bootstrap.css */
   max-width: 600px;
 }
 
-
-/*
-.shiny-notification {
-  height: 100%;
-  width: 100%; 
-  top: 0;
-  left: 0;
-  position:fixed;
-  font-size: 250%;
-  text-align: center;
-  background-color: rgba(0, 0, 0, 0.7);
-  color: white;
+#faq {
+  margin-top: 15px;
 }
-*/
 
 #map_sites {
   margin-top: 5px;
   width: 100%;
   border: 2px solid grey;
-}
-
-.vl {
-  border-style: hidden hidden hidden solid;
-  border-color: rgb(213, 213, 213);
-  padding-left: 15px;
-  padding-right: 15px;
 }
 
 .cl-success {
@@ -108,10 +90,6 @@ https://bootswatch.com/4/flatly/bootstrap.css */
 
 .checklist {
   width: 300px;
-}
-
-.filter_box {
-  width: 500px;
 }
 
 .filter_box_small {

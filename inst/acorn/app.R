@@ -15,7 +15,7 @@ ui <- fluidPage(
   
   div(id = 'float_about',
       dropMenu(
-        actionButton("checklist_show", icon = icon("caret-down"), label = "About", class = "btn-success"),
+        actionButton("checklist_show", icon = icon("caret-down"), label = "About Data", class = "btn-success"),
         theme = "light-border",
         class = "checklist",
         placement = "bottom-end",
@@ -134,36 +134,51 @@ ui <- fluidPage(
                                  choices = i18n$get_languages(), selected = i18n$get_key_translation(), width = "150px"
                                ),
                                div(id = "login-basic", 
-                                   div(
-                                     class = "well",
-                                     h5(class = "text-center", "Please log in"),
-                                     selectInput("cred_site", tagList(icon("hospital"), "Site"),
-                                                 choices = code_sites),
-                                     conditionalPanel("input.cred_site != 'demo'", div(
-                                       textInput("cred_user", tagList(icon("user"), "User"),
-                                                 placeholder = "Enter user"),
-                                       passwordInput("cred_password", tagList(icon("unlock-alt"), "Password"), 
-                                                     placeholder = "Enter password")
-                                     )
-                                     ), 
-                                     div(class = "text-center",
-                                         actionButton("cred_login", label = "Log in", class = "btn-primary"),
-                                         # TODO: add an option to log out
-                                         # actionButton("cred_logout", label = "Log out", class = "btn-primary")
-                                     )
+                                   div(class = "well",
+                                       h5(class = "text-center", "Please log in"),
+                                       selectInput("cred_site", tagList(icon("hospital"), "Site"),
+                                                   choices = code_sites),
+                                       conditionalPanel("input.cred_site != 'demo'", div(
+                                         textInput("cred_user", tagList(icon("user"), "User"),
+                                                   placeholder = "Enter user"),
+                                         passwordInput("cred_password", tagList(icon("unlock-alt"), "Password"), 
+                                                       placeholder = "Enter password")
+                                       )
+                                       ), 
+                                       div(class = "text-center",
+                                           actionButton("cred_login", label = "Log in", class = "btn-primary"),
+                                           div(em("To log out, close or reload the app."))
+                                       )
                                    ),
                                    span("or ", actionLink("direct_upload_acorn", "upload a local acorn file."))
                                )
                         ),
                         column(9,
                                fluidRow(
-                                 column(4,
+                                 column(5,
                                         h4('Welcome!'),
-                                        includeMarkdown("./www/markdown/lorem_ipsum.md")
+                                        h5("What is ACORN?"),
+                                        includeMarkdown("./www/markdown/what_is_acorn.md"),
+                                        h5("Why is ACORN needed?"),
+                                        includeMarkdown("./www/markdown/why_acorn_needed.md")
                                  ),
-                                 column(8,
-                                        h5('ACORN Participating Countries'),
-                                        span(img(src = "./images/Map-ACORN-Sites-Global.png", id = "map_sites"))
+                                 column(7,
+                                        h5("ACORN Participating Countries"),
+                                        span(img(src = "./images/Map-ACORN-Sites-Global.png", id = "map_sites")),
+                                        fluidRow(
+                                          column(6, 
+                                                 h5("Target Pathogens"),
+                                                 includeMarkdown("./www/markdown/target_pathogens.md")
+                                          ),
+                                          column(6, 
+                                                 div(id = "faq",
+                                                     hr(),
+                                                     actionButton("show_faq", icon = icon("caret-down"), label = "ACORN App FAQ (index:)", class = "btn-success"),
+                                                     includeMarkdown("./www/markdown/faq_content.md"),
+                                                     hr()
+                                                 )
+                                          )
+                                        )
                                  )
                                )
                         )
@@ -583,6 +598,7 @@ server <- function(input, output, session) {
   # Management of help links
   observeEvent(input$show_faq,
                showModal(modalDialog(
+                 includeMarkdown("./www/markdown/faq_content.md"),
                  includeMarkdown("./www/markdown/faq.md"),
                  title = "FAQ", size = "l", easyClose = TRUE))
   )
@@ -978,187 +994,187 @@ server <- function(input, output, session) {
                         local.orgs = data_dictionary$local.orgs,
                         notes = data_dictionary$notes)
                  )
-                   
-                   notify("Processing Lab data.", id = id)
-                   source("./www/R/data/03_map_variables.R", local = TRUE)
-                   source("./www/R/data/04_map_specimens.R", local = TRUE)
-                   source("./www/R/data/05_map_organisms.R", local = TRUE)
-                   source("./www/R/data/06_make_ast_group.R", local = TRUE)
-                   source("./www/R/data/07_ast_interpretation.R", local = TRUE)
-                   source("./www/R/data/08_ast_interpretation_nonstandard.R", local = TRUE)
-                   source("./www/R/data/09_checklist_lab.R", local = TRUE)
-                   
-                   lab_dta(amr)
-                   notify("Lab data successfully processsed!", id = id)
-                   })
                  
-                 # On "Generate ACORN" ----
-                 observeEvent(input$generate_acorn_data, {
-                   id <- notify("Generating .acorn")
-                   on.exit({Sys.sleep(2); removeNotification(id)}, add = TRUE)
-                   
-                   if(checklist_status$redcap_f01f05_dta$status != "okay")  showNotification("Aborted: clinical data not provided.", type = "warning", duration = NULL)
-                   if(checklist_status$lab_dta$status != "okay")     showNotification("Aborted: lab data not provided.", type = "warning", duration = NULL)
-                   
-                   if(checklist_status$lab_dta$status == "okay" & checklist_status$redcap_f01f05_dta$status == "okay") {
-                     source("./www/R/data/10_link_clinical_assembly.R", local = TRUE)
-                     
-                     acorn_dta(acorn_dta)
-                     
-                     source('./www/R/update_input_widgets.R', local = TRUE)
-                     notify(".acorn data successfully generated!", id = id)
-                     checklist_status$acorn_dta_saved = list(status = "warning", msg = ".acorn not saved")
-                   }
-                 })
+                 notify("Processing Lab data.", id = id)
+                 source("./www/R/data/03_map_variables.R", local = TRUE)
+                 source("./www/R/data/04_map_specimens.R", local = TRUE)
+                 source("./www/R/data/05_map_organisms.R", local = TRUE)
+                 source("./www/R/data/06_make_ast_group.R", local = TRUE)
+                 source("./www/R/data/07_ast_interpretation.R", local = TRUE)
+                 source("./www/R/data/08_ast_interpretation_nonstandard.R", local = TRUE)
+                 source("./www/R/data/09_checklist_lab.R", local = TRUE)
                  
-                 # On "Save ACORN" on server ----
-                 observeEvent(input$save_acorn_server, { 
-                   if(checklist_status$linkage_result$status != "okay") {
-                     showNotification("No .acorn data loaded.", type = "error", duration = 10)
-                     return()
-                   }
-                   
-                   if(! has_internet()) {
-                     showNotification("Not connected to internet", type = "error")
-                     return()
-                   }
-                   
-                   showModal(modalDialog(
-                     title = "Save acorn data", footer = modalButton("Cancel"), size = "m", easyClose = FALSE, fade = TRUE,
-                     div(
-                       textInput("name_file", value = glue("{input$cred_site}_{session_start_time}"), label = "File name:"),
-                       textAreaInput("meta_acorn_comment", label = "(Optional) Comments:"),
-                       br(), br(),
-                       actionButton("save_acorn_server_confirm", label = "Save on Server")
-                     )
-                   ))
-                 })
-                 
-                 # On "Save ACORN" as a local file ----
-                 observeEvent(input$save_acorn_local, { 
-                   if(checklist_status$linkage_result$status != "okay") {
-                     showNotification("No .acorn data loaded.", type = "error", duration = 10)
-                     return()
-                   }
-                   
-                   showModal(modalDialog(
-                     title = "Save acorn data", footer = modalButton("Cancel"), size = "m", easyClose = FALSE, fade = TRUE,
-                     div(
-                       textInput("name_file_dup", value = glue("{input$cred_site}_{session_start_time}"), label = "File name:"),
-                       textAreaInput("meta_acorn_comment_dup", label = "(Optional) Comments:"),
-                       br(), br(),
-                       downloadButton("save_acorn_local_confirm", label = "Save")
-                     )
-                   ))
-                 })
-                 
-                 # On confirmation that the file is being saved on server ----
-                 observeEvent(input$save_acorn_server_confirm, { 
-                   removeModal()
-                   id <- notify("Trying to save .acorn file on server")
-                   on.exit({Sys.sleep(2); removeNotification(id)}, add = TRUE)
-                   
-                   meta <- list(time_generation = session_start_time,
-                                app_version = app_version,
-                                site = input$cred_site,
-                                user = input$cred_user,
-                                comment = input$meta_acorn_comment)
-                   meta(meta)
-                   
-                   ## Anonymised data ----
-                   redcap_f01f05_dta <- redcap_f01f05_dta() %>% mutate(patient_id = md5(patient_id))
-                   redcap_hai_dta <- redcap_hai_dta()
-                   acorn_dta <- acorn_dta() %>% mutate(patient_id = md5(patient_id))
-                   corresp_org_antibio <- corresp_org_antibio()
-                   lab_code <- lab_code()
-                   data_dictionary <- data_dictionary()
-                   
-                   name_file <- glue("{input$name_file}.acorn")
-                   file <- file.path(tempdir(), name_file)
-                   
-                   save(meta, redcap_f01f05_dta, redcap_hai_dta, acorn_dta, corresp_org_antibio, lab_code, data_dictionary,
-                        file = file)
-                   
-                   put_object(file = file,
-                              object = name_file,
-                              bucket = acorn_cred()$acorn_s3_bucket,
-                              key =  acorn_cred()$acorn_s3_key,
-                              secret = acorn_cred()$acorn_s3_secret,
-                              region = acorn_cred()$acorn_s3_region)
-                   
-                   ## Non anonymised data ----
-                   redcap_f01f05_dta <- redcap_f01f05_dta()
-                   redcap_hai_dta <- redcap_hai_dta()
-                   lab_dta <- lab_dta()
-                   acorn_dta <- acorn_dta()
-                   corresp_org_antibio <- corresp_org_antibio()
-                   lab_code <- lab_code()
-                   data_dictionary <- data_dictionary()
-                   
-                   name_file_non_anonymised <- glue("{input$name_file}.acorn_non_anonymised")
-                   file_non_anonymised <- file.path(tempdir(), name_file_non_anonymised)
-                   
-                   save(meta, redcap_f01f05_dta, redcap_hai_dta, lab_dta, acorn_dta, corresp_org_antibio, lab_code, data_dictionary,
-                        file = file_non_anonymised)
-                   
-                   put_object(file = file_non_anonymised,
-                              object = name_file_non_anonymised,
-                              bucket = acorn_cred()$acorn_s3_bucket,
-                              key =  acorn_cred()$acorn_s3_key,
-                              secret = acorn_cred()$acorn_s3_secret,
-                              region = acorn_cred()$acorn_s3_region)
-                   
-                   # update list of files to load
-                   dta <- get_bucket(bucket = acorn_cred()$acorn_s3_bucket,
-                                     key =  acorn_cred()$acorn_s3_key,
-                                     secret = acorn_cred()$acorn_s3_secret,
-                                     region = acorn_cred()$acorn_s3_region)
-                   dta <- unlist(dta)
-                   acorn_dates <- as.vector(dta[names(dta) == 'Contents.LastModified'])
-                   ord_acorn_dates <- order(as.POSIXct(acorn_dates))
-                   acorn_files <- rev(tail(as.vector(dta[names(dta) == 'Contents.Key'])[ord_acorn_dates], 10))
-                   acorn_files <- acorn_files[endsWith(acorn_files, ".acorn")]
-                   
-                   updatePickerInput(session, 'acorn_files_server', choices = acorn_files, selected = acorn_files[1])
-                   
-                   checklist_status$acorn_dta_saved_server <- list(status = "okay", msg = ".acorn file saved on server")
-                   notify("Successfully saved .acorn file in the cloud. You can now explore acorn data.", id = id)
-                   startAnim(session, "float_about", type = "swing")
-                   focus_analysis()
-                 })
-                 
-                 
-                 # On confirmation that the file is being saved locally ----
-                 output$save_acorn_local_confirm <- downloadHandler(
-                   filename = glue("{input$name_file_dup}.acorn"),
-                   content = function(file) {
-                     removeModal()
-                     meta <- list(time_generation = session_start_time,
-                                  app_version = app_version,
-                                  site = input$cred_site,
-                                  user = input$cred_user,
-                                  comment = input$meta_acorn_comment_dup)
-                     meta(meta)
-                     
-                     # Anonymised
-                     redcap_f01f05_dta <- redcap_f01f05_dta() %>% mutate(patient_id = md5(patient_id))
-                     redcap_hai_dta <- redcap_hai_dta()
-                     acorn_dta <- acorn_dta() %>% mutate(patient_id = md5(patient_id))
-                     corresp_org_antibio <- corresp_org_antibio()
-                     lab_code <- lab_code()
-                     data_dictionary <- data_dictionary()
-                     
-                     save(meta, redcap_f01f05_dta, redcap_hai_dta, acorn_dta, corresp_org_antibio, lab_code, data_dictionary,
-                          file = file)
-                     checklist_status$acorn_dta_saved_local <- list(status = "okay", msg = "Successfully saved .acorn file locally")
-                     showNotification("Successfully saved .acorn file locally. You can now explore acorn data.", duration = 5)
-                     startAnim(session, "float_about", type = "swing")
-                     focus_analysis()
-                     
-                     if(checklist_status$acorn_dta_saved_server$status != "okay")  {
-                       checklist_status$acorn_dta_saved_server <- list(status = "warning", msg = "Consider saving .acorn file on the cloud for additional security.")
-                     }
-                   })
-                 }
+                 lab_dta(amr)
+                 notify("Lab data successfully processsed!", id = id)
+               })
+  
+  # On "Generate ACORN" ----
+  observeEvent(input$generate_acorn_data, {
+    id <- notify("Generating .acorn")
+    on.exit({Sys.sleep(2); removeNotification(id)}, add = TRUE)
+    
+    if(checklist_status$redcap_f01f05_dta$status != "okay")  showNotification("Aborted: clinical data not provided.", type = "warning", duration = NULL)
+    if(checklist_status$lab_dta$status != "okay")     showNotification("Aborted: lab data not provided.", type = "warning", duration = NULL)
+    
+    if(checklist_status$lab_dta$status == "okay" & checklist_status$redcap_f01f05_dta$status == "okay") {
+      source("./www/R/data/10_link_clinical_assembly.R", local = TRUE)
+      
+      acorn_dta(acorn_dta)
+      
+      source('./www/R/update_input_widgets.R', local = TRUE)
+      notify(".acorn data successfully generated!", id = id)
+      checklist_status$acorn_dta_saved = list(status = "warning", msg = ".acorn not saved")
+    }
+  })
+  
+  # On "Save ACORN" on server ----
+  observeEvent(input$save_acorn_server, { 
+    if(checklist_status$linkage_result$status != "okay") {
+      showNotification("No .acorn data loaded.", type = "error", duration = 10)
+      return()
+    }
+    
+    if(! has_internet()) {
+      showNotification("Not connected to internet", type = "error")
+      return()
+    }
+    
+    showModal(modalDialog(
+      title = "Save acorn data", footer = modalButton("Cancel"), size = "m", easyClose = FALSE, fade = TRUE,
+      div(
+        textInput("name_file", value = glue("{input$cred_site}_{session_start_time}"), label = "File name:"),
+        textAreaInput("meta_acorn_comment", label = "(Optional) Comments:"),
+        br(), br(),
+        actionButton("save_acorn_server_confirm", label = "Save on Server")
+      )
+    ))
+  })
+  
+  # On "Save ACORN" as a local file ----
+  observeEvent(input$save_acorn_local, { 
+    if(checklist_status$linkage_result$status != "okay") {
+      showNotification("No .acorn data loaded.", type = "error", duration = 10)
+      return()
+    }
+    
+    showModal(modalDialog(
+      title = "Save acorn data", footer = modalButton("Cancel"), size = "m", easyClose = FALSE, fade = TRUE,
+      div(
+        textInput("name_file_dup", value = glue("{input$cred_site}_{session_start_time}"), label = "File name:"),
+        textAreaInput("meta_acorn_comment_dup", label = "(Optional) Comments:"),
+        br(), br(),
+        downloadButton("save_acorn_local_confirm", label = "Save")
+      )
+    ))
+  })
+  
+  # On confirmation that the file is being saved on server ----
+  observeEvent(input$save_acorn_server_confirm, { 
+    removeModal()
+    id <- notify("Trying to save .acorn file on server")
+    on.exit({Sys.sleep(2); removeNotification(id)}, add = TRUE)
+    
+    meta <- list(time_generation = session_start_time,
+                 app_version = app_version,
+                 site = input$cred_site,
+                 user = input$cred_user,
+                 comment = input$meta_acorn_comment)
+    meta(meta)
+    
+    ## Anonymised data ----
+    redcap_f01f05_dta <- redcap_f01f05_dta() %>% mutate(patient_id = md5(patient_id))
+    redcap_hai_dta <- redcap_hai_dta()
+    acorn_dta <- acorn_dta() %>% mutate(patient_id = md5(patient_id))
+    corresp_org_antibio <- corresp_org_antibio()
+    lab_code <- lab_code()
+    data_dictionary <- data_dictionary()
+    
+    name_file <- glue("{input$name_file}.acorn")
+    file <- file.path(tempdir(), name_file)
+    
+    save(meta, redcap_f01f05_dta, redcap_hai_dta, acorn_dta, corresp_org_antibio, lab_code, data_dictionary,
+         file = file)
+    
+    put_object(file = file,
+               object = name_file,
+               bucket = acorn_cred()$acorn_s3_bucket,
+               key =  acorn_cred()$acorn_s3_key,
+               secret = acorn_cred()$acorn_s3_secret,
+               region = acorn_cred()$acorn_s3_region)
+    
+    ## Non anonymised data ----
+    redcap_f01f05_dta <- redcap_f01f05_dta()
+    redcap_hai_dta <- redcap_hai_dta()
+    lab_dta <- lab_dta()
+    acorn_dta <- acorn_dta()
+    corresp_org_antibio <- corresp_org_antibio()
+    lab_code <- lab_code()
+    data_dictionary <- data_dictionary()
+    
+    name_file_non_anonymised <- glue("{input$name_file}.acorn_non_anonymised")
+    file_non_anonymised <- file.path(tempdir(), name_file_non_anonymised)
+    
+    save(meta, redcap_f01f05_dta, redcap_hai_dta, lab_dta, acorn_dta, corresp_org_antibio, lab_code, data_dictionary,
+         file = file_non_anonymised)
+    
+    put_object(file = file_non_anonymised,
+               object = name_file_non_anonymised,
+               bucket = acorn_cred()$acorn_s3_bucket,
+               key =  acorn_cred()$acorn_s3_key,
+               secret = acorn_cred()$acorn_s3_secret,
+               region = acorn_cred()$acorn_s3_region)
+    
+    # update list of files to load
+    dta <- get_bucket(bucket = acorn_cred()$acorn_s3_bucket,
+                      key =  acorn_cred()$acorn_s3_key,
+                      secret = acorn_cred()$acorn_s3_secret,
+                      region = acorn_cred()$acorn_s3_region)
+    dta <- unlist(dta)
+    acorn_dates <- as.vector(dta[names(dta) == 'Contents.LastModified'])
+    ord_acorn_dates <- order(as.POSIXct(acorn_dates))
+    acorn_files <- rev(tail(as.vector(dta[names(dta) == 'Contents.Key'])[ord_acorn_dates], 10))
+    acorn_files <- acorn_files[endsWith(acorn_files, ".acorn")]
+    
+    updatePickerInput(session, 'acorn_files_server', choices = acorn_files, selected = acorn_files[1])
+    
+    checklist_status$acorn_dta_saved_server <- list(status = "okay", msg = ".acorn file saved on server")
+    notify("Successfully saved .acorn file in the cloud. You can now explore acorn data.", id = id)
+    startAnim(session, "float_about", type = "swing")
+    focus_analysis()
+  })
+  
+  
+  # On confirmation that the file is being saved locally ----
+  output$save_acorn_local_confirm <- downloadHandler(
+    filename = glue("{input$name_file_dup}.acorn"),
+    content = function(file) {
+      removeModal()
+      meta <- list(time_generation = session_start_time,
+                   app_version = app_version,
+                   site = input$cred_site,
+                   user = input$cred_user,
+                   comment = input$meta_acorn_comment_dup)
+      meta(meta)
+      
+      # Anonymised
+      redcap_f01f05_dta <- redcap_f01f05_dta() %>% mutate(patient_id = md5(patient_id))
+      redcap_hai_dta <- redcap_hai_dta()
+      acorn_dta <- acorn_dta() %>% mutate(patient_id = md5(patient_id))
+      corresp_org_antibio <- corresp_org_antibio()
+      lab_code <- lab_code()
+      data_dictionary <- data_dictionary()
+      
+      save(meta, redcap_f01f05_dta, redcap_hai_dta, acorn_dta, corresp_org_antibio, lab_code, data_dictionary,
+           file = file)
+      checklist_status$acorn_dta_saved_local <- list(status = "okay", msg = "Successfully saved .acorn file locally")
+      showNotification("Successfully saved .acorn file locally. You can now explore acorn data.", duration = 5)
+      startAnim(session, "float_about", type = "swing")
+      focus_analysis()
+      
+      if(checklist_status$acorn_dta_saved_server$status != "okay")  {
+        checklist_status$acorn_dta_saved_server <- list(status = "warning", msg = "Consider saving .acorn file on the cloud for additional security.")
+      }
+    })
+}
 
 shinyApp(ui = ui, server = server)  # port 3872
