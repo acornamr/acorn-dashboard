@@ -4,8 +4,7 @@ output$culture_specimen_type <- renderHighchart({
   
   
   ifelse(input$filter_rm_contaminant, {
-    dta <- acorn_dta_filter() %>% 
-      replace_na(list(contaminant = "No")) %>% filter(contaminant == "No")
+    dta <- acorn_dta_filter() %>% filter(contaminant == "No")
   }, 
   {
     dta <- acorn_dta_filter() 

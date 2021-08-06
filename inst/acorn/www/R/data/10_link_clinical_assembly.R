@@ -37,8 +37,6 @@ if(test) {
 
 
 # Detection of cases B
-# TODO: inquire with Paul what we should do with those infection episodes:
-# warning in the app but no action? error in the app? remove the HAI episode from clin with warning? 
 caseB <- clin %>% 
   mutate(date_cai_hai = case_when(
     surveillance_category == "HAI" ~ hai_date_symptom_onset,
@@ -96,7 +94,8 @@ acorn_dta <- acorn_dta %>%
   group_by(isolateid) %>%
   arrange(date_cai_hai) %>%
   filter(row_number() == 1) %>%
-  ungroup()
+  ungroup() %>%
+  replace_na(list(contaminant = "No"))
 
 ifelse(nrow(acorn_dta) >= 1,
        checklist_status$linkage_result <- list(status = "okay", msg = "Successfully combined clinical and lab data into .acorn file"),

@@ -739,7 +739,6 @@ server <- function(input, output, session) {
   observeEvent(input$cred_login, {
     id <- notify("Attempting to connect")
     on.exit({Sys.sleep(2); removeNotification(id)}, add = TRUE)
-    # showNotification("Attempting to connect", id = "notif_connection")
     
     if (input$cred_site == "demo") {
       # The demo should work offline
@@ -857,8 +856,8 @@ server <- function(input, output, session) {
   
   # On "Load .acorn" file from server ----
   observeEvent(input$load_acorn_server, {
-    
-    showNotification("Trying to load data (TODO: improve message)")
+    id <- notify("Loading data.")
+    on.exit({Sys.sleep(2); removeNotification(id)}, add = TRUE)
     
     acorn_file <- get_object(object = input$acorn_files_server, 
                              bucket = acorn_cred()$acorn_s3_bucket,
@@ -874,7 +873,7 @@ server <- function(input, output, session) {
     corresp_org_antibio(corresp_org_antibio)
     
     source('./www/R/update_input_widgets.R', local = TRUE)
-    showNotification("Successfully loaded data.")
+    notify("Successfully loaded data.", id = id)
     startAnim(session, "float_about", type = "swing")
     focus_analysis()
   })

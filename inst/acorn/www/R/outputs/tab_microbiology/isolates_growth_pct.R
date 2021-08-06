@@ -3,8 +3,7 @@ output$isolates_growth_pct <- renderText({
   req(nrow(redcap_f01f05_dta_filter()) > 0)
   
   ifelse(input$filter_rm_contaminant, {
-    dta <- acorn_dta_filter() %>% 
-      replace_na(list(contaminant = "No")) %>% filter(contaminant == "No")
+    dta <- acorn_dta_filter() %>% filter(contaminant == "No")
   }, 
   {
     dta <- acorn_dta_filter() 
