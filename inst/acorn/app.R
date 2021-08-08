@@ -748,14 +748,12 @@ server <- function(input, output, session) {
   })
   
   output$enrolment_log_table <- renderUI({
-    # TODO: hide if .acorn has been loaded and not generated
     req(enrolment_log())
     req(acorn_origin() == "generated")
     DTOutput("table_enrolment_log")
   })
   
   output$enrolment_log_dl <- renderUI({
-    # TODO: hide if .acorn has been loaded and not generated
     req(enrolment_log())
     req(acorn_origin() == "generated")
     tagList(
@@ -783,7 +781,6 @@ server <- function(input, output, session) {
       }
       
       acorn_cred(cred)
-      # TODO: hide Generete .acorn tab
     }
     if (input$cred_site != "demo") {
       file_cred <- glue("encrypted_cred_{tolower(input$cred_site)}_{input$cred_user}.rds")
@@ -795,14 +792,12 @@ server <- function(input, output, session) {
                      silent = TRUE)
       
       if (inherits(connect, 'try-error')) {
-        removeNotification(id = "notif_connection")
         showNotification("Couldn't connect to server credentials. Please check internet access/firewall.", type = "error")
         return()
       }
       
       # Test if credentials for this user name exist
       if (! file_cred %in% as.vector(connect[names(connect) == "Contents.Key"])) {
-        removeNotification(id = "notif_connection")
         showNotification("Couldn't find this user", type = "error")
         return()
       }
@@ -819,21 +814,19 @@ server <- function(input, output, session) {
                   silent = TRUE)
       
       if (inherits(cred, 'try-error')) {
-        removeNotification(id = "notif_connection")
         showNotification("Wrong password.", type = "error")
         return()
       }
       
-      # set back to default, blank values
-      Sys.setenv("AWS_ACCESS_KEY_ID" = "", "AWS_SECRET_ACCESS_KEY" = "", "AWS_DEFAULT_REGION" = "")
-      # TODO: use Sys.unsetenv()
+      # removes AWS environment variables
+      Sys.unsetenv("AWS_ACCESS_KEY_ID")
+      Sys.unsetenv("AWS_SECRET_ACCESS_KEY")
+      Sys.unsetenv("AWS_DEFAULT_REGION")
       
       acorn_cred(cred)
     }
     notify(glue("Successfully logged in as {cred$user} ({input$cred_site})"), id = id)
     
-    # removeNotification(id = "notif_connection")
-    # showNotification("Successfully logged in!")
     showTab("tabs", target = "data_management")
     updateTabsetPanel(session = session, "tabs", selected = "data_management")
     
