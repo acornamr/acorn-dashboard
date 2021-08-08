@@ -1,38 +1,82 @@
-# A. baumannii ----
-
-output$abaumannii_sir <- renderHighchart({
+# Acinetobacter species ----
+output$acinetobacter_sir <- renderHighchart({
   req(acorn_dta_filter())
-  organism_input <- "Acinetobacter baumannii"
+  organism_input <- "Acinetobacter sp"
   highchart_sir(data_input = acorn_dta_filter(), organism_input = organism_input, corresp = corresp_org_antibio(), 
                 combine_SI = input$combine_SI, deduplication_method = input$deduplication_method)
 })
 
-output$abaumannii_sir_evolution <- renderHighchart({
+output$test_acinetobacter_sir <- reactive({
   req(acorn_dta_filter())
-  organism_input <- "Acinetobacter baumannii"
-  highchart_sir_evolution(data_input = acorn_dta_filter(), organism_input = organism_input, corresp = corresp_org_antibio(), 
-                          combine_SI = input$combine_SI, filter_group = "Carbapenems",
-                          deduplication_method = input$deduplication_method)
-})
-
-output$test_abaumannii_sir <- reactive({
-  req(acorn_dta_filter())
-  organism_input <- "Acinetobacter baumannii"
+  organism_input <- "Acinetobacter sp"
   ifelse (nrow(acorn_dta_filter() %>% filter(orgname == organism_input)) == 0, FALSE, TRUE)
 })
-outputOptions(output, "test_abaumannii_sir", suspendWhenHidden = FALSE)
+outputOptions(output, "test_acinetobacter_sir", suspendWhenHidden = FALSE)
 
-output$nb_isolates_abaumannii <- renderText({
+output$nb_isolates_acinetobacter <- renderText({
   req(acorn_dta_filter())
-  organism_input <- "Acinetobacter baumannii"
+  organism_input <- "Acinetobacter sp"
   req(acorn_dta_filter() %>% filter(orgname == organism_input))
   nb <- acorn_dta_filter() %>% filter(orgname == organism_input) %>% fun_deduplication(method = input$deduplication_method) %>% nrow()
   ifelse (nb != 0, glue("Total of {nb} isolate(s) for {organism_input}"), HTML("There are no isolates for {organism_input}"))
 })
 
+# Enterococcus species ----
+output$enterococcus_sir <- renderHighchart({
+  req(acorn_dta_filter())
+  organism_input <- "Enterococcus sp"
+  highchart_sir(data_input = acorn_dta_filter(), organism_input = organism_input, corresp = corresp_org_antibio(), 
+                combine_SI = input$combine_SI, deduplication_method = input$deduplication_method)
+})
+
+output$test_enterococcus_sir <- reactive({
+  req(acorn_dta_filter())
+  organism_input <- "Enterococcus sp"
+  ifelse (nrow(acorn_dta_filter() %>% filter(orgname == organism_input)) == 0, FALSE, TRUE)
+})
+outputOptions(output, "test_enterococcus_sir", suspendWhenHidden = FALSE)
+
+output$nb_isolates_enterococcus <- renderText({
+  req(acorn_dta_filter())
+  organism_input <- "Enterococcus sp"
+  req(acorn_dta_filter() %>% filter(orgname == organism_input))
+  nb <- acorn_dta_filter() %>% filter(orgname == organism_input) %>% fun_deduplication(method = input$deduplication_method) %>% nrow()
+  ifelse (nb != 0, glue("Total of {nb} isolate(s) for {organism_input}"), HTML("There are no isolates for {organism_input}"))
+})
+
+# A. baumannii ----
+# output$abaumannii_sir <- renderHighchart({
+#   req(acorn_dta_filter())
+#   organism_input <- "Acinetobacter baumannii"
+#   highchart_sir(data_input = acorn_dta_filter(), organism_input = organism_input, corresp = corresp_org_antibio(), 
+#                 combine_SI = input$combine_SI, deduplication_method = input$deduplication_method)
+# })
+# 
+# output$abaumannii_sir_evolution <- renderHighchart({
+#   req(acorn_dta_filter())
+#   organism_input <- "Acinetobacter baumannii"
+#   highchart_sir_evolution(data_input = acorn_dta_filter(), organism_input = organism_input, corresp = corresp_org_antibio(), 
+#                           combine_SI = input$combine_SI, filter_group = "Carbapenems",
+#                           deduplication_method = input$deduplication_method)
+# })
+# 
+# output$test_abaumannii_sir <- reactive({
+#   req(acorn_dta_filter())
+#   organism_input <- "Acinetobacter baumannii"
+#   ifelse (nrow(acorn_dta_filter() %>% filter(orgname == organism_input)) == 0, FALSE, TRUE)
+# })
+# outputOptions(output, "test_abaumannii_sir", suspendWhenHidden = FALSE)
+# 
+# output$nb_isolates_abaumannii <- renderText({
+#   req(acorn_dta_filter())
+#   organism_input <- "Acinetobacter baumannii"
+#   req(acorn_dta_filter() %>% filter(orgname == organism_input))
+#   nb <- acorn_dta_filter() %>% filter(orgname == organism_input) %>% fun_deduplication(method = input$deduplication_method) %>% nrow()
+#   ifelse (nb != 0, glue("Total of {nb} isolate(s) for {organism_input}"), HTML("There are no isolates for {organism_input}"))
+# })
+
 
 # Escherichia coli ----
-
 output$ecoli_sir <- renderHighchart({
   req(acorn_dta_filter())
   organism_input <- "Escherichia coli"
@@ -68,7 +112,7 @@ output$nb_isolates_ecoli <- renderText({
   organism_input <- "Escherichia coli"
   req(acorn_dta_filter() %>% filter(orgname == organism_input))
   nb <- acorn_dta_filter() %>% filter(orgname == organism_input) %>% fun_deduplication(method = input$deduplication_method) %>% nrow()
-  ifelse (nb != 0, paste0(span("Total of ", br(), nb, " isolates")), HTML("There are no isolates"))
+  ifelse (nb != 0, glue("Total of {nb} isolate(s) for {organism_input}"), HTML("There are no isolates for {organism_input}"))
 })
 
 # K. pneumoniae ----
@@ -175,7 +219,6 @@ output$nb_isolates_spneumoniae <- renderText({
 })
 
 # Salmonella ----
-
 output$salmonella_sir <- renderHighchart({
   req(acorn_dta_filter())
   organism_input <- input$select_salmonella
@@ -199,7 +242,7 @@ output$salmonella_sir_evolution_fluo <- renderHighchart({
                           deduplication_method = input$deduplication_method)
 })
 
-# TODO: test Salmonella Paratyphi (new in ACORN 2: several Paratyphi types)
+# Salmonella sp (not S. Typhi or S. Paratyphi) ----
 output$test_salmonella_sir <- reactive({
   req(acorn_dta_filter())
   organism_input <- input$select_salmonella

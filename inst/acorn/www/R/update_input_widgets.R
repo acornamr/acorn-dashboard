@@ -35,10 +35,11 @@ updatePickerInput(session, "filter_diagnosis_final",
 
 all_organism <- unique(acorn_dta()$orgname)
 other_organism_vec <- setdiff(all_organism, 
+                              # TODO: update to reflect the new tabs (started to work on 2021-08-08)
                               union(c("Acinetobacter baumannii", "Escherichia coli", "Klebsiella pneumoniae", "Staphylococcus aureus",
                                       "Streptococcus pneumoniae", "Neisseria gonorrhoeae"),
                                     c(str_subset(all_organism, "rowth"),
                                       str_subset(all_organism, "ultured"),
-                                      str_subset(all_organism, "almonella"))))
+                                      str_subset(all_organism, "almonella")))) |> sort()
 updateSelectInput(session = session, "other_organism",
                   choices = other_organism_vec)
