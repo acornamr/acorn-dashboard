@@ -14,10 +14,10 @@ output$isolates_organism_table <- renderDT({
     fun_filter_signifgrowth_only() %>%
     filter(orgname != "Mixed growth", orgname != "Not cultured") %>%
     fun_deduplication(method = input$deduplication_method) %>%
-    group_by(orgname) %>%
+    group_by(orgname, contaminant) %>%
     summarise(N = n(), .groups = "drop") %>%
     mutate(Frequency = N / sum(N)) %>%
-    rename(Organism = orgname) %>%
+    rename(Organism = orgname, Contaminant = contaminant) %>%
     arrange(desc(N))
   
   datatable(dta,

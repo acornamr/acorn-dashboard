@@ -1,9 +1,6 @@
 # ACORN shiny app main script
 source('./www/R/startup.R', local = TRUE)
 
-# TODO: check that all .md are displayed in the app# TODO: check that all .md are displayed in the app
-# TODO: consider using https://github.com/datastorm-open/shinymanager, https://rinterface.github.io/bs4Dash/index.html
-
 # Definition of UI ----
 ui <- fluidPage(
   title = 'ACORN | A Clinically Oriented antimicrobial Resistance Network',
@@ -473,8 +470,9 @@ ui <- fluidPage(
                                ),
                                div(class = 'box_outputs',
                                    h4_title("Isolates"),
-                                   p("Most frequent 10 organisms in the plot and complete listing in the table."),
-                                   highchartOutput("isolates_organism", height = "400px"),
+                                   p("Most frequent 10 organisms in the plot and complete listing in the table. Contaminants are in red."),
+                                   highchartOutput("isolates_organism_nc"),
+                                   highchartOutput("isolates_organism_contaminant"),
                                    br(), br(),
                                    DTOutput("isolates_organism_table", width = "95%"),
                                    br(), br()
