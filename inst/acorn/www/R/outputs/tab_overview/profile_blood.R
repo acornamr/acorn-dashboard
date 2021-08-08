@@ -1,6 +1,6 @@
 output$profile_blood <- renderHighchart({
-  req(redcap_f01f05_dta_filter())
-  req(nrow(redcap_f01f05_dta_filter()) > 0)
+  req(acorn_dta_filter())
+  req(acorn_dta_filter() |> nrow() > 0)
   
   df <- redcap_f01f05_dta_filter() %>%
     count(blood_collect) %>%

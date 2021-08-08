@@ -1,12 +1,12 @@
 output$enrolment_blood_culture <- renderHighchart({
   req(acorn_dta_filter())
-  req(acorn_dta_filter() %>% nrow() > 0)
-  
+  req(acorn_dta_filter() |> nrow() > 0)
+
   dta <- left_join(
     redcap_f01f05_dta_filter() %>%
       group_by(month = floor_date(date_enrolment, "month")) %>%
       summarise(all = n_distinct(redcap_id), .groups = "drop"),  # Number of episodes per month of enrolment
-    acorn_dta() %>%
+    acorn_dta_filter() %>%
       filter(specgroup == "Blood") %>%
       group_by(month = floor_date(date_enrolment, "month")) %>%
       summarise(blood = n_distinct(redcap_id), .groups = "drop"),  # Number of blood specimen per month of enrolment

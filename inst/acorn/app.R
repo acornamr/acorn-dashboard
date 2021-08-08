@@ -95,18 +95,17 @@ ui <- fluidPage(
                                 )
                               )
                           ),
-                          dropMenu(
-                            class = "filter_box_small",
-                            actionLink("quick_filters", "Quick Filters", icon = icon("sliders-h")),
-                            p("TODO: reset filter when a filter is desactivated."),
-                            p("TODO: find if there is a need for shortcut filters. If yes, make the two links work."),
-                            actionLink("shortcut_filter_1", label = span(icon("filter"), " Patients with Pneumonia, BC only")),
-                            br(),
-                            actionLink("shortcut_filter_2", label = span(icon("filter"), " Below 5 y.o. HAI")),
-                            br(),
-                            br(),
-                            actionLink("shortcut_reset_filters", label = span(icon("ban"), " Reset All Filters")),
-                          )
+                          # TODO v2.1: reactivate this section
+                          # dropMenu(
+                          #   class = "filter_box_small",
+                          #   actionLink("quick_filters", "Quick Filters", icon = icon("sliders-h")),
+                          #   actionLink("shortcut_filter_1", label = span(icon("filter"), " Patients with Pneumonia, BC only")),
+                          #   br(),
+                          #   actionLink("shortcut_filter_2", label = span(icon("filter"), " Below 5 y.o. HAI")),
+                          #   br(),
+                          #   br(),
+                          #   actionLink("shortcut_reset_filters", label = span(icon("ban"), " Reset All Filters")),
+                          # )
                    ),
                    column(3,
                           htmlOutput("nb_enrolments"),
@@ -372,9 +371,7 @@ ui <- fluidPage(
                         column(6, 
                                div(class = "box_outputs",
                                    h4_title("Enrolments with Blood Culture"),
-                                   p("TODO: check numerator/denominator - issue when filters applied"),
                                    highchartOutput("enrolment_blood_culture"),
-                                   em("TODO: automatically switch to per quarter/year when more than 12 bars.")
                                )
                                
                         ),
@@ -640,7 +637,7 @@ server <- function(input, output, session) {
     )
   })
   
-  # (TODO) Management of filters shortcuts ----
+  # (TODO v2.1) Management of filters shortcuts ----
   observeEvent(input$shortcut_filter_1, {})
   observeEvent(input$shortcut_filter_2, {})
   observeEvent(input$shortcut_reset_filters, {})
