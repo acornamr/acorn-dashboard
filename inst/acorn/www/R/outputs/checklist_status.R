@@ -1,4 +1,3 @@
-# TODO: make sure that all elements of checklist_status are used
 output$checklist_qc_clinical <- renderText({
   text_checklist(checklist_status, vec = c("redcap_not_empty",
                                            "redcap_columns",

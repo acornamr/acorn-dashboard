@@ -8,14 +8,6 @@ amr <- dta %>%
   select(! starts_with("NOT_ACORN_COLUMN_")) %>%
   mutate(specid.lc = tolower(specid))
 
-# possible improvement of below START - TODO try, debug and test
-# amr <- amr %>% 
-#   mutate(specid.lc = tolower(specid)) %>%
-#   mutate(specid.acorn = as.numeric(as.factor(specid.lc))) %>%
-#   group_by(specid.acorn) %>% mutate(orgnum.acorn = 1:n()) %>% ungroup() %>%
-#   mutate(isolateid_2 = paste(amr$specid.acorn, amr$orgnum.acorn, sep = "-"))
-
-
 # Make a new orgnum (do not rely on any orgnum imported as part of the dataset)
 specid <- subset(amr, select = c(specid.lc), subset = (!duplicated(specid.lc)))
 specid$specid.acorn <- seq_along(specid$specid.lc)

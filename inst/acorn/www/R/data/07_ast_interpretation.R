@@ -16,7 +16,6 @@ ast.codes$link <- paste(ast.codes$ACORN_AST_ORGGROUP, ast.codes$WHON5_TEST, sep 
 amr.l <- gather(amr, WHON5_TEST, result, (contains("_" ))) # Only ast variable names include "_"
 amr.l <- subset(amr.l, subset = (!is.na(result) & !is.na(ast.group))) # Keep only isolateids with valid AST results
 
-# TODO: integrate to quality control
 if(nrow(amr.l) == 0) {
   showNotification(
     div(h3("Critical Error!"),

@@ -1,6 +1,4 @@
 message("Retrive site data dictionary from AWS.")
-# TODO check if it also works on Windows (work on macOS)
-# https://github.com/tidyverse/readxl/issues/278
 ifelse(input$format_lab_data %in% c("WHONET .dBase", "WHONET .SQLite"),
        format_data_dic <- "WHONET",
        format_data_dic <- "TABULAR")

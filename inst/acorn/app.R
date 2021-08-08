@@ -818,7 +818,7 @@ server <- function(input, output, session) {
         return()
       }
       
-      # removes AWS environment variables
+      # remove AWS environment variables
       Sys.unsetenv("AWS_ACCESS_KEY_ID")
       Sys.unsetenv("AWS_SECRET_ACCESS_KEY")
       Sys.unsetenv("AWS_DEFAULT_REGION")
@@ -946,7 +946,6 @@ server <- function(input, output, session) {
     source("./www/R/data/02_process_redcap_hai.R", local = TRUE)
     removeModal()
     
-    # TODO: check that for a given enrollement, all infection episodes are on different dates
     if(any(c(checklist_status$redcap_not_empty$status,
              checklist_status$redcap_columns$status,
              checklist_status$redcap_acornid$status,
@@ -962,8 +961,6 @@ server <- function(input, output, session) {
     } else {
       checklist_status$redcap_f01f05_dta <- list(status = "okay", 
                                                  msg = glue("Clinical data provided with {length(unique(infection$redcap_id))} patient enrolments and {nrow(infection)} infection episodes."))
-      # showNotification("Clinical data successfully provided.", type = "message", duration = 5)
-      # TODO: modify this to ensure that HAI data is okay before announcing that clinical data is provided
     }
     redcap_f01f05_dta(infection)
     redcap_hai_dta(dl_hai_dta)
