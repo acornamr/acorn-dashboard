@@ -668,6 +668,7 @@ server <- function(input, output, session) {
   
   # Definition of reactive elements for data ----
   acorn_cred <- reactiveVal()
+  acorn_origin <- reactiveVal()
   
   # Primary datatsets
   meta <- reactiveVal()
@@ -749,12 +750,14 @@ server <- function(input, output, session) {
   output$enrolment_log_table <- renderUI({
     # TODO: hide if .acorn has been loaded and not generated
     req(enrolment_log())
+    req(acorn_origin() == "generated")
     DTOutput("table_enrolment_log")
   })
   
   output$enrolment_log_dl <- renderUI({
     # TODO: hide if .acorn has been loaded and not generated
     req(enrolment_log())
+    req(acorn_origin() == "generated")
     tagList(
       br(), br(), br(),
       downloadButton("download_enrolment_log", "Download Enrolment Log (.xlsx)"),
@@ -892,6 +895,7 @@ server <- function(input, output, session) {
                              secret = acorn_cred()$acorn_s3_secret,
                              region = acorn_cred()$acorn_s3_region)
     load(rawConnection(acorn_file))
+    acorn_origin("loaded")
     
     meta(meta)
     redcap_f01f05_dta(redcap_f01f05_dta)
@@ -908,6 +912,7 @@ server <- function(input, output, session) {
   # On "Load .acorn" file from local ----
   observeEvent(input$load_acorn_local, {
     load(input$load_acorn_local$datapath)
+    acorn_origin("loaded")
     
     meta(meta)
     redcap_f01f05_dta(redcap_f01f05_dta)
@@ -1046,8 +1051,9 @@ server <- function(input, output, session) {
       source("./www/R/data/10_link_clinical_assembly.R", local = TRUE)
       
       acorn_dta(acorn_dta)
-      
+      acorn_origin("generated")
       source('./www/R/update_input_widgets.R', local = TRUE)
+      
       notify(".acorn data successfully generated!", id = id)
       checklist_status$acorn_dta_saved = list(status = "warning", msg = ".acorn not saved")
     }
