@@ -115,6 +115,29 @@ output$nb_isolates_ecoli <- renderText({
   ifelse (nb != 0, glue("Total of {nb} isolate(s) for {organism_input}"), HTML("There are no isolates for {organism_input}"))
 })
 
+# Haemophilus Influenzae species ----
+output$haemophilus_influenzae_sir <- renderHighchart({
+  req(acorn_dta_filter())
+  organism_input <- "Haemophilus influenzae"
+  highchart_sir(data_input = acorn_dta_filter(), organism_input = organism_input, corresp = corresp_org_antibio(), 
+                combine_SI = input$combine_SI, deduplication_method = input$deduplication_method)
+})
+
+output$test_haemophilus_influenzae_sir <- reactive({
+  req(acorn_dta_filter())
+  organism_input <- "Haemophilus influenzae"
+  ifelse (nrow(acorn_dta_filter() %>% filter(orgname == organism_input)) == 0, FALSE, TRUE)
+})
+outputOptions(output, "test_haemophilus_influenzae_sir", suspendWhenHidden = FALSE)
+
+output$nb_isolates_haemophilus_influenzae <- renderText({
+  req(acorn_dta_filter())
+  organism_input <- "Haemophilus influenzae"
+  req(acorn_dta_filter() %>% filter(orgname == organism_input))
+  nb <- acorn_dta_filter() %>% filter(orgname == organism_input) %>% fun_deduplication(method = input$deduplication_method) %>% nrow()
+  ifelse (nb != 0, glue("Total of {nb} isolate(s) for {organism_input}"), HTML("There are no isolates for {organism_input}"))
+})
+
 # K. pneumoniae ----
 
 output$kpneumoniae_sir <- renderHighchart({

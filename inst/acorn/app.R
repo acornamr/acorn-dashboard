@@ -550,6 +550,21 @@ ui <- fluidPage(
                           )
                         ),
                         tabPanel(
+                          em("Haemophilus influenzae"), 
+                          fluidRow(
+                            column(2,
+                                   br(), 
+                                   htmlOutput("nb_isolates_haemophilus_influenzae")
+                            ),
+                            column(10,
+                                   conditionalPanel(condition = "output.test_haemophilus_influenzae_sir",
+                                                    highchartOutput("haemophilus_influenzae_sir", height = "500px"),
+                                   ),
+                                   conditionalPanel(condition = "! output.test_haemophilus_influenzae_sir", span(h4("There is no data to display for this organism.")))
+                            )
+                          )
+                        ),
+                        tabPanel(
                           "K. pneumoniae",
                           htmlOutput("nb_isolates_kpneumoniae"),
                           conditionalPanel(condition = "output.test_kpneumoniae_sir",
