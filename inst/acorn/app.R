@@ -599,6 +599,21 @@ ui <- fluidPage(
                           )
                         ),
                         tabPanel(
+                          em("Pseudomonas aeruginosa"), 
+                          fluidRow(
+                            column(2,
+                                   br(), 
+                                   htmlOutput("nb_isolates_pseudomonas_aeruginosa")
+                            ),
+                            column(10,
+                                   conditionalPanel(condition = "output.test_pseudomonas_aeruginosa_sir",
+                                                    highchartOutput("pseudomonas_aeruginosa_sir", height = "500px"),
+                                   ),
+                                   conditionalPanel(condition = "! output.test_pseudomonas_aeruginosa_sir", span(h4("There is no data to display for this organism.")))
+                            )
+                          )
+                        ),
+                        tabPanel(
                           "S. aureus",
                           htmlOutput("nb_isolates_saureus"),
                           conditionalPanel(condition = "output.test_saureus_sir",

@@ -200,6 +200,29 @@ output$nb_isolates_neisseria_meningitidis <- renderText({
   ifelse (nb != 0, glue("Total of {nb} isolate(s) for {organism_input}"), "There are no isolates.")
 })
 
+# Pseudomonas aeruginosa species ----
+output$pseudomonas_aeruginosa_sir <- renderHighchart({
+  req(acorn_dta_filter())
+  organism_input <- "Pseudomonas aeruginosa"
+  highchart_sir(data_input = acorn_dta_filter(), organism_input = organism_input, corresp = corresp_org_antibio(), 
+                combine_SI = input$combine_SI, deduplication_method = input$deduplication_method)
+})
+
+output$test_pseudomonas_aeruginosa_sir <- reactive({
+  req(acorn_dta_filter())
+  organism_input <- "Pseudomonas aeruginosa"
+  ifelse (nrow(acorn_dta_filter() %>% filter(orgname == organism_input)) == 0, FALSE, TRUE)
+})
+outputOptions(output, "test_pseudomonas_aeruginosa_sir", suspendWhenHidden = FALSE)
+
+output$nb_isolates_pseudomonas_aeruginosa <- renderText({
+  req(acorn_dta_filter())
+  organism_input <- "Pseudomonas aeruginosa"
+  req(acorn_dta_filter() %>% filter(orgname == organism_input))
+  nb <- acorn_dta_filter() %>% filter(orgname == organism_input) %>% fun_deduplication(method = input$deduplication_method) %>% nrow()
+  ifelse (nb != 0, glue("Total of {nb} isolate(s) for {organism_input}"), "There are no isolates.")
+})
+
 # S. aureus ----
 output$saureus_sir <- renderHighchart({
   req(acorn_dta_filter())
