@@ -565,635 +565,566 @@ ui <- fluidPage(
                           )
                         ),
                         tabPanel(
-                          "K. pneumoniae",
-                          htmlOutput("nb_isolates_kpneumoniae"),
-                          conditionalPanel(condition = "output.test_kpneumoniae_sir",
-                                           highchartOutput("kpneumoniae_sir", height = "600px"), br(), br(),
-                                           h4("Resistance to Carbapenems Over Time"),
-                                           highchartOutput("kpneumoniae_sir_evolution", height = "300px"),
-                                           h4("Resistance to 3rd gen. cephalosporins Over Time"),
-                                           highchartOutput("kpneumoniae_sir_evolution_ceph", height = "300px")
+                          em("K. pneumoniae"),
+                          fluidRow(
+                            column(2,
+                                   br(), 
+                                   htmlOutput("nb_isolates_kpneumoniae")
+                            ),
+                            column(10,
+                                   conditionalPanel(condition = "output.test_kpneumoniae_sir",
+                                                    highchartOutput("kpneumoniae_sir", height = "600px"), br(), br(),
+                                                    h4("Resistance to Carbapenems Over Time"),
+                                                    highchartOutput("kpneumoniae_sir_evolution", height = "300px"),
+                                                    h4("Resistance to 3rd gen. cephalosporins Over Time"),
+                                                    highchartOutput("kpneumoniae_sir_evolution_ceph", height = "300px")
+                                   ),
+                                   conditionalPanel(condition = "! output.test_kpneumoniae_sir", span(h4("There is no data to display for this organism.")))
+                            )
                           ),
-                          conditionalPanel(condition = "! output.test_kpneumoniae_sir", span(h4("There is no data to display for this organism.")))
-                        ),
-                        tabPanel(
-                          "S. aureus",
-                          htmlOutput("nb_isolates_saureus"),
-                          conditionalPanel(condition = "output.test_saureus_sir",
-                                           highchartOutput("saureus_sir", height = "500px"),
-                                           h4("Resistance to Oxacillin Over Time"),
-                                           highchartOutput("saureus_sir_evolution", height = "300px")
+                          tabPanel(
+                            "S. aureus",
+                            htmlOutput("nb_isolates_saureus"),
+                            conditionalPanel(condition = "output.test_saureus_sir",
+                                             highchartOutput("saureus_sir", height = "500px"),
+                                             h4("Resistance to Oxacillin Over Time"),
+                                             highchartOutput("saureus_sir_evolution", height = "300px")
+                            ),
+                            conditionalPanel(condition = "! output.test_saureus_sir", span(h4("There is no data to display for this organism.")))
                           ),
-                          conditionalPanel(condition = "! output.test_saureus_sir", span(h4("There is no data to display for this organism.")))
-                        ),
-                        tabPanel(
-                          "S. pneumoniae",
-                          htmlOutput("nb_isolates_spneumoniae"),
-                          conditionalPanel(condition = "output.test_spneumoniae_sir",
-                                           highchartOutput("spneumoniae_sir", height = "500px"),
-                                           h4("Resistance to Penicillin Over Time"),
-                                           highchartOutput("spneumoniae_sir_evolution", height = "300px")
+                          tabPanel(
+                            "S. pneumoniae",
+                            htmlOutput("nb_isolates_spneumoniae"),
+                            conditionalPanel(condition = "output.test_spneumoniae_sir",
+                                             highchartOutput("spneumoniae_sir", height = "500px"),
+                                             h4("Resistance to Penicillin Over Time"),
+                                             highchartOutput("spneumoniae_sir_evolution", height = "300px")
+                            ),
+                            conditionalPanel(condition = "! output.test_spneumoniae_sir", span(h4("There is no data to display for this organism.")))
                           ),
-                          conditionalPanel(condition = "! output.test_spneumoniae_sir", span(h4("There is no data to display for this organism.")))
-                        ),
-                        tabPanel(
-                          "Salmonella species",
-                          htmlOutput("nb_isolates_salmonella"),
-                          prettyRadioButtons("select_salmonella", label = NULL,  shape = "curve",
-                                             choices = c("Salmonella Typhi", "Salmonella Paratyphi", "Salmonella sp (not S. Typhi or S. Paratyphi)"), 
-                                             selected = "Salmonella Typhi", inline = TRUE),
-                          conditionalPanel(condition = "output.test_salmonella_sir",
-                                           highchartOutput("salmonella_sir", height = "500px"),
-                                           h4("Resistance to 3rd gen. cephalosporins Over Time"),
-                                           highchartOutput("salmonella_sir_evolution_ceph", height = "300px"),
-                                           h4("Resistance to Fluoroquinolones Over Time"),
-                                           highchartOutput("salmonella_sir_evolution_fluo", height = "300px")
+                          tabPanel(
+                            "Salmonella species",
+                            htmlOutput("nb_isolates_salmonella"),
+                            prettyRadioButtons("select_salmonella", label = NULL,  shape = "curve",
+                                               choices = c("Salmonella Typhi", "Salmonella Paratyphi", "Salmonella sp (not S. Typhi or S. Paratyphi)"), 
+                                               selected = "Salmonella Typhi", inline = TRUE),
+                            conditionalPanel(condition = "output.test_salmonella_sir",
+                                             highchartOutput("salmonella_sir", height = "500px"),
+                                             h4("Resistance to 3rd gen. cephalosporins Over Time"),
+                                             highchartOutput("salmonella_sir_evolution_ceph", height = "300px"),
+                                             h4("Resistance to Fluoroquinolones Over Time"),
+                                             highchartOutput("salmonella_sir_evolution_fluo", height = "300px")
+                            ),
+                            conditionalPanel(condition = "! output.test_salmonella_sir", span(h4("There is no data to display for this organism.")))
                           ),
-                          conditionalPanel(condition = "! output.test_salmonella_sir", span(h4("There is no data to display for this organism.")))
-                        ),
-                        tabPanel(
-                          "Other Organisms",
-                          htmlOutput("nb_isolates_other"),
-                          selectInput("other_organism", label = NULL, multiple = FALSE,
-                                      choices = NULL, selected = NULL),
-                          conditionalPanel(condition = "output.test_other_sir",
-                                           highchartOutput("other_organism_sir", height = "700px")
-                          ),
-                          conditionalPanel(condition = "! output.test_other_sir", span(h4("There is no data to display.")))
+                          tabPanel(
+                            "Other Organisms",
+                            htmlOutput("nb_isolates_other"),
+                            selectInput("other_organism", label = NULL, multiple = FALSE,
+                                        choices = NULL, selected = NULL),
+                            conditionalPanel(condition = "output.test_other_sir",
+                                             highchartOutput("other_organism_sir", height = "700px")
+                            ),
+                            conditionalPanel(condition = "! output.test_other_sir", span(h4("There is no data to display.")))
+                          )
                         )
                       )
              )
   )
-)
-
-# Definition of server ----
-server <- function(input, output, session) {
   
-  # Hide tabs on app launch ----
-  hideTab("tabs", target = "data_management")
-  hideTab("tabs", target = "overview")
-  hideTab("tabs", target = "follow_up")
-  hideTab("tabs", target = "hai")
-  hideTab("tabs", target = "microbiology")
-  hideTab("tabs", target = "amr")
-  
-  # Management of help links
-  observeEvent(input$show_faq,
-               showModal(modalDialog(
-                 includeMarkdown("./www/markdown/faq_content.md"),
-                 includeMarkdown("./www/markdown/faq.md"),
-                 title = "FAQ", size = "l", easyClose = TRUE))
-  )
-  
-  # Management of CSS ----
-  observe({
-    session$setCurrentTheme(
-      if (isTRUE(input$selected_language == "la")) acorn_theme_la else acorn_theme
-    )
-  })
-  
-  # (TODO v2.1) Management of filters shortcuts ----
-  observeEvent(input$shortcut_filter_1, {})
-  observeEvent(input$shortcut_filter_2, {})
-  observeEvent(input$shortcut_reset_filters, {})
-  
-  # Misc stuff ----
-  # source files with code to generate outputs
-  file_list <- list.files(path = "./www/R/outputs", pattern = "*.R", recursive = TRUE)
-  for (file in file_list) source(paste0("./www/R/outputs/", file), local = TRUE)$value
-  
-  # allow debug on click
-  observeEvent(input$debug, browser())
-  
-  # update language based on dropdown choice
-  observeEvent(input$selected_language, {
-    update_lang(session, input$selected_language)
-  })
-  
-  # allow to upload acorn file and not being logged
-  observeEvent(input$direct_upload_acorn, {
-    showTab("tabs", target = "data_management")
-    updateTabsetPanel(session = session, "tabs", selected = "data_management")
+  # Definition of server ----
+  server <- function(input, output, session) {
     
-    updateRadioGroupButtons(session = session, "choice_datamanagement", "What do you want to do?",
-                            choices = "Load existing .acorn from local file",
-                            selected = NULL, status = "success",
-                            checkIcon = list(yes = icon("hand-point-right")))
-  })
-  
-  # Definition of reactive elements for data ----
-  acorn_cred <- reactiveVal()
-  acorn_origin <- reactiveVal()
-  
-  # Primary datatsets
-  meta <- reactiveVal()
-  redcap_f01f05_dta <- reactiveVal()
-  redcap_hai_dta <- reactiveVal()
-  lab_dta <- reactiveVal()
-  acorn_dta <- reactiveVal()
-  corresp_org_antibio <- reactiveVal()
-  lab_code <- reactiveVal()
-  data_dictionary <- reactiveVal()
-  
-  # checklist_status' status can be: hidden/question/okay/warning/ko
-  checklist_status <- reactiveValues(
-    log_errors = tibble(issue = character(), redcap_id = character(), acorn_id = character()),
-    
-    lab_data_qc_1 = list(status = "hidden", msg = ""),
-    lab_data_qc_2 = list(status = "hidden", msg = ""),
-    lab_data_qc_3 = list(status = "hidden", msg = ""),
-    lab_data_qc_4 = list(status = "hidden", msg = ""),
-    lab_data_qc_5 = list(status = "hidden", msg = ""),
-    lab_data_qc_6 = list(status = "hidden", msg = ""),
-    lab_data_qc_7 = list(status = "hidden", msg = ""),
-    lab_data_qc_8 = list(status = "hidden", msg = ""),
-    
-    redcap_not_empty           = list(status = "hidden", msg = ""),
-    redcap_columns             = list(status = "hidden", msg = ""),
-    redcap_acornid             = list(status = "hidden", msg = ""),
-    redcap_F04F01              = list(status = "hidden", msg = ""),
-    redcap_F03F02              = list(status = "hidden", msg = ""),
-    redcap_F02F01              = list(status = "hidden", msg = ""),
-    redcap_F03F01              = list(status = "hidden", msg = ""),
-    redcap_consistent_outcomes = list(status = "hidden", msg = ""),
-    redcap_age_category        = list(status = "hidden", msg = ""),
-    redcap_hai_dates           = list(status = "hidden", msg = ""),
-    
-    linkage_caseB  = list(status = "hidden", msg = ""),
-    linkage_caseC  = list(status = "hidden", msg = ""),
-    linkage_result = list(status = "info", msg = "No .acorn has been generated"),
-    
-    redcap_f01f05_dta = list(status = "info", msg = "Clinical data not provided"),
-    lab_dta           = list(status = "info", msg = "Lab data not provided"),
-    
-    acorn_dta_saved_local = list(status = "hidden", msg = ""),
-    acorn_dta_saved_server = list(status = "info", msg = "No .acorn has been saved")
-  )
-  
-  # Secondary datasets (derived from primary datasets)
-  redcap_f01f05_dta_filter <- reactive(redcap_f01f05_dta() %>% 
-                                         fun_filter_enrolment(input = input))
-  redcap_hai_dta_filter <- reactive(redcap_hai_dta() %>% 
-                                      fun_filter_survey(input = input))
-  acorn_dta_filter <- reactive(acorn_dta() %>% 
-                                 fun_filter_enrolment(input = input) %>% 
-                                 fun_filter_specimen(input = input) %>%
-                                 fun_filter_isolate(input = input))
-  
-  # Enrolment log
-  enrolment_log <- reactive({
-    req(redcap_f01f05_dta())
-    
-    # calculate the expected Day-28 date: one acorn_id/redcap_id per enrolment but some acorn_id are missing so we prefer to group by redcap_id
-    left_join(redcap_f01f05_dta(),
-              redcap_f01f05_dta() %>% 
-                group_by(redcap_id) %>%
-                summarise(expected_d28_date = max(date_episode_enrolment) + 28, .groups = "drop"),
-              by = "redcap_id") %>%
-      transmute("Category" = surveillance_category,
-                "Patient ID" = patient_id, 
-                "ACORN ID" = acorn_id,
-                "Date of admission" = date_admission, 
-                "Infection Episode" = infection_episode_nb,
-                "Date of episode enrolment" = date_episode_enrolment, 
-                "Discharge date" = ho_discharge_date, 
-                "Discharge status" = ho_discharge_status,
-                "Expected Day-28 date" =  expected_d28_date,
-                "Actual Day-28 date" = d28_date)
-  })
-  
-  output$enrolment_log_table <- renderUI({
-    req(enrolment_log())
-    req(acorn_origin() == "generated")
-    DTOutput("table_enrolment_log")
-  })
-  
-  output$enrolment_log_dl <- renderUI({
-    req(enrolment_log())
-    req(acorn_origin() == "generated")
-    tagList(
-      br(), br(), br(),
-      downloadButton("download_enrolment_log", "Download Enrolment Log (.xlsx)"),
-      p("First sheet is the log of all enrolments retrived from REDCap (as per adjacent table). The second sheet is a listing of all flagged elements.")
-    )
-  })
-  
-  # On login ----
-  observeEvent(input$cred_login, {
-    id <- notify("Attempting to connect")
-    on.exit({Sys.sleep(2); removeNotification(id)}, add = TRUE)
-    
-    if (input$cred_site == "demo") {
-      # The demo should work offline
-      cred <- readRDS("./www/cred/bucket_site/encrypted_cred_demo.rds")
-      key_user <- sha256(charToRaw("demo"))
-      cred <- unserialize(aes_cbc_decrypt(cred, key = key_user))
-      
-      if(cred$site != input$cred_site)  {
-        removeNotification(id = "notif_connection")
-        showNotification("The credential file is corrupted. Please contact ACORN Data Management.", type = "error")
-        return()
-      }
-      
-      acorn_cred(cred)
-    }
-    if (input$cred_site != "demo") {
-      file_cred <- glue("encrypted_cred_{tolower(input$cred_site)}_{input$cred_user}.rds")
-      # Stop if the connection can't be established
-      connect <- try(get_bucket(bucket = "shared-acornamr", 
-                                key    = shared_acornamr_key,
-                                secret = shared_acornamr_sec,
-                                region = "eu-west-3") %>% unlist(),
-                     silent = TRUE)
-      
-      if (inherits(connect, 'try-error')) {
-        showNotification("Couldn't connect to server credentials. Please check internet access/firewall.", type = "error")
-        return()
-      }
-      
-      # Test if credentials for this user name exist
-      if (! file_cred %in% as.vector(connect[names(connect) == "Contents.Key"])) {
-        showNotification("Couldn't find this user", type = "error")
-        return()
-      }
-      
-      # I can't find a way to pass those credentials directly in s3read_using()
-      Sys.setenv("AWS_ACCESS_KEY_ID" = shared_acornamr_key,
-                 "AWS_SECRET_ACCESS_KEY" = shared_acornamr_sec,
-                 "AWS_DEFAULT_REGION" = "eu-west-3")
-      
-      cred <- try(s3read_using(FUN = read_encrypted_cred, 
-                               pwd = input$cred_password,
-                               object = file_cred,
-                               bucket = "shared-acornamr"),
-                  silent = TRUE)
-      
-      if (inherits(cred, 'try-error')) {
-        showNotification("Wrong password.", type = "error")
-        return()
-      }
-      
-      # remove AWS environment variables
-      Sys.unsetenv("AWS_ACCESS_KEY_ID")
-      Sys.unsetenv("AWS_SECRET_ACCESS_KEY")
-      Sys.unsetenv("AWS_DEFAULT_REGION")
-      
-      acorn_cred(cred)
-    }
-    notify(glue("Successfully logged in as {cred$user} ({input$cred_site})"), id = id)
-    
-    showTab("tabs", target = "data_management")
-    updateTabsetPanel(session = session, "tabs", selected = "data_management")
-    
-    updateRadioGroupButtons(session = session, "choice_datamanagement", "What do you want to do?",
-                            choices = c("Generate .acorn from clinical and lab data", "Load existing .acorn from cloud", "Load existing .acorn from local file"),
-                            selected = NULL, status = "success",
-                            checkIcon = list(yes = icon("hand-point-right")))
-    
-    # reinitiate everything so that previousely loaded .acorn data isn't there anymore
-    meta(NULL)
-    redcap_f01f05_dta(NULL)
-    redcap_hai_dta(NULL)
-    lab_dta(NULL)
-    acorn_dta(NULL)
-    corresp_org_antibio(NULL)
-    data_dictionary(NULL)
-    lab_code(NULL)
-    
+    # Hide tabs on app launch ----
+    hideTab("tabs", target = "data_management")
     hideTab("tabs", target = "overview")
     hideTab("tabs", target = "follow_up")
     hideTab("tabs", target = "hai")
     hideTab("tabs", target = "microbiology")
     hideTab("tabs", target = "amr")
     
-    # Connect to AWS S3 server ----
-    if(acorn_cred()$acorn_s3) {
-      
-      connect_server_test <- bucket_exists(
-        bucket = acorn_cred()$acorn_s3_bucket,
-        key =  acorn_cred()$acorn_s3_key,
-        secret = acorn_cred()$acorn_s3_secret,
-        region = acorn_cred()$acorn_s3_region)[1]
-      
-      if(connect_server_test) {
-        # Update select list with .acorn files on the server
-        dta <- get_bucket(bucket = acorn_cred()$acorn_s3_bucket,
-                          key =  acorn_cred()$acorn_s3_key,
-                          secret = acorn_cred()$acorn_s3_secret,
-                          region = acorn_cred()$acorn_s3_region) %>%
-          unlist()
-        acorn_dates <- as.vector(dta[names(dta) == 'Contents.LastModified'])
-        ord_acorn_dates <- order(as.POSIXct(acorn_dates))
-        acorn_files <- rev(tail(as.vector(dta[names(dta) == 'Contents.Key'])[ord_acorn_dates], 10))
-        acorn_files <- acorn_files[endsWith(acorn_files, ".acorn")]
-        
-        updatePickerInput(session, 'acorn_files_server', choices = acorn_files, selected = acorn_files[1])
-      }
-    }
-  })
-  
-  # On "Load .acorn" file from server ----
-  observeEvent(input$load_acorn_server, {
-    id <- notify("Loading data.")
-    on.exit({Sys.sleep(2); removeNotification(id)}, add = TRUE)
-    
-    acorn_file <- get_object(object = input$acorn_files_server, 
-                             bucket = acorn_cred()$acorn_s3_bucket,
-                             key =  acorn_cred()$acorn_s3_key,
-                             secret = acorn_cred()$acorn_s3_secret,
-                             region = acorn_cred()$acorn_s3_region)
-    load(rawConnection(acorn_file))
-    acorn_origin("loaded")
-    
-    meta(meta)
-    redcap_f01f05_dta(redcap_f01f05_dta)
-    redcap_hai_dta(redcap_hai_dta)
-    acorn_dta(acorn_dta)
-    corresp_org_antibio(corresp_org_antibio)
-    
-    source('./www/R/update_input_widgets.R', local = TRUE)
-    notify("Successfully loaded data.", id = id)
-    startAnim(session, "float_about", type = "swing")
-    focus_analysis()
-  })
-  
-  # On "Load .acorn" file from local ----
-  observeEvent(input$load_acorn_local, {
-    load(input$load_acorn_local$datapath)
-    acorn_origin("loaded")
-    
-    meta(meta)
-    redcap_f01f05_dta(redcap_f01f05_dta)
-    redcap_hai_dta(redcap_hai_dta)
-    acorn_dta(acorn_dta)
-    corresp_org_antibio(corresp_org_antibio)
-    
-    source('./www/R/update_input_widgets.R', local = TRUE)
-    showNotification("Successfully loaded data.")
-    startAnim(session, "float_about", type = "swing")
-    focus_analysis()
-  })
-  
-  # On "Get Clinical Data from REDCap server" ----
-  observeEvent(input$get_redcap_data, {
-    if(is.null(acorn_cred()$redcap_f01f05_api)) {
-      showNotification("REDCap server credentials not provided", type = "error")
-      return()
-    }
-    
-    if(! has_internet()) {
-      showNotification("Not connected to internet", type = "error")
-      return()
-    }
-    
-    showModal(modalDialog(
-      title = "Retriving data from REDCap server.", footer = NULL, size = "l",
-      div(
-        p("It might take a couple of minutes. This window will close on completion."),
-        textOutput("text_redcap_f01f05_log"),
-        textOutput("text_redcap_hai_log")))
+    # Management of help links
+    observeEvent(input$show_faq,
+                 showModal(modalDialog(
+                   includeMarkdown("./www/markdown/faq_content.md"),
+                   includeMarkdown("./www/markdown/faq.md"),
+                   title = "FAQ", size = "l", easyClose = TRUE))
     )
     
-    source("./www/R/data/01_read_redcap_f01f05.R", local = TRUE)
-    source("./www/R/data/02_process_redcap_f01f05.R", local = TRUE)
+    # Management of CSS ----
+    observe({
+      session$setCurrentTheme(
+        if (isTRUE(input$selected_language == "la")) acorn_theme_la else acorn_theme
+      )
+    })
     
-    source("./www/R/data/01_read_redcap_hai.R", local = TRUE)
-    source("./www/R/data/02_process_redcap_hai.R", local = TRUE)
-    removeModal()
+    # (TODO v2.1) Management of filters shortcuts ----
+    observeEvent(input$shortcut_filter_1, {})
+    observeEvent(input$shortcut_filter_2, {})
+    observeEvent(input$shortcut_reset_filters, {})
     
-    if(any(c(checklist_status$redcap_not_empty$status,
-             checklist_status$redcap_columns$status,
-             checklist_status$redcap_acornid$status,
-             checklist_status$redcap_F04F01$status,
-             checklist_status$redcap_F03F02$status,
-             checklist_status$redcap_F02F01$status,
-             checklist_status$redcap_F03F01$status,
-             checklist_status$redcap_consistent_outcomes$status,
-             checklist_status$redcap_age_category$status) == "ko")) {
-      checklist_status$redcap_f01f05_dta <- list(status = "ko", msg = "Critical errors with clinical data.")
+    # Misc stuff ----
+    # source files with code to generate outputs
+    file_list <- list.files(path = "./www/R/outputs", pattern = "*.R", recursive = TRUE)
+    for (file in file_list) source(paste0("./www/R/outputs/", file), local = TRUE)$value
+    
+    # allow debug on click
+    observeEvent(input$debug, browser())
+    
+    # update language based on dropdown choice
+    observeEvent(input$selected_language, {
+      update_lang(session, input$selected_language)
+    })
+    
+    # allow to upload acorn file and not being logged
+    observeEvent(input$direct_upload_acorn, {
+      showTab("tabs", target = "data_management")
+      updateTabsetPanel(session = session, "tabs", selected = "data_management")
       
-      showNotification("There is a critical issue with clinical data. The issue should be fixed in REDCap.", type = "error", duration = NULL)
-    } else {
-      checklist_status$redcap_f01f05_dta <- list(status = "okay", 
-                                                 msg = glue("Clinical data provided with {length(unique(infection$redcap_id))} patient enrolments and {nrow(infection)} infection episodes."))
-    }
-    redcap_f01f05_dta(infection)
-    redcap_hai_dta(dl_hai_dta)
-  })
-  
-  # On "Download Enrolment Log" ----
-  output$download_enrolment_log <- downloadHandler(
-    filename = glue("enrolment_log_{format(Sys.time(), '%Y-%m-%d_%H%M')}.xlsx"),
-    content = function(file)  writexl::write_xlsx(
-      list(
-        enrolment_log(),
-        checklist_status$log_errors
-      ), path = file)
-  )
-  
-  
-  # On "Provide Lab data" ----
-  # input$file_lab_dba | input$file_lab_sql | 
-  observeEvent(c(input$file_lab_tab, input$file_lab_dba, input$file_lab_sql), 
-               {
-                 id <- notify("Reading lab data")
-                 on.exit({Sys.sleep(2); removeNotification(id)}, add = TRUE)
-                 source("./www/R/data/01_read_lab_data.R", local = TRUE)
-                 
-                 source("./www/R/data/01_read_lab_codes.R", local = TRUE)
-                 corresp_org_antibio(lab_code$orgs.antibio)
-                 lab_code(
-                   list(whonet.spec = lab_code$whonet.spec,
-                        orgs.antibio = lab_code$orgs.antibio,
-                        whonet.orgs = lab_code$orgs.whonet,
-                        acorn.bccontaminants = lab_code$acorn.bccontaminants,
-                        acorn.ast.groups = lab_code$acorn.ast.groups,
-                        ast.aci =lab_code$ast.aci,
-                        ast.col =lab_code$ast.col,
-                        ast.hin = lab_code$ast.hin,
-                        ast.ngo = lab_code$ast.ngo,
-                        ast.nmen = lab_code$ast.nmen,
-                        ast.pae = lab_code$ast.pae,
-                        ast.sal = lab_code$ast.sal,
-                        ast.shi = lab_code$ast.shi,
-                        ast.ent = lab_code$ast.ent,
-                        ast.sau = lab_code$ast.sau,
-                        ast.spn = lab_code$ast.spn,
-                        notes = lab_code$notes)
-                 )
-                 
-                 source("./www/R/data/01_read_data_dic.R", local = TRUE)
-                 data_dictionary(
-                   list(variables = data_dictionary$variables,
-                        test.res = data_dictionary$test.res,
-                        local.spec = data_dictionary$local.spec,
-                        local.orgs = data_dictionary$local.orgs,
-                        notes = data_dictionary$notes)
-                 )
-                 
-                 notify("Processing Lab data.", id = id)
-                 source("./www/R/data/03_map_variables.R", local = TRUE)
-                 source("./www/R/data/04_map_specimens.R", local = TRUE)
-                 source("./www/R/data/05_map_organisms.R", local = TRUE)
-                 source("./www/R/data/06_make_ast_group.R", local = TRUE)
-                 source("./www/R/data/07_ast_interpretation.R", local = TRUE)
-                 source("./www/R/data/08_ast_interpretation_nonstandard.R", local = TRUE)
-                 source("./www/R/data/09_checklist_lab.R", local = TRUE)
-                 
-                 lab_dta(amr)
-                 notify("Lab data successfully processsed!", id = id)
-               })
-  
-  # On "Generate ACORN" ----
-  observeEvent(input$generate_acorn_data, {
-    id <- notify("Generating .acorn")
-    on.exit({Sys.sleep(2); removeNotification(id)}, add = TRUE)
+      updateRadioGroupButtons(session = session, "choice_datamanagement", "What do you want to do?",
+                              choices = "Load existing .acorn from local file",
+                              selected = NULL, status = "success",
+                              checkIcon = list(yes = icon("hand-point-right")))
+    })
     
-    if(checklist_status$redcap_f01f05_dta$status != "okay")  showNotification("Aborted: clinical data not provided.", type = "warning", duration = NULL)
-    if(checklist_status$lab_dta$status != "okay")     showNotification("Aborted: lab data not provided.", type = "warning", duration = NULL)
+    # Definition of reactive elements for data ----
+    acorn_cred <- reactiveVal()
+    acorn_origin <- reactiveVal()
     
-    if(checklist_status$lab_dta$status == "okay" & checklist_status$redcap_f01f05_dta$status == "okay") {
-      source("./www/R/data/10_link_clinical_assembly.R", local = TRUE)
+    # Primary datatsets
+    meta <- reactiveVal()
+    redcap_f01f05_dta <- reactiveVal()
+    redcap_hai_dta <- reactiveVal()
+    lab_dta <- reactiveVal()
+    acorn_dta <- reactiveVal()
+    corresp_org_antibio <- reactiveVal()
+    lab_code <- reactiveVal()
+    data_dictionary <- reactiveVal()
+    
+    # checklist_status' status can be: hidden/question/okay/warning/ko
+    checklist_status <- reactiveValues(
+      log_errors = tibble(issue = character(), redcap_id = character(), acorn_id = character()),
       
+      lab_data_qc_1 = list(status = "hidden", msg = ""),
+      lab_data_qc_2 = list(status = "hidden", msg = ""),
+      lab_data_qc_3 = list(status = "hidden", msg = ""),
+      lab_data_qc_4 = list(status = "hidden", msg = ""),
+      lab_data_qc_5 = list(status = "hidden", msg = ""),
+      lab_data_qc_6 = list(status = "hidden", msg = ""),
+      lab_data_qc_7 = list(status = "hidden", msg = ""),
+      lab_data_qc_8 = list(status = "hidden", msg = ""),
+      
+      redcap_not_empty           = list(status = "hidden", msg = ""),
+      redcap_columns             = list(status = "hidden", msg = ""),
+      redcap_acornid             = list(status = "hidden", msg = ""),
+      redcap_F04F01              = list(status = "hidden", msg = ""),
+      redcap_F03F02              = list(status = "hidden", msg = ""),
+      redcap_F02F01              = list(status = "hidden", msg = ""),
+      redcap_F03F01              = list(status = "hidden", msg = ""),
+      redcap_consistent_outcomes = list(status = "hidden", msg = ""),
+      redcap_age_category        = list(status = "hidden", msg = ""),
+      redcap_hai_dates           = list(status = "hidden", msg = ""),
+      
+      linkage_caseB  = list(status = "hidden", msg = ""),
+      linkage_caseC  = list(status = "hidden", msg = ""),
+      linkage_result = list(status = "info", msg = "No .acorn has been generated"),
+      
+      redcap_f01f05_dta = list(status = "info", msg = "Clinical data not provided"),
+      lab_dta           = list(status = "info", msg = "Lab data not provided"),
+      
+      acorn_dta_saved_local = list(status = "hidden", msg = ""),
+      acorn_dta_saved_server = list(status = "info", msg = "No .acorn has been saved")
+    )
+    
+    # Secondary datasets (derived from primary datasets)
+    redcap_f01f05_dta_filter <- reactive(redcap_f01f05_dta() %>% 
+                                           fun_filter_enrolment(input = input))
+    redcap_hai_dta_filter <- reactive(redcap_hai_dta() %>% 
+                                        fun_filter_survey(input = input))
+    acorn_dta_filter <- reactive(acorn_dta() %>% 
+                                   fun_filter_enrolment(input = input) %>% 
+                                   fun_filter_specimen(input = input) %>%
+                                   fun_filter_isolate(input = input))
+    
+    # Enrolment log
+    enrolment_log <- reactive({
+      req(redcap_f01f05_dta())
+      
+      # calculate the expected Day-28 date: one acorn_id/redcap_id per enrolment but some acorn_id are missing so we prefer to group by redcap_id
+      left_join(redcap_f01f05_dta(),
+                redcap_f01f05_dta() %>% 
+                  group_by(redcap_id) %>%
+                  summarise(expected_d28_date = max(date_episode_enrolment) + 28, .groups = "drop"),
+                by = "redcap_id") %>%
+        transmute("Category" = surveillance_category,
+                  "Patient ID" = patient_id, 
+                  "ACORN ID" = acorn_id,
+                  "Date of admission" = date_admission, 
+                  "Infection Episode" = infection_episode_nb,
+                  "Date of episode enrolment" = date_episode_enrolment, 
+                  "Discharge date" = ho_discharge_date, 
+                  "Discharge status" = ho_discharge_status,
+                  "Expected Day-28 date" =  expected_d28_date,
+                  "Actual Day-28 date" = d28_date)
+    })
+    
+    output$enrolment_log_table <- renderUI({
+      req(enrolment_log())
+      req(acorn_origin() == "generated")
+      DTOutput("table_enrolment_log")
+    })
+    
+    output$enrolment_log_dl <- renderUI({
+      req(enrolment_log())
+      req(acorn_origin() == "generated")
+      tagList(
+        br(), br(), br(),
+        downloadButton("download_enrolment_log", "Download Enrolment Log (.xlsx)"),
+        p("First sheet is the log of all enrolments retrived from REDCap (as per adjacent table). The second sheet is a listing of all flagged elements.")
+      )
+    })
+    
+    # On login ----
+    observeEvent(input$cred_login, {
+      id <- notify("Attempting to connect")
+      on.exit({Sys.sleep(2); removeNotification(id)}, add = TRUE)
+      
+      if (input$cred_site == "demo") {
+        # The demo should work offline
+        cred <- readRDS("./www/cred/bucket_site/encrypted_cred_demo.rds")
+        key_user <- sha256(charToRaw("demo"))
+        cred <- unserialize(aes_cbc_decrypt(cred, key = key_user))
+        
+        if(cred$site != input$cred_site)  {
+          removeNotification(id = "notif_connection")
+          showNotification("The credential file is corrupted. Please contact ACORN Data Management.", type = "error")
+          return()
+        }
+        
+        acorn_cred(cred)
+      }
+      if (input$cred_site != "demo") {
+        file_cred <- glue("encrypted_cred_{tolower(input$cred_site)}_{input$cred_user}.rds")
+        # Stop if the connection can't be established
+        connect <- try(get_bucket(bucket = "shared-acornamr", 
+                                  key    = shared_acornamr_key,
+                                  secret = shared_acornamr_sec,
+                                  region = "eu-west-3") %>% unlist(),
+                       silent = TRUE)
+        
+        if (inherits(connect, 'try-error')) {
+          showNotification("Couldn't connect to server credentials. Please check internet access/firewall.", type = "error")
+          return()
+        }
+        
+        # Test if credentials for this user name exist
+        if (! file_cred %in% as.vector(connect[names(connect) == "Contents.Key"])) {
+          showNotification("Couldn't find this user", type = "error")
+          return()
+        }
+        
+        # I can't find a way to pass those credentials directly in s3read_using()
+        Sys.setenv("AWS_ACCESS_KEY_ID" = shared_acornamr_key,
+                   "AWS_SECRET_ACCESS_KEY" = shared_acornamr_sec,
+                   "AWS_DEFAULT_REGION" = "eu-west-3")
+        
+        cred <- try(s3read_using(FUN = read_encrypted_cred, 
+                                 pwd = input$cred_password,
+                                 object = file_cred,
+                                 bucket = "shared-acornamr"),
+                    silent = TRUE)
+        
+        if (inherits(cred, 'try-error')) {
+          showNotification("Wrong password.", type = "error")
+          return()
+        }
+        
+        # remove AWS environment variables
+        Sys.unsetenv("AWS_ACCESS_KEY_ID")
+        Sys.unsetenv("AWS_SECRET_ACCESS_KEY")
+        Sys.unsetenv("AWS_DEFAULT_REGION")
+        
+        acorn_cred(cred)
+      }
+      notify(glue("Successfully logged in as {cred$user} ({input$cred_site})"), id = id)
+      
+      showTab("tabs", target = "data_management")
+      updateTabsetPanel(session = session, "tabs", selected = "data_management")
+      
+      updateRadioGroupButtons(session = session, "choice_datamanagement", "What do you want to do?",
+                              choices = c("Generate .acorn from clinical and lab data", "Load existing .acorn from cloud", "Load existing .acorn from local file"),
+                              selected = NULL, status = "success",
+                              checkIcon = list(yes = icon("hand-point-right")))
+      
+      # reinitiate everything so that previousely loaded .acorn data isn't there anymore
+      meta(NULL)
+      redcap_f01f05_dta(NULL)
+      redcap_hai_dta(NULL)
+      lab_dta(NULL)
+      acorn_dta(NULL)
+      corresp_org_antibio(NULL)
+      data_dictionary(NULL)
+      lab_code(NULL)
+      
+      hideTab("tabs", target = "overview")
+      hideTab("tabs", target = "follow_up")
+      hideTab("tabs", target = "hai")
+      hideTab("tabs", target = "microbiology")
+      hideTab("tabs", target = "amr")
+      
+      # Connect to AWS S3 server ----
+      if(acorn_cred()$acorn_s3) {
+        
+        connect_server_test <- bucket_exists(
+          bucket = acorn_cred()$acorn_s3_bucket,
+          key =  acorn_cred()$acorn_s3_key,
+          secret = acorn_cred()$acorn_s3_secret,
+          region = acorn_cred()$acorn_s3_region)[1]
+        
+        if(connect_server_test) {
+          # Update select list with .acorn files on the server
+          dta <- get_bucket(bucket = acorn_cred()$acorn_s3_bucket,
+                            key =  acorn_cred()$acorn_s3_key,
+                            secret = acorn_cred()$acorn_s3_secret,
+                            region = acorn_cred()$acorn_s3_region) %>%
+            unlist()
+          acorn_dates <- as.vector(dta[names(dta) == 'Contents.LastModified'])
+          ord_acorn_dates <- order(as.POSIXct(acorn_dates))
+          acorn_files <- rev(tail(as.vector(dta[names(dta) == 'Contents.Key'])[ord_acorn_dates], 10))
+          acorn_files <- acorn_files[endsWith(acorn_files, ".acorn")]
+          
+          updatePickerInput(session, 'acorn_files_server', choices = acorn_files, selected = acorn_files[1])
+        }
+      }
+    })
+    
+    # On "Load .acorn" file from server ----
+    observeEvent(input$load_acorn_server, {
+      id <- notify("Loading data.")
+      on.exit({Sys.sleep(2); removeNotification(id)}, add = TRUE)
+      
+      acorn_file <- get_object(object = input$acorn_files_server, 
+                               bucket = acorn_cred()$acorn_s3_bucket,
+                               key =  acorn_cred()$acorn_s3_key,
+                               secret = acorn_cred()$acorn_s3_secret,
+                               region = acorn_cred()$acorn_s3_region)
+      load(rawConnection(acorn_file))
+      acorn_origin("loaded")
+      
+      meta(meta)
+      redcap_f01f05_dta(redcap_f01f05_dta)
+      redcap_hai_dta(redcap_hai_dta)
       acorn_dta(acorn_dta)
-      acorn_origin("generated")
-      source('./www/R/update_input_widgets.R', local = TRUE)
+      corresp_org_antibio(corresp_org_antibio)
       
-      notify(".acorn data successfully generated!", id = id)
-      checklist_status$acorn_dta_saved = list(status = "warning", msg = ".acorn not saved")
-    }
-  })
-  
-  # On "Save ACORN" on server ----
-  observeEvent(input$save_acorn_server, { 
-    if(checklist_status$linkage_result$status != "okay") {
-      showNotification("No .acorn data loaded.", type = "error", duration = 10)
-      return()
-    }
+      source('./www/R/update_input_widgets.R', local = TRUE)
+      notify("Successfully loaded data.", id = id)
+      startAnim(session, "float_about", type = "swing")
+      focus_analysis()
+    })
     
-    if(! has_internet()) {
-      showNotification("Not connected to internet", type = "error")
-      return()
-    }
+    # On "Load .acorn" file from local ----
+    observeEvent(input$load_acorn_local, {
+      load(input$load_acorn_local$datapath)
+      acorn_origin("loaded")
+      
+      meta(meta)
+      redcap_f01f05_dta(redcap_f01f05_dta)
+      redcap_hai_dta(redcap_hai_dta)
+      acorn_dta(acorn_dta)
+      corresp_org_antibio(corresp_org_antibio)
+      
+      source('./www/R/update_input_widgets.R', local = TRUE)
+      showNotification("Successfully loaded data.")
+      startAnim(session, "float_about", type = "swing")
+      focus_analysis()
+    })
     
-    showModal(modalDialog(
-      title = "Save acorn data", footer = modalButton("Cancel"), size = "m", easyClose = FALSE, fade = TRUE,
-      div(
-        textInput("name_file", value = glue("{input$cred_site}_{session_start_time}"), label = "File name:"),
-        textAreaInput("meta_acorn_comment", label = "(Optional) Comments:"),
-        br(), br(),
-        actionButton("save_acorn_server_confirm", label = "Save on Server")
+    # On "Get Clinical Data from REDCap server" ----
+    observeEvent(input$get_redcap_data, {
+      if(is.null(acorn_cred()$redcap_f01f05_api)) {
+        showNotification("REDCap server credentials not provided", type = "error")
+        return()
+      }
+      
+      if(! has_internet()) {
+        showNotification("Not connected to internet", type = "error")
+        return()
+      }
+      
+      showModal(modalDialog(
+        title = "Retriving data from REDCap server.", footer = NULL, size = "l",
+        div(
+          p("It might take a couple of minutes. This window will close on completion."),
+          textOutput("text_redcap_f01f05_log"),
+          textOutput("text_redcap_hai_log")))
       )
-    ))
-  })
-  
-  # On "Save ACORN" as a local file ----
-  observeEvent(input$save_acorn_local, { 
-    if(checklist_status$linkage_result$status != "okay") {
-      showNotification("No .acorn data loaded.", type = "error", duration = 10)
-      return()
-    }
-    
-    showModal(modalDialog(
-      title = "Save acorn data", footer = modalButton("Cancel"), size = "m", easyClose = FALSE, fade = TRUE,
-      div(
-        textInput("name_file_dup", value = glue("{input$cred_site}_{session_start_time}"), label = "File name:"),
-        textAreaInput("meta_acorn_comment_dup", label = "(Optional) Comments:"),
-        br(), br(),
-        downloadButton("save_acorn_local_confirm", label = "Save")
-      )
-    ))
-  })
-  
-  # On confirmation that the file is being saved on server ----
-  observeEvent(input$save_acorn_server_confirm, { 
-    removeModal()
-    id <- notify("Trying to save .acorn file on server")
-    on.exit({Sys.sleep(2); removeNotification(id)}, add = TRUE)
-    
-    meta <- list(time_generation = session_start_time,
-                 app_version = app_version,
-                 site = input$cred_site,
-                 user = input$cred_user,
-                 comment = input$meta_acorn_comment)
-    meta(meta)
-    
-    ## Anonymised data ----
-    redcap_f01f05_dta <- redcap_f01f05_dta() %>% mutate(patient_id = md5(patient_id))
-    redcap_hai_dta <- redcap_hai_dta()
-    acorn_dta <- acorn_dta() %>% mutate(patient_id = md5(patient_id))
-    corresp_org_antibio <- corresp_org_antibio()
-    lab_code <- lab_code()
-    data_dictionary <- data_dictionary()
-    
-    name_file <- glue("{input$name_file}.acorn")
-    file <- file.path(tempdir(), name_file)
-    
-    save(meta, redcap_f01f05_dta, redcap_hai_dta, acorn_dta, corresp_org_antibio, lab_code, data_dictionary,
-         file = file)
-    
-    put_object(file = file,
-               object = name_file,
-               bucket = acorn_cred()$acorn_s3_bucket,
-               key =  acorn_cred()$acorn_s3_key,
-               secret = acorn_cred()$acorn_s3_secret,
-               region = acorn_cred()$acorn_s3_region)
-    
-    ## Non anonymised data ----
-    redcap_f01f05_dta <- redcap_f01f05_dta()
-    redcap_hai_dta <- redcap_hai_dta()
-    lab_dta <- lab_dta()
-    acorn_dta <- acorn_dta()
-    corresp_org_antibio <- corresp_org_antibio()
-    lab_code <- lab_code()
-    data_dictionary <- data_dictionary()
-    
-    name_file_non_anonymised <- glue("{input$name_file}.acorn_non_anonymised")
-    file_non_anonymised <- file.path(tempdir(), name_file_non_anonymised)
-    
-    save(meta, redcap_f01f05_dta, redcap_hai_dta, lab_dta, acorn_dta, corresp_org_antibio, lab_code, data_dictionary,
-         file = file_non_anonymised)
-    
-    put_object(file = file_non_anonymised,
-               object = name_file_non_anonymised,
-               bucket = acorn_cred()$acorn_s3_bucket,
-               key =  acorn_cred()$acorn_s3_key,
-               secret = acorn_cred()$acorn_s3_secret,
-               region = acorn_cred()$acorn_s3_region)
-    
-    # update list of files to load
-    dta <- get_bucket(bucket = acorn_cred()$acorn_s3_bucket,
-                      key =  acorn_cred()$acorn_s3_key,
-                      secret = acorn_cred()$acorn_s3_secret,
-                      region = acorn_cred()$acorn_s3_region)
-    dta <- unlist(dta)
-    acorn_dates <- as.vector(dta[names(dta) == 'Contents.LastModified'])
-    ord_acorn_dates <- order(as.POSIXct(acorn_dates))
-    acorn_files <- rev(tail(as.vector(dta[names(dta) == 'Contents.Key'])[ord_acorn_dates], 10))
-    acorn_files <- acorn_files[endsWith(acorn_files, ".acorn")]
-    
-    updatePickerInput(session, 'acorn_files_server', choices = acorn_files, selected = acorn_files[1])
-    
-    checklist_status$acorn_dta_saved_server <- list(status = "okay", msg = ".acorn file saved on server")
-    notify("Successfully saved .acorn file in the cloud. You can now explore acorn data.", id = id)
-    startAnim(session, "float_about", type = "swing")
-    focus_analysis()
-  })
-  
-  
-  # On confirmation that the file is being saved locally ----
-  output$save_acorn_local_confirm <- downloadHandler(
-    filename = glue("{input$name_file_dup}.acorn"),
-    content = function(file) {
+      
+      source("./www/R/data/01_read_redcap_f01f05.R", local = TRUE)
+      source("./www/R/data/02_process_redcap_f01f05.R", local = TRUE)
+      
+      source("./www/R/data/01_read_redcap_hai.R", local = TRUE)
+      source("./www/R/data/02_process_redcap_hai.R", local = TRUE)
       removeModal()
+      
+      if(any(c(checklist_status$redcap_not_empty$status,
+               checklist_status$redcap_columns$status,
+               checklist_status$redcap_acornid$status,
+               checklist_status$redcap_F04F01$status,
+               checklist_status$redcap_F03F02$status,
+               checklist_status$redcap_F02F01$status,
+               checklist_status$redcap_F03F01$status,
+               checklist_status$redcap_consistent_outcomes$status,
+               checklist_status$redcap_age_category$status) == "ko")) {
+        checklist_status$redcap_f01f05_dta <- list(status = "ko", msg = "Critical errors with clinical data.")
+        
+        showNotification("There is a critical issue with clinical data. The issue should be fixed in REDCap.", type = "error", duration = NULL)
+      } else {
+        checklist_status$redcap_f01f05_dta <- list(status = "okay", 
+                                                   msg = glue("Clinical data provided with {length(unique(infection$redcap_id))} patient enrolments and {nrow(infection)} infection episodes."))
+      }
+      redcap_f01f05_dta(infection)
+      redcap_hai_dta(dl_hai_dta)
+    })
+    
+    # On "Download Enrolment Log" ----
+    output$download_enrolment_log <- downloadHandler(
+      filename = glue("enrolment_log_{format(Sys.time(), '%Y-%m-%d_%H%M')}.xlsx"),
+      content = function(file)  writexl::write_xlsx(
+        list(
+          enrolment_log(),
+          checklist_status$log_errors
+        ), path = file)
+    )
+    
+    
+    # On "Provide Lab data" ----
+    # input$file_lab_dba | input$file_lab_sql | 
+    observeEvent(c(input$file_lab_tab, input$file_lab_dba, input$file_lab_sql), 
+                 {
+                   id <- notify("Reading lab data")
+                   on.exit({Sys.sleep(2); removeNotification(id)}, add = TRUE)
+                   source("./www/R/data/01_read_lab_data.R", local = TRUE)
+                   
+                   source("./www/R/data/01_read_lab_codes.R", local = TRUE)
+                   corresp_org_antibio(lab_code$orgs.antibio)
+                   lab_code(
+                     list(whonet.spec = lab_code$whonet.spec,
+                          orgs.antibio = lab_code$orgs.antibio,
+                          whonet.orgs = lab_code$orgs.whonet,
+                          acorn.bccontaminants = lab_code$acorn.bccontaminants,
+                          acorn.ast.groups = lab_code$acorn.ast.groups,
+                          ast.aci =lab_code$ast.aci,
+                          ast.col =lab_code$ast.col,
+                          ast.hin = lab_code$ast.hin,
+                          ast.ngo = lab_code$ast.ngo,
+                          ast.nmen = lab_code$ast.nmen,
+                          ast.pae = lab_code$ast.pae,
+                          ast.sal = lab_code$ast.sal,
+                          ast.shi = lab_code$ast.shi,
+                          ast.ent = lab_code$ast.ent,
+                          ast.sau = lab_code$ast.sau,
+                          ast.spn = lab_code$ast.spn,
+                          notes = lab_code$notes)
+                   )
+                   
+                   source("./www/R/data/01_read_data_dic.R", local = TRUE)
+                   data_dictionary(
+                     list(variables = data_dictionary$variables,
+                          test.res = data_dictionary$test.res,
+                          local.spec = data_dictionary$local.spec,
+                          local.orgs = data_dictionary$local.orgs,
+                          notes = data_dictionary$notes)
+                   )
+                   
+                   notify("Processing Lab data.", id = id)
+                   source("./www/R/data/03_map_variables.R", local = TRUE)
+                   source("./www/R/data/04_map_specimens.R", local = TRUE)
+                   source("./www/R/data/05_map_organisms.R", local = TRUE)
+                   source("./www/R/data/06_make_ast_group.R", local = TRUE)
+                   source("./www/R/data/07_ast_interpretation.R", local = TRUE)
+                   source("./www/R/data/08_ast_interpretation_nonstandard.R", local = TRUE)
+                   source("./www/R/data/09_checklist_lab.R", local = TRUE)
+                   
+                   lab_dta(amr)
+                   notify("Lab data successfully processsed!", id = id)
+                 })
+    
+    # On "Generate ACORN" ----
+    observeEvent(input$generate_acorn_data, {
+      id <- notify("Generating .acorn")
+      on.exit({Sys.sleep(2); removeNotification(id)}, add = TRUE)
+      
+      if(checklist_status$redcap_f01f05_dta$status != "okay")  showNotification("Aborted: clinical data not provided.", type = "warning", duration = NULL)
+      if(checklist_status$lab_dta$status != "okay")     showNotification("Aborted: lab data not provided.", type = "warning", duration = NULL)
+      
+      if(checklist_status$lab_dta$status == "okay" & checklist_status$redcap_f01f05_dta$status == "okay") {
+        source("./www/R/data/10_link_clinical_assembly.R", local = TRUE)
+        
+        acorn_dta(acorn_dta)
+        acorn_origin("generated")
+        source('./www/R/update_input_widgets.R', local = TRUE)
+        
+        notify(".acorn data successfully generated!", id = id)
+        checklist_status$acorn_dta_saved = list(status = "warning", msg = ".acorn not saved")
+      }
+    })
+    
+    # On "Save ACORN" on server ----
+    observeEvent(input$save_acorn_server, { 
+      if(checklist_status$linkage_result$status != "okay") {
+        showNotification("No .acorn data loaded.", type = "error", duration = 10)
+        return()
+      }
+      
+      if(! has_internet()) {
+        showNotification("Not connected to internet", type = "error")
+        return()
+      }
+      
+      showModal(modalDialog(
+        title = "Save acorn data", footer = modalButton("Cancel"), size = "m", easyClose = FALSE, fade = TRUE,
+        div(
+          textInput("name_file", value = glue("{input$cred_site}_{session_start_time}"), label = "File name:"),
+          textAreaInput("meta_acorn_comment", label = "(Optional) Comments:"),
+          br(), br(),
+          actionButton("save_acorn_server_confirm", label = "Save on Server")
+        )
+      ))
+    })
+    
+    # On "Save ACORN" as a local file ----
+    observeEvent(input$save_acorn_local, { 
+      if(checklist_status$linkage_result$status != "okay") {
+        showNotification("No .acorn data loaded.", type = "error", duration = 10)
+        return()
+      }
+      
+      showModal(modalDialog(
+        title = "Save acorn data", footer = modalButton("Cancel"), size = "m", easyClose = FALSE, fade = TRUE,
+        div(
+          textInput("name_file_dup", value = glue("{input$cred_site}_{session_start_time}"), label = "File name:"),
+          textAreaInput("meta_acorn_comment_dup", label = "(Optional) Comments:"),
+          br(), br(),
+          downloadButton("save_acorn_local_confirm", label = "Save")
+        )
+      ))
+    })
+    
+    # On confirmation that the file is being saved on server ----
+    observeEvent(input$save_acorn_server_confirm, { 
+      removeModal()
+      id <- notify("Trying to save .acorn file on server")
+      on.exit({Sys.sleep(2); removeNotification(id)}, add = TRUE)
+      
       meta <- list(time_generation = session_start_time,
                    app_version = app_version,
                    site = input$cred_site,
                    user = input$cred_user,
-                   comment = input$meta_acorn_comment_dup)
+                   comment = input$meta_acorn_comment)
       meta(meta)
       
-      # Anonymised
+      ## Anonymised data ----
       redcap_f01f05_dta <- redcap_f01f05_dta() %>% mutate(patient_id = md5(patient_id))
       redcap_hai_dta <- redcap_hai_dta()
       acorn_dta <- acorn_dta() %>% mutate(patient_id = md5(patient_id))
@@ -1201,17 +1132,93 @@ server <- function(input, output, session) {
       lab_code <- lab_code()
       data_dictionary <- data_dictionary()
       
+      name_file <- glue("{input$name_file}.acorn")
+      file <- file.path(tempdir(), name_file)
+      
       save(meta, redcap_f01f05_dta, redcap_hai_dta, acorn_dta, corresp_org_antibio, lab_code, data_dictionary,
            file = file)
-      checklist_status$acorn_dta_saved_local <- list(status = "okay", msg = "Successfully saved .acorn file locally")
-      showNotification("Successfully saved .acorn file locally. You can now explore acorn data.", duration = 5)
+      
+      put_object(file = file,
+                 object = name_file,
+                 bucket = acorn_cred()$acorn_s3_bucket,
+                 key =  acorn_cred()$acorn_s3_key,
+                 secret = acorn_cred()$acorn_s3_secret,
+                 region = acorn_cred()$acorn_s3_region)
+      
+      ## Non anonymised data ----
+      redcap_f01f05_dta <- redcap_f01f05_dta()
+      redcap_hai_dta <- redcap_hai_dta()
+      lab_dta <- lab_dta()
+      acorn_dta <- acorn_dta()
+      corresp_org_antibio <- corresp_org_antibio()
+      lab_code <- lab_code()
+      data_dictionary <- data_dictionary()
+      
+      name_file_non_anonymised <- glue("{input$name_file}.acorn_non_anonymised")
+      file_non_anonymised <- file.path(tempdir(), name_file_non_anonymised)
+      
+      save(meta, redcap_f01f05_dta, redcap_hai_dta, lab_dta, acorn_dta, corresp_org_antibio, lab_code, data_dictionary,
+           file = file_non_anonymised)
+      
+      put_object(file = file_non_anonymised,
+                 object = name_file_non_anonymised,
+                 bucket = acorn_cred()$acorn_s3_bucket,
+                 key =  acorn_cred()$acorn_s3_key,
+                 secret = acorn_cred()$acorn_s3_secret,
+                 region = acorn_cred()$acorn_s3_region)
+      
+      # update list of files to load
+      dta <- get_bucket(bucket = acorn_cred()$acorn_s3_bucket,
+                        key =  acorn_cred()$acorn_s3_key,
+                        secret = acorn_cred()$acorn_s3_secret,
+                        region = acorn_cred()$acorn_s3_region)
+      dta <- unlist(dta)
+      acorn_dates <- as.vector(dta[names(dta) == 'Contents.LastModified'])
+      ord_acorn_dates <- order(as.POSIXct(acorn_dates))
+      acorn_files <- rev(tail(as.vector(dta[names(dta) == 'Contents.Key'])[ord_acorn_dates], 10))
+      acorn_files <- acorn_files[endsWith(acorn_files, ".acorn")]
+      
+      updatePickerInput(session, 'acorn_files_server', choices = acorn_files, selected = acorn_files[1])
+      
+      checklist_status$acorn_dta_saved_server <- list(status = "okay", msg = ".acorn file saved on server")
+      notify("Successfully saved .acorn file in the cloud. You can now explore acorn data.", id = id)
       startAnim(session, "float_about", type = "swing")
       focus_analysis()
-      
-      if(checklist_status$acorn_dta_saved_server$status != "okay")  {
-        checklist_status$acorn_dta_saved_server <- list(status = "warning", msg = "Consider saving .acorn file on the cloud for additional security.")
-      }
     })
-}
-
-shinyApp(ui = ui, server = server)  # port 3872
+    
+    
+    # On confirmation that the file is being saved locally ----
+    output$save_acorn_local_confirm <- downloadHandler(
+      filename = glue("{input$name_file_dup}.acorn"),
+      content = function(file) {
+        removeModal()
+        meta <- list(time_generation = session_start_time,
+                     app_version = app_version,
+                     site = input$cred_site,
+                     user = input$cred_user,
+                     comment = input$meta_acorn_comment_dup)
+        meta(meta)
+        
+        # Anonymised
+        redcap_f01f05_dta <- redcap_f01f05_dta() %>% mutate(patient_id = md5(patient_id))
+        redcap_hai_dta <- redcap_hai_dta()
+        acorn_dta <- acorn_dta() %>% mutate(patient_id = md5(patient_id))
+        corresp_org_antibio <- corresp_org_antibio()
+        lab_code <- lab_code()
+        data_dictionary <- data_dictionary()
+        
+        save(meta, redcap_f01f05_dta, redcap_hai_dta, acorn_dta, corresp_org_antibio, lab_code, data_dictionary,
+             file = file)
+        checklist_status$acorn_dta_saved_local <- list(status = "okay", msg = "Successfully saved .acorn file locally")
+        showNotification("Successfully saved .acorn file locally. You can now explore acorn data.", duration = 5)
+        startAnim(session, "float_about", type = "swing")
+        focus_analysis()
+        
+        if(checklist_status$acorn_dta_saved_server$status != "okay")  {
+          checklist_status$acorn_dta_saved_server <- list(status = "warning", msg = "Consider saving .acorn file on the cloud for additional security.")
+        }
+      })
+  }
+  
+  shinyApp(ui = ui, server = server)  # port 3872
+  
