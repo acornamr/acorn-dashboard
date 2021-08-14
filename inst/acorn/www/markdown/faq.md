@@ -32,20 +32,18 @@ Additional ACORN comorbidities, which were requested to be included by the WHO G
 
 ### Deduplication of culture / bacterial isolate data
 
-By patient-episode
+**By patient-episode.** This filter restricts to the first isolation of each species by specimen type and patient infection episode. For example, if E. coli was isolated from three blood cultures and one urine culture during a single CAI episode, the filter would select just the first blood culture isolate and the urine culture isolate.
 
-This filter restricts to the first isolation of each species by specimen type and patient infection episode. For example, if E. coli was isolated from three blood cultures and one urine culture during a single CAI episode, the filter would select just the first blood culture isolate and the urine culture isolate.
-
-By patient ID
-
-This filter restricts to the first isolation of each species by patient, specimen type, and infection category (CAI or HAI). For example, if a patient was admitted two times during the surveillance period and had two episodes of community-acquired E. coli urosepsis (two E. coli urine cultures and one E. coli bacteraemia) and one hospital acquired E. coli bacteraemia secondary to a surgical complication, the filter would select just the earliest isolate from each specimen type and infection category (i.e. the E. coli from the first positive urine culture and the first positive blood culture [CAI] plus the E. coli from the first positive blood culture [HAI]).
+**By patient ID**. This filter restricts to the first isolation of each species by patient, specimen type, and infection category (CAI or HAI). For example, if a patient was admitted two times during the surveillance period and had two episodes of community-acquired E. coli urosepsis (two E. coli urine cultures and one E. coli bacteraemia) and one hospital acquired E. coli bacteraemia secondary to a surgical complication, the filter would select just the earliest isolate from each specimen type and infection category (i.e. the E. coli from the first positive urine culture and the first positive blood culture [CAI] plus the E. coli from the first positive blood culture [HAI]).
 
 ### Antimicrobial resistance reporting
+
 Class-level resistance to fluoroquinolones, 3rd generation cephalosporins, and carbapenems is calculated automatically for selected target organisms. Organism appropriate AST results are combined such that if any drug in the group is resistant, then the class is labelled resistant. Results of extended spectrum beta-lactamase and carbapenemase tests are included. For this calculation, the intermediate category is counted as susceptible, thus providing a conservative estimate of resistance.
 Where included in the laboratory testing repertoire and data file, results of beta-lactamase and inducible clindamycin testing are incorporated into reporting of beta-lactam (penicillin / ampicillin) and macrolide susceptibility results. 
 Meningitis and non-meningitis breakpoints are reported separately for Streptococcus pneumoniae and penicillin, ceftriaxone, and cefotaxime.
 
 ### Blood culture contaminants
+
 It is possible to remove bacterial species which have a high probability of being a skin contaminant from the microbiology organism lists and tables. The following genera / species are considered contaminants:
 Blood cultures with of growth of >= 1 contaminant organism are labelled as contaminated, irrespective of growth of pathogens.
 
@@ -91,6 +89,46 @@ You can ask for changes in the theme by providing a list of values for variables
 The dashboard can be made accessible in any language provided with translated elements in a tabular fomat. Please contact the ACORN team for more information.
 
 ### Clinical and Lab data linkage
+
+#### Purpose
+
+To describe the requirements to link routinely collected microbiology laboratory data to ACORN2 clinical data using the app.
+
+
+#### Assumptions
+
+- Infection episodes can be uniquely identified by a patient ID (could be ACORN ID, patient ID, REDCap ID) and episode enrolment date (F02 `hpd_dmdtc`).
+- The patient ID variable (`usubjid`) in ACORN2 REDCap form F01 is also represented in the local laboratory data file (either LIMS export or WHONET file: local variable mapped to the `patid` variable using the ACORN2 data dictionary).
+- One specimen (identified by `specnum` in the laboratory data file – may have >1 row if multiple isolates (identified by `orgnum`)) should be associated with a single ACORN2 infection episode (identified by an instance of form F02).
+
+
+#### Logic rules for the linkage
+
+These are slightly different for CAI and HAI (F02 `ifd_surcate`).
+
+**For CAI**, we wish to associate specimens that were collected (lab data file `specdate`) from within 2 days of the patient hospital admission date (F01 `hpd_adm_date`): i.e. admission date + / - 2 days.
+
+- This is important since some specimens will be collected just before admission (i.e. from out-patient department / clinic) and the patient admitted once result is known or when a bed becomes available).
+- Linkage will be on clinical (`usubjid` and `hpd_adm_date`) to lab (`patid` and `specdate`).
+
+**For HAI**, we wish to associate specimens that were collected in the 2 days following the infection onset date (F02 `hpd_onset_date`): i.e. infection onset date + 2 days. We assume that no relevant specimens will be collected before the patient begins to develop symptoms of the HAI.
+
+- Linkage will be on clinical (`usubjid` and `hpd_onset_date`) to lab (`patid` and `specdate`).
+
+
+**Issues to consider:**
+
+Most patients will have a single infection episode per admission, so will present no problems for linkage.
+
+- Patients with well separated CAI and HAI during the same admission are also no problem: case (A) below.
+- Patients with a CAI and a stated HAI onset of admission D2 would be a problem, but these should not happen in ACORN2 (HAI considered from D3 onwards – case (B) below).
+- Potential problem: if a patient is discharged and then rapidly re-admitted (within 2 days), then infection specimen windows could overlap (case (C) below, but could also be HAI – CAI overlap).
+- For these, the specimen should be linked the first episode only (i.e. remove the later linkage).
+
+
+(TODO: add image of cases, change tenses from futur to conditional/present)
+
+
 
 ### Enrolment/Error Log
 

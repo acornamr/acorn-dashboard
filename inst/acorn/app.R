@@ -10,13 +10,30 @@ ui <- fluidPage(
   usei18n(i18n),  # for translation
   useShinyjs(),
   
-  div(id = 'float_about',
+  div(id = "float_about",
       dropMenu(
-        actionButton("checklist_show", icon = icon("caret-down"), label = "About Data", class = "btn-success"),
+        actionButton("checklist_show", icon = icon("caret-down"), label = "About", class = "btn btn-success"),
         theme = "light-border",
         class = "checklist",
         placement = "bottom-end",
         htmlOutput("about")
+      )
+  ),
+  div(id = "float_faq",
+      dropMenu(
+        actionButton("show_faq", icon = icon("caret-down"), label = "FAQ", class = "btn btn-success"),
+        theme = "light-border",
+        class = "faq",
+        placement = "bottom-end",
+        fluidRow(
+          column(3,
+                 h3("Content:"),
+                 includeMarkdown("./www/markdown/faq_content.md")
+          ),
+          column(9,
+                 includeMarkdown("./www/markdown/faq.md")
+          )
+        )
       )
   ),
   
@@ -151,37 +168,25 @@ ui <- fluidPage(
                         ),
                         column(9,
                                fluidRow(
-                                 column(5,
+                                 column(6,
                                         h4('Welcome!'),
                                         h5("What is ACORN?"),
                                         includeMarkdown("./www/markdown/what_is_acorn.md"),
                                         h5("Why is ACORN needed?"),
                                         includeMarkdown("./www/markdown/why_acorn_needed.md")
                                  ),
-                                 column(7,
+                                 column(6,
                                         h5("ACORN Participating Countries"),
                                         span(img(src = "./images/Map-ACORN-Sites-Global.png", id = "map_sites")),
-                                        fluidRow(
-                                          column(6, 
-                                                 h5("Target Pathogens"),
-                                                 includeMarkdown("./www/markdown/target_pathogens.md")
-                                          ),
-                                          column(6, 
-                                                 div(id = "faq",
-                                                     hr(),
-                                                     actionButton("show_faq", icon = icon("caret-down"), label = "ACORN App FAQ (index:)", class = "btn-success"),
-                                                     includeMarkdown("./www/markdown/faq_content.md"),
-                                                     hr()
-                                                 )
-                                          )
-                                        )
+                                        h5("Target Pathogens"),
+                                        includeMarkdown("./www/markdown/target_pathogens.md")
                                  )
                                )
                         )
                       )
              ),
              # Tab Data Management ----
-             tabPanel(span(icon("database"), 'Data Management'), value = "data_management",
+             tabPanel(span(icon("database"), "Data Management"), value = "data_management",
                       p("What do you want to do?"),
                       div(class = "center",
                           radioGroupButtons("choice_datamanagement", NULL,
@@ -709,14 +714,6 @@ server <- function(input, output, session) {
   hideTab("tabs", target = "hai")
   hideTab("tabs", target = "microbiology")
   hideTab("tabs", target = "amr")
-  
-  # Management of help links
-  observeEvent(input$show_faq,
-               showModal(modalDialog(
-                 includeMarkdown("./www/markdown/faq_content.md"),
-                 includeMarkdown("./www/markdown/faq.md"),
-                 title = "FAQ", size = "l", easyClose = TRUE))
-  )
   
   # Management of CSS ----
   observe({
