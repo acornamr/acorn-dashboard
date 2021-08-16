@@ -12,7 +12,8 @@ output$profile_comorbidities <- renderHighchart({
       arrange(desc(patients)) %>%
       filter(patients >= 1) %>%
       hchart(type = "bar", hcaes(x = "symptom", y = "patients")) %>%
-      hc_yAxis(title = "") %>% hc_xAxis(title = "") %>%
+      hc_yAxis(title = "", stackLabels = list(enabled = TRUE)) %>% 
+      hc_xAxis(title = "") %>%
       hc_colors("#969696") %>%
       hc_tooltip(headerFormat = "",
                  pointFormat = "{point.patients} patients with {point.symptom}") %>%
@@ -26,7 +27,8 @@ output$profile_comorbidities <- renderHighchart({
       filter(comorbidities != "") %>%
       arrange(desc(n)) %>%
       hchart(type = "bar", hcaes(x = "comorbidities", y = "n")) %>%
-      hc_yAxis(title = "") %>% hc_xAxis(title = "") %>%
+      hc_yAxis(title = "", stackLabels = list(enabled = TRUE)) %>% 
+      hc_xAxis(title = "") %>%
       hc_colors("#969696") %>%
       hc_tooltip(headerFormat = "",
                  pointFormat = "{point.n} patients with {point.comorbidities}") %>%

@@ -9,8 +9,9 @@ redcap_f01f05_dta_filter() %>%
   count(antibiotic) %>%
   arrange(desc(n)) %>%
 hchart(type = "bar", hcaes(x = "antibiotic", y = "n")) %>%
-  hc_yAxis(title = "") %>% hc_xAxis(title = "") %>%
-  hc_colors("#a6cee3") %>%
+  hc_yAxis(title = "", stackLabels = list(enabled = TRUE)) %>% 
+  hc_xAxis(title = "") %>%
+  hc_colors("#969696") %>%
   hc_tooltip(headerFormat = "",
              pointFormat = "{point.n} patients have taken {point.antibiotic}") %>%
   hc_plotOptions(series = list(stacking = 'normal')) %>%
