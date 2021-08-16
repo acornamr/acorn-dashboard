@@ -88,12 +88,22 @@ You can ask for changes in the theme by providing a list of values for variables
 
 The dashboard can be made accessible in any language provided with translated elements in a tabular fomat. Please contact the ACORN team for more information.
 
+## Data Processing
+
+### Enrolment/Error Log
+
+The enrolment log provides a real-time summary of all patient enrolments and infection episodes.
+
+Expected Day-28 date
+The expected 28 day follow-up date is 28 days following the final enrolment date for the admission (i.e. if 3 enrolments / infection episodes in admission, the 28 day follow-up was 28 days after enrolment #3).
+
+Error log.
+
+The second tab of the enrolment log Excel file contains a high-level summary of structural data errors, such as where an F02 (Infection episode form), F03 (Infection hospital outcome form), F04 (D28 form), or F05 (BSI episode form) cannot be linked to a F01 (Enrolment form). These errors can be further investigated by logging into the ACORN REDCap database and/or by discussion with the ACORN data manager.
+
 ### Clinical and Lab data linkage
 
-#### Purpose
-
-To describe the requirements to link routinely collected microbiology laboratory data to ACORN2 clinical data using the app.
-
+We describe below how routinely collected microbiology laboratory data is linked to clinical data in the app.
 
 #### Assumptions
 
@@ -109,55 +119,18 @@ These are slightly different for CAI and HAI (F02 `ifd_surcate`).
 **For CAI**, we wish to associate specimens that were collected (lab data file `specdate`) from within 2 days of the patient hospital admission date (F01 `hpd_adm_date`): i.e. admission date + / - 2 days.
 
 - This is important since some specimens will be collected just before admission (i.e. from out-patient department / clinic) and the patient admitted once result is known or when a bed becomes available).
-- Linkage will be on clinical (`usubjid` and `hpd_adm_date`) to lab (`patid` and `specdate`).
+- Linkage is performed on clinical (`usubjid` and `hpd_adm_date`) to lab (`patid` and `specdate`).
 
 **For HAI**, we wish to associate specimens that were collected in the 2 days following the infection onset date (F02 `hpd_onset_date`): i.e. infection onset date + 2 days. We assume that no relevant specimens will be collected before the patient begins to develop symptoms of the HAI.
 
-- Linkage will be on clinical (`usubjid` and `hpd_onset_date`) to lab (`patid` and `specdate`).
+- Linkage is performed on clinical (`usubjid` and `hpd_onset_date`) to lab (`patid` and `specdate`).
 
 
 **Issues to consider:**
 
 Most patients will have a single infection episode per admission, so will present no problems for linkage.
 
-- Patients with well separated CAI and HAI during the same admission are also no problem: case (A) below.
-- Patients with a CAI and a stated HAI onset of admission D2 would be a problem, but these should not happen in ACORN2 (HAI considered from D3 onwards – case (B) below).
-- Potential problem: if a patient is discharged and then rapidly re-admitted (within 2 days), then infection specimen windows could overlap (case (C) below, but could also be HAI – CAI overlap).
-- For these, the specimen should be linked the first episode only (i.e. remove the later linkage).
-
-
-(TODO: add image of cases, change tenses from futur to conditional/present)
-
-
-
-### Enrolment/Error Log
-
-The enrolment log provides a real-time summary of all patient enrolments and infection episodes.
-
-Expected Day-28 date
-The expected 28 day follow-up date is 28 days following the final enrolment date for the admission (i.e. if 3 enrolments / infection episodes in admission, the 28 day follow-up was 28 days after enrolment #3).
-
-Error log.
-
-The second tab of the enrolment log Excel file contains a high-level summary of structural data errors, such as where an F02 (Infection episode form), F03 (Infection hospital outcome form), F04 (D28 form), or F05 (BSI episode form) cannot be linked to a F01 (Enrolment form). These errors can be further investigated by logging into the ACORN REDCap database and/or by discussion with the ACORN data manager.
-
-
-### Contact ACORN Team
-
-For technical questions or feedback on the App, [please fill this form](https://docs.google.com/forms/d/1xdyLQgESr7H6iBpEWlTCeNZ1RGmRdH8nenBGNfq4yjI/). If you have questions about the project, please contact ACORN investigators [Prof Paul Turner](mailto:Pault@tropmedres.ac) or [Prof Rogier van Doorn](mailto:rvandoorn@oucru.org).
-
-
-### Acknowledgments and Credits
-
-App Development Team: [Olivier Celhay](https://olivier.celhay.net), [Paul Turner](mailto:Pault@tropmedres.ac). With contributions from Naomi Waithira, Prapass Wannapinij, Elizabeth Ashley, Rogier van Doorn. 
-
-Software:
-
-- R Core Team (2021). R: A language and environment for statistical computing. R Foundation for Statistical
-  Computing, Vienna, Austria. URL https://www.R-project.org/.
-- Winston Chang, Joe Cheng, JJ Allaire, Carson Sievert, Barret Schloerke, Yihui Xie, Jeff Allen, Jonathan McPherson,
-  Alan Dipert and Barbara Borges (2021). shiny: Web Application Framework for R. R package version 1.6.0.
-  https://CRAN.R-project.org/package=shiny
-- Will Beasley (2020). REDCapR: Interaction Between R and REDCap. R package version 0.11.0.
-  https://CRAN.R-project.org/package=REDCapR
-
+- Patients with well separated CAI and HAI during the same admission are also no problem: case {A} below.
+- Patients with a CAI and a stated HAI onset of admission D2 would be a problem, but these should not happen in ACORN2 (HAI considered from D3 onwards – case {B} below).
+- Potential problem: if a patient is discharged and then rapidly re-admitted (within 2 days), then infection specimen windows could overlap (case {C} below, but could also be HAI – CAI overlap).
+- For these, the specimen is linked the first episode only (and the later linkage removed).

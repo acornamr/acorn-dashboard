@@ -26,12 +26,10 @@ ui <- fluidPage(
         class = "faq",
         placement = "bottom-end",
         fluidRow(
-          column(3,
-                 h3("Content:"),
-                 includeMarkdown("./www/markdown/faq_content.md")
-          ),
-          column(9,
-                 includeMarkdown("./www/markdown/faq.md")
+          column(12,
+                 includeMarkdown("./www/markdown/faq.md"),
+                 img(src = "./images/linkage_cases.png", style = "width: 100%"),
+                 includeMarkdown("./www/markdown/faq_2.md"),
           )
         )
       )
