@@ -296,9 +296,17 @@ ui <- fluidPage(
              tabPanel("Overview", value = "overview", 
                       fluidRow(
                         column(6,
-                               div(class = 'box_outputs', h4_title(icon("calendar-check"), "Date of Enrolment"),
+                               div(class = 'box_outputs', 
+                                   h4_title(icon("calendar-check"), "Date of Enrolment"),
                                    prettySwitch("show_date_week", label = "See by Week", status = "primary"),
                                    highchartOutput("profile_date_enrolment")
+                               ),
+                               div(class = 'box_outputs',
+                                   h4_title(icon("tint"), "Enrolments with Blood Culture"),
+                                   fluidRow(
+                                     column(6, gaugeOutput("profile_blood_culture_gauge", width = "100%", height = "100px")),
+                                     column(6, htmlOutput("profile_blood_culture_pct", width = "100%", height = "100px"))
+                                   )
                                )
                         ),
                         column(6,
@@ -317,18 +325,6 @@ ui <- fluidPage(
                                )
                         )
                       ),
-                      fluidRow(
-                        column(12,
-                               div(class = 'box_outputs',
-                                   h4_title(icon("tint"), "Enrolments with Blood Culture"),
-                                   fluidRow(
-                                     column(6, gaugeOutput("profile_blood_culture_gauge", width = "100%", height = "100px")),
-                                     column(6, htmlOutput("profile_blood_culture_pct", width = "100%", height = "100px"))
-                                   )
-                               )
-                        ),
-                      ),
-                      
                       fluidRow(
                         column(6, 
                                div(class = 'box_outputs',

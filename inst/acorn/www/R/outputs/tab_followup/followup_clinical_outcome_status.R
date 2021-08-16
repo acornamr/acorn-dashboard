@@ -20,7 +20,7 @@ output$clinical_outcome_pct <- renderText({
     nrow()
   total <- redcap_f01f05_dta_filter() %>% nrow()
   
-  paste(br(), h3(paste0(round(100*n/total, 1), "%")), span("of patient enrolments have a recorded clinical outcome."))
+  paste(h3(paste0(round(100*n/total, 1), "%")), span("of patient enrolments have a recorded clinical outcome."))
 })
 
 

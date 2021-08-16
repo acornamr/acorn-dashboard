@@ -25,5 +25,5 @@ output$profile_blood_culture_pct <- renderText({
   
   total <- redcap_f01f05_dta_filter() %>% nrow()
   
-  paste(br(),br(), h4(paste0(round(100*n_blood_culture/total, 1), "%")), span("of enrolments with blood culture."))
+  paste(br(), h3(paste0(round(100*n_blood_culture/total, 1), "%")), span("of enrolments with blood culture."))
 })

@@ -18,5 +18,4 @@ output$profile_blood <- renderHighchart({
     hc_xAxis(title = "") %>%
     hc_tooltip(headerFormat = "", pointFormat = "{point.y} patients ({point.freq} %)") %>%
     hc_exporting(enabled = TRUE, buttons = list(contextButton = list(menuItems = hc_export_kind)))
-  
 })
