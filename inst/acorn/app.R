@@ -376,6 +376,8 @@ ui <- fluidPage(
                         column(6, 
                                div(class = "box_outputs",
                                    h4_title("Enrolments with Blood Culture"),
+                                   pickerInput("display_unit_ebc", label = NULL, 
+                                               choices = c("Use heuristic for time unit", "Display by month", "Display by year")),
                                    highchartOutput("enrolment_blood_culture"),
                                )
                                
