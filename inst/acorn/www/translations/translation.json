@@ -1,0 +1,20 @@
+{
+    "languages": ["en", "fr", "la"],
+    "translation": [
+        {
+            "en": "Language",
+            "fr": "Langue",
+            "la": "ພາສາ"
+        },
+        {
+            "en": "Welcome!",
+            "fr": "Bienvenue !",
+            "la": "ຍິນດີຕ້ອນຮັບ!"
+        },
+        {
+            "en": "What is ACORN?",
+            "fr": "Qu'est ce qu'ACORN ?",
+            "la": ""
+        }
+    ]
+}

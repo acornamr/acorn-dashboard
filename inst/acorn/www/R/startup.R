@@ -1,4 +1,4 @@
-app_version <- "0.0.4"  # Make sure that the version is identical in DESCRIPTION
+app_version <- "0.0.5"  # Make sure that the version is identical in DESCRIPTION
 
 cols_sir <- c("#2c3e50", "#f39c12", "#e74c3c")  # resp. S, I, R
 hc_export_kind <- c("downloadJPEG", "downloadCSV")
@@ -39,8 +39,9 @@ shared_acornamr_key <- readRDS("./www/cred/bucket_cred/shared_acornamr_key.rds")
 shared_acornamr_sec <- readRDS("./www/cred/bucket_cred/shared_acornamr_sec.rds")
 
 # contains all require i18n elements
-i18n <- Translator$new(translation_csvs_path = './www/translations/')
-i18n$set_translation_language('en')
+# i18n <- Translator$new(translation_csvs_path = './www/translations/')
+i18n <- Translator$new(translation_json_path = "./www/translations/translation.json")
+i18n$set_translation_language("en")
 
 # define all functions
 for(file in list.files('./www/R/functions/'))  source(paste0('./www/R/functions/', file), local = TRUE)

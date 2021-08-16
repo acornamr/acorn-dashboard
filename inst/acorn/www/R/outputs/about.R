@@ -11,8 +11,6 @@ output$about <- renderText({
   )
   
   paste(p(glue("App version: {app_version}")), 
-        about_data,
-        # TODO: comment in production
-        hr(), actionLink("debug", label = "(Debug, developer only)")
+        about_data
   )
 })

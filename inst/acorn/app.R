@@ -134,17 +134,17 @@ ui <- fluidPage(
              ),
              
              # Tab Welcome ----
-             tabPanel(i18n$t('Welcome'), value = 'welcome',
+             tabPanel(i18n$t("Welcome"), value = "welcome",
                       fluidRow(
                         column(3,
                                uiOutput('site_logo'),
                                selectInput(
-                                 'selected_language', label = span(icon('language'), i18n$t('Language')),
+                                 "selected_language", label = span(icon("language"), i18n$t("Language")),
                                  choices = i18n$get_languages(), selected = i18n$get_key_translation(), width = "150px"
                                ),
                                div(id = "login-basic", 
                                    div(class = "well",
-                                       h5(class = "text-center", "Please log in"),
+                                       h5(class = "text-center",  i18n$t("Please log in")),
                                        selectInput("cred_site", tagList(icon("hospital"), "Site"),
                                                    choices = code_sites),
                                        conditionalPanel("input.cred_site != 'demo'", div(
@@ -165,8 +165,8 @@ ui <- fluidPage(
                         column(9,
                                fluidRow(
                                  column(6,
-                                        h4('Welcome!'),
-                                        h5("What is ACORN?"),
+                                        h4(i18n$t("Welcome!")),
+                                        h5(i18n$t("What is ACORN?")),
                                         includeMarkdown("./www/markdown/what_is_acorn.md"),
                                         h5("Why is ACORN needed?"),
                                         includeMarkdown("./www/markdown/why_acorn_needed.md")
@@ -727,9 +727,6 @@ server <- function(input, output, session) {
   # source files with code to generate outputs
   file_list <- list.files(path = "./www/R/outputs", pattern = "*.R", recursive = TRUE)
   for (file in file_list) source(paste0("./www/R/outputs/", file), local = TRUE)$value
-  
-  # allow debug on click
-  observeEvent(input$debug, browser())
   
   # update language based on dropdown choice
   observeEvent(input$selected_language, {
