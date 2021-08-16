@@ -51,48 +51,46 @@ ui <- fluidPage(
                               fluidRow(
                                 column(8,
                                        div(class = "smallcaps", class = "center", span(icon("hospital-user"), "Enrolments")),
-                                       fluidRow(
-                                         column(12,
-                                                checkboxGroupButtons("filter_enrolments",
-                                                                     choices = c("Surveillance Category", "Type of Ward", "Date of Enrolment/Survey", "Age Category", 
-                                                                                 "Initial Diagnosis", "Final Diagnosis", "Clinical Severity", "Clinical/D28 Outcome"),
-                                                                     status = "light", direction = "horizontal", size = "sm", individual = TRUE,
-                                                                     checkIcon = list(yes = icon("filter"))),
-                                                conditionalPanel("input.filter_enrolments.includes('Surveillance Category')",
-                                                                 prettyCheckboxGroup("filter_surveillance_cat", NULL, shape = "curve", status = "primary",
-                                                                                     choiceNames = c("Community Acquired Infection", "Hospital Acquired Infection"), 
-                                                                                     choiceValues = c("CAI", "HAI"), 
-                                                                                     selected = c("CAI", "HAI"), inline = TRUE)
-                                                ),
-                                                conditionalPanel("input.filter_enrolments.includes('Type of Ward')",
-                                                                 pickerInput("filter_ward_type", NULL, choices = NULL, selected = NULL, options = list(`actions-box` = TRUE), multiple = TRUE)
-                                                ),
-                                                conditionalPanel("input.filter_enrolments.includes('Date of Enrolment/Survey')",
-                                                                 dateRangeInput("filter_date_enrolment", NULL, startview = "year")
-                                                ),
-                                                conditionalPanel("input.filter_enrolments.includes('Age Category')",
-                                                                 prettyCheckboxGroup("filter_age_cat", NULL, shape = "curve", status = "primary",
-                                                                                     choices = c("Adult", "Child", "Neonate"), selected = c("Adult", "Child", "Neonate"), inline = TRUE)
-                                                ),
-                                                conditionalPanel("input.filter_enrolments.includes('Initial Diagnosis')",
-                                                                 pickerInput("filter_diagnosis_initial", NULL, choices = NULL, 
-                                                                             selected = NULL, options = list(`actions-box` = TRUE), multiple = TRUE)
-                                                ),
-                                                conditionalPanel("input.filter_enrolments.includes('Final Diagnosis')",
-                                                                 pickerInput("filter_diagnosis_final", NULL, choices = NULL, 
-                                                                             selected = NULL, options = list(`actions-box` = TRUE), multiple = TRUE)
-                                                ),
-                                                conditionalPanel("input.filter_enrolments.includes('Clinical Severity')",
-                                                                 sliderInput("filter_severity_adult", "Adult qSOFA score", min = 0, max = 3, value = c(0, 3)),
-                                                                 prettySwitch("filter_severity_child_0", label = "Include Child/Neonate with 0 severity criteria", status = "primary", value = TRUE, slim = TRUE),
-                                                                 prettySwitch("filter_severity_child_1", label = "Include Child/Neonate with ≥ 1 severity criteria", status = "primary", value = TRUE, slim = TRUE)
-                                                ),
-                                                conditionalPanel("input.filter_enrolments.includes('Clinical/D28 Outcome')",
-                                                                 prettySwitch("filter_outcome_clinical", label = "Only with Clinical Outcome", status = "primary", value = FALSE, slim = TRUE),
-                                                                 prettySwitch("filter_outcome_d28", label = "Only with Day-28 Outcome", status = "primary", value = FALSE, slim = TRUE)
-                                                )
-                                         )
-                                       )
+                                       checkboxGroupButtons("filter_enrolments",
+                                                            choices = c("Surveillance Category", "Type of Ward", "Date of Enrolment/Survey", "Age Category", 
+                                                                        "Initial Diagnosis", "Final Diagnosis", "Clinical Severity", "Clinical/D28 Outcome"),
+                                                            selected = NULL,
+                                                            status = "light", direction = "horizontal", size = "sm", individual = TRUE,
+                                                            checkIcon = list(yes = icon("filter"))),
+                                       conditionalPanel("input.filter_enrolments.includes('Surveillance Category')",
+                                                        prettyCheckboxGroup("filter_surveillance_cat", NULL, shape = "curve", status = "primary",
+                                                                            choiceNames = c("Community Acquired Infection", "Hospital Acquired Infection"), 
+                                                                            choiceValues = c("CAI", "HAI"), 
+                                                                            selected = c("CAI", "HAI"), inline = TRUE)
+                                       ),
+                                       conditionalPanel("input.filter_enrolments.includes('Type of Ward')",
+                                                        pickerInput("filter_ward_type", NULL, choices = NULL, selected = NULL, options = list(`actions-box` = TRUE), multiple = TRUE)
+                                       ),
+                                       conditionalPanel("input.filter_enrolments.includes('Date of Enrolment/Survey')",
+                                                        dateRangeInput("filter_date_enrolment", NULL, startview = "year")
+                                       ),
+                                       conditionalPanel("input.filter_enrolments.includes('Age Category')",
+                                                        prettyCheckboxGroup("filter_age_cat", NULL, shape = "curve", status = "primary",
+                                                                            choices = c("Adult", "Child", "Neonate"), selected = c("Adult", "Child", "Neonate"), inline = TRUE)
+                                       ),
+                                       conditionalPanel("input.filter_enrolments.includes('Initial Diagnosis')",
+                                                        pickerInput("filter_diagnosis_initial", NULL, choices = NULL, 
+                                                                    selected = NULL, options = list(`actions-box` = TRUE), multiple = TRUE)
+                                       ),
+                                       conditionalPanel("input.filter_enrolments.includes('Final Diagnosis')",
+                                                        pickerInput("filter_diagnosis_final", NULL, choices = NULL, 
+                                                                    selected = NULL, options = list(`actions-box` = TRUE), multiple = TRUE)
+                                       ),
+                                       conditionalPanel("input.filter_enrolments.includes('Clinical Severity')",
+                                                        sliderInput("filter_severity_adult", "Adult qSOFA score", min = 0, max = 3, value = c(0, 3)),
+                                                        prettySwitch("filter_severity_child_0", label = "Include Child/Neonate with 0 severity criteria", status = "primary", value = TRUE, slim = TRUE),
+                                                        prettySwitch("filter_severity_child_1", label = "Include Child/Neonate with ≥ 1 severity criteria", status = "primary", value = TRUE, slim = TRUE)
+                                       ),
+                                       conditionalPanel("input.filter_enrolments.includes('Clinical/D28 Outcome')",
+                                                        prettySwitch("filter_outcome_clinical", label = "Only with Clinical Outcome", status = "primary", value = FALSE, slim = TRUE),
+                                                        prettySwitch("filter_outcome_d28", label = "Only with Day-28 Outcome", status = "primary", value = FALSE, slim = TRUE)
+                                       ),
+                                       actionLink("shortcut_reset_filters", label = span(icon("ban"), " Reset Enrolments Filters"))
                                 ),
                                 column(4,
                                        div(class = "smallcaps", class = "center", span(icon("vial"), " Specimens, Isolates")),
@@ -721,7 +719,9 @@ server <- function(input, output, session) {
   # (TODO v2.1) Management of filters shortcuts ----
   observeEvent(input$shortcut_filter_1, {})
   observeEvent(input$shortcut_filter_2, {})
-  observeEvent(input$shortcut_reset_filters, {})
+  observeEvent(input$shortcut_reset_filters, 
+               source('./www/R/reset_enrolment_input.R', local = TRUE)
+  )
   
   # Misc stuff ----
   # source files with code to generate outputs
