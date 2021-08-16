@@ -12,19 +12,15 @@ ui <- fluidPage(
   
   div(id = "float_about",
       dropMenu(
-        actionButton("checklist_show", icon = icon("caret-down"), label = "About", class = "btn btn-success"),
-        theme = "light-border",
-        class = "checklist",
-        placement = "bottom-end",
+        actionButton("checklist_show", icon = icon("caret-down"), label = i18n$t("About"), class = "btn btn-success"),
+        theme = "light-border", class = "checklist", placement = "bottom-end",
         htmlOutput("about")
       )
   ),
   div(id = "float_faq",
       dropMenu(
         actionButton("show_faq", icon = icon("caret-down"), label = "FAQ", class = "btn btn-success"),
-        theme = "light-border",
-        class = "faq",
-        placement = "bottom-end",
+        theme = "light-border", class = "faq", placement = "bottom-end",
         fluidRow(
           column(12,
                  includeMarkdown("./www/markdown/faq.md"),
@@ -145,37 +141,40 @@ ui <- fluidPage(
                                div(id = "login-basic", 
                                    div(class = "well",
                                        h5(class = "text-center",  i18n$t("Please log in")),
-                                       selectInput("cred_site", tagList(icon("hospital"), "Site"),
+                                       selectInput("cred_site", tagList(icon("hospital"), i18n$t("Site")),
                                                    choices = code_sites),
                                        conditionalPanel("input.cred_site != 'demo'", div(
-                                         textInput("cred_user", tagList(icon("user"), "User"),
-                                                   placeholder = "Enter user"),
-                                         passwordInput("cred_password", tagList(icon("unlock-alt"), "Password"), 
-                                                       placeholder = "Enter password")
+                                         textInput("cred_user", tagList(icon("user"), i18n$t("User"))),
+                                         passwordInput("cred_password", tagList(icon("unlock-alt"), i18n$t("Password")))
                                        )
                                        ), 
                                        div(class = "text-center",
-                                           actionButton("cred_login", label = "Log in", class = "btn-primary"),
-                                           div(em("To log out, close or reload the app."))
+                                           actionButton("cred_login", label = i18n$t("Log in"), class = "btn-primary"),
+                                           div(em(i18n$t("To log out, close the app.")))
                                        )
                                    ),
-                                   span("or ", actionLink("direct_upload_acorn", "upload a local acorn file."))
+                                   span(i18n$t("or "), actionLink("direct_upload_acorn", i18n$t("upload a local acorn file.")))
                                )
                         ),
                         column(9,
                                fluidRow(
                                  column(6,
-                                        h4(i18n$t("Welcome!")),
-                                        h5(i18n$t("What is ACORN?")),
-                                        includeMarkdown("./www/markdown/what_is_acorn.md"),
-                                        h5("Why is ACORN needed?"),
-                                        includeMarkdown("./www/markdown/why_acorn_needed.md")
+                                        conditionalPanel("input.selected_language == 'en'",
+                                                         includeMarkdown("./www/markdown/about_acorn_1_en.md")
+                                        ),
+                                        conditionalPanel("input.selected_language == 'fr'",
+                                                         includeMarkdown("./www/markdown/about_acorn_1_fr.md")
+                                        ),
                                  ),
                                  column(6,
-                                        h5("ACORN Participating Countries"),
+                                        h5(i18n$t("ACORN Participating Countries")),
                                         span(img(src = "./images/Map-ACORN-Sites-Global.png", id = "map_sites")),
-                                        h5("Target Pathogens"),
-                                        includeMarkdown("./www/markdown/target_pathogens.md")
+                                        conditionalPanel("input.selected_language == 'en'",
+                                                         includeMarkdown("./www/markdown/about_acorn_2_en.md")
+                                        ),
+                                        conditionalPanel("input.selected_language == 'fr'",
+                                                         includeMarkdown("./www/markdown/about_acorn_2_fr.md")
+                                        )
                                  )
                                )
                         )

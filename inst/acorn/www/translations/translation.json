@@ -2,19 +2,64 @@
     "languages": ["en", "fr", "la"],
     "translation": [
         {
+            "en": "Welcome",
+            "fr": "Bienvenue",
+            "la": "TBT"
+        },
+        {
             "en": "Language",
             "fr": "Langue",
             "la": "ພາສາ"
         },
         {
-            "en": "Welcome!",
-            "fr": "Bienvenue !",
-            "la": "ຍິນດີຕ້ອນຮັບ!"
+            "en": "ACORN Participating Countries",
+            "fr": "Pays Participants au Projet ACORN",
+            "la": "TBT"
         },
         {
             "en": "What is ACORN?",
             "fr": "Qu'est ce qu'ACORN ?",
-            "la": ""
+            "la": "TBT"
+        },
+        {
+            "en": "About",
+            "fr": "A Propos",
+            "la": "TBT"
+        },
+        {
+            "en": "Please log in",
+            "fr": "Connection",
+            "la": "TBT"
+        },
+        {
+            "en": "Site",
+            "fr": "Site",
+            "la": "TBT"
+        },
+        {
+            "en": "User",
+            "fr": "Site",
+            "la": "TBT"
+        },
+        {
+            "en": "Password",
+            "fr": "Mot de passe",
+            "la": "TBT"
+        },
+        {
+            "en": "Log in",
+            "fr": "Se connecter",
+            "la": "TBT"
+        },
+        {
+            "en": "To log out, close the app.",
+            "fr": "Quitter l'application pour se déconnecter",
+            "la": "TBT"
+        },
+        {
+            "en": "upload a local acorn file.",
+            "fr": "téléverser un fichier acorn.",
+            "la": "TBT"
         }
     ]
 }

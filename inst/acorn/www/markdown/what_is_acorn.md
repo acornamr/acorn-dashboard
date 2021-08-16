@@ -1,1 +1,0 @@
-ACORN is a Wellcome funded human health clinical antimicrobial resistance (AMR) surveillance project led by the [Mahidol-Oxford Tropical Medicine Research Unit](https://www.tropmedres.ac) (MORU) and the [Oxford University of Oxford Clinical Research Unit](http://www.oucru.org/) (OUCRU).
