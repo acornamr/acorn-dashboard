@@ -435,7 +435,7 @@ ui <- fluidPage(
              ),
              # Tab Microbiology ----
              tabPanel("Microbiology", value = "microbiology", 
-                      prettySwitch("filter_rm_contaminant", label = "Remove BC Contaminants in following visualisations", status = "primary", value = FALSE, slim = TRUE),
+                      prettySwitch("filter_rm_contaminant", label = "Remove blood culture contaminants from the following visualizations", status = "primary", value = FALSE, slim = TRUE),
                       fluidRow(
                         column(6,
                                div(class = 'box_outputs',
