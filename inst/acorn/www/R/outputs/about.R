@@ -10,7 +10,5 @@ output$about <- renderText({
                             <li>Comments: {meta()$comment}</li></ul>")
   )
   
-  paste(p(glue("App version: {app_version}")), 
-        about_data
-  )
+  paste(p(glue("App version: {app_version}")), about_data)
 })

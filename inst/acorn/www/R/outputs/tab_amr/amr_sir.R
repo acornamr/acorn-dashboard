@@ -8,17 +8,21 @@ output$acinetobacter_sir <- renderHighchart({
 
 output$test_acinetobacter_sir <- reactive({
   req(acorn_dta_filter())
-  organism_input <- "Acinetobacter sp"
-  ifelse (nrow(acorn_dta_filter() %>% filter(orgname == organism_input)) == 0, FALSE, TRUE)
+  vec <- unique(acorn_dta_filter()$orgname)
+  organism_input <- vec[str_detect(vec, "Acinetobacter")]
+  
+  ifelse (nrow(acorn_dta_filter() %>% filter(orgname %in% organism_input)) == 0, FALSE, TRUE)
 })
 outputOptions(output, "test_acinetobacter_sir", suspendWhenHidden = FALSE)
 
 output$nb_isolates_acinetobacter <- renderText({
   req(acorn_dta_filter())
-  organism_input <- "Acinetobacter sp"
-  req(acorn_dta_filter() %>% filter(orgname == organism_input))
-  nb <- acorn_dta_filter() %>% filter(orgname == organism_input) %>% fun_deduplication(method = input$deduplication_method) %>% nrow()
-  ifelse (nb != 0, glue("Total of {nb} isolate(s) for {organism_input}"), "There are no isolates.")
+  vec <- unique(acorn_dta_filter()$orgname)
+  organism_input <- vec[str_detect(vec, "Acinetobacter")]
+  
+  req(acorn_dta_filter() %>% filter(orgname %in% organism_input))
+  nb <- acorn_dta_filter() %>% filter(orgname %in% organism_input) %>% fun_deduplication(method = input$deduplication_method) %>% nrow()
+  ifelse (nb != 0, glue("<em>Total of {nb} isolate(s) for {paste(organism_input, collapse = ', ')}</em>"), "There are no isolates.")
 })
 
 # Enterococcus species ----
@@ -31,17 +35,21 @@ output$enterococcus_sir <- renderHighchart({
 
 output$test_enterococcus_sir <- reactive({
   req(acorn_dta_filter())
-  organism_input <- "Enterococcus sp"
-  ifelse (nrow(acorn_dta_filter() %>% filter(orgname == organism_input)) == 0, FALSE, TRUE)
+  vec <- unique(acorn_dta_filter()$orgname)
+  organism_input <- vec[str_detect(vec, "Enterococcus")]
+
+  ifelse (nrow(acorn_dta_filter() %>% filter(orgname %in% organism_input)) == 0, FALSE, TRUE)
 })
 outputOptions(output, "test_enterococcus_sir", suspendWhenHidden = FALSE)
 
 output$nb_isolates_enterococcus <- renderText({
   req(acorn_dta_filter())
-  organism_input <- "Enterococcus sp"
-  req(acorn_dta_filter() %>% filter(orgname == organism_input))
-  nb <- acorn_dta_filter() %>% filter(orgname == organism_input) %>% fun_deduplication(method = input$deduplication_method) %>% nrow()
-  ifelse (nb != 0, glue("Total of {nb} isolate(s) for {organism_input}"), "There are no isolates.")
+  vec <- unique(acorn_dta_filter()$orgname)
+  organism_input <- vec[str_detect(vec, "Enterococcus")]
+  
+  req(acorn_dta_filter() %>% filter(orgname %in% organism_input))
+  nb <- acorn_dta_filter() %>% filter(orgname %in% organism_input) %>% fun_deduplication(method = input$deduplication_method) %>% nrow()
+  ifelse (nb != 0, glue("<em>Total of {nb} isolate(s) for {paste(organism_input, collapse = ', ')}</em>"), "There are no isolates.")
 })
 
 # A. baumannii ----
@@ -112,10 +120,10 @@ output$nb_isolates_ecoli <- renderText({
   organism_input <- "Escherichia coli"
   req(acorn_dta_filter() %>% filter(orgname == organism_input))
   nb <- acorn_dta_filter() %>% filter(orgname == organism_input) %>% fun_deduplication(method = input$deduplication_method) %>% nrow()
-  ifelse (nb != 0, glue("Total of {nb} isolate(s) for {organism_input}"), "There are no isolates.")
+  ifelse (nb != 0, glue("<em>Total of {nb} isolate(s) for {organism_input}</em>"), "There are no isolates.")
 })
 
-# Haemophilus Influenzae species ----
+# Haemophilus Influenzae ----
 output$haemophilus_influenzae_sir <- renderHighchart({
   req(acorn_dta_filter())
   organism_input <- "Haemophilus influenzae"
@@ -135,7 +143,7 @@ output$nb_isolates_haemophilus_influenzae <- renderText({
   organism_input <- "Haemophilus influenzae"
   req(acorn_dta_filter() %>% filter(orgname == organism_input))
   nb <- acorn_dta_filter() %>% filter(orgname == organism_input) %>% fun_deduplication(method = input$deduplication_method) %>% nrow()
-  ifelse (nb != 0, glue("Total of {nb} isolate(s) for {organism_input}"), "There are no isolates.")
+  ifelse (nb != 0, glue("<em>Total of {nb} isolate(s) for {organism_input}</em>"), "There are no isolates.")
 })
 
 # K. pneumoniae ----
@@ -174,10 +182,10 @@ output$nb_isolates_kpneumoniae <- renderText({
   organism_input <- "Klebsiella pneumoniae"
   req(acorn_dta_filter() %>% filter(orgname == organism_input))
   nb <- acorn_dta_filter() %>% filter(orgname == organism_input) %>% fun_deduplication(method = input$deduplication_method) %>% nrow()
-  ifelse (nb != 0, glue("Total of {nb} isolate(s) for {organism_input}"), "There are no isolates.")
+  ifelse (nb != 0, glue("<em>Total of {nb} isolate(s) for {organism_input}</em>"), "There are no isolates.")
 })
 
-# Neisseria meningitidis species ----
+# Neisseria meningitidis ----
 output$neisseria_meningitidis_sir <- renderHighchart({
   req(acorn_dta_filter())
   organism_input <- "Neisseria meningitidis"
@@ -197,10 +205,10 @@ output$nb_isolates_neisseria_meningitidis <- renderText({
   organism_input <- "Neisseria meningitidis"
   req(acorn_dta_filter() %>% filter(orgname == organism_input))
   nb <- acorn_dta_filter() %>% filter(orgname == organism_input) %>% fun_deduplication(method = input$deduplication_method) %>% nrow()
-  ifelse (nb != 0, glue("Total of {nb} isolate(s) for {organism_input}"), "There are no isolates.")
+  ifelse (nb != 0, glue("<em>Total of {nb} isolate(s) for {organism_input}</em>"), "There are no isolates.")
 })
 
-# Pseudomonas aeruginosa species ----
+# Pseudomonas aeruginosa ----
 output$pseudomonas_aeruginosa_sir <- renderHighchart({
   req(acorn_dta_filter())
   organism_input <- "Pseudomonas aeruginosa"
@@ -220,7 +228,7 @@ output$nb_isolates_pseudomonas_aeruginosa <- renderText({
   organism_input <- "Pseudomonas aeruginosa"
   req(acorn_dta_filter() %>% filter(orgname == organism_input))
   nb <- acorn_dta_filter() %>% filter(orgname == organism_input) %>% fun_deduplication(method = input$deduplication_method) %>% nrow()
-  ifelse (nb != 0, glue("Total of {nb} isolate(s) for {organism_input}"), "There are no isolates.")
+  ifelse (nb != 0, glue("<em>Total of {nb} isolate(s) for {organism_input}</em>"), "There are no isolates.")
 })
 
 # S. aureus ----
@@ -250,11 +258,10 @@ output$nb_isolates_saureus <- renderText({
   req(acorn_dta_filter())
   organism_input <- "Staphylococcus aureus"
   nb <- acorn_dta_filter() %>% filter(orgname == organism_input) %>% fun_deduplication(method = input$deduplication_method) %>% nrow()
-  ifelse (nb != 0, glue("Total of {nb} isolate(s) for {organism_input}"), "There are no isolates.")
+  ifelse (nb != 0, glue("<em>Total of {nb} isolate(s) for {organism_input}</em>"), "There are no isolates.")
 })
 
 # S. pneumoniae ----
-
 output$spneumoniae_sir <- renderHighchart({
   req(acorn_dta_filter())
   organism_input <- "Streptococcus pneumoniae"
@@ -282,7 +289,7 @@ output$nb_isolates_spneumoniae <- renderText({
   organism_input <- "Streptococcus pneumoniae"
   req(acorn_dta_filter() %>% filter(orgname == organism_input))
   nb <- acorn_dta_filter() %>% filter(orgname == organism_input) %>% fun_deduplication(method = input$deduplication_method) %>% nrow()
-  ifelse (nb != 0, glue("Total of {nb} isolate(s) for {organism_input}"), "There are no isolates.")
+  ifelse (nb != 0, glue("<em>Total of {nb} isolate(s) for {organism_input}</em>"), "There are no isolates.")
 })
 
 # Salmonella ----
@@ -334,7 +341,7 @@ output$nb_isolates_salmonella <- renderText({
   
   req(acorn_dta_filter() %>% filter(orgname %in% organism_input))
   nb <- acorn_dta_filter() %>% filter(orgname %in% organism_input) %>% fun_deduplication(method = input$deduplication_method) %>% nrow()
-  ifelse (nb != 0, glue("Total of {nb} isolate(s) for {organism_input}"), "There are no isolates.")
+  ifelse (nb != 0, glue("<em>Total of {nb} isolate(s) for {organism_input}</em>"), "There are no isolates.")
 })
 
 
@@ -361,6 +368,6 @@ output$nb_isolates_other <- renderText({
   organism_input <- input$other_organism
   req(acorn_dta_filter() %>% filter(orgname == organism_input) %>% fun_deduplication(method = input$deduplication_method))
   nb <- acorn_dta_filter() %>% filter(orgname == organism_input) %>% fun_deduplication(method = input$deduplication_method) %>% nrow()
-  ifelse (nb != 0, glue("Total of {nb} isolate(s) for {organism_input}"), "There are no isolates.")
+  ifelse (nb != 0, glue("<em>Total of {nb} isolate(s) for {organism_input}</em>"), "There are no isolates.")
 })
 

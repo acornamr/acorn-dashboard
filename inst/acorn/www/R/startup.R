@@ -1,4 +1,4 @@
-app_version <- "0.0.5"  # Make sure that the version is identical in DESCRIPTION
+app_version <- "0.0.6"  # Make sure that the app version is identical in DESCRIPTION
 
 cols_sir <- c("#2c3e50", "#f39c12", "#e74c3c")  # resp. S, I, R
 hc_export_kind <- c("downloadJPEG", "downloadCSV")
@@ -7,8 +7,7 @@ code_sites <- c("demo", "KH001", "GH001", "GH002", "ID001", "ID002",
                 "KE001", "KE002", "LA001", "LA002", "MW001", "NP001", 
                 "NG001", "NG002", "VN001", "VN002", "VN003")
 
-
-# IMPORTANT: packages listed here should be synced with run_app.R and DESCRIPTION
+# IMPORTANT: packages listed here should be identical in run_app.R and DESCRIPTION
 library(aws.s3)
 library(bslib)  # bs_theme()
 library(curl)
@@ -39,7 +38,6 @@ shared_acornamr_key <- readRDS("./www/cred/bucket_cred/shared_acornamr_key.rds")
 shared_acornamr_sec <- readRDS("./www/cred/bucket_cred/shared_acornamr_sec.rds")
 
 # contains all require i18n elements
-# i18n <- Translator$new(translation_csvs_path = './www/translations/')
 i18n <- Translator$new(translation_json_path = "./www/translations/translation.json")
 i18n$set_translation_language("en")
 

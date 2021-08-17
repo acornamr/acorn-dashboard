@@ -535,7 +535,7 @@ ui <- fluidPage(
                         #   )
                         # ),
                         tabPanel(
-                          em("E. coli"),
+                          em("Escherichia coli"),
                           fluidRow(
                             column(2,
                                    br(), 
@@ -569,7 +569,7 @@ ui <- fluidPage(
                           )
                         ),
                         tabPanel(
-                          em("K. pneumoniae"),
+                          em("Klebsiella pneumoniae"),
                           fluidRow(
                             column(2,
                                    br(), 
@@ -588,7 +588,7 @@ ui <- fluidPage(
                           )
                         ),
                         tabPanel(
-                          em("Neisseria Meningitidis"), 
+                          em("Neisseria meningitidis"), 
                           fluidRow(
                             column(2,
                                    br(), 
@@ -641,7 +641,7 @@ ui <- fluidPage(
                           )
                         ),
                         tabPanel(
-                          em("S. aureus"),
+                          em("Staphylococcus aureus"),
                           fluidRow(
                             column(2,
                                    br(), 
@@ -658,7 +658,7 @@ ui <- fluidPage(
                           )
                         ),
                         tabPanel(
-                          em("S. pneumoniae"),
+                          em("Streptococcus pneumoniae"),
                           fluidRow(
                             column(2,
                                    br(),

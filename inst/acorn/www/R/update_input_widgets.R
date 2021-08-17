@@ -35,10 +35,12 @@ updatePickerInput(session, "filter_diagnosis_final",
 
 all_organism <- unique(acorn_dta()$orgname)
 other_organism_vec <- setdiff(all_organism, 
-                              union(c("Acinetobacter sp", "Enterococcus sp", "Escherichia coli", "Haemophilus influenzae", "Klebsiella pneumoniae", "Neisseria meningitidis",
+                              union(c("Escherichia coli", "Haemophilus influenzae", "Klebsiella pneumoniae", "Neisseria meningitidis",
                                       "Pseudomonas aeruginosa", "Staphylococcus aureus", "Streptococcus pneumoniae"),
-                                    c(str_subset(all_organism, "rowth"),
+                                    c(str_subset(all_organism, "rowth"),  # remove first letter to catch all caps
                                       str_subset(all_organism, "ultured"),
+                                      str_subset(all_organism, "cinetobacter"),
+                                      str_subset(all_organism, "nterococcus"),
                                       str_subset(all_organism, "almonella")))) |> sort()
 updateSelectInput(session = session, "other_organism",
                   choices = other_organism_vec)
