@@ -1041,6 +1041,7 @@ server <- function(input, output, session) {
     }
     redcap_f01f05_dta(infection)
     redcap_hai_dta(dl_hai_dta)
+    acorn_origin("generated")
   })
   
   # On "Download Enrolment Log" ----
@@ -1118,7 +1119,6 @@ server <- function(input, output, session) {
       source("./www/R/data/10_link_clinical_assembly.R", local = TRUE)
       
       acorn_dta(acorn_dta)
-      acorn_origin("generated")
       source('./www/R/update_input_widgets.R', local = TRUE)
       
       notify(".acorn data successfully generated!", id = id)
