@@ -25,5 +25,5 @@ output$contaminants_pct <- renderText({
     filter(specgroup == "Blood") %>%
     nrow()
   
-  paste(br(), br(), h4(paste0(round(100 * n / total, 1), "%")), span("of blood cultures grew a potential contaminant."))
+  paste(h3(paste0(round(100 * n / total, 1), "%")), span("of blood cultures grew a potential contaminant."))
 })

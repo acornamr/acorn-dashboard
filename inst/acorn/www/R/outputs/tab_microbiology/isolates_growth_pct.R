@@ -21,5 +21,5 @@ output$isolates_growth_pct <- renderText({
     pull(specid) %>% 
     n_distinct()
   
-  paste(br(), br(), h4(paste0(round(100 * n / total, 1), "%")), span("of cultures have growth."))
+  paste(h3(paste0(round(100 * n / total, 1), "%")), span("of cultures have growth."))
 })

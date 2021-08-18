@@ -10,7 +10,7 @@ output$bsi_summary <- renderText({
   
   glue("</br>Records in Lab data and BSI forms: </br></br>
        <ul>
-       <li>Escherichia coli: {ecoli_lab} in Lab data and {ecoli_bsi} in BSI forms.</li>
-       <li>Staphylococcus aureus: {staph_lab} in Lab data and {staph_bsi} in BSI forms.</li>
+       <li><em>Escherichia coli</em>: {ecoli_lab} in Lab data and {ecoli_bsi} in BSI forms.</li>
+       <li><em>Staphylococcus aureus</em>: {staph_lab} in Lab data and {staph_bsi} in BSI forms.</li>
        </ul>")
 })
