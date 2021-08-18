@@ -495,7 +495,9 @@ ui <- fluidPage(
                             ),
                             column(10,
                                    conditionalPanel(condition = "output.test_acinetobacter_sir",
-                                                    highchartOutput("acinetobacter_sir", height = "500px"),
+                                                    highchartOutput("acinetobacter_sir", height = "400px"),
+                                                    h4("Resistance to Carbapenems Over Time"),
+                                                    highchartOutput("acinetobacter_sir_evolution", height = "400px")
                                    ),
                                    conditionalPanel(condition = "! output.test_acinetobacter_sir", span(h4("There is no data to display for this organism.")))
                             )
@@ -510,30 +512,12 @@ ui <- fluidPage(
                             ),
                             column(10,
                                    conditionalPanel(condition = "output.test_enterococcus_sir",
-                                                    highchartOutput("enterococcus_sir", height = "500px"),
+                                                    highchartOutput("enterococcus_sir", height = "400px"),
                                    ),
                                    conditionalPanel(condition = "! output.test_enterococcus_sir", span(h4("There is no data to display for this organism.")))
                             )
                           )
                         ),
-                        # TODO: remove the following lines and matching code in amr_sir.R after confirmation by Paul
-                        # tabPanel(
-                        #   "A. baumannii", 
-                        #   fluidRow(
-                        #     column(2,
-                        #            br(), 
-                        #            htmlOutput("nb_isolates_abaumannii")
-                        #     ),
-                        #     column(10,
-                        #            conditionalPanel(condition = "output.test_abaumannii_sir",
-                        #                             highchartOutput("abaumannii_sir", height = "500px"),
-                        #                             h4_title("Resistance to Carbapenems Over Time"),
-                        #                             highchartOutput("abaumannii_sir_evolution", height = "400px")
-                        #            ),
-                        #            conditionalPanel(condition = "! output.test_abaumannii_sir", span(h4("There is no data to display for this organism.")))
-                        #     )
-                        #   )
-                        # ),
                         tabPanel(
                           em("Escherichia coli"),
                           fluidRow(
@@ -543,7 +527,7 @@ ui <- fluidPage(
                             ),
                             column(10,
                                    conditionalPanel(condition = "output.test_ecoli_sir",
-                                                    highchartOutput("ecoli_sir", height = "600px"), br(), br(),
+                                                    highchartOutput("ecoli_sir", height = "500px"), br(), br(),
                                                     h4("Resistance to Carbapenems Over Time"),
                                                     highchartOutput("ecoli_sir_evolution", height = "400px"),
                                                     h4("Resistance to 3rd gen. cephalosporins Over Time"),
@@ -562,7 +546,7 @@ ui <- fluidPage(
                             ),
                             column(10,
                                    conditionalPanel(condition = "output.test_haemophilus_influenzae_sir",
-                                                    highchartOutput("haemophilus_influenzae_sir", height = "500px"),
+                                                    highchartOutput("haemophilus_influenzae_sir", height = "400px"),
                                    ),
                                    conditionalPanel(condition = "! output.test_haemophilus_influenzae_sir", span(h4("There is no data to display for this organism.")))
                             )
@@ -596,7 +580,7 @@ ui <- fluidPage(
                             ),
                             column(10,
                                    conditionalPanel(condition = "output.test_neisseria_meningitidis_sir",
-                                                    highchartOutput("neisseria_meningitidis_sir", height = "500px"),
+                                                    highchartOutput("neisseria_meningitidis_sir", height = "400px"),
                                    ),
                                    conditionalPanel(condition = "! output.test_neisseria_meningitidis_sir", span(h4("There is no data to display for this organism.")))
                             )
@@ -611,7 +595,9 @@ ui <- fluidPage(
                             ),
                             column(10,
                                    conditionalPanel(condition = "output.test_pseudomonas_aeruginosa_sir",
-                                                    highchartOutput("pseudomonas_aeruginosa_sir", height = "500px"),
+                                                    highchartOutput("pseudomonas_aeruginosa_sir", height = "400px"),
+                                                    h4("Resistance to Carbapenems Over Time"),
+                                                    highchartOutput("pseudomonas_aeruginosa_sir_evolution", height = "400px")
                                    ),
                                    conditionalPanel(condition = "! output.test_pseudomonas_aeruginosa_sir", span(h4("There is no data to display for this organism.")))
                             )
@@ -649,7 +635,7 @@ ui <- fluidPage(
                             ),
                             column(10,
                                    conditionalPanel(condition = "output.test_saureus_sir",
-                                                    highchartOutput("saureus_sir", height = "500px"),
+                                                    highchartOutput("saureus_sir", height = "400px"),
                                                     h4("Resistance to Oxacillin Over Time"),
                                                     highchartOutput("saureus_sir_evolution", height = "400px")
                                    ),
@@ -666,7 +652,7 @@ ui <- fluidPage(
                             ),
                             column(10,
                                    conditionalPanel(condition = "output.test_spneumoniae_sir",
-                                                    highchartOutput("spneumoniae_sir", height = "500px"),
+                                                    highchartOutput("spneumoniae_sir", height = "400px"),
                                                     h4("Resistance to Penicillin Over Time"),
                                                     highchartOutput("spneumoniae_sir_evolution", height = "400px")
                                    ),

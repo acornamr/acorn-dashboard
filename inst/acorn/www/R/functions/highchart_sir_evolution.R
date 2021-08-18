@@ -2,13 +2,31 @@ highchart_sir_evolution <- function(data_input, organism_input, corresp, combine
                                     filter_antibio = "", filter_group = "", deduplication_method) {
   
   # Column in the Organism-Antibiotic matrix
-  matching_name_column <- "all_other_organisms"
-  if(organism_input == "Acinetobacter baumannii") matching_name_column <- "acinetobacter_species"
-  if(organism_input == "Escherichia coli") matching_name_column <- "e_coli"
-  if(organism_input == "Klebsiella pneumoniae") matching_name_column <- "k_pneumoniae"
-  if(organism_input == "Staphylococcus aureus") matching_name_column <- "s_aureus"
-  if(organism_input == "Streptococcus pneumoniae") matching_name_column <- "s_pneumoniae"
-  if(str_detect(organism_input, "Salmonella")) matching_name_column <- "salmonella_species"
+  matching_name_column <- "all_other_organisms"  # default
+  
+  if(organism_input == "Acinetobacter sp")            matching_name_column <- "acinetobacter_species"
+  if(organism_input == "Enterococcus sp")             matching_name_column <- "enterococcus_sp"
+  if(organism_input == "Escherichia coli")            matching_name_column <- "e_coli"
+  if(organism_input == "Haemophilus influenzae")      matching_name_column <- "haemophilus_influenzae"
+  if(organism_input == "Klebsiella pneumoniae")       matching_name_column <- "k_pneumoniae"
+  if(organism_input == "Neisseria meningitidis")      matching_name_column <- "neisseria_meningitidis"
+  if(organism_input == "Pseudomonas aeruginosa")      matching_name_column <- "pseudomonas_aeruginosa"
+  if(str_detect(organism_input, "Salmonella"))        matching_name_column <- "salmonella_species"
+  if(organism_input == "Staphylococcus aureus")       matching_name_column <- "s_aureus"
+  if(organism_input == "Streptococcus pneumoniae")    matching_name_column <- "s_pneumoniae"
+  
+  
+  # Treatment of species
+  # TODO (non critical): These are creating warnings, fix with ifelse statements
+  if(organism_input == "Acinetobacter sp") {
+    vec <- unique(data_input$orgname)
+    organism_input <- vec[str_detect(vec, "Acinetobacter")]
+  }
+  
+  if(organism_input == "Enterococcus sp") {
+    vec <- unique(data_input$orgname)
+    organism_input <- vec[str_detect(vec, "Enterococcus")]
+  }
   
   if(organism_input == "Salmonella sp (not S. Typhi or S. Paratyphi)") {
     vec <- unique(data_input$orgname)
