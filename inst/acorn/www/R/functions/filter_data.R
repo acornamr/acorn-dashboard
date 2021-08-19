@@ -23,6 +23,7 @@ fun_filter_enrolment <- function(data, input) {
   
   if(input$filter_outcome_clinical) data <- data %>% filter(has_clinical_outcome)
   if(input$filter_outcome_d28)      data <- data %>% filter(has_d28_outcome)
+  if(input$filter_transfer)         data <- data %>% filter(transfer_hospital == "No")
   
   return(data)
 }

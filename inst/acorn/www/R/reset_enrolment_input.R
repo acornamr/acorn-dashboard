@@ -1,6 +1,7 @@
 updateCheckboxGroupButtons(session, "filter_enrolments",
                            choices = c("Surveillance Category", "Type of Ward", "Date of Enrolment/Survey", "Age Category", 
-                                       "Initial Diagnosis", "Final Diagnosis", "Clinical Severity", "Clinical/D28 Outcome"),
+                                       "Initial Diagnosis", "Final Diagnosis", "Clinical Severity", "Clinical/D28 Outcome",
+                                       "Transfer"),
                            selected = NULL,
                            status = "light", size = "sm",
                            checkIcon = list(yes = icon("filter")))
@@ -52,3 +53,6 @@ updatePrettySwitch(session, "filter_severity_child_1", label = "Include Child/Ne
 # Clinical/D28 Outcome
 updatePrettySwitch(session, "filter_outcome_clinical", label = "Only with Clinical Outcome", value = FALSE)
 updatePrettySwitch(session, "filter_outcome_d28", label = "Only with Day-28 Outcome", value = FALSE)
+
+# Transfer
+updatePrettySwitch(session, "filter_transfer", label = "Only Non-Transferred Patients", value = FALSE)

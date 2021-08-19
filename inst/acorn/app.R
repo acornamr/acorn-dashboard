@@ -49,7 +49,8 @@ ui <- fluidPage(
                                        div(class = "smallcaps", class = "center", span(icon("hospital-user"), "Enrolments")),
                                        checkboxGroupButtons("filter_enrolments",
                                                             choices = c("Surveillance Category", "Type of Ward", "Date of Enrolment/Survey", "Age Category", 
-                                                                        "Initial Diagnosis", "Final Diagnosis", "Clinical Severity", "Clinical/D28 Outcome"),
+                                                                        "Initial Diagnosis", "Final Diagnosis", "Clinical Severity", "Clinical/D28 Outcome",
+                                                                        "Transfer"),
                                                             selected = NULL,
                                                             status = "light", direction = "horizontal", size = "sm", individual = TRUE,
                                                             checkIcon = list(yes = icon("filter"))),
@@ -85,6 +86,9 @@ ui <- fluidPage(
                                        conditionalPanel("input.filter_enrolments.includes('Clinical/D28 Outcome')",
                                                         prettySwitch("filter_outcome_clinical", label = "Only with Clinical Outcome", status = "primary", value = FALSE, slim = TRUE),
                                                         prettySwitch("filter_outcome_d28", label = "Only with Day-28 Outcome", status = "primary", value = FALSE, slim = TRUE)
+                                       ),
+                                       conditionalPanel("input.filter_enrolments.includes('Transfer')",
+                                                        prettySwitch("filter_transfer", label = "Only Non-Transferred Patients", status = "primary", value = FALSE, slim = TRUE)
                                        ),
                                        actionLink("shortcut_reset_filters", label = span(icon("ban"), " Reset Enrolments Filters"))
                                 ),
