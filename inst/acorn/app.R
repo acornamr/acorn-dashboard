@@ -530,7 +530,7 @@ ui <- fluidPage(
                                                     highchartOutput("ecoli_sir", height = "500px"), br(), br(),
                                                     h4("Resistance to Carbapenems Over Time"),
                                                     highchartOutput("ecoli_sir_evolution", height = "400px"),
-                                                    h4("Resistance to 3rd gen. cephalosporins Over Time"),
+                                                    h4("Resistance to 3rd gen. Cephalosporins Over Time"),
                                                     highchartOutput("ecoli_sir_evolution_ceph", height = "400px")
                                    ),
                                    conditionalPanel(condition = "! output.test_ecoli_sir", span(h4("There is no data to display for this organism.")))
@@ -564,7 +564,7 @@ ui <- fluidPage(
                                                     highchartOutput("kpneumoniae_sir", height = "600px"), br(), br(),
                                                     h4("Resistance to Carbapenems Over Time"),
                                                     highchartOutput("kpneumoniae_sir_evolution", height = "400px"),
-                                                    h4("Resistance to 3rd gen. cephalosporins Over Time"),
+                                                    h4("Resistance to 3rd gen. Cephalosporins Over Time"),
                                                     highchartOutput("kpneumoniae_sir_evolution_ceph", height = "400px")
                                    ),
                                    conditionalPanel(condition = "! output.test_kpneumoniae_sir", span(h4("There is no data to display for this organism.")))
@@ -617,7 +617,7 @@ ui <- fluidPage(
                                                       selected = "Salmonella Typhi", inline = TRUE),
                                    conditionalPanel(condition = "output.test_salmonella_sir",
                                                     highchartOutput("salmonella_sir", height = "500px"),
-                                                    h4("Resistance to 3rd gen. cephalosporins Over Time"),
+                                                    h4("Resistance to 3rd gen. Cephalosporins Over Time"),
                                                     highchartOutput("salmonella_sir_evolution_ceph", height = "400px"),
                                                     h4("Resistance to Fluoroquinolones Over Time"),
                                                     highchartOutput("salmonella_sir_evolution_fluo", height = "400px")
