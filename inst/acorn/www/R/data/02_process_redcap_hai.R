@@ -21,7 +21,8 @@ dl_hai_dta <- dl_hai_dta %>%
             ward_icu_patients = as.numeric(ward_icu_patients)
             # f06_deleted, 
             # f06_hai_ward_complete
-  )
+  ) %>%
+  filter(str_detect(site_id, toupper(meta()$site)) | str_detect(site_id, tolower(meta()$site)))
 
 ## Test that dates of enrolment match across datasets
 infection_hai <- infection %>% filter(surveillance_category == "HAI")

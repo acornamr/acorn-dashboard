@@ -985,13 +985,9 @@ server <- function(input, output, session) {
   
   # On "Get Clinical Data from REDCap server" ----
   observeEvent(input$get_redcap_data, {
-    if(is.null(acorn_cred()$redcap_f01f05_api)) {
-      showNotification("REDCap server credentials not provided", type = "error")
-      return()
-    }
-    
     if(! has_internet()) {
       showNotification("Not connected to internet", type = "error")
+      Sys.sleep(5)
       return()
     }
     
@@ -1005,9 +1001,9 @@ server <- function(input, output, session) {
     
     source("./www/R/data/01_read_redcap_f01f05.R", local = TRUE)
     source("./www/R/data/02_process_redcap_f01f05.R", local = TRUE)
-    
     source("./www/R/data/01_read_redcap_hai.R", local = TRUE)
     source("./www/R/data/02_process_redcap_hai.R", local = TRUE)
+    
     removeModal()
     
     if(any(c(checklist_status$redcap_not_empty$status,
