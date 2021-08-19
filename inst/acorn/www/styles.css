@@ -96,7 +96,11 @@ https://bootswatch.com/4/flatly/bootstrap.css */
 }
 
 .faq {
-  width: 700px;
+  width: 800px;
+}
+
+.tippy-content {
+  background-color: rgba(0,0,0,0.03);
 }
 
 .filter_box_small {

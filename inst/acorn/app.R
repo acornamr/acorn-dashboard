@@ -23,9 +23,7 @@ ui <- fluidPage(
         theme = "light-border", class = "faq", placement = "bottom-end",
         fluidRow(
           column(12,
-                 includeMarkdown("./www/markdown/faq.md"),
-                 img(src = "./images/linkage_cases.png", style = "width: 100%"),
-                 includeMarkdown("./www/markdown/faq_2.md"),
+                 includeHTML("./www/faq_acorn.html")
           )
         )
       )
@@ -796,10 +794,9 @@ server <- function(input, output, session) {
   enrolment_log <- reactive({
     req(redcap_f01f05_dta())
     
-    # calculate the expected Day-28 date: one acorn_id/redcap_id per enrolment but some acorn_id are missing so we prefer to group by redcap_id
     left_join(redcap_f01f05_dta(),
               redcap_f01f05_dta() %>% 
-                group_by(redcap_id) %>%
+                group_by(redcap_id) %>%  # one acorn_id/redcap_id per enrolment but some acorn_id are missing so we prefer to group by redcap_id
                 summarise(expected_d28_date = max(date_episode_enrolment) + 28, .groups = "drop"),
               by = "redcap_id") %>%
       transmute("Category" = surveillance_category,
