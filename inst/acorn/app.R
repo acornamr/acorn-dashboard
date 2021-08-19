@@ -934,11 +934,11 @@ server <- function(input, output, session) {
         acorn_dates <- as.vector(dta[names(dta) == 'Contents.LastModified'])
         ord_acorn_dates <- order(as.POSIXct(acorn_dates))
         acorn_files <- rev(tail(as.vector(dta[names(dta) == 'Contents.Key'])[ord_acorn_dates], 10))
-        acorn_files <- acorn_files[endsWith(acorn_files, ".acorn")]
         
-        updatePickerInput(session, 'acorn_files_server', choices = acorn_files, selected = acorn_files[1])
+        if(! is.null(acorn_files)) { acorn_files <- acorn_files[endsWith(acorn_files, ".acorn")] }
+        if(! is.null(acorn_files)) { updatePickerInput(session, 'acorn_files_server', choices = acorn_files, selected = acorn_files[1]) }
+        }
       }
-    }
   })
   
   # On "Load .acorn" file from server ----
@@ -1000,6 +1000,16 @@ server <- function(input, output, session) {
     )
     
     source("./www/R/data/01_read_redcap_f01f05.R", local = TRUE)
+    
+    if(any(c(checklist_status$redcap_not_empty$status,
+             checklist_status$redcap_columns$status) == "ko")) {
+      
+      showNotification("Critical issue detected: no data or wrong data format on REDCap server. 
+                       Please report to ACORN data managers.
+                       Until resolution, only existing .acorn files can be used.", duration = NULL, type = "error", closeButton = FALSE)
+      return()
+    }
+    
     source("./www/R/data/02_process_redcap_f01f05.R", local = TRUE)
     source("./www/R/data/01_read_redcap_hai.R", local = TRUE)
     source("./www/R/data/02_process_redcap_hai.R", local = TRUE)
