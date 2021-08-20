@@ -146,8 +146,8 @@ ui <- fluidPage(
                                        selectInput("cred_site", tagList(icon("hospital"), i18n$t("Site")),
                                                    choices = code_sites),
                                        conditionalPanel("input.cred_site != 'demo'", div(
-                                         textInput("cred_user", tagList(icon("user"), i18n$t("User"))),
-                                         passwordInput("cred_password", tagList(icon("unlock-alt"), i18n$t("Password")))
+                                         textInput("cred_user", tagList(icon("user"), i18n$t("User")), placeholder = "enter user name"),
+                                         passwordInput("cred_password", tagList(icon("unlock-alt"), i18n$t("Password")), placeholder = "enter password")
                                        )
                                        ), 
                                        div(class = "text-center",
@@ -183,8 +183,8 @@ ui <- fluidPage(
                       )
              ),
              # Tab Data Management ----
-             tabPanel(span(icon("database"), "Data Management"), value = "data_management",
-                      p("What do you want to do?"),
+             tabPanel(span(icon("database"), i18n$t("Data Management")), value = "data_management",
+                      p(i18n$t("What do you want to do?")),
                       div(class = "center",
                           radioGroupButtons("choice_datamanagement", NULL,
                                             choices = c("Generate .acorn from clinical and lab data", "Load existing .acorn from cloud", "Load existing .acorn from local file"),
@@ -197,8 +197,8 @@ ui <- fluidPage(
                                        div(
                                          fluidRow(
                                            column(4,    
-                                                  h5("(1/4) Download Clinical data"), p("and generate enrolment log."),
-                                                  actionButton("get_redcap_data", "Get data from REDCap", icon = icon('cloud-download-alt'))
+                                                  h5(i18n$t("(1/4) Download Clinical data")), p(i18n$t("and generate enrolment log.")),
+                                                  actionButton("get_redcap_data", i18n$t("Get data from REDCap"), icon = icon('cloud-download-alt'))
                                            ),
                                            column(8,
                                                   htmlOutput("checklist_qc_clinical")

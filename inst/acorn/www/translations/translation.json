@@ -1,65 +1,98 @@
 {
-    "languages": ["en", "fr", "la"],
+    "languages": ["en", "fr", "la", "vn"],
     "translation": [
         {
             "en": "Welcome",
             "fr": "Bienvenue",
-            "la": "TBT"
+            "la": "TBT",
+            "vn": "TBT"
         },
         {
             "en": "Language",
             "fr": "Langue",
-            "la": "ພາສາ"
+            "la": "ພາສາ",
+            "vn": "TBT"
         },
         {
             "en": "ACORN Participating Countries",
             "fr": "Pays Participants au Projet ACORN",
-            "la": "TBT"
+            "la": "TBT",
+            "vn": "TBT"
         },
         {
             "en": "What is ACORN?",
             "fr": "Qu'est ce qu'ACORN ?",
-            "la": "TBT"
+            "la": "TBT",
+            "vn": "TBT"
         },
         {
             "en": "About",
             "fr": "A Propos",
-            "la": "TBT"
+            "la": "TBT",
+            "vn": "TBT"
         },
         {
             "en": "Please log in",
             "fr": "Connection",
-            "la": "TBT"
+            "la": "TBT",
+            "vn": "TBT"
         },
         {
             "en": "Site",
             "fr": "Site",
-            "la": "TBT"
+            "la": "TBT",
+            "vn": "TBT"
         },
         {
             "en": "User",
             "fr": "Site",
-            "la": "TBT"
+            "la": "TBT",
+            "vn": "TBT"
         },
         {
             "en": "Password",
             "fr": "Mot de passe",
-            "la": "TBT"
+            "la": "TBT",
+            "vn": "TBT"
         },
         {
             "en": "Log in",
             "fr": "Se connecter",
-            "la": "TBT"
+            "la": "TBT",
+            "vn": "TBT"
         },
         {
             "en": "To log out, close the app.",
             "fr": "Quitter l'application pour se déconnecter",
-            "la": "TBT"
+            "la": "TBT",
+            "vn": "TBT"
         },
         {
             "en": "upload a local acorn file.",
             "fr": "téléverser un fichier acorn.",
-            "la": "TBT"
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Data Management",
+            "fr": "TBT",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "What do you want to do?",
+            "fr": "Comment voulez-vous procéder ?",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "The REDCap dataset contains data.",
+            "fr": "Le dataset téléchargé de REDCap contient des données.",
+            "la": "TBT",
+            "vn": "TBT"
         }
     ]
 }
+
+
+

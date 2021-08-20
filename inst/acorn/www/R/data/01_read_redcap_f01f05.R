@@ -29,8 +29,8 @@ shinyjs::html(id = "text_redcap_f01f05_log", "<hr/>", add = TRUE)
 
 # Test "REDCap dataset empty" ----
 ifelse(nrow(dl_redcap_f01f05_dta) == 0, 
-       { checklist_status$redcap_not_empty <- list(status = "ko", msg = "The REDCap dataset is empty. Please contact ACORN data management.")},
-       { checklist_status$redcap_not_empty <- list(status = "okay", msg = glue("The REDCap dataset contains data."))})
+       { checklist_status$redcap_not_empty <- list(status = "ko",   msg = "The REDCap dataset is empty. Please contact ACORN data management.")},
+       { checklist_status$redcap_not_empty <- list(status = "okay", msg = i18n$t("The REDCap dataset contains data."))})
 
 # Test "REDCap dataset columns names" ----
 ifelse(ncol(dl_redcap_f01f05_dta) == 211 & all(names(dl_redcap_f01f05_dta) == c("recordid", "redcap_repeat_instrument", "redcap_repeat_instance", 
