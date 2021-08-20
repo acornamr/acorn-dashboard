@@ -27,7 +27,7 @@
         },
         {
             "en": "About",
-            "fr": "A Propos",
+            "fr": "À Propos",
             "la": "TBT",
             "vn": "TBT"
         },
@@ -75,7 +75,7 @@
         },
         {
             "en": "Data Management",
-            "fr": "TBT",
+            "fr": "Gestion des Données",
             "la": "TBT",
             "vn": "TBT"
         },
@@ -87,7 +87,103 @@
         },
         {
             "en": "The REDCap dataset contains data.",
-            "fr": "Le dataset téléchargé de REDCap contient des données.",
+            "fr": "Le fichier téléchargé de REDCap contient des données.",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "The REDCap dataset is empty. Please contact ACORN data management.",
+            "fr": "Les données REDCap sont vides. Merci de contacter le manager de données.",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "The REDCap dataset column names do not match. Please contact ACORN data management.",
+            "fr": "Les colonnes des données REDCap ne correspondent pas. Merci de contacter le manager de données.",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "The REDCap dataset column names match.",
+            "fr": "Les colonnes des données REDCap correspondent.",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Critical errors with clinical data.",
+            "fr": "Erreurs critiques avec les données cliniques.",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "There is a critical issue with clinical data. The issue should be fixed in REDCap.",
+            "fr": "Il y a une erreur critiqe avec les données cliniques. Cette erreur doit être réparée dans REDCap.",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Clinical data successfully provided.",
+            "fr": "Les données clinique ont bien été fournies",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Reading lab data.",
+            "fr": "Lecture des données de lab.",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Processing lab data.",
+            "fr": "Traitement des données de lab.",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Lab data successfully processed!",
+            "fr": "Traitement des données de lab achevé avec succès !",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Generating .acorn",
+            "fr": "Création du fichier .acorn",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Supply first valid clinical and lab data.",
+            "fr": "Fournir en premier lieu des données clinique et de lab valides.",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": ".acorn data successfully generated!",
+            "fr": "Le fichier .acorn a bien été généré",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "No .acorn data loaded.",
+            "fr": "Aucun fichier .acorn n'a été chargé.",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": ".acorn not saved.",
+            "fr": "Fichier .acorn n'est pas sauvegardé.",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Not connected to internet.",
+            "fr": "Pas de connection à internet détecté.",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Attempting to connect.",
+            "fr": "Tentative de connection.",
             "la": "TBT",
             "vn": "TBT"
         }

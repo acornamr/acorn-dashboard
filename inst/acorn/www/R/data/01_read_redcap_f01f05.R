@@ -29,7 +29,7 @@ shinyjs::html(id = "text_redcap_f01f05_log", "<hr/>", add = TRUE)
 
 # Test "REDCap dataset empty" ----
 ifelse(nrow(dl_redcap_f01f05_dta) == 0, 
-       { checklist_status$redcap_not_empty <- list(status = "ko",   msg = "The REDCap dataset is empty. Please contact ACORN data management.")},
+       { checklist_status$redcap_not_empty <- list(status = "ko",   msg = i18n$t("The REDCap dataset is empty. Please contact ACORN data management."))},
        { checklist_status$redcap_not_empty <- list(status = "okay", msg = i18n$t("The REDCap dataset contains data."))})
 
 # Test "REDCap dataset columns names" ----
@@ -94,5 +94,5 @@ ifelse(ncol(dl_redcap_f01f05_dta) == 211 & all(names(dl_redcap_f01f05_dta) == c(
                                      "bsi_antibiotic5_startdate", "bsi_antibiotic5_enddate", "bsi_antibiotic5_route", 
                                      "bsi_is_primary", "bsi_sec_source", "bsi_sec_source_oth", "bsi_is_com_implant", 
                                      "bsi_is_com_2days", "bsi_is_com_fever", "f05_deleted", "f05_bsi_complete")), 
-       {checklist_status$redcap_columns <- list(status = "okay", msg = "The REDCap dataset column names match.")},
-       {checklist_status$redcap_columns <- list(status = "ko", msg = "The REDCap dataset structure is not as expected (columns names do not match). Please contact ACORN data management.")})
+       {checklist_status$redcap_columns <- list(status = "okay", msg = i18n$t("The REDCap dataset column names match."))},
+       {checklist_status$redcap_columns <- list(status = "ko",   msg = i18n$t("The REDCap dataset column names do not match. Please contact ACORN data management."))})

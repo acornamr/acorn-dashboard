@@ -12,9 +12,9 @@ patient_enrolment <- dl_redcap_f01f05_dta %>%
 ## Test that "Every record has an ACORN id" ----
 test <- patient_enrolment[is.na(patient_enrolment$acornid), c("recordid", "acornid")]
 ifelse(is_empty(test), 
-       { checklist_status$redcap_acornid <- list(status = "okay", msg = "All records have an 'ACORN id'.") }, 
+       { checklist_status$redcap_acornid <- list(status = "okay", msg = "All records have an ACORN id.") }, 
        { 
-         checklist_status$redcap_acornid <- list(status = "warning", msg = "Some records do not have an 'ACORN id'.") 
+         checklist_status$redcap_acornid <- list(status = "warning", msg = "Not all records have an ACORN id.") 
          checklist_status$log_errors <- bind_rows(checklist_status$log_errors, 
                                                   tibble(issue = "Missing ACORN id", redcap_id = test$recordid, acorn_id = test$acornid))
        })

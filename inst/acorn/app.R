@@ -829,7 +829,7 @@ server <- function(input, output, session) {
   
   # On login ----
   observeEvent(input$cred_login, {
-    id <- notify("Attempting to connect")
+    id <- notify(i18n$t("Attempting to connect."))
     on.exit({Sys.sleep(2); removeNotification(id)}, add = TRUE)
     
     if (input$cred_site == "demo") {
@@ -937,8 +937,8 @@ server <- function(input, output, session) {
         
         if(! is.null(acorn_files)) { acorn_files <- acorn_files[endsWith(acorn_files, ".acorn")] }
         if(! is.null(acorn_files)) { updatePickerInput(session, 'acorn_files_server', choices = acorn_files, selected = acorn_files[1]) }
-        }
       }
+    }
   })
   
   # On "Load .acorn" file from server ----
@@ -1025,12 +1025,11 @@ server <- function(input, output, session) {
              checklist_status$redcap_F03F01$status,
              checklist_status$redcap_consistent_outcomes$status,
              checklist_status$redcap_age_category$status) == "ko")) {
-      checklist_status$redcap_f01f05_dta <- list(status = "ko", msg = "Critical errors with clinical data.")
+      checklist_status$redcap_f01f05_dta <- list(status = "ko", msg = i18n$t("Critical errors with clinical data."))
       
-      showNotification("There is a critical issue with clinical data. The issue should be fixed in REDCap.", type = "error", duration = NULL)
+      showNotification(i18n$t("There is a critical issue with clinical data. The issue should be fixed in REDCap."), type = "error", duration = NULL)
     } else {
-      checklist_status$redcap_f01f05_dta <- list(status = "okay", 
-                                                 msg = glue("Clinical data provided with {length(unique(infection$redcap_id))} patient enrolments and {nrow(infection)} infection episodes."))
+      checklist_status$redcap_f01f05_dta <- list(status = "okay", msg = i18n$t(("Clinical data successfully provided.")))
     }
     redcap_f01f05_dta(infection)
     redcap_hai_dta(dl_hai_dta)
@@ -1052,7 +1051,7 @@ server <- function(input, output, session) {
   # input$file_lab_dba | input$file_lab_sql | 
   observeEvent(c(input$file_lab_tab, input$file_lab_dba, input$file_lab_sql), 
                {
-                 id <- notify("Reading lab data")
+                 id <- notify(i18n$t("Reading lab data."))
                  on.exit({Sys.sleep(2); removeNotification(id)}, add = TRUE)
                  source("./www/R/data/01_read_lab_data.R", local = TRUE)
                  
@@ -1087,7 +1086,7 @@ server <- function(input, output, session) {
                         notes = data_dictionary$notes)
                  )
                  
-                 notify("Processing Lab data.", id = id)
+                 notify(i18n$t("Processing lab data."), id = id)
                  source("./www/R/data/03_map_variables.R", local = TRUE)
                  source("./www/R/data/04_map_specimens.R", local = TRUE)
                  source("./www/R/data/05_map_organisms.R", local = TRUE)
@@ -1097,37 +1096,37 @@ server <- function(input, output, session) {
                  source("./www/R/data/09_checklist_lab.R", local = TRUE)
                  
                  lab_dta(amr)
-                 notify("Lab data successfully processsed!", id = id)
+                 notify(i18n$t("Lab data successfully processed!"), id = id)
                })
   
   # On "Generate ACORN" ----
   observeEvent(input$generate_acorn_data, {
-    id <- notify("Generating .acorn")
+    id <- notify(i18n$t("Generating .acorn"))
     on.exit({Sys.sleep(2); removeNotification(id)}, add = TRUE)
     
-    if(checklist_status$redcap_f01f05_dta$status != "okay")  showNotification("Aborted: clinical data not provided.", type = "warning", duration = NULL)
-    if(checklist_status$lab_dta$status != "okay")     showNotification("Aborted: lab data not provided.", type = "warning", duration = NULL)
-    
-    if(checklist_status$lab_dta$status == "okay" & checklist_status$redcap_f01f05_dta$status == "okay") {
-      source("./www/R/data/10_link_clinical_assembly.R", local = TRUE)
-      
-      acorn_dta(acorn_dta)
-      source('./www/R/update_input_widgets.R', local = TRUE)
-      
-      notify(".acorn data successfully generated!", id = id)
-      checklist_status$acorn_dta_saved = list(status = "warning", msg = ".acorn not saved")
+    if(checklist_status$redcap_f01f05_dta$status != "okay" | checklist_status$lab_dta$status != "okay") {
+      notify(i18n$t("Supply first valid clinical and lab data."), type = "error", id = id)
+      return()
     }
+    
+    source("./www/R/data/10_link_clinical_assembly.R", local = TRUE)
+    
+    acorn_dta(acorn_dta)
+    source('./www/R/update_input_widgets.R', local = TRUE)
+    
+    notify(i18n$t(".acorn data successfully generated!"), id = id)
+    checklist_status$acorn_dta_saved = list(status = "warning", msg = i18n$t(".acorn not saved."))
   })
   
   # On "Save ACORN" on server ----
   observeEvent(input$save_acorn_server, { 
     if(checklist_status$linkage_result$status != "okay") {
-      showNotification("No .acorn data loaded.", type = "error", duration = 10)
+      showNotification(i18n$t("No .acorn data loaded."), type = "error", duration = 10)
       return()
     }
     
     if(! has_internet()) {
-      showNotification("Not connected to internet", type = "error")
+      showNotification(i18n$t("Not connected to internet."), type = "error", duration = 10)
       return()
     }
     
@@ -1145,7 +1144,7 @@ server <- function(input, output, session) {
   # On "Save ACORN" as a local file ----
   observeEvent(input$save_acorn_local, { 
     if(checklist_status$linkage_result$status != "okay") {
-      showNotification("No .acorn data loaded.", type = "error", duration = 10)
+      showNotification(i18n$t("No .acorn data loaded."), type = "error", duration = 10)
       return()
     }
     
