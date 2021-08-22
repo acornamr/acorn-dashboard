@@ -27,6 +27,10 @@ Class-level resistance to fluoroquinolones, 3rd generation cephalosporins, and c
 
 It is possible to remove bacterial species which have a high probability of being a skin contaminant from the microbiology organism lists and tables. The following organism groups are considered contaminants: coagulase negative staphylococci, micrococci, Gram positive bacilli / diphtheroids. Blood cultures with of growth of >= 1 contaminant organism are labelled as contaminated, irrespective of growth of pathogens.
 
+### Target pathogens
+
+ACORN will capture data on cultured organisms. However, specific surveillance targets are the blood culture relevant organism on WHO GLASS pathogen list (2021 update): *Acinetobacter* species, *Escherichia coli*, *Haemophilus influenzae*, *Klebsiella pneumoniae*, *Neisseria meningitidis*, *Pseudomonas aeruginosa*, *Salmonella enterica* (non-typhoidal and typhoidal), *Staphylococcus aureus*, *Streptococcus pneumoniae*.
+
 ## Data Processing
 
 ### Enrolment/Error Log
