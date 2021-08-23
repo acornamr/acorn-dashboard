@@ -40,7 +40,6 @@ other_organism_vec <- setdiff(all_organism,
                                     c(str_subset(all_organism, "rowth"),  # remove first letter to catch all caps
                                       str_subset(all_organism, "ultured"),
                                       str_subset(all_organism, "cinetobacter"),
-                                      str_subset(all_organism, "nterococcus"),
                                       str_subset(all_organism, "almonella")))) |> sort()
 updateSelectInput(session = session, "other_organism",
                   choices = other_organism_vec)

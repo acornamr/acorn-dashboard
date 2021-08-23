@@ -4,7 +4,6 @@ highchart_sir <- function(data_input, organism_input, corresp, combine_SI, dedup
   matching_name_column <- "all_other_organisms"  # default
   
   if(organism_input == "Acinetobacter sp")            matching_name_column <- "acinetobacter_species"
-  if(organism_input == "Enterococcus sp")             matching_name_column <- "enterococcus_sp"
   if(organism_input == "Escherichia coli")            matching_name_column <- "e_coli"
   if(organism_input == "Haemophilus influenzae")      matching_name_column <- "haemophilus_influenzae"
   if(organism_input == "Klebsiella pneumoniae")       matching_name_column <- "k_pneumoniae"
@@ -20,11 +19,6 @@ highchart_sir <- function(data_input, organism_input, corresp, combine_SI, dedup
   if(organism_input == "Acinetobacter sp") {
     vec <- unique(data_input$orgname)
     organism_input <- vec[str_detect(vec, "Acinetobacter")]
-  }
-  
-  if(organism_input == "Enterococcus sp") {
-    vec <- unique(data_input$orgname)
-    organism_input <- vec[str_detect(vec, "Enterococcus")]
   }
   
   if(organism_input == "Salmonella sp (not S. Typhi or S. Paratyphi)") {

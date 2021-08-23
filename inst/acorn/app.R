@@ -506,21 +506,6 @@ ui <- fluidPage(
                           )
                         ),
                         tabPanel(
-                          span(em("Enterococcus"), " species"), 
-                          fluidRow(
-                            column(2,
-                                   br(), 
-                                   htmlOutput("nb_isolates_enterococcus")
-                            ),
-                            column(10,
-                                   conditionalPanel(condition = "output.test_enterococcus_sir",
-                                                    highchartOutput("enterococcus_sir", height = "400px"),
-                                   ),
-                                   conditionalPanel(condition = "! output.test_enterococcus_sir", span(h4("There is no data to display for this organism.")))
-                            )
-                          )
-                        ),
-                        tabPanel(
                           em("Escherichia coli"),
                           fluidRow(
                             column(2,

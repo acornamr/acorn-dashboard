@@ -33,34 +33,6 @@ output$nb_isolates_acinetobacter <- renderText({
   ifelse (nb != 0, glue("<em>Total of {nb} isolate(s) for {paste(organism_input, collapse = ', ')}</em>"), "There are no isolates.")
 })
 
-# Enterococcus species ----
-output$enterococcus_sir <- renderHighchart({
-  req(acorn_dta_filter())
-  organism_input <- "Enterococcus sp"
-  highchart_sir(data_input = acorn_dta_filter(), organism_input = organism_input, corresp = corresp_org_antibio(), 
-                combine_SI = input$combine_SI, deduplication_method = input$deduplication_method)
-})
-
-output$test_enterococcus_sir <- reactive({
-  req(acorn_dta_filter())
-  vec <- unique(acorn_dta_filter()$orgname)
-  organism_input <- vec[str_detect(vec, "Enterococcus")]
-
-  ifelse (nrow(acorn_dta_filter() %>% filter(orgname %in% organism_input)) == 0, FALSE, TRUE)
-})
-outputOptions(output, "test_enterococcus_sir", suspendWhenHidden = FALSE)
-
-output$nb_isolates_enterococcus <- renderText({
-  req(acorn_dta_filter())
-  vec <- unique(acorn_dta_filter()$orgname)
-  organism_input <- vec[str_detect(vec, "Enterococcus")]
-  
-  req(acorn_dta_filter() %>% filter(orgname %in% organism_input))
-  nb <- acorn_dta_filter() %>% filter(orgname %in% organism_input) %>% fun_deduplication(method = input$deduplication_method) %>% nrow()
-  ifelse (nb != 0, glue("<em>Total of {nb} isolate(s) for {paste(organism_input, collapse = ', ')}</em>"), "There are no isolates.")
-})
-
-
 # Escherichia coli ----
 output$ecoli_sir <- renderHighchart({
   req(acorn_dta_filter())
