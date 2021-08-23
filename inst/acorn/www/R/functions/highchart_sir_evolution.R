@@ -65,7 +65,7 @@ highchart_sir_evolution <- function(data_input, organism_input, corresp, combine
                            by = c('name' = 'antibio_code')) %>%
     filter(UQ(as.symbol(matching_name_column)) == "show")
   
-  if (filter_group != "") sir_results <- sir_results %>% filter(antibio_group == filter_group, !str_detect(antibio_name, "Aggregate"))
+  if (filter_group != "")   sir_results <- sir_results %>% filter(antibio_group == filter_group, !str_detect(antibio_name, "Aggregate"))
   if (filter_antibio != "") sir_results <- sir_results %>% filter(filter_antibio == antibio_name)
   
   

@@ -10,7 +10,7 @@ output$acinetobacter_sir_evolution <- renderHighchart({
   req(acorn_dta_filter())
   organism_input <- "Acinetobacter sp"
   highchart_sir_evolution(data_input = acorn_dta_filter(), organism_input = organism_input, corresp = corresp_org_antibio(),
-                          combine_SI = input$combine_SI, filter_group = "Carbapenems",
+                          combine_SI = input$combine_SI, filter_antibio = "Aggregate Carbapenems",
                           deduplication_method = input$deduplication_method)
 })
 
@@ -45,7 +45,7 @@ output$ecoli_sir_evolution <- renderHighchart({
   req(acorn_dta_filter())
   organism_input <- "Escherichia coli"
   highchart_sir_evolution(data_input = acorn_dta_filter(), organism_input = organism_input, corresp = corresp_org_antibio(), 
-                          combine_SI = input$combine_SI, filter_group = "Carbapenems",
+                          combine_SI = input$combine_SI, filter_antibio = "Aggregate Carbapenems",
                           deduplication_method = input$deduplication_method)
 })
 
@@ -107,7 +107,7 @@ output$kpneumoniae_sir_evolution <- renderHighchart({
   req(acorn_dta_filter())
   organism_input <- "Klebsiella pneumoniae"
   highchart_sir_evolution(data_input = acorn_dta_filter(), organism_input = organism_input, corresp = corresp_org_antibio(), 
-                          combine_SI = input$combine_SI, filter_group = "Carbapenems",
+                          combine_SI = input$combine_SI, filter_antibio = "Aggregate Carbapenems",
                           deduplication_method = input$deduplication_method)
 })
 
@@ -169,7 +169,7 @@ output$pseudomonas_aeruginosa_sir_evolution <- renderHighchart({
   req(acorn_dta_filter())
   organism_input <- "Pseudomonas aeruginosa"
   highchart_sir_evolution(data_input = acorn_dta_filter(), organism_input = organism_input, corresp = corresp_org_antibio(),
-                          combine_SI = input$combine_SI, filter_group = "Carbapenems",
+                          combine_SI = input$combine_SI, filter_antibio = "Aggregate Carbapenems",
                           deduplication_method = input$deduplication_method)
 })
 
@@ -269,7 +269,7 @@ output$salmonella_sir_evolution_fluo <- renderHighchart({
   req(acorn_dta_filter())
   organism_input <- input$select_salmonella
   highchart_sir_evolution(data_input = acorn_dta_filter(), organism_input = organism_input, corresp = corresp_org_antibio(), 
-                          combine_SI = input$combine_SI, filter_group = "Fluoroquinolones",
+                          combine_SI = input$combine_SI, filter_antibio = "Aggregate Fluoroquinolones",
                           deduplication_method = input$deduplication_method)
 })
 
