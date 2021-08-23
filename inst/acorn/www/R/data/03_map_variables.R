@@ -8,6 +8,12 @@ amr <- dta %>%
   select(! starts_with("NOT_ACORN_COLUMN_")) %>%
   mutate(specid.lc = tolower(specid))
 
+# add new columns of NAs required for aggregate variables (e.g. aggregate carbapenem) computations
+col_sup <- setdiff(data_dictionary$variables$acorn.code, names(amr))
+new <- rep(NA_character_, length(col_sup))
+names(new) <- col_sup
+amr <- amr %>% mutate(!!!new)
+
 # Make a new orgnum (do not rely on any orgnum imported as part of the dataset)
 specid <- subset(amr, select = c(specid.lc), subset = (!duplicated(specid.lc)))
 specid$specid.acorn <- seq_along(specid$specid.lc)
