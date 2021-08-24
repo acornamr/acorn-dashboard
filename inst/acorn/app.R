@@ -640,8 +640,10 @@ ui <- fluidPage(
                             column(10,
                                    conditionalPanel(condition = "output.test_spneumoniae_sir",
                                                     highchartOutput("spneumoniae_sir", height = "400px"),
-                                                    h4("Resistance to Penicillin Over Time"),
-                                                    highchartOutput("spneumoniae_sir_evolution", height = "400px")
+                                                    h4("Resistance to Penicillin G Over Time"),
+                                                    highchartOutput("spneumoniae_sir_evolution_pen", height = "400px"),
+                                                    h4("Resistance to Penicillin G - meningitis Over Time"),
+                                                    highchartOutput("spneumoniae_sir_evolution_pen_men", height = "400px")
                                    ),
                                    conditionalPanel(condition = "! output.test_spneumoniae_sir", span(h4("There is no data to display for this organism.")))
                             )

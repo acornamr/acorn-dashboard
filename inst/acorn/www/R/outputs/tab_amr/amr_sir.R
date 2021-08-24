@@ -226,11 +226,19 @@ output$spneumoniae_sir <- renderHighchart({
                 deduplication_method = input$deduplication_method)
 })
 
-output$spneumoniae_sir_evolution <- renderHighchart({
+output$spneumoniae_sir_evolution_pen <- renderHighchart({
   req(acorn_dta_filter())
   organism_input <- "Streptococcus pneumoniae"
   highchart_sir_evolution(data_input = acorn_dta_filter(), organism_input = organism_input, corresp = corresp_org_antibio(), 
-                          combine_SI = input$combine_SI, filter_group = "Penicillins",
+                          combine_SI = input$combine_SI, filter_antibio = "Penicillin G",
+                          deduplication_method = input$deduplication_method)
+})
+
+output$spneumoniae_sir_evolution_pen_men <- renderHighchart({
+  req(acorn_dta_filter())
+  organism_input <- "Streptococcus pneumoniae"
+  highchart_sir_evolution(data_input = acorn_dta_filter(), organism_input = organism_input, corresp = corresp_org_antibio(), 
+                          combine_SI = input$combine_SI, filter_antibio = "Penicillin G - meningitis",
                           deduplication_method = input$deduplication_method)
 })
 
