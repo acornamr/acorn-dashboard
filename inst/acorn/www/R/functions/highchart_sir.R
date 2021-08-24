@@ -15,22 +15,23 @@ highchart_sir <- function(data_input, organism_input, corresp, combine_SI, dedup
   
 
   # Treatment of species
-  # TODO (non critical): These are creating warnings, fix with ifelse statements
+  organism_filter <- organism_input
+  
   if(organism_input == "Acinetobacter sp") {
     vec <- unique(data_input$orgname)
-    organism_input <- vec[str_detect(vec, "Acinetobacter")]
+    organism_filter <- vec[str_detect(vec, "Acinetobacter")]
   }
   
   if(organism_input == "Salmonella sp (not S. Typhi or S. Paratyphi)") {
     vec <- unique(data_input$orgname)
-    organism_input <- vec[str_detect(vec, "Salmonella") & vec != "Salmonella Typhi" & !str_detect(vec, "Salmonella Paratyphi")]
+    organism_filter <- vec[str_detect(vec, "Salmonella") & vec != "Salmonella Typhi" & !str_detect(vec, "Salmonella Paratyphi")]
   }
   
   
   if(combine_SI) {
     
     data <- data_input %>% 
-      filter(orgname %in% organism_input) %>%
+      filter(orgname %in% organism_filter) %>%
       fun_deduplication(method = deduplication_method) %>%
       select(c("specid", any_of(corresp$antibio_code))) %>%
       pivot_longer(-specid) %>%
@@ -96,7 +97,7 @@ highchart_sir <- function(data_input, organism_input, corresp, combine_SI, dedup
   if(!combine_SI) {
     
     data <- data_input %>% 
-      filter(orgname %in% organism_input) %>% 
+      filter(orgname %in% organism_filter) %>% 
       fun_deduplication(method = deduplication_method) %>%
       select(c("specid", any_of(corresp$antibio_code))) %>%
       pivot_longer(-specid) %>%
