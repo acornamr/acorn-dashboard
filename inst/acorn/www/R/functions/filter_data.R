@@ -63,14 +63,12 @@ fun_deduplication <- function(data, method = NULL) {
   if(method == "Deduplication by patient-episode") { 
     data_dedup <- data %>% group_by(patient_id, episode_id, orgname, specgroup) %>% 
       slice(1) %>% ungroup()
-    
     return(data_dedup)
   }
   
   if(method == "Deduplication by patient ID") { 
     data_dedup <- data %>% group_by(patient_id, orgname, specgroup) %>% 
       slice(1) %>% ungroup()
-    
     return(data_dedup)
   }
 }

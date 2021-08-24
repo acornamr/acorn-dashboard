@@ -443,7 +443,7 @@ ui <- fluidPage(
                                div(class = 'box_outputs',
                                    h4_title("Blood Culture Contaminants"),
                                    fluidRow(
-                                     column(6, gaugeOutput("contaminants_gauge", width = "100%", height = "100px")),
+                                     column(6, gaugeOutput("contaminants_gauge", width = "100%", height = "100px"), br()),
                                      column(6, htmlOutput("contaminants_pct", width = "100%", height = "100px"))
                                    )
                                ),
@@ -461,7 +461,7 @@ ui <- fluidPage(
                                div(class = 'box_outputs',
                                    h4_title("Growth / No Growth"),
                                    fluidRow(
-                                     column(6, gaugeOutput("isolates_growth_gauge", width = "100%", height = "100px")),
+                                     column(6, gaugeOutput("isolates_growth_gauge", width = "100%", height = "100px"), br()),
                                      column(6, htmlOutput("isolates_growth_pct", width = "100%", height = "100px"))
                                    )
                                ),
