@@ -1,13 +1,5 @@
 app_version <- "0.0.14"  # Make sure that the app version is identical in DESCRIPTION
 
-cols_sir <- c("#2c3e50", "#f39c12", "#e74c3c")  # resp. S, I, R
-hc_export_kind <- c("downloadJPEG", "downloadCSV")
-
-code_sites <- c("demo", "KH001", "GH001", "GH002", "ID001", "ID002", 
-                "KE001", "KE002", "LA001", "LA002", "MW001", "NP001", 
-                "NG001", "NG002", "VN001", "VN002", "VN003")
-
-
 # IMPORTANT: packages listed here should be identical in run_app.R and DESCRIPTION
 library(aws.s3)
 library(bslib)  # bs_theme()
@@ -31,6 +23,12 @@ library(shinyjs)
 library(shinyWidgets)  # chooseSliderSkin()
 library(tidyverse)
 library(writexl)
+
+cols_sir <- c("#2c3e50", "#f39c12", "#e74c3c")  # resp. S, I, R
+hc_export_kind <- c("downloadJPEG", "downloadCSV")
+
+code_sites <- read_delim(file = "./www/data/ACORN2_site_codes.csv", delim = ";") %>%
+  pull(`ACORN2 site code`)
 
 session_start_time <- format(Sys.time(), "%Y-%m-%d_%HH%M")
 
