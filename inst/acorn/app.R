@@ -826,13 +826,15 @@ server <- function(input, output, session) {
       cred <- unserialize(aes_cbc_decrypt(cred, key = key_user))
       
       if(cred$site != input$cred_site)  {
-        removeNotification(id = "notif_connection")
-        showNotification("The credential file is corrupted. Please contact ACORN Data Management.", type = "error")
+        showNotification("The credential file is corrupted. Please contact ACORN Data Management.", 
+                         duration = 20, type = "error")
         return()
       }
       
       acorn_cred(cred)
+      notify("Successfully logged in as demo", id = id)
     }
+    
     if (input$cred_site != "demo") {
       file_cred <- glue("encrypted_cred_{tolower(input$cred_site)}_{input$cred_user}.rds")
       # Stop if the connection can't be established
@@ -875,8 +877,8 @@ server <- function(input, output, session) {
       Sys.unsetenv("AWS_DEFAULT_REGION")
       
       acorn_cred(cred)
+      notify(glue("Successfully logged in as {cred$user} ({input$cred_site})"), id = id)
     }
-    notify(glue("Successfully logged in as {cred$user} ({input$cred_site})"), id = id)
     
     showTab("tabs", target = "data_management")
     updateTabsetPanel(session = session, "tabs", selected = "data_management")
