@@ -3,7 +3,7 @@ library(readxl)
 rm(list = ls())
 
 # can use https://xkpasswd.net/s/ for generation of passwords
-all_cred <- read_excel("/Users/olivier/Documents/Projets/ACORN/Data/ACORN2_site_codes.xlsx", sheet = "cred")
+all_cred <- read_excel("/Users/olivier/Documents/Projets/ACORN/Data/ACORN2_cred.xlsx", sheet = "cred")
 
 for (i in 1:nrow(all_cred)) {
   user <- all_cred[i, ]
