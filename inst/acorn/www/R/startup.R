@@ -1,4 +1,4 @@
-app_version <- "0.0.14"  # Make sure that the app version is identical in DESCRIPTION
+app_version <- "0.0.15"  # Make sure that the app version is identical in DESCRIPTION
 
 # IMPORTANT: packages listed here should be identical in run_app.R and DESCRIPTION
 library(aws.s3)
