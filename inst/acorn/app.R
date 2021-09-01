@@ -138,7 +138,7 @@ ui <- fluidPage(
                                uiOutput('site_logo'),
                                selectInput(
                                  "selected_language", label = span(icon("language"), i18n$t("Language")),
-                                 choices = i18n$get_languages(), selected = i18n$get_key_translation(), width = "150px"
+                                 choices = c("🇬🇧 English" = "en", "🇫🇷 Français" = "fr", "🇱🇦 Lao" = "la", "🇻🇳 Vietnamien" = "vn"), selected = "en", width = "150px"
                                ),
                                div(id = "login-basic", 
                                    div(class = "well",
