@@ -186,9 +186,210 @@
             "fr": "Tentative de connection.",
             "la": "TBT",
             "vn": "TBT"
+        },
+        {
+            "en": "Clinical data not provided",
+            "fr": "Données clinique non fournies",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Lab data not provided",
+            "fr": "Données de laboratoire non fournies",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "No .acorn has been generated",
+            "fr": "Aucun .acorn n'a été généré",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "No .acorn has been saved",
+            "fr": "Aucun .acorn n'a été sauvé.",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Generate .acorn from clinical and lab data",
+            "fr": "Générer .acorn depuis les données clinique et de laboratoire",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Load existing .acorn from cloud",
+            "fr": "Charger un .acorn depuis un serveur",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Load existing .acorn from local file",
+            "fr": "Charger un .acorn à partir d'un fichier local",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Download Enrolment Log (.xlsx)",
+            "fr": "Télécharger un fichier de suivi des recrutements (.xlsx)",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "First sheet is the log of all enrolments retrived from REDCap (as per adjacent table). The second sheet is a listing of all flagged elements.",
+            "fr": "Le premier onglet comprend tous les recrutements téléchargés depuis REDCap (voir table ci-contre). Le second onglet liste tous les éléments potentiellement à corriger.",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Loading data.",
+            "fr": "Chargement des données.",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Successfully loaded data.",
+            "fr": "Chargement des données réalisé avec succès.",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Retriving data from REDCap server.",
+            "fr": "Récupération des données depuis le serveur REDcap.",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "It might take a couple of minutes. This window will close on completion.",
+            "fr": "Cela peut prendre plusieurs minutes. Cette fenêtre se fermera automatiquement.",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Critical issue detected: no data or wrong data format on REDCap server. Please report to ACORN data managers. Until resolution, only existing .acorn files can be used.",
+            "fr": "Problème critique détecté : pas de données ou format de données incorrect sur le serveur REDCap. Merci de rapporter ce message au data manager ACORN. En attendant de trouver une solution, seul les fichiers .acorn existant peuvent être utilisés.",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Save acorn data",
+            "fr": "Sauvegarder des données acorn",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Cancel",
+            "fr": "Annuler",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "(Optional) Comments:",
+            "fr": "(Optionnel) Commentaires:",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Save on Server",
+            "fr": "Sauvegarder sur serveur",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "File name:",
+            "fr": "Nom de fichier:",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Trying to save .acorn file on server.",
+            "fr": "Tentative de sauvegarde du fichier .acorn sur serveur.",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": ".acorn file saved on server.",
+            "fr": "Fichier .acorn sauvegardé sur le serveur.",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Successfully saved .acorn file in the cloud. You can now explore acorn data.",
+            "fr": "Fichier .acorn sauvegardé sur le serveur. Vous pouvez maintenant explorer les données acorn.",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Successfully saved .acorn file locally.",
+            "fr": "Fichier .acorn sauvegardé locallement.",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Successfully saved .acorn file locally. You can now explore acorn data.",
+            "fr": "Fichier .acorn sauvegardé locallement. Vous pouvez maintenant explorer les données acorn.",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Consider saving .acorn file on the cloud for additional security.",
+            "fr": "Pour plus de sécurité, envisagez une sauvegarde des données sur un serveur.",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Select lab data format:",
+            "fr": "Choisir le format des donnés de laboratoire",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "(1/4) Download Clinical data",
+            "fr": "(1/4) Télécharger les Données Clinique",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "and generate enrolment log.",
+            "fr": "et générer un fichier de suivi des recrutements.",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Get data from REDCap",
+            "fr": "Obtenir des données depuis REDCap",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "(2/4) Provide Lab data",
+            "fr": "(2/4) Fournir des données de laboratoire",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "(3/4) Combine Clinical and Lab data",
+            "fr": "(3/4) Combiner les données clinique et de laboratoire",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Save .acorn file",
+            "fr": "Sauvegarder un ficher .acorn",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Generate .acorn file",
+            "fr": "Générer un fichier .acorn",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "(4/4) Save .acorn file",
+            "fr": "(4/4) Sauvegarder un ficher .acorn",
+            "la": "TBT",
+            "vn": "TBT"
         }
     ]
 }
-
-
-

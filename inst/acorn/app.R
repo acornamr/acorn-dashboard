@@ -3,7 +3,7 @@ source('./www/R/startup.R', local = TRUE)
 
 # Definition of UI ----
 ui <- fluidPage(
-  title = 'ACORN | A Clinically Oriented antimicrobial Resistance Network',
+  title = "ACORN | A Clinically Oriented antimicrobial Resistance Network",
   theme = acorn_theme,
   includeCSS("www/styles.css"),
   withAnim(),  # to add animation to UI elements using shinyanimate
@@ -187,13 +187,15 @@ ui <- fluidPage(
                       p(i18n$t("What do you want to do?")),
                       div(class = "center",
                           radioGroupButtons("choice_datamanagement", NULL,
-                                            choices = c("Generate .acorn from clinical and lab data", "Load existing .acorn from cloud", "Load existing .acorn from local file"),
+                                            choiceValues = c("generate", "load_cloud", "load_local"),
+                                            choiceNames = c("Generate .acorn from clinical and lab data", "Load existing .acorn from cloud", "Load existing .acorn from local file"),
+                                            # choiceNames = c(i18n$t("Generate .acorn from clinical and lab data"), i18n$t("Load existing .acorn from cloud"), i18n$t("Load existing .acorn from local file")),
                                             selected = NULL, individual = TRUE,
                                             checkIcon = list(yes = icon("hand-point-right")))
                       ),
                       hr(),
                       ## Choice Generate ----
-                      conditionalPanel("input.choice_datamanagement == 'Generate .acorn from clinical and lab data'",
+                      conditionalPanel("input.choice_datamanagement == 'generate'",
                                        div(
                                          fluidRow(
                                            column(4,    
@@ -216,9 +218,10 @@ ui <- fluidPage(
                                          hr(),
                                          fluidRow(
                                            column(4,
-                                                  h5("(2/4) Provide Lab data"),
+                                                  h5(i18n$t("(2/4) Provide Lab data")),
                                                   pickerInput("format_lab_data", 
                                                               options = list(title = "Select lab data format"),
+                                                              # options = list(title = i18n$t("Select lab data format:")),
                                                               choices = c("WHONET .dBase", "WHONET .SQLite", "Tabular"), 
                                                               multiple = FALSE,
                                                               selected = NULL),
@@ -240,8 +243,8 @@ ui <- fluidPage(
                                          hr(),
                                          fluidRow(
                                            column(4, 
-                                                  h5("(3/4) Combine Clinical and Lab data"),
-                                                  actionButton("generate_acorn_data", span("Generate ", em(".acorn"), "file"))
+                                                  h5(i18n$t("(3/4) Combine Clinical and Lab data")),
+                                                  actionButton("generate_acorn_data", i18n$t("Generate .acorn file"))
                                            ),
                                            column(8,
                                                   htmlOutput("checklist_generate")
@@ -250,16 +253,16 @@ ui <- fluidPage(
                                          hr(),
                                          fluidRow(
                                            column(4, 
-                                                  h5("(4/4) Save .acorn file"),
+                                                  h5(i18n$t("(4/4) Save .acorn file")),
                                                   tags$div(
                                                     materialSwitch("save_switch", label = "Local", 
                                                                    inline = TRUE, status = "primary", value = TRUE),
                                                     tags$span(icon("cloud"), "Server"),
                                                     conditionalPanel("! input.save_switch",
-                                                                     actionButton('save_acorn_local', HTML('Save <em>.acorn</em> file'))
+                                                                     actionButton("save_acorn_local", i18n$t("Save .acorn file"))
                                                     ),
                                                     conditionalPanel("input.save_switch",
-                                                                     actionButton('save_acorn_server', span(icon('cloud-upload-alt'), HTML('Save <em>.acorn</em> file')))
+                                                                     actionButton("save_acorn_server", span(icon('cloud-upload-alt'), i18n$t("Save .acorn file")))
                                                     )
                                                   )
                                            ),
@@ -270,7 +273,7 @@ ui <- fluidPage(
                                        )
                       ),
                       ## Choice Load cloud ----
-                      conditionalPanel("input.choice_datamanagement == 'Load existing .acorn from cloud'",
+                      conditionalPanel("input.choice_datamanagement == 'load_cloud'",
                                        fluidRow(
                                          column(3,
                                                 pickerInput('acorn_files_server', choices = NULL, label = NULL,
@@ -285,7 +288,7 @@ ui <- fluidPage(
                                        )
                       ),
                       ## Choice Load local ----
-                      conditionalPanel("input.choice_datamanagement == 'Load existing .acorn from local file'",
+                      conditionalPanel("input.choice_datamanagement == 'load_local'",
                                        fileInput("load_acorn_local", label = NULL, buttonLabel =  HTML("Load <em>.acorn</em>"), accept = '.acorn')
                       )
              ),
@@ -712,8 +715,10 @@ server <- function(input, output, session) {
     showTab("tabs", target = "data_management")
     updateTabsetPanel(session = session, "tabs", selected = "data_management")
     
-    updateRadioGroupButtons(session = session, "choice_datamanagement", "What do you want to do?",
-                            choices = "Load existing .acorn from local file",
+    updateRadioGroupButtons(session = session, "choice_datamanagement", i18n$t("What do you want to do?"),
+                            # choiceNames = i18n$t("Load existing .acorn from local file"),
+                            choiceNames = "Load existing .acorn from local file",
+                            choiceValues = "load_local",
                             selected = NULL, status = "success",
                             checkIcon = list(yes = icon("hand-point-right")))
   })
@@ -758,13 +763,13 @@ server <- function(input, output, session) {
     
     linkage_caseB  = list(status = "hidden", msg = ""),
     linkage_caseC  = list(status = "hidden", msg = ""),
-    linkage_result = list(status = "info", msg = "No .acorn has been generated"),
+    linkage_result = list(status = "info", msg = "No .acorn has been generated"), # )i18n$t("No .acorn has been generated")),
     
-    redcap_f01f05_dta = list(status = "info", msg = "Clinical data not provided"),
-    lab_dta           = list(status = "info", msg = "Lab data not provided"),
+    redcap_f01f05_dta = list(status = "info", msg = "Clinical data not provided"), # i18n$t("Clinical data not provided")),
+    lab_dta           = list(status = "info", msg = "Lab data not provided"), # i18n$t("Lab data not provided")),
     
     acorn_dta_saved_local = list(status = "hidden", msg = ""),
-    acorn_dta_saved_server = list(status = "info", msg = "No .acorn has been saved")
+    acorn_dta_saved_server = list(status = "info", msg = "No .acorn has been saved") # i18n$t("No .acorn has been saved"))
   )
   
   # Secondary datasets (derived from primary datasets)
@@ -809,8 +814,8 @@ server <- function(input, output, session) {
     req(acorn_origin() == "generated")
     tagList(
       br(), br(), br(),
-      downloadButton("download_enrolment_log", "Download Enrolment Log (.xlsx)"),
-      p("First sheet is the log of all enrolments retrived from REDCap (as per adjacent table). The second sheet is a listing of all flagged elements.")
+      downloadButton("download_enrolment_log", i18n$t("Download Enrolment Log (.xlsx)")),
+      p(i18n$t("First sheet is the log of all enrolments retrived from REDCap (as per adjacent table). The second sheet is a listing of all flagged elements."))
     )
   })
   
@@ -883,8 +888,10 @@ server <- function(input, output, session) {
     showTab("tabs", target = "data_management")
     updateTabsetPanel(session = session, "tabs", selected = "data_management")
     
-    updateRadioGroupButtons(session = session, "choice_datamanagement", "What do you want to do?",
-                            choices = c("Generate .acorn from clinical and lab data", "Load existing .acorn from cloud", "Load existing .acorn from local file"),
+    updateRadioGroupButtons(session = session, "choice_datamanagement", i18n$t("What do you want to do?"),
+                            choiceValues = c("generate", "load_cloud", "load_local"),
+                            choiceNames = c("Generate .acorn from clinical and lab data", "Load existing .acorn from cloud", "Load existing .acorn from local file"),
+                            # choiceNames = c(i18n$t("Generate .acorn from clinical and lab data"), i18n$t("Load existing .acorn from cloud"), i18n$t("Load existing .ascorn from local file")),
                             selected = NULL, status = "success",
                             checkIcon = list(yes = icon("hand-point-right")))
     
@@ -932,7 +939,7 @@ server <- function(input, output, session) {
   
   # On "Load .acorn" file from server ----
   observeEvent(input$load_acorn_server, {
-    id <- notify("Loading data.")
+    id <- notify(i18n$t("Loading data."))
     on.exit({Sys.sleep(2); removeNotification(id)}, add = TRUE)
     
     acorn_file <- get_object(object = input$acorn_files_server, 
@@ -950,7 +957,7 @@ server <- function(input, output, session) {
     corresp_org_antibio(corresp_org_antibio)
     
     source('./www/R/update_input_widgets.R', local = TRUE)
-    notify("Successfully loaded data.", id = id)
+    notify(i18n$t("Successfully loaded data."), id = id)
     startAnim(session, "float_about", type = "swing")
     focus_analysis()
   })
@@ -967,7 +974,7 @@ server <- function(input, output, session) {
     corresp_org_antibio(corresp_org_antibio)
     
     source('./www/R/update_input_widgets.R', local = TRUE)
-    showNotification("Successfully loaded data.")
+    notify(i18n$t("Successfully loaded data."), id = id)
     startAnim(session, "float_about", type = "swing")
     focus_analysis()
   })
@@ -975,15 +982,15 @@ server <- function(input, output, session) {
   # On "Get Clinical Data from REDCap server" ----
   observeEvent(input$get_redcap_data, {
     if(! has_internet()) {
-      showNotification("Not connected to internet", type = "error")
+      showNotification(i18n$t("Not connected to internet."), type = "error")
       Sys.sleep(5)
       return()
     }
     
     showModal(modalDialog(
-      title = "Retriving data from REDCap server.", footer = NULL, size = "l",
+      title = i18n$t("Retriving data from REDCap server."), footer = NULL, size = "l",
       div(
-        p("It might take a couple of minutes. This window will close on completion."),
+        p(i18n$t("It might take a couple of minutes. This window will close on completion.")),
         textOutput("text_redcap_f01f05_log"),
         textOutput("text_redcap_hai_log")))
     )
@@ -993,9 +1000,7 @@ server <- function(input, output, session) {
     if(any(c(checklist_status$redcap_not_empty$status,
              checklist_status$redcap_columns$status) == "ko")) {
       
-      showNotification("Critical issue detected: no data or wrong data format on REDCap server. 
-                       Please report to ACORN data managers.
-                       Until resolution, only existing .acorn files can be used.", duration = NULL, type = "error", closeButton = FALSE)
+      showNotification(i18n$t("Critical issue detected: no data or wrong data format on REDCap server. Please report to ACORN data managers. Until resolution, only existing .acorn files can be used."), duration = NULL, type = "error", closeButton = FALSE)
       return()
     }
     
@@ -1120,12 +1125,12 @@ server <- function(input, output, session) {
     }
     
     showModal(modalDialog(
-      title = "Save acorn data", footer = modalButton("Cancel"), size = "m", easyClose = FALSE, fade = TRUE,
+      title = i18n$t("Save acorn data"), footer = modalButton(i18n$t("Cancel")), size = "m", easyClose = FALSE, fade = TRUE,
       div(
-        textInput("name_file", value = glue("{input$cred_site}_{session_start_time}"), label = "File name:"),
-        textAreaInput("meta_acorn_comment", label = "(Optional) Comments:"),
+        textInput("name_file", value = glue("{input$cred_site}_{session_start_time}"), label = i18n$t("File name:")),
+        textAreaInput("meta_acorn_comment", label = i18n$t("(Optional) Comments:")),
         br(), br(),
-        actionButton("save_acorn_server_confirm", label = "Save on Server")
+        actionButton("save_acorn_server_confirm", label = i18n$t("Save on Server"))
       )
     ))
   })
@@ -1140,8 +1145,8 @@ server <- function(input, output, session) {
     showModal(modalDialog(
       title = "Save acorn data", footer = modalButton("Cancel"), size = "m", easyClose = FALSE, fade = TRUE,
       div(
-        textInput("name_file_dup", value = glue("{input$cred_site}_{session_start_time}"), label = "File name:"),
-        textAreaInput("meta_acorn_comment_dup", label = "(Optional) Comments:"),
+        textInput("name_file_dup", value = glue("{input$cred_site}_{session_start_time}"), label = i18n$t("File name:")),
+        textAreaInput("meta_acorn_comment_dup", label = i18n$t("(Optional) Comments:")),
         br(), br(),
         downloadButton("save_acorn_local_confirm", label = "Save")
       )
@@ -1151,7 +1156,7 @@ server <- function(input, output, session) {
   # On confirmation that the file is being saved on server ----
   observeEvent(input$save_acorn_server_confirm, { 
     removeModal()
-    id <- notify("Trying to save .acorn file on server")
+    id <- notify(i18n$t("Trying to save .acorn file on server."))
     on.exit({Sys.sleep(2); removeNotification(id)}, add = TRUE)
     
     meta <- list(time_generation = session_start_time,
@@ -1217,8 +1222,8 @@ server <- function(input, output, session) {
     
     updatePickerInput(session, 'acorn_files_server', choices = acorn_files, selected = acorn_files[1])
     
-    checklist_status$acorn_dta_saved_server <- list(status = "okay", msg = ".acorn file saved on server")
-    notify("Successfully saved .acorn file in the cloud. You can now explore acorn data.", id = id)
+    checklist_status$acorn_dta_saved_server <- list(status = "okay", msg = i18n$t(".acorn file saved on server."))
+    notify(i18n$t("Successfully saved .acorn file in the cloud. You can now explore acorn data."), id = id)
     startAnim(session, "float_about", type = "swing")
     focus_analysis()
   })
@@ -1246,13 +1251,13 @@ server <- function(input, output, session) {
       
       save(meta, redcap_f01f05_dta, redcap_hai_dta, acorn_dta, corresp_org_antibio, lab_code, data_dictionary,
            file = file)
-      checklist_status$acorn_dta_saved_local <- list(status = "okay", msg = "Successfully saved .acorn file locally")
-      showNotification("Successfully saved .acorn file locally. You can now explore acorn data.", duration = 5)
+      checklist_status$acorn_dta_saved_local <- list(status = "okay", msg = i18n$t("Successfully saved .acorn file locally."))
+      showNotification(i18n$t("Successfully saved .acorn file locally. You can now explore acorn data."), duration = 5)
       startAnim(session, "float_about", type = "swing")
       focus_analysis()
       
       if(checklist_status$acorn_dta_saved_server$status != "okay")  {
-        checklist_status$acorn_dta_saved_server <- list(status = "warning", msg = "Consider saving .acorn file on the cloud for additional security.")
+        checklist_status$acorn_dta_saved_server <- list(status = "warning", msg = i18n$t("Consider saving .acorn file on the cloud for additional security."))
       }
     })
 }

@@ -28,7 +28,7 @@ cols_sir <- c("#2c3e50", "#f39c12", "#e74c3c")  # resp. S, I, R
 hc_export_kind <- c("downloadJPEG", "downloadCSV")
 
 code_sites <- c("demo",
-                read_delim(file = "./www/data/ACORN2_site_codes.csv", delim = ";") %>% pull(`ACORN2 site code`))
+                read_delim(file = "./www/data/ACORN2_site_codes.csv", delim = ";", show_col_types = FALSE) %>% pull(`ACORN2 site code`))
 
 session_start_time <- format(Sys.time(), "%Y-%m-%d_%HH%M")
 
