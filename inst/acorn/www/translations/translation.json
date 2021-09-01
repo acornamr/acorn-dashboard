@@ -38,6 +38,12 @@
             "vn": "TBT"
         },
         {
+            "en": "Successfully logged in.",
+            "fr": "Connection réussie.",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
             "en": "Site",
             "fr": "Site",
             "la": "TBT",
@@ -388,6 +394,324 @@
         {
             "en": "(4/4) Save .acorn file",
             "fr": "(4/4) Sauvegarder un ficher .acorn",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Overview",
+            "fr": "Aperçu",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Date of Enrolment",
+            "fr": "Date d'Enrôlement",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "See by Week",
+            "fr": "Montrer par Semaine",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Enrolments with Blood Culture",
+            "fr": "Enrôlements avec hémoculture",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Distribution of Enrolments",
+            "fr": "Distribution des Enrôlements",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Variables in Table:",
+            "fr": "Variables dans la Table:",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Enrolments by (type of) Ward",
+            "fr": "Enrôlements par (type de) service",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "See Breakdown by Ward",
+            "fr": "Montrer la Répartition par Service",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Patient Age Distribution",
+            "fr": "Distribution des ages des patients",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Diagnosis at Enrolment",
+            "fr": "Diagnostics à l'Enrôlement",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Empiric Antibiotics Prescribed",
+            "fr": "Antibiotiques Empiriques Prescris",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Patients Transferred",
+            "fr": "Patients Transferrés",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Patient Comorbidities",
+            "fr": "Comorbiditées",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Show comorbidities combinations",
+            "fr": "Montrer les combinaisons de comorbiditées",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Blood culture collected within 24 hours of admission (CAI) / symptom onset (HAI)",
+            "fr": "Hémoculture collectée dans les 24 heures d'admission (CAI) / au début des symptômes (HAI)",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Follow-up",
+            "fr": "Suivi",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Clinical Outcome",
+            "fr": "Résultat Clinique",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Clinical Outcome Status:",
+            "fr": "Statut des résultats cliniques:",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Day 28",
+            "fr": "Jour 28",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Day 28 Status:",
+            "fr": "Statut au jour 28:",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Bloodstream Infection (BSI)",
+            "fr": "Infection du Sang (BSI)",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Initial & Final Surveillance Diagnosis",
+            "fr": "Diagnostic de surveillance initial et final",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "The 10 most common initial-final diagnosis combinations:",
+            "fr": "Les 10 combinaisons de diagnostic initial-final les plus courantes :",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Ward Occupancy Rates",
+            "fr": "Taux d'occupation des services",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "HAI Prevalence",
+            "fr": "Prévalence en HAI",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Microbiology",
+            "fr": "Microbiologie",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Remove blood culture contaminants from the following visualizations",
+            "fr": "Élimine les contaminants d'hémoculture des visualisations ci-dessous",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Blood Culture Contaminants",
+            "fr": "Contaminants d'Hémoculture",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Specimen Types",
+            "fr": "Types de Specimen",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Number of specimens per specimen type",
+            "fr": "Nombre de specimens par type de specimen",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Culture results per specimen type",
+            "fr": "Résultats de culture par type de spécimen",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Growth / No Growth",
+            "fr": "Croissance / Pas de croissance",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Isolates",
+            "fr": "Isolats",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Most frequent 10 organisms in the plot and complete listing in the table. Contaminants are in red.",
+            "fr": "Les 10 organismes les plus nombreux sont dans le graphique et la liste complète dans la tables. Les contaminants sont en rouge.",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Combine Susceptible + Intermediate",
+            "fr": "Combiner Susceptible + Intermédiaire",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable.",
+            "fr": "L'interprétation des taux et profils AMR doit prêter à caution lorsqu'en présence d'un petit nombre de cas ou d'isolats : les estimations sont alors peu fiable.",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Resistance to Carbapenems Over Time",
+            "fr": "Evolution de la Résistance aux Carbapenems",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "There is no data to display for this organism.",
+            "fr": "Cette organisme n'a pas de données à visualiser",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Resistance to 3rd gen. Cephalosporins Over Time",
+            "fr": "Evolution de la Résistance aux 3rd gen. Cephalosporins",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Resistance to Fluoroquinolones Over Time",
+            "fr": "Evolution de la Résistance aux Fluoroquinolones",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "All Other Organisms",
+            "fr": "Tous les Autres Organismes",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Resistance to Penicillin G Over Time",
+            "fr": "Evolution de la Résistance aux Penicillin G",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Resistance to Penicillin G - meningitis Over Time",
+            "fr": "Evolution de la Résistance aux Penicillin G - meningitis",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Resistance to Oxacillin Over Time",
+            "fr": "Evolution de la Résistance aux Oxacillin",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Enrolments",
+            "fr": "Enrôlements",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Reset Enrolments Filters",
+            "fr": "Réinitialiser les Filtres sur les Enrôlements",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Specimens, Isolates",
+            "fr": "Spécimens, Isolats",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Patient enrolments",
+            "fr": "Enrôlements",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "With Microbiology",
+            "fr": "Avec Microbiologie",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Specimens Collected",
+            "fr": "Spécimens Recueillis",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "from cultures that have growth",
+            "fr": "de cultures avec croissance",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "of Target Pathogens",
+            "fr": "des Pathogènes Cibles",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "of enrolments with blood culture.",
+            "fr": "des enrôlements avec hémoculture.",
             "la": "TBT",
             "vn": "TBT"
         }

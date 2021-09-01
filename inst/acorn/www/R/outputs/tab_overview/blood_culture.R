@@ -27,5 +27,5 @@ output$profile_blood_culture_pct <- renderText({
     pull(redcap_id) %>%
     n_distinct()
   
-  paste(br(), h3(paste0(round(100*n_blood_culture/total, 1), "%")), span("of enrolments with blood culture."))
+  paste(br(), h3(paste0(round(100*n_blood_culture/total, 1), "%")), span(i18n$t("of enrolments with blood culture.")))
 })

@@ -8,7 +8,7 @@ output$nb_enrolments <- renderText({
   as.character(
     div(class = "box_summary", 
         span(class = "numb", nb_enrolments_filter), 
-        span(class = "smallcaps", "Patient enrolments"),
+        span(class = "smallcaps", i18n$t("Patient enrolments")),
         span(class = "badge badge-light f-100 right", ifelse(prop < 100, glue("{prop}% of {nb_enrolments} total"), ""))
     )
   )
@@ -24,7 +24,7 @@ output$nb_patients_microbiology <- renderText({
   as.character(
     div(class = "box_summary", 
         span(class = "numb", nb_microbiology_filter), 
-        span(class = "smallcaps", "With Microbiology"),
+        span(class = "smallcaps", i18n$t("With Microbiology")),
         span(class = "badge badge-light f-100 right", glue("{prop}% of {nb_enrolments_filter}"))
     )
   )
@@ -40,7 +40,7 @@ output$nb_specimens <- renderText({
   as.character(
     div(class = "box_summary", 
         span(class = "numb", nb_specimens), 
-        span(class = "smallcaps", "Specimens Collected"),
+        span(class = "smallcaps", i18n$t("Specimens Collected")),
         span(class = "badge badge-light f-100 right", glue("{nb_per} specimens per enrolment"))
     )
   )
@@ -57,8 +57,8 @@ output$nb_isolates_growth <- renderText({
   as.character(
     div(class = "box_summary", 
         span(class = "numb", nb_isolates), 
-        span(class = "smallcaps", "Isolates"),
-        span("from cultures that have growth")
+        span(class = "smallcaps", i18n$t("Isolates")),
+        span(i18n$t("from cultures that have growth"))
     )
   )
 })
@@ -73,7 +73,7 @@ output$nb_isolates_target <- renderText({
     div(class = "box_summary", 
         span(class = "numb", nb_isolates), 
         span(class = "smallcaps", "Isolates"),
-        span("of Target Pathogens")
+        span(i18n$t("of Target Pathogens"))
     )
   )
 })

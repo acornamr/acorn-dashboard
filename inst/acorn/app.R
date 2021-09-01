@@ -44,7 +44,7 @@ ui <- fluidPage(
                           div(id = "filter_box", class = "well",
                               fluidRow(
                                 column(8,
-                                       div(class = "smallcaps", class = "center", span(icon("hospital-user"), "Enrolments")),
+                                       div(class = "smallcaps", class = "center", span(icon("hospital-user"), i18n$t("Enrolments"))),
                                        checkboxGroupButtons("filter_enrolments",
                                                             choices = c("Surveillance Category", "Type of Ward", "Date of Enrolment/Survey", "Age Category", 
                                                                         "Initial Diagnosis", "Final Diagnosis", "Clinical Severity", "Clinical/D28 Outcome",
@@ -88,10 +88,10 @@ ui <- fluidPage(
                                        conditionalPanel("input.filter_enrolments.includes('Transfer')",
                                                         prettySwitch("filter_transfer", label = "Only Non-Transferred Patients", status = "primary", value = FALSE, slim = TRUE)
                                        ),
-                                       actionLink("shortcut_reset_filters", label = span(icon("ban"), " Reset Enrolments Filters"))
+                                       actionLink("shortcut_reset_filters", label = span(icon("ban"), i18n$t("Reset Enrolments Filters")))
                                 ),
                                 column(4,
-                                       div(class = "smallcaps", class = "center", span(icon("vial"), " Specimens, Isolates")),
+                                       div(class = "smallcaps", class = "center", span(icon("vial"), i18n$t("Specimens, Isolates"))),
                                        prettyCheckboxGroup(inputId = "filter_method_collection", label = NULL,  shape = "curve", status = "primary", inline = TRUE,
                                                            choices = c("Blood Culture" = "blood", "Other (not BC):" = "other_not_blood"), 
                                                            selected = c("blood", "other_not_blood")),
@@ -293,16 +293,16 @@ ui <- fluidPage(
                       )
              ),
              # Tab Overview ----
-             tabPanel("Overview", value = "overview", 
+             tabPanel(i18n$t("Overview"), value = "overview", 
                       fluidRow(
                         column(6,
-                               div(class = 'box_outputs', 
-                                   h4_title(icon("calendar-check"), "Date of Enrolment"),
-                                   prettySwitch("show_date_week", label = "See by Week", status = "primary"),
+                               div(class = "box_outputs", 
+                                   h4_title(icon("calendar-check"), i18n$t("Date of Enrolment")),
+                                   prettySwitch("show_date_week", label = i18n$t("See by Week"), status = "primary"),
                                    highchartOutput("profile_date_enrolment")
                                ),
-                               div(class = 'box_outputs',
-                                   h4_title(icon("tint"), "Enrolments with Blood Culture"),
+                               div(class = "box_outputs",
+                                   h4_title(icon("tint"), i18n$t("Enrolments with Blood Culture")),
                                    fluidRow(
                                      column(6, gaugeOutput("profile_blood_culture_gauge", width = "100%", height = "100px")),
                                      column(6, htmlOutput("profile_blood_culture_pct", width = "100%", height = "100px"))
@@ -311,9 +311,9 @@ ui <- fluidPage(
                         ),
                         column(6,
                                div(class = "box_outputs",
-                                   h4_title("Distribution of Enrolments"),
+                                   h4_title(i18n$t("Distribution of Enrolments")),
                                    fluidRow(
-                                     column(3, "Variables in Table:"),
+                                     column(3, i18n$t("Variables in Table:")),
                                      column(9,
                                             checkboxGroupButtons("variables_table", label = NULL, 
                                                                  size = "sm", status = "primary", checkIcon = list(yes = icon("check-square"), no = icon("square-o")), individual = TRUE,
@@ -327,43 +327,43 @@ ui <- fluidPage(
                       ),
                       fluidRow(
                         column(6, 
-                               div(class = 'box_outputs',
-                                   h4_title("Enrolments by (type of) Ward"),
-                                   prettySwitch("show_ward_breakdown", label = "See Breakdown by Ward", status = "primary"),
+                               div(class = "box_outputs",
+                                   h4_title(i18n$t("Enrolments by (type of) Ward")),
+                                   prettySwitch("show_ward_breakdown", label = i18n$t("See Breakdown by Ward"), status = "primary"),
                                    highchartOutput("profile_type_ward")
                                )
                         ),
                         column(6, 
-                               div(class = 'box_outputs', h4_title("Patient Age Distribution"),
+                               div(class = "box_outputs", h4_title(i18n$t("Patient Age Distribution")),
                                    highchartOutput("profile_age")
                                )
                         )
                       ),
                       fluidRow(
                         column(6, 
-                               div(class = 'box_outputs',
-                                   h4_title("Diagnosis at Enrolment"),
+                               div(class = "box_outputs",
+                                   h4_title(i18n$t("Diagnosis at Enrolment")),
                                    highchartOutput("profile_diagnosis")
                                )
                         ),
                         column(6, 
-                               div(class = 'box_outputs',
-                                   h4_title("Empiric Antibiotics Prescribed"),
+                               div(class = "box_outputs",
+                                   h4_title(i18n$t("Empiric Antibiotics Prescribed")),
                                    highchartOutput("profile_antibiotics")
                                )
                         )
                       ),
                       fluidRow(
                         column(6, 
-                               div(class = 'box_outputs',
-                                   h4_title(icon("arrows-alt-h"), "Patients Transferred"),
+                               div(class = "box_outputs",
+                                   h4_title(icon("arrows-alt-h"), i18n$t("Patients Transferred")),
                                    highchartOutput("profile_transfer_hospital")
                                )
                         ),
                         column(6, 
-                               div(class = 'box_outputs',
-                                   h4_title("Patient Comorbidities"),
-                                   prettySwitch("comorbidities_combinations", label = "Show comorbidities combinations", status = "primary", value = FALSE, slim = TRUE),
+                               div(class = "box_outputs",
+                                   h4_title(i18n$t("Patient Comorbidities")),
+                                   prettySwitch("comorbidities_combinations", label = i18n$t("Show comorbidities combinations"), status = "primary", value = FALSE, slim = TRUE),
                                    highchartOutput("profile_comorbidities")
                                )
                         )
@@ -371,7 +371,7 @@ ui <- fluidPage(
                       fluidRow(
                         column(6, 
                                div(class = "box_outputs",
-                                   h4_title("Enrolments with Blood Culture"),
+                                   h4_title(i18n$t("Enrolments with Blood Culture")),
                                    pickerInput("display_unit_ebc", label = NULL, 
                                                choices = c("Use heuristic for time unit", "Display by month", "Display by year")),
                                    highchartOutput("enrolment_blood_culture"),
@@ -379,49 +379,49 @@ ui <- fluidPage(
                                
                         ),
                         column(6, 
-                               div(class = 'box_outputs', h4_title("Blood culture collected within 24 hours of admission (CAI) / symptom onset (HAI)"),
+                               div(class = "box_outputs", h4_title(i18n$t("Blood culture collected within 24 hours of admission (CAI) / symptom onset (HAI)")),
                                    highchartOutput("profile_blood")
                                )
                         )
                       )
              ),
              # Tab Follow-up ----
-             tabPanel("Follow-up", value = "follow_up",
+             tabPanel(i18n$t("Follow-up"), value = "follow_up",
                       fluidRow(
                         column(6,
-                               div(class = 'box_outputs',
-                                   h4_title("Clinical Outcome"),
+                               div(class = "box_outputs",
+                                   h4_title(i18n$t("Clinical Outcome")),
                                    fluidRow(
                                      column(6, gaugeOutput("clinical_outcome_gauge", width = "100%", height = "100px")),
                                      column(6, htmlOutput("clinical_outcome_pct", width = "100%", height = "70px"))
                                    ),
-                                   h5("Clinical Outcome Status:"),
+                                   h5(i18n$t("Clinical Outcome Status:")),
                                    highchartOutput("clinical_outcome_status", height = "250px")
                                ),
                         ),
                         column(6,
-                               div(class = 'box_outputs',
-                                   h4_title("Day 28"),
+                               div(class = "box_outputs",
+                                   h4_title(i18n$t("Day 28")),
                                    fluidRow(
                                      column(6, gaugeOutput("d28_outcome_gauge", width = "100%", height = "100px")),
                                      column(6, htmlOutput("d28_outcome_pct", width = "100%", height = "70px"))
                                    ),
-                                   h5("Day 28 Status:"),
+                                   h5(i18n$t("Day 28 Status:")),
                                    highchartOutput("d28_outcome_status", height = "250px")
                                ),
                         )
                       ),
                       fluidRow(
                         column(4,
-                               div(class = 'box_outputs',
-                                   h4_title("Bloodstream Infection (BSI)"),
+                               div(class = "box_outputs",
+                                   h4_title(i18n$t("Bloodstream Infection (BSI)")),
                                    htmlOutput("bsi_summary")
                                )
                         ),
                         column(8, 
-                               div(class = 'box_outputs',
-                                   h4_title("Initial & Final Surveillance Diagnosis"),
-                                   p("The 10 most common initial-final diagnosis combinations:"),
+                               div(class = "box_outputs",
+                                   h4_title(i18n$t("Initial & Final Surveillance Diagnosis")),
+                                   p(i18n$t("The 10 most common initial-final diagnosis combinations:")),
                                    highchartOutput("profile_outcome_diagnosis", height = "500px")
                                )
                         )
@@ -429,48 +429,48 @@ ui <- fluidPage(
              ),
              # Tab HAI ----
              tabPanel("HAI", value = "hai", 
-                      div(class = 'box_outputs',
-                          h4_title("Ward Occupancy Rates"),
+                      div(class = "box_outputs",
+                          h4_title(i18n$t("Ward Occupancy Rates")),
                           plotOutput("bed_occupancy_ward", width = "80%")
                       ),
-                      div(class = 'box_outputs',
-                          h4_title("HAI Prevalence"),
+                      div(class = "box_outputs",
+                          h4_title(i18n$t("HAI Prevalence")),
                           plotOutput("hai_rate_ward", width = "80%")
                       )
              ),
              # Tab Microbiology ----
-             tabPanel("Microbiology", value = "microbiology", 
-                      prettySwitch("filter_rm_contaminant", label = "Remove blood culture contaminants from the following visualizations", status = "primary", value = FALSE, slim = TRUE),
+             tabPanel(i18n$t("Microbiology"), value = "microbiology", 
+                      prettySwitch("filter_rm_contaminant", label = i18n$t("Remove blood culture contaminants from the following visualizations"), status = "primary", value = FALSE, slim = TRUE),
                       fluidRow(
                         column(6,
-                               div(class = 'box_outputs',
-                                   h4_title("Blood Culture Contaminants"),
+                               div(class = "box_outputs",
+                                   h4_title(i18n$t("Blood Culture Contaminants")),
                                    fluidRow(
                                      column(6, gaugeOutput("contaminants_gauge", width = "100%", height = "100px"), br()),
                                      column(6, htmlOutput("contaminants_pct", width = "100%", height = "100px"))
                                    )
                                ),
-                               div(class = 'box_outputs',
-                                   h4_title("Specimen Types"),
+                               div(class = "box_outputs",
+                                   h4_title(i18n$t("Specimen Types")),
                                    
-                                   p("Number of specimens per specimen type"),
+                                   p(i18n$t("Number of specimens per specimen type")),
                                    highchartOutput("culture_specimen_type", height = "400px"),
                                    
-                                   p("Culture results per specimen type"),
+                                   p(i18n$t("Culture results per specimen type")),
                                    highchartOutput("culture_specgroup", height = "350px")
                                )
                         ),
                         column(6,
-                               div(class = 'box_outputs',
-                                   h4_title("Growth / No Growth"),
+                               div(class = "box_outputs",
+                                   h4_title(i18n$t("Growth / No Growth")),
                                    fluidRow(
                                      column(6, gaugeOutput("isolates_growth_gauge", width = "100%", height = "100px"), br()),
                                      column(6, htmlOutput("isolates_growth_pct", width = "100%", height = "100px"))
                                    )
                                ),
-                               div(class = 'box_outputs',
-                                   h4_title("Isolates"),
-                                   p("Most frequent 10 organisms in the plot and complete listing in the table. Contaminants are in red."),
+                               div(class = "box_outputs",
+                                   h4_title(i18n$t("Isolates")),
+                                   p(i18n$t("Most frequent 10 organisms in the plot and complete listing in the table. Contaminants are in red.")),
                                    highchartOutput("isolates_organism_nc"),
                                    highchartOutput("isolates_organism_contaminant"),
                                    br(), br(),
@@ -484,10 +484,10 @@ ui <- fluidPage(
              tabPanel(span(icon("bug"), "AMR"), value = "amr", 
                       fluidRow(
                         column(3,
-                               prettySwitch("combine_SI", label = "Combine Susceptible + Intermediate", status = "primary")
+                               prettySwitch("combine_SI", i18n$t("Combine Susceptible + Intermediate"), status = "primary")
                         ),
                         column(8, offset = 1,
-                               em("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable.")
+                               em(i18n$t("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable."))
                         )
                       ),
                       tabsetPanel(
@@ -501,10 +501,11 @@ ui <- fluidPage(
                             column(10,
                                    conditionalPanel(condition = "output.test_acinetobacter_sir",
                                                     highchartOutput("acinetobacter_sir", height = "400px"),
-                                                    h4("Resistance to Carbapenems Over Time"),
+                                                    h4(i18n$t("Resistance to Carbapenems Over Time")),
                                                     highchartOutput("acinetobacter_sir_evolution", height = "400px")
                                    ),
-                                   conditionalPanel(condition = "! output.test_acinetobacter_sir", span(h4("There is no data to display for this organism.")))
+                                   conditionalPanel(condition = "! output.test_acinetobacter_sir", 
+                                                    h4(i18n$t("There is no data to display for this organism.")))
                             )
                           )
                         ),
@@ -518,12 +519,13 @@ ui <- fluidPage(
                             column(10,
                                    conditionalPanel(condition = "output.test_ecoli_sir",
                                                     highchartOutput("ecoli_sir", height = "500px"), br(), br(),
-                                                    h4("Resistance to Carbapenems Over Time"),
+                                                    h4(i18n$t("Resistance to Carbapenems Over Time")),
                                                     highchartOutput("ecoli_sir_evolution", height = "400px"),
-                                                    h4("Resistance to 3rd gen. Cephalosporins Over Time"),
+                                                    h4(i18n$t("Resistance to 3rd gen. Cephalosporins Over Time")),
                                                     highchartOutput("ecoli_sir_evolution_ceph", height = "400px")
                                    ),
-                                   conditionalPanel(condition = "! output.test_ecoli_sir", span(h4("There is no data to display for this organism.")))
+                                   conditionalPanel(condition = "! output.test_ecoli_sir", 
+                                                    h4(i18n$t("There is no data to display for this organism.")))
                             )
                           )
                         ),
@@ -538,7 +540,8 @@ ui <- fluidPage(
                                    conditionalPanel(condition = "output.test_haemophilus_influenzae_sir",
                                                     highchartOutput("haemophilus_influenzae_sir", height = "400px"),
                                    ),
-                                   conditionalPanel(condition = "! output.test_haemophilus_influenzae_sir", span(h4("There is no data to display for this organism.")))
+                                   conditionalPanel(condition = "! output.test_haemophilus_influenzae_sir", 
+                                                    h4(i18n$t("There is no data to display for this organism.")))
                             )
                           )
                         ),
@@ -552,12 +555,13 @@ ui <- fluidPage(
                             column(10,
                                    conditionalPanel(condition = "output.test_kpneumoniae_sir",
                                                     highchartOutput("kpneumoniae_sir", height = "600px"), br(), br(),
-                                                    h4("Resistance to Carbapenems Over Time"),
+                                                    h4(i18n$t("Resistance to Carbapenems Over Time")),
                                                     highchartOutput("kpneumoniae_sir_evolution", height = "400px"),
-                                                    h4("Resistance to 3rd gen. Cephalosporins Over Time"),
+                                                    h4(i18n$t("Resistance to 3rd gen. Cephalosporins Over Time")),
                                                     highchartOutput("kpneumoniae_sir_evolution_ceph", height = "400px")
                                    ),
-                                   conditionalPanel(condition = "! output.test_kpneumoniae_sir", span(h4("There is no data to display for this organism.")))
+                                   conditionalPanel(condition = "! output.test_kpneumoniae_sir", 
+                                                    h4(i18n$t("There is no data to display for this organism.")))
                             )
                           )
                         ),
@@ -572,7 +576,8 @@ ui <- fluidPage(
                                    conditionalPanel(condition = "output.test_neisseria_meningitidis_sir",
                                                     highchartOutput("neisseria_meningitidis_sir", height = "400px"),
                                    ),
-                                   conditionalPanel(condition = "! output.test_neisseria_meningitidis_sir", span(h4("There is no data to display for this organism.")))
+                                   conditionalPanel(condition = "! output.test_neisseria_meningitidis_sir", 
+                                                    h4(i18n$t("There is no data to display for this organism.")))
                             )
                           )
                         ),
@@ -586,10 +591,11 @@ ui <- fluidPage(
                             column(10,
                                    conditionalPanel(condition = "output.test_pseudomonas_aeruginosa_sir",
                                                     highchartOutput("pseudomonas_aeruginosa_sir", height = "400px"),
-                                                    h4("Resistance to Carbapenems Over Time"),
+                                                    h4(i18n$t("Resistance to Carbapenems Over Time")),
                                                     highchartOutput("pseudomonas_aeruginosa_sir_evolution", height = "400px")
                                    ),
-                                   conditionalPanel(condition = "! output.test_pseudomonas_aeruginosa_sir", span(h4("There is no data to display for this organism.")))
+                                   conditionalPanel(condition = "! output.test_pseudomonas_aeruginosa_sir", 
+                                                    h4(i18n$t("There is no data to display for this organism.")))
                             )
                           )
                         ),
@@ -607,12 +613,13 @@ ui <- fluidPage(
                                                       selected = "Salmonella Typhi", inline = TRUE),
                                    conditionalPanel(condition = "output.test_salmonella_sir",
                                                     highchartOutput("salmonella_sir", height = "500px"),
-                                                    h4("Resistance to 3rd gen. Cephalosporins Over Time"),
+                                                    h4(i18n$t("Resistance to 3rd gen. Cephalosporins Over Time")),
                                                     highchartOutput("salmonella_sir_evolution_ceph", height = "400px"),
-                                                    h4("Resistance to Fluoroquinolones Over Time"),
+                                                    h4(i18n$t("Resistance to Fluoroquinolones Over Time")),
                                                     highchartOutput("salmonella_sir_evolution_fluo", height = "400px")
                                    ),
-                                   conditionalPanel(condition = "! output.test_salmonella_sir", span(h4("There is no data to display for this organism.")))
+                                   conditionalPanel(condition = "! output.test_salmonella_sir", 
+                                                    h4(i18n$t("There is no data to display for this organism.")))
                             )
                           )
                         ),
@@ -626,10 +633,11 @@ ui <- fluidPage(
                             column(10,
                                    conditionalPanel(condition = "output.test_saureus_sir",
                                                     highchartOutput("saureus_sir", height = "400px"),
-                                                    h4("Resistance to Oxacillin Over Time"),
+                                                    h4(i18n$t("Resistance to Oxacillin Over Time")),
                                                     highchartOutput("saureus_sir_evolution", height = "400px")
                                    ),
-                                   conditionalPanel(condition = "! output.test_saureus_sir", span(h4("There is no data to display for this organism.")))
+                                   conditionalPanel(condition = "! output.test_saureus_sir", 
+                                                    h4(i18n$t("There is no data to display for this organism.")))
                             )
                           )
                         ),
@@ -643,17 +651,18 @@ ui <- fluidPage(
                             column(10,
                                    conditionalPanel(condition = "output.test_spneumoniae_sir",
                                                     highchartOutput("spneumoniae_sir", height = "400px"),
-                                                    h4("Resistance to Penicillin G Over Time"),
+                                                    h4(i18n$t("Resistance to Penicillin G Over Time")),
                                                     highchartOutput("spneumoniae_sir_evolution_pen", height = "400px"),
-                                                    h4("Resistance to Penicillin G - meningitis Over Time"),
+                                                    h4(i18n$t("Resistance to Penicillin G - meningitis Over Time")),
                                                     highchartOutput("spneumoniae_sir_evolution_pen_men", height = "400px")
                                    ),
-                                   conditionalPanel(condition = "! output.test_spneumoniae_sir", span(h4("There is no data to display for this organism.")))
+                                   conditionalPanel(condition = "! output.test_spneumoniae_sir", 
+                                                    h4(i18n$t("There is no data to display for this organism.")))
                             )
                           )
                         ),
                         tabPanel(
-                          "All Other Organisms",
+                          i18n$t("All Other Organisms"),
                           fluidRow(
                             column(2,
                                    br(),
@@ -666,7 +675,8 @@ ui <- fluidPage(
                                    conditionalPanel(condition = "output.test_other_sir",
                                                     highchartOutput("other_organism_sir", height = "400px")
                                    ),
-                                   conditionalPanel(condition = "! output.test_other_sir", span(h4("There is no data to display.")))
+                                   conditionalPanel(condition = "! output.test_other_sir", 
+                                                    h4(i18n$t("There is no data to display for this organism.")))
                             )
                           )
                         )
@@ -837,7 +847,7 @@ server <- function(input, output, session) {
       }
       
       acorn_cred(cred)
-      notify("Successfully logged in as demo", id = id)
+      notify(i18n$t("Successfully logged in."), id = id)
     }
     
     if (input$cred_site != "demo") {
@@ -882,7 +892,7 @@ server <- function(input, output, session) {
       Sys.unsetenv("AWS_DEFAULT_REGION")
       
       acorn_cred(cred)
-      notify(glue("Successfully logged in as {cred$user} ({input$cred_site})"), id = id)
+      notify(i18n$t("Successfully logged in."), id = id)
     }
     
     showTab("tabs", target = "data_management")
