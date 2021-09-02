@@ -1,59 +1,57 @@
 message("09_checklist_lab.R")
 
-checklist_status$lab_data_qc_1 <- list(status = "okay", msg = glue("The Lab dataset contains {nrow(amr)} rows"))
-
 if(format_data_dic == "TABULAR") {
   if(c("patid", "specid", "specdate", "spectype.local") %in% names(amr) %>% all()) {
-    checklist_status$lab_data_qc_2 <- list(status = "okay", msg = "Lab dataset contains the minimal columns")
+    checklist_status$lab_data_qc_1 <- list(status = "okay", msg = i18n$t("Lab dataset contains the minimal columns."))
   }
   else{
-    checklist_status$lab_data_qc_2 <- list(status = "ko", msg = "Lab dataset does not contains the minimal columns (TABULAR format: PATIENT_ID ; SPEC_NUM ; SPEC_DATE ; LOCAL_SPEC)")
+    checklist_status$lab_data_qc_1 <- list(status = "ko", msg = i18n$t("Lab dataset does not contains the minimal columns."))
   }
 }
 
 if(format_data_dic == "WHONET") {
   if(c("patid", "specid", "specdate", "spectype.whonet") %in% names(amr) %>% all()) {
-    checklist_status$lab_data_qc_2 <- list(status = "okay", msg = "Lab dataset contains the minimal columns")
+    checklist_status$lab_data_qc_1 <- list(status = "okay", msg = i18n$t("Lab dataset contains the minimal columns."))
   }
   else{
-    checklist_status$lab_data_qc_2 <- list(status = "ko", msg = "Lab dataset does not contains the minimal columns (WHONET format: PATIENT_ID ; SPEC_NUM ; SPEC_DATE ; SPEC_CODE)")
+    checklist_status$lab_data_qc_1 <- list(status = "ko", msg = i18n$t("Lab dataset does not contains the minimal columns."))
   }
 }
 
 if(all(!is.na(amr$patid))) {
-  checklist_status$lab_data_qc_3 <- list(status = "okay", msg = "All patid are provided")
+  checklist_status$lab_data_qc_2 <- list(status = "okay", msg = i18n$t("All 'patid' are provided."))
 } else {
-  checklist_status$lab_data_qc_3 <- list(status = "warning", msg = glue("Warning: there are {sum(is.na(amr$patid))} rows with missing patid."))
+  checklist_status$lab_data_qc_2 <- list(status = "warning", msg = i18n$t("There are rows with missing 'patid'."))
 }
 
 if(all(!is.na(amr$specid))) {
-  checklist_status$lab_data_qc_4 <- list(status = "okay", msg = "All specid are provided")
+  checklist_status$lab_data_qc_3 <- list(status = "okay", msg = i18n$t("All 'specid' are provided."))
 } else{
-  checklist_status$lab_data_qc_4 <- list(status = "warning", msg = glue("Warning: there are {sum(is.na(amr$specid))} rows with missing specid."))
+  checklist_status$lab_data_qc_3 <- list(status = "warning", msg = i18n$t("There are rows with missing 'specid'."))
 }
 
 if(all(!is.na(amr$specdate))) {
-  checklist_status$lab_data_qc_5 <- list(status = "okay", msg = "All specdate are provided")
+  checklist_status$lab_data_qc_4 <- list(status = "okay", msg = i18n$t("All 'specdate' are provided."))
 } else {
-  checklist_status$lab_data_qc_5 <- list(status = "warning", msg = glue("Warning: there are {sum(is.na(amr$specdate))} rows with missing specdate."))
+  checklist_status$lab_data_qc_4 <- list(status = "warning", msg = i18n$t("There are rows with missing 'specdate'."))
 }
 
 if(all(amr$specdate <= Sys.Date())) {
-  checklist_status$lab_data_qc_6 <- list(status = "okay", msg = "All specdate are today or before today")
+  checklist_status$lab_data_qc_5 <- list(status = "okay", msg = i18n$t("All 'specdate' are today or before today."))
 } else {
-  checklist_status$lab_data_qc_6 <- list(status = "warning", msg = glue("Warning: there are {sum(amr$specdate > Sys.Date())} specdate that are after today."))
+  checklist_status$lab_data_qc_5 <- list(status = "warning", msg = i18n$t("There are rows for which 'specdate' are after today."))
 }
 
 if(all(!is.na(amr$specgroup))) {
-  checklist_status$lab_data_qc_7 <- list(status = "okay", msg = "All specgroup are provided")
+  checklist_status$lab_data_qc_6 <- list(status = "okay", msg = i18n$t("All 'specgroup' are provided."))
 } else {
-  checklist_status$lab_data_qc_7 <- list(status = "warning", msg = glue("Warning: there are {sum(is.na(amr$specgroup))} rows with missing specgroup."))
+  checklist_status$lab_data_qc_6 <- list(status = "warning", msg = i18n$t("There are rows with missing 'specgroup'."))
 }
 
 if(all(!is.na(amr$orgname))) {
-  checklist_status$lab_data_qc_8 <- list(status = "okay", msg = "All orgname are provided")
+  checklist_status$lab_data_qc_7 <- list(status = "okay", msg = i18n$t("All 'orgname' are provided."))
 } else {
-  checklist_status$lab_data_qc_8 <- list(status = "warning", msg = glue("Warning: there are {sum(is.na(amr$orgname))} rows with missing orgname."))
+  checklist_status$lab_data_qc_7 <- list(status = "warning", msg = i18n$t("There are rows with missing 'orgname'."))
 }
 
-checklist_status$lab_dta = list(status = "okay", msg = "Lab data successfully provided")
+checklist_status$lab_dta = list(status = "okay", msg = i18n$t("Lab data successfully provided."))

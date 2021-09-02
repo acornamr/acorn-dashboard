@@ -7,13 +7,13 @@ if(test) {
     "Paul",      "HAI",                  NA,              "2021-03-01",
     "Paul",      "CAI",                  "2021-04-01",    NA,
     "Liz",       "CAI",                  "2021-04-01",    NA,
-    "Olivier",   "CAI",                  "2021-01-01",    NA,           
+    "Olivier",   "CAI",                  "2021-01-01",    NA,
     "Olivier",   "HAI",                  NA,              "2021-01-04",
     "Tam",       "CAI",                  "2021-05-01",    NA,
     "Tam",       "CAI",                  "2021-05-04",    NA) %>%
     mutate(date_admission = as.Date(date_admission),
            hai_date_symptom_onset = as.Date(hai_date_symptom_onset))
-  
+
   lab <- tribble(
     ~patid, ~specdate,    ~specid,  ~isolateid,
     "Paul", "2021-02-28", 1,        1, # removed: specimen date before hai_date_symptom_onset
@@ -50,8 +50,9 @@ caseB <- clin %>%
   filter(surveillance_category == "HAI", lag_sc == "CAI", lag_days == 3)
 
 ifelse(nrow(caseB) == 0, 
-       { checklist_status$linkage_caseB <- list(status = "okay", msg = "There are no atypical case (one CAI / early HAI but no overlap)") },
-       { checklist_status$linkage_caseB  <- list(status = "warning", msg = paste("The following patient id are atypical cases (one CAI / early HAI but no overlap):", paste(caseB$patient_id, collapse = ", "))) })
+       { checklist_status$linkage_caseB <- list(status = "okay", msg = i18n$t("There are no atypical case (one CAI / early HAI but no overlap).")) },
+       { checklist_status$linkage_caseB  <- list(status = "warning", msg = paste(i18n$t("The following 'patient id' are atypical cases (one CAI / early HAI but no overlap):"),
+                                                                                 paste(caseB$patient_id, collapse = ", "))) })
 
 # Make a data frame of CAI episodes / HAI episodes and merge
 dta_cai <- clin %>%
@@ -83,8 +84,9 @@ caseC <- acorn_dta %>%
   unique()
 
 ifelse(is_empty(caseC), 
-       checklist_status$linkage_caseC <- list(status = "okay", msg = "There are no problem case (overlapping specimen collection windows)"),
-       checklist_status$linkage_caseC  <- list(status = "warning", msg = paste("The following patient id are problem case (overlapping specimen collection windows):", paste(caseC, collapse = ", ")))
+       checklist_status$linkage_caseC <- list(status = "okay", msg = i18n$t("There are no problem case (overlapping specimen collection windows)")),
+       checklist_status$linkage_caseC  <- list(status = "warning", msg = paste(i18n$t("The following 'patient id' are problem case (overlapping specimen collection windows):"), 
+                                                                               paste(caseC, collapse = ", ")))
 )
 
 acorn_dta <- acorn_dta %>% 
@@ -98,6 +100,6 @@ acorn_dta <- acorn_dta %>%
   replace_na(list(contaminant = "No"))
 
 ifelse(nrow(acorn_dta) >= 1,
-       checklist_status$linkage_result <- list(status = "okay", msg = "Successfully combined clinical and lab data into .acorn file"),
-       checklist_status$linkage_result <- list(status = "ko", msg = "Error in combining clinical and lab data.")
+       checklist_status$linkage_result <- list(status = "okay", msg = i18n$t("Successfully combined clinical and lab data into .acorn file")),
+       checklist_status$linkage_result <- list(status = "ko", msg = i18n$t("Error in combining clinical and lab data."))
 )

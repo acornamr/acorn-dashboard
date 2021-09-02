@@ -1,5 +1,3 @@
-# showNotification("Trying to retrive REDCap data (HAI Ward form). It might take a minute.", duration = NULL, id = "try_redcap_hai")
-
 dl_hai_dta <- try(
   withCallingHandlers({
     shinyjs::html(id = "text_redcap_hai_log", "<strong>REDCap HAI data retrieval log: </strong>")
@@ -16,12 +14,9 @@ dl_hai_dta <- try(
   )
 )
 
-# removeNotification(id = "try_redcap_hai")
-
 if(inherits(dl_hai_dta, "try-error"))  {
-  showNotification("REDCap data (HAI Ward form) wasn't retrived. Please try again.", type = "error")
+  showNotification(i18n$t("REDCap data could not be downloaded. Please try again."), type = "error")
   return()
 }
 
-# showNotification("REDCap data (HAI Ward form) successfully retrived.")
 shinyjs::html(id = "text_redcap_hai_log", "<br/>", add = TRUE)

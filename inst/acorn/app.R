@@ -78,31 +78,37 @@ ui <- fluidPage(
                                        ),
                                        conditionalPanel("input.filter_enrolments.includes('Clinical Severity')",
                                                         sliderInput("filter_severity_adult", "Adult qSOFA score", min = 0, max = 3, value = c(0, 3)),
-                                                        prettySwitch("filter_severity_child_0", label = "Include Child/Neonate with 0 severity criteria", status = "primary", value = TRUE, slim = TRUE),
-                                                        prettySwitch("filter_severity_child_1", label = "Include Child/Neonate with ≥ 1 severity criteria", status = "primary", value = TRUE, slim = TRUE)
+                                                        prettySwitch("filter_severity_child_0", "Include Child/Neonate with 0 severity criteria", status = "primary", value = TRUE, slim = TRUE),
+                                                        prettySwitch("filter_severity_child_1", "Include Child/Neonate with ≥ 1 severity criteria", status = "primary", value = TRUE, slim = TRUE)
                                        ),
                                        conditionalPanel("input.filter_enrolments.includes('Clinical/D28 Outcome')",
-                                                        prettySwitch("filter_outcome_clinical", label = "Only with Clinical Outcome", status = "primary", value = FALSE, slim = TRUE),
-                                                        prettySwitch("filter_outcome_d28", label = "Only with Day-28 Outcome", status = "primary", value = FALSE, slim = TRUE)
+                                                        prettySwitch("filter_outcome_clinical", "Only with Clinical Outcome", status = "primary", value = FALSE, slim = TRUE),
+                                                        prettySwitch("filter_outcome_d28", "Only with Day-28 Outcome", status = "primary", value = FALSE, slim = TRUE)
                                        ),
                                        conditionalPanel("input.filter_enrolments.includes('Transfer')",
-                                                        prettySwitch("filter_transfer", label = "Only Non-Transferred Patients", status = "primary", value = FALSE, slim = TRUE)
+                                                        prettySwitch("filter_transfer", "Only Non-Transferred Patients", status = "primary", value = FALSE, slim = TRUE)
                                        ),
                                        actionLink("shortcut_reset_filters", label = span(icon("ban"), i18n$t("Reset Enrolments Filters")))
                                 ),
                                 column(4,
                                        div(class = "smallcaps", class = "center", span(icon("vial"), i18n$t("Specimens, Isolates"))),
-                                       prettyCheckboxGroup(inputId = "filter_method_collection", label = NULL,  shape = "curve", status = "primary", inline = TRUE,
-                                                           choices = c("Blood Culture" = "blood", "Other (not BC):" = "other_not_blood"), 
+                                       prettyCheckboxGroup("filter_method_collection", NULL,  shape = "curve", status = "primary", inline = TRUE,
+                                                           choiceNames = c("Blood Culture", "Other Specimens:"),
+                                                           choiceValues = c("blood", "other_not_blood"),
                                                            selected = c("blood", "other_not_blood")),
+                                       # prettyCheckboxGroup("filter_method_collection", NULL,  shape = "curve", status = "primary", inline = TRUE,
+                                       #                     choiceNames = i18n$t(c("Blood Culture", "Other Specimens:")),
+                                       #                     choiceValues = c("blood", "other_not_blood"),
+                                       #                     selected = c("blood", "other_not_blood")),
                                        conditionalPanel("input.filter_method_collection.includes('other_not_blood')",
                                                         pickerInput("filter_method_other", NULL, multiple = TRUE,
                                                                     choices = "", selected = NULL,
                                                                     options = list(`actions-box` = TRUE, `deselect-all-text` = "None...",
                                                                                    `select-all-text` = "Select All", `none-selected-text` = "None Selected"))
                                        ),
-                                       pickerInput("deduplication_method", label = NULL, 
-                                                   choices = c("No deduplication of isolates", "Deduplication by patient-episode", "Deduplication by patient ID"))
+                                       pickerInput("deduplication_method",
+                                                   choices = c("No deduplication of isolates", "Deduplication by patient-episode", "Deduplication by patient ID")
+                                       )
                                 )
                               )
                           ),
@@ -138,9 +144,9 @@ ui <- fluidPage(
                                uiOutput('site_logo'),
                                selectInput(
                                  "selected_language", label = span(icon("language"), i18n$t("Language")),
-                                 choices = c("🇬🇧 English" = "en", "🇫🇷 Français" = "fr", "🇱🇦 Lao" = "la", "🇻🇳 Vietnamien" = "vn"), selected = "en", width = "150px"
+                                 choices = c("🇬🇧 English" = "en", "🇫🇷 Français" = "fr", "🇱🇦 ພາສາລາວ" = "la", "🇻🇳Tiếng Việt" = "vn"), selected = "en", width = "150px"
                                ),
-                               div(id = "login-basic", 
+                               div(id = "login-basic",
                                    div(class = "well",
                                        h5(class = "text-center",  i18n$t("Please log in")),
                                        selectInput("cred_site", tagList(icon("hospital"), i18n$t("Site")),
@@ -297,30 +303,36 @@ ui <- fluidPage(
                         column(6,
                                div(class = "box_outputs", 
                                    h4_title(icon("calendar-check"), i18n$t("Date of Enrolment")),
-                                   prettySwitch("show_date_week", label = i18n$t("See by Week"), status = "primary"),
-                                   highchartOutput("profile_date_enrolment")
+                                   div(class = "box_outputs_content",
+                                       prettySwitch("show_date_week", label = i18n$t("See by Week"), status = "primary"),
+                                       highchartOutput("profile_date_enrolment")
+                                   )
                                ),
                                div(class = "box_outputs",
                                    h4_title(icon("tint"), i18n$t("Enrolments with Blood Culture")),
-                                   fluidRow(
-                                     column(6, gaugeOutput("profile_blood_culture_gauge", width = "100%", height = "100px")),
-                                     column(6, htmlOutput("profile_blood_culture_pct", width = "100%", height = "100px"))
+                                   div(class = "box_outputs_content",
+                                       fluidRow(
+                                         column(6, gaugeOutput("profile_blood_culture_gauge", width = "100%", height = "100px")),
+                                         column(6, htmlOutput("profile_blood_culture_pct", width = "100%", height = "100px"))
+                                       )
                                    )
                                )
                         ),
                         column(6,
                                div(class = "box_outputs",
                                    h4_title(i18n$t("Distribution of Enrolments")),
-                                   fluidRow(
-                                     column(3, i18n$t("Variables in Table:")),
-                                     column(9,
-                                            checkboxGroupButtons("variables_table", label = NULL, 
-                                                                 size = "sm", status = "primary", checkIcon = list(yes = icon("check-square"), no = icon("square-o")), individual = TRUE,
-                                                                 choices = c("Place of Infection" = "surveillance_category", "Type of Ward" = "ward_type", "Ward" = "ward", "Clinical Outcome" = "clinical_outcome", "Day-28 Outcome" = "d28_outcome"), 
-                                                                 selected = c("surveillance_category", "ward_type", "ward", "clinical_outcome", "d28_outcome"))
-                                     )
-                                   ),
-                                   DTOutput("table_patients", width = "95%")
+                                   div(class = "box_outputs_content",
+                                       fluidRow(
+                                         column(3, i18n$t("Variables in Table:")),
+                                         column(9,
+                                                checkboxGroupButtons("variables_table", label = NULL, 
+                                                                     size = "sm", status = "primary", checkIcon = list(yes = icon("check-square"), no = icon("square-o")), individual = TRUE,
+                                                                     choices = c("Place of Infection" = "surveillance_category", "Type of Ward" = "ward_type", "Ward" = "ward", "Clinical Outcome" = "clinical_outcome", "Day-28 Outcome" = "d28_outcome"), 
+                                                                     selected = c("surveillance_category", "ward_type", "ward", "clinical_outcome", "d28_outcome"))
+                                         )
+                                       ),
+                                       DTOutput("table_patients", width = "95%")
+                                   )
                                )
                         )
                       ),
@@ -328,13 +340,17 @@ ui <- fluidPage(
                         column(6, 
                                div(class = "box_outputs",
                                    h4_title(i18n$t("Enrolments by (type of) Ward")),
-                                   prettySwitch("show_ward_breakdown", label = i18n$t("See Breakdown by Ward"), status = "primary"),
-                                   highchartOutput("profile_type_ward")
+                                   div(class = "box_outputs_content",
+                                       prettySwitch("show_ward_breakdown", label = i18n$t("See Breakdown by Ward"), status = "primary"),
+                                       highchartOutput("profile_type_ward")
+                                   )
                                )
                         ),
                         column(6, 
                                div(class = "box_outputs", h4_title(i18n$t("Patient Age Distribution")),
-                                   highchartOutput("profile_age")
+                                   div(class = "box_outputs_content",
+                                       highchartOutput("profile_age")
+                                   )
                                )
                         )
                       ),
@@ -342,13 +358,17 @@ ui <- fluidPage(
                         column(6, 
                                div(class = "box_outputs",
                                    h4_title(i18n$t("Diagnosis at Enrolment")),
-                                   highchartOutput("profile_diagnosis")
+                                   div(class = "box_outputs_content",
+                                       highchartOutput("profile_diagnosis")
+                                   )
                                )
                         ),
                         column(6, 
                                div(class = "box_outputs",
                                    h4_title(i18n$t("Empiric Antibiotics Prescribed")),
-                                   highchartOutput("profile_antibiotics")
+                                   div(class = "box_outputs_content",
+                                       highchartOutput("profile_antibiotics")
+                                   )
                                )
                         )
                       ),
@@ -356,14 +376,18 @@ ui <- fluidPage(
                         column(6, 
                                div(class = "box_outputs",
                                    h4_title(icon("arrows-alt-h"), i18n$t("Patients Transferred")),
-                                   highchartOutput("profile_transfer_hospital")
+                                   div(class = "box_outputs_content",
+                                       highchartOutput("profile_transfer_hospital")
+                                   )
                                )
                         ),
                         column(6, 
                                div(class = "box_outputs",
                                    h4_title(i18n$t("Patient Comorbidities")),
-                                   prettySwitch("comorbidities_combinations", label = i18n$t("Show comorbidities combinations"), status = "primary", value = FALSE, slim = TRUE),
-                                   highchartOutput("profile_comorbidities")
+                                   div(class = "box_outputs_content",
+                                       prettySwitch("comorbidities_combinations", label = i18n$t("Show comorbidities combinations"), status = "primary", value = FALSE, slim = TRUE),
+                                       highchartOutput("profile_comorbidities")
+                                   )
                                )
                         )
                       ),
@@ -371,15 +395,18 @@ ui <- fluidPage(
                         column(6, 
                                div(class = "box_outputs",
                                    h4_title(i18n$t("Enrolments with Blood Culture")),
-                                   pickerInput("display_unit_ebc", label = NULL, 
-                                               choices = c("Use heuristic for time unit", "Display by month", "Display by year")),
-                                   highchartOutput("enrolment_blood_culture"),
+                                   div(class = "box_outputs_content",
+                                       pickerInput("display_unit_ebc", label = NULL, 
+                                                   choices = c("Use heuristic for time unit", "Display by month", "Display by year")),
+                                       highchartOutput("enrolment_blood_culture")
+                                   )
                                )
-                               
                         ),
                         column(6, 
                                div(class = "box_outputs", h4_title(i18n$t("Blood culture collected within 24 hours of admission (CAI) / symptom onset (HAI)")),
-                                   highchartOutput("profile_blood")
+                                   div(class = "box_outputs_content",
+                                       highchartOutput("profile_blood")
+                                   )
                                )
                         )
                       )
@@ -390,38 +417,46 @@ ui <- fluidPage(
                         column(6,
                                div(class = "box_outputs",
                                    h4_title(i18n$t("Clinical Outcome")),
-                                   fluidRow(
-                                     column(6, gaugeOutput("clinical_outcome_gauge", width = "100%", height = "100px")),
-                                     column(6, htmlOutput("clinical_outcome_pct", width = "100%", height = "70px"))
-                                   ),
-                                   h5(i18n$t("Clinical Outcome Status:")),
-                                   highchartOutput("clinical_outcome_status", height = "250px")
+                                   div(class = "box_outputs_content",
+                                       fluidRow(
+                                         column(6, gaugeOutput("clinical_outcome_gauge", width = "100%", height = "100px")),
+                                         column(6, htmlOutput("clinical_outcome_pct", width = "100%", height = "70px"))
+                                       ),
+                                       h5(i18n$t("Clinical Outcome Status:")),
+                                       highchartOutput("clinical_outcome_status", height = "250px")
+                                   )
                                ),
                         ),
                         column(6,
                                div(class = "box_outputs",
                                    h4_title(i18n$t("Day 28")),
+                                   div(class = "box_outputs_content",
                                    fluidRow(
                                      column(6, gaugeOutput("d28_outcome_gauge", width = "100%", height = "100px")),
                                      column(6, htmlOutput("d28_outcome_pct", width = "100%", height = "70px"))
                                    ),
                                    h5(i18n$t("Day 28 Status:")),
                                    highchartOutput("d28_outcome_status", height = "250px")
-                               ),
+                                   )
+                               )
                         )
                       ),
                       fluidRow(
                         column(4,
                                div(class = "box_outputs",
                                    h4_title(i18n$t("Bloodstream Infection (BSI)")),
+                                   div(class = "box_outputs_content",
                                    htmlOutput("bsi_summary")
+                                   )
                                )
                         ),
                         column(8, 
                                div(class = "box_outputs",
                                    h4_title(i18n$t("Initial & Final Surveillance Diagnosis")),
-                                   p(i18n$t("The 10 most common initial-final diagnosis combinations:")),
+                                   div(class = "box_outputs_content",
+                                   i18n$t("The 10 most common initial-final diagnosis combinations:"),
                                    highchartOutput("profile_outcome_diagnosis", height = "500px")
+                                   )
                                )
                         )
                       )
@@ -430,11 +465,17 @@ ui <- fluidPage(
              tabPanel("HAI", value = "hai", 
                       div(class = "box_outputs",
                           h4_title(i18n$t("Ward Occupancy Rates")),
+                          div(class = "box_outputs_content",
+                          i18n$t("Occupancy rate per type of ward per month"),
                           plotOutput("bed_occupancy_ward", width = "80%")
+                          )
                       ),
                       div(class = "box_outputs",
                           h4_title(i18n$t("HAI Prevalence")),
+                          div(class = "box_outputs_content",
+                          i18n$t("HAI point prevalence by type of ward"),
                           plotOutput("hai_rate_ward", width = "80%")
+                          )
                       )
              ),
              # Tab Microbiology ----
@@ -444,37 +485,44 @@ ui <- fluidPage(
                         column(6,
                                div(class = "box_outputs",
                                    h4_title(i18n$t("Blood Culture Contaminants")),
+                                   div(class = "box_outputs_content",
                                    fluidRow(
                                      column(6, gaugeOutput("contaminants_gauge", width = "100%", height = "100px"), br()),
                                      column(6, htmlOutput("contaminants_pct", width = "100%", height = "100px"))
                                    )
+                                   )
                                ),
                                div(class = "box_outputs",
                                    h4_title(i18n$t("Specimen Types")),
-                                   
-                                   p(i18n$t("Number of specimens per specimen type")),
+                                   div(class = "box_outputs_content",
+                                   i18n$t("Number of specimens per specimen type"),
                                    highchartOutput("culture_specimen_type", height = "400px"),
                                    
-                                   p(i18n$t("Culture results per specimen type")),
+                                   i18n$t("Culture results per specimen type"),
                                    highchartOutput("culture_specgroup", height = "350px")
+                                   )
                                )
                         ),
                         column(6,
                                div(class = "box_outputs",
                                    h4_title(i18n$t("Growth / No Growth")),
+                                   div(class = "box_outputs_content",
                                    fluidRow(
                                      column(6, gaugeOutput("isolates_growth_gauge", width = "100%", height = "100px"), br()),
                                      column(6, htmlOutput("isolates_growth_pct", width = "100%", height = "100px"))
                                    )
+                                   )
                                ),
                                div(class = "box_outputs",
                                    h4_title(i18n$t("Isolates")),
-                                   p(i18n$t("Most frequent 10 organisms in the plot and complete listing in the table. Contaminants are in red.")),
+                                   div(class = "box_outputs_content",
+                                   i18n$t("Most frequent 10 organisms in the plot and complete listing in the table. Contaminants are in red."),
                                    highchartOutput("isolates_organism_nc"),
                                    highchartOutput("isolates_organism_contaminant"),
                                    br(), br(),
                                    DTOutput("isolates_organism_table", width = "95%"),
-                                   br(), br()
+                                   br()
+                                   )
                                )
                         )
                       )
@@ -733,6 +781,15 @@ server <- function(input, output, session) {
                                                        "Load existing .acorn from local file")),
                             selected = NULL, status = "success",
                             checkIcon = list(yes = icon("hand-point-right")))
+    # DO NOT WORK / Fix in 2.1
+    # updatePickerInput(session = session, "display_unit_ebc", NULL, 
+    #             choices = list(i18n_r()$t("Use heuristic for time unit") = "Use heuristic for time unit", 
+    #                            i18n_r()$t("Display by month") = "Display by month", 
+    #                            i18n_r()$t("Display by year") = "Display by year"))
+    # updatePickerInput(session = session, "deduplication_method", 
+    #                   choices = list(i18n$t("No deduplication of isolates") = "No deduplication of isolates", 
+    #                                  i18n$t("Deduplication by patient-episode") = "Deduplication by patient-episode", 
+    #                                  i18n$t("Deduplication by patient ID") = "Deduplication by patient ID"))
   })
   
   # allow to upload acorn file and not being logged
@@ -855,7 +912,7 @@ server <- function(input, output, session) {
       cred <- unserialize(aes_cbc_decrypt(cred, key = key_user))
       
       if(cred$site != input$cred_site)  {
-        showNotification(i18n$t("Problem with credentials. Please contact ACORN team."), 
+        showNotification(i18n$t("Problem with credentials. Please contact ACORN support."), 
                          duration = 20, type = "error")
         return()
       }

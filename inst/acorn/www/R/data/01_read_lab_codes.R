@@ -6,7 +6,7 @@ file_lab_code <- try(save_object(object = "ACORN2_lab_codes.xlsx",
                                  file = tempfile()), silent = TRUE)
 
 if (inherits(file_lab_code, 'try-error')) {
-  showNotification("We couldn't download the lab codes from the cloud. Please contact ACORN Data Management.", type = "error", duration = NULL)
+  showNotification(i18n$t("We couldn't download the lab codes file. Please contact ACORN support."), type = "error", duration = NULL)
   return()
 }
 

@@ -8,7 +8,7 @@ output$bsi_summary <- renderText({
   staph_lab <- acorn_dta_filter() %>% filter(orgname == "Staphylococcus aureus") %>% nrow()
   
   
-  glue("</br>Records in Lab data and BSI forms: </br></br>
+  glue("{i18n$t('Records in Lab data and BSI forms:')}</br></br>
        <ul>
        <li><em>Escherichia coli</em>: {ecoli_lab} in Lab data and {ecoli_bsi} in BSI forms.</li>
        <li><em>Staphylococcus aureus</em>: {staph_lab} in Lab data and {staph_bsi} in BSI forms.</li>

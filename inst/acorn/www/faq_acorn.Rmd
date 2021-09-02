@@ -118,14 +118,11 @@ You can ask for changes in the theme by providing a list of values for variables
 
 The dashboard can be made accessible in any language provided with translated elements in a tabular fomat. Please contact the ACORN team for more information.
 
-## Other
+## Contact ACORN Team
 
-### Contact ACORN Team
+If you have questions about the project or the app, please [contact the ACORN team.](mailto:acorn@tropmedres.ac)
 
-For technical questions or feedback on the App, [please fill this form](https://docs.google.com/forms/d/1xdyLQgESr7H6iBpEWlTCeNZ1RGmRdH8nenBGNfq4yjI/). If you have questions about the project, please contact ACORN investigators [Prof Paul Turner](mailto:Pault@tropmedres.ac) or [Prof Rogier van Doorn](mailto:rvandoorn@oucru.org).
-
-
-### Acknowledgments and Credits
+## Acknowledgments and Credits
 
 App Development Team: [Olivier Celhay](https://olivier.celhay.net), [Paul Turner](mailto:Pault@tropmedres.ac). With contributions from Naomi Waithira, Prapass Wannapinij, Elizabeth Ashley, Rogier van Doorn. 
 

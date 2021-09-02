@@ -1,6 +1,3 @@
-# showNotification("Trying to retrive REDCap data (forms F01 to F05). It might take a minute.", 
-#                  duration = NULL, id = "try_redcap_f01f05")
-
 dl_redcap_f01f05_dta <- try(
   withCallingHandlers({
     shinyjs::html(id = "text_redcap_f01f05_log", "</br><strong>REDCap F01 to F05 data retrieval log: </strong>")
@@ -17,19 +14,16 @@ dl_redcap_f01f05_dta <- try(
   )
 )
 
-# removeNotification(id = "try_redcap_f01f05")
-
 if(inherits(dl_redcap_f01f05_dta, "try-error"))  {
-  showNotification("REDCap data (forms F01 to F05) could not be retrived. Please try again.", type = "error")
+  showNotification(i18n$t("REDCap data could not be downloaded. Please try again."), type = "error")
   return()
 }
 
-# showNotification("REDCap data (forms F01 to F05) successfully retrived.")
 shinyjs::html(id = "text_redcap_f01f05_log", "<hr/>", add = TRUE)
 
 # Test "REDCap dataset empty" ----
 ifelse(nrow(dl_redcap_f01f05_dta) == 0, 
-       { checklist_status$redcap_not_empty <- list(status = "ko",   msg = i18n$t("The REDCap dataset is empty. Please contact ACORN data management."))},
+       { checklist_status$redcap_not_empty <- list(status = "ko",   msg = i18n$t("The REDCap dataset is empty. Please contact ACORN support."))},
        { checklist_status$redcap_not_empty <- list(status = "okay", msg = i18n$t("The REDCap dataset contains data."))})
 
 # Test "REDCap dataset columns names" ----
@@ -95,4 +89,4 @@ ifelse(ncol(dl_redcap_f01f05_dta) == 211 & all(names(dl_redcap_f01f05_dta) == c(
                                      "bsi_is_primary", "bsi_sec_source", "bsi_sec_source_oth", "bsi_is_com_implant", 
                                      "bsi_is_com_2days", "bsi_is_com_fever", "f05_deleted", "f05_bsi_complete")), 
        {checklist_status$redcap_columns <- list(status = "okay", msg = i18n$t("The REDCap dataset column names match."))},
-       {checklist_status$redcap_columns <- list(status = "ko",   msg = i18n$t("The REDCap dataset column names do not match. Please contact ACORN data management."))})
+       {checklist_status$redcap_columns <- list(status = "ko",   msg = i18n$t("The REDCap dataset column names do not match. Please contact ACORN support."))})

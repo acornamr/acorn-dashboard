@@ -41,7 +41,7 @@ output$nb_specimens <- renderText({
     div(class = "box_summary", 
         span(class = "numb", nb_specimens), 
         span(class = "smallcaps", i18n$t("Specimens Collected")),
-        span(class = "badge badge-light f-100 right", glue("{nb_per} specimens per enrolment"))
+        span(class = "badge badge-light f-100 right", paste(nb_per, i18n$t("specimens per enrolment")))
     )
   )
 })
@@ -72,7 +72,7 @@ output$nb_isolates_target <- renderText({
   as.character(
     div(class = "box_summary", 
         span(class = "numb", nb_isolates), 
-        span(class = "smallcaps", "Isolates"),
+        span(class = "smallcaps", i18n$t("Isolates")),
         span(i18n$t("of Target Pathogens"))
     )
   )

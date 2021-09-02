@@ -17,11 +17,7 @@ amr.l <- gather(amr, WHON5_TEST, result, (contains("_" ))) # Only ast variable n
 amr.l <- subset(amr.l, subset = (!is.na(result) & !is.na(ast.group))) # Keep only isolateids with valid AST results
 
 if(nrow(amr.l) == 0) {
-  showNotification(
-    div(h3("Critical Error!"),
-        p("There are 0 isolates with valid AST results."),
-        p("Please restart the app and upload a dataset with valid AST results.")
-    ), 
+  showNotification(i18n$t("There are no isolate with valid AST results. Please contact ACORN support."),
     duration = 15, type = "error", closeButton = FALSE, session = session)
   Sys.sleep(15)
 }

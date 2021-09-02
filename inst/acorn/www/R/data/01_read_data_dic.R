@@ -11,9 +11,10 @@ file_dic <- try(save_object(object = glue("ACORN2_lab_data_dictionary_{acorn_cre
                             file = tempfile()),
                 silent = TRUE)
 
-if (inherits(file_dic, 'try-error')) {
+if (inherits(file_dic, "try-error")) {
   removeNotification(id = "processing_lab_data")
-  showNotification("We couldn't download the lab data dictionary. Please contact ACORN Data Management.", type = "error", duration = NULL)
+  showNotification(i18n$t("We couldn't download the lab data dictionary. Please contact ACORN support"), 
+                   type = "error", duration = NULL)
   return()
 }
 

@@ -9,7 +9,7 @@ output$bed_occupancy_ward <- renderPlot({
   ggplot(aes(x = survey_month, y = occupancy, group = survey_month)) +
     geom_boxplot() +
     lims(y = c(0, 100)) +
-    labs(title = "Occupancy rate per type of ward per month", x = "Date of Survey", y = "Occupancy (%)") +
+    labs(title = NULL, x = "Date of Survey", y = "Occupancy (%)") +
     facet_wrap(vars(ward_type)) +
     theme_light(base_size = 15)
 })

@@ -22,7 +22,7 @@ output$hai_rate_ward <- renderPlot({
     geom_line() + geom_point() +
     geom_hline(yintercept = 5, col = "red", lty = 2) +
     lims(y = c(0, NA))  +
-    labs(title = "HAI point prevalence by type of ward", x= "Date of enrolment/Survey", y = "Prevalence of HAI (% of total patients)") +
+    labs(title = NULL, x = "Date of enrolment/Survey", y = "Prevalence of HAI (% of total patients)") +
     facet_wrap(vars(ward_type)) +
     theme_light(base_size = 15)
 })
