@@ -189,7 +189,6 @@ ui <- fluidPage(
                           radioGroupButtons("choice_datamanagement", NULL,
                                             choiceValues = c("generate", "load_cloud", "load_local"),
                                             choiceNames = c("Generate .acorn from clinical and lab data", "Load existing .acorn from cloud", "Load existing .acorn from local file"),
-                                            # choiceNames = c(i18n$t("Generate .acorn from clinical and lab data"), i18n$t("Load existing .acorn from cloud"), i18n$t("Load existing .acorn from local file")),
                                             selected = NULL, individual = TRUE,
                                             checkIcon = list(yes = icon("hand-point-right")))
                       ),
@@ -282,14 +281,14 @@ ui <- fluidPage(
                                          ),
                                          column(9,
                                                 conditionalPanel(condition = "input.acorn_files_server",
-                                                                 actionButton('load_acorn_server', span(icon('cloud-download-alt'), HTML('Load selected <em>.acorn</em>')))
+                                                                 actionButton("load_acorn_server", span(icon("cloud-download-alt"), i18n$t("Load selected .acorn")))
                                                 )
                                          )
                                        )
                       ),
                       ## Choice Load local ----
                       conditionalPanel("input.choice_datamanagement == 'load_local'",
-                                       fileInput("load_acorn_local", label = NULL, buttonLabel =  HTML("Load <em>.acorn</em>"), accept = '.acorn')
+                                       fileInput("load_acorn_local", label = NULL, buttonLabel =  i18n$t("Load .acorn"), accept = '.acorn')
                       )
              ),
              # Tab Overview ----
@@ -715,9 +714,25 @@ server <- function(input, output, session) {
   file_list <- list.files(path = "./www/R/outputs", pattern = "*.R", recursive = TRUE)
   for (file in file_list) source(paste0("./www/R/outputs/", file), local = TRUE)$value
   
-  # update language based on dropdown choice
+  # Mult-language ----
+  # translation of radioGroupButtons - https://github.com/Appsilon/shiny.i18n/issues/54
+  i18n_r <- reactive(i18n)  # translation of radioGroupButtons 1/3
+  
+  # live language change on the browser side
   observeEvent(input$selected_language, {
     update_lang(session, input$selected_language)
+    i18n_r()$set_translation_language(input$selected_language) # translation of radioGroupButtons 2/3
+  })
+  
+  # translation of radioGroupButtons 3/3
+  observe({
+    updateRadioGroupButtons(session = session, "choice_datamanagement", NULL,
+                            choiceValues = c("generate", "load_cloud", "load_local"),
+                            choiceNames = i18n_r()$t(c("Generate .acorn from clinical and lab data",
+                                                       "Load existing .acorn from cloud", 
+                                                       "Load existing .acorn from local file")),
+                            selected = NULL, status = "success",
+                            checkIcon = list(yes = icon("hand-point-right")))
   })
   
   # allow to upload acorn file and not being logged
@@ -726,8 +741,7 @@ server <- function(input, output, session) {
     updateTabsetPanel(session = session, "tabs", selected = "data_management")
     
     updateRadioGroupButtons(session = session, "choice_datamanagement", i18n$t("What do you want to do?"),
-                            # choiceNames = i18n$t("Load existing .acorn from local file"),
-                            choiceNames = "Load existing .acorn from local file",
+                            choiceNames = i18n_r()$t("Load existing .acorn from local file"),
                             choiceValues = "load_local",
                             selected = NULL, status = "success",
                             checkIcon = list(yes = icon("hand-point-right")))
@@ -841,7 +855,7 @@ server <- function(input, output, session) {
       cred <- unserialize(aes_cbc_decrypt(cred, key = key_user))
       
       if(cred$site != input$cred_site)  {
-        showNotification("The credential file is corrupted. Please contact ACORN Data Management.", 
+        showNotification(i18n$t("Problem with credentials. Please contact ACORN team."), 
                          duration = 20, type = "error")
         return()
       }
@@ -860,13 +874,13 @@ server <- function(input, output, session) {
                      silent = TRUE)
       
       if (inherits(connect, 'try-error')) {
-        showNotification("Couldn't connect to server credentials. Please check internet access/firewall.", type = "error")
+        showNotification(i18n$t("Couldn't connect to server. Please check internet access."), type = "error")
         return()
       }
       
       # Test if credentials for this user name exist
       if (! file_cred %in% as.vector(connect[names(connect) == "Contents.Key"])) {
-        showNotification("Couldn't find this user", type = "error")
+        showNotification(i18n$t("Wrong connection credentials."), type = "error")
         return()
       }
       
@@ -882,7 +896,7 @@ server <- function(input, output, session) {
                   silent = TRUE)
       
       if (inherits(cred, 'try-error')) {
-        showNotification("Wrong password.", type = "error")
+        showNotification(i18n$t("Wrong connection credentials."), type = "error")
         return()
       }
       
@@ -900,8 +914,7 @@ server <- function(input, output, session) {
     
     updateRadioGroupButtons(session = session, "choice_datamanagement", i18n$t("What do you want to do?"),
                             choiceValues = c("generate", "load_cloud", "load_local"),
-                            choiceNames = c("Generate .acorn from clinical and lab data", "Load existing .acorn from cloud", "Load existing .acorn from local file"),
-                            # choiceNames = c(i18n$t("Generate .acorn from clinical and lab data"), i18n$t("Load existing .acorn from cloud"), i18n$t("Load existing .ascorn from local file")),
+                            choiceNames = i18n_r()$t(c("Generate .acorn from clinical and lab data", "Load existing .acorn from cloud", "Load existing .acorn from local file")),
                             selected = NULL, status = "success",
                             checkIcon = list(yes = icon("hand-point-right")))
     

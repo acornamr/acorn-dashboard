@@ -51,7 +51,7 @@
         },
         {
             "en": "User",
-            "fr": "Site",
+            "fr": "Utilisateur",
             "la": "TBT",
             "vn": "TBT"
         },
@@ -69,7 +69,7 @@
         },
         {
             "en": "To log out, close the app.",
-            "fr": "Quitter l'application pour se déconnecter",
+            "fr": "Quitter l'application pour se déconnecter.",
             "la": "TBT",
             "vn": "TBT"
         },
@@ -712,6 +712,48 @@
         {
             "en": "of enrolments with blood culture.",
             "fr": "des enrôlements avec hémoculture.",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Couldn't connect to server. Please check internet access.",
+            "fr": "Il n'est pas possible de se connecter au server. Veuillez vérifier la connection à internet",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Wrong connection credentials.",
+            "fr": "Problème avec la connection internet.",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Problem with credentials. Please contact ACORN team.",
+            "fr": "Problème avec les identifiants. Merci de contacter l'équipe ACORN.",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Load selected .acorn",
+            "fr": "Charger le fichier .acorn sélectionné",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "Load .acorn",
+            "fr": "Charger le fichier .acorn",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "of cultures have growth.",
+            "fr": "des cultures avec croissance.",
+            "la": "TBT",
+            "vn": "TBT"
+        },
+        {
+            "en": "of blood cultures grew a potential contaminant.",
+            "fr": "des hémocultures ont générées un contaminant potentiel.",
             "la": "TBT",
             "vn": "TBT"
         }

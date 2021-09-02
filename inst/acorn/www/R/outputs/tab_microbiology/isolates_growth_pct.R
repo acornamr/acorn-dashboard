@@ -17,5 +17,5 @@ output$isolates_growth_pct <- renderText({
     fun_deduplication(method = input$deduplication_method) %>%
     pull(specid) %>% n_distinct()
   
-  paste(h3(paste0(round(100 * n / total, 1), "%")), span("of cultures have growth."))
+  paste(h3(paste0(round(100 * n / total, 1), "%")), i18n$t("of cultures have growth."))
 })

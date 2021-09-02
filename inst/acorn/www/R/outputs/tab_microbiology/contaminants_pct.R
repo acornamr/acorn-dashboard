@@ -19,5 +19,5 @@ output$contaminants_pct <- renderText({
     fun_deduplication(method = input$deduplication_method) %>%
     pull(specid) %>% n_distinct()
   
-  paste(h3(paste0(round(100 * n / total, 1), "%")), span("of blood cultures grew a potential contaminant."))
+  paste(h3(paste0(round(100 * n / total, 1), "%")), i18n$t("of blood cultures grew a potential contaminant."))
 })
