@@ -43,10 +43,10 @@ i18n$set_translation_language("en")
 lang <- data.frame(
   val = c("en", "fr", "la", "vn"),
   img = c(
-    sprintf("<img src = './images/flags/gb.png' width = 20px><div class='jhr'>English</div></img>"),
-    sprintf("<img src = './images/flags/fr.png' width = 20px><div class='jhr'>Français</div></img>"),
-    sprintf("<img src = './images/flags/la.png' width = 20px><div class='jhr'>ພາສາລາວ</div></img>"),
-    sprintf("<img src = './images/flags/vn.png' width = 20px><div class='jhr'>tiếng việt</div></img>")
+    "<img src = './images/flags/gb.png' width = 20px><div class='jhr'>English</div></img>",
+    "<img src = './images/flags/fr.png' width = 20px><div class='jhr'>French</div></img>",
+    "<img src = './images/flags/la.png' width = 20px><div class='jhr'>Lao</div></img>",
+    "<img src = './images/flags/vn.png' width = 20px><div class='jhr'>Vietnamese</div></img>"
   )
 )
   
