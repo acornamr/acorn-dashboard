@@ -142,9 +142,11 @@ ui <- fluidPage(
                       fluidRow(
                         column(3,
                                uiOutput('site_logo'),
-                               selectInput(
+                               pickerInput(
                                  "selected_language", label = span(icon("language"), i18n$t("Language")),
-                                 choices = c("🇬🇧 English" = "en", "🇫🇷 Français" = "fr", "🇱🇦 ພາສາລາວ" = "la", "🇻🇳Tiếng Việt" = "vn"), selected = "en", width = "150px"
+                                 choices = lang$val,
+                                 choicesOpt = list(content = lang$img),
+                                 width = "200px"
                                ),
                                div(id = "login-basic",
                                    div(class = "well",
@@ -431,12 +433,12 @@ ui <- fluidPage(
                                div(class = "box_outputs",
                                    h4_title(i18n$t("Day 28")),
                                    div(class = "box_outputs_content",
-                                   fluidRow(
-                                     column(6, gaugeOutput("d28_outcome_gauge", width = "100%", height = "100px")),
-                                     column(6, htmlOutput("d28_outcome_pct", width = "100%", height = "70px"))
-                                   ),
-                                   h5(i18n$t("Day 28 Status:")),
-                                   highchartOutput("d28_outcome_status", height = "250px")
+                                       fluidRow(
+                                         column(6, gaugeOutput("d28_outcome_gauge", width = "100%", height = "100px")),
+                                         column(6, htmlOutput("d28_outcome_pct", width = "100%", height = "70px"))
+                                       ),
+                                       h5(i18n$t("Day 28 Status:")),
+                                       highchartOutput("d28_outcome_status", height = "250px")
                                    )
                                )
                         )
@@ -446,7 +448,7 @@ ui <- fluidPage(
                                div(class = "box_outputs",
                                    h4_title(i18n$t("Bloodstream Infection (BSI)")),
                                    div(class = "box_outputs_content",
-                                   htmlOutput("bsi_summary")
+                                       htmlOutput("bsi_summary")
                                    )
                                )
                         ),
@@ -454,8 +456,8 @@ ui <- fluidPage(
                                div(class = "box_outputs",
                                    h4_title(i18n$t("Initial & Final Surveillance Diagnosis")),
                                    div(class = "box_outputs_content",
-                                   i18n$t("The 10 most common initial-final diagnosis combinations:"),
-                                   highchartOutput("profile_outcome_diagnosis", height = "500px")
+                                       i18n$t("The 10 most common initial-final diagnosis combinations:"),
+                                       highchartOutput("profile_outcome_diagnosis", height = "500px")
                                    )
                                )
                         )
@@ -466,15 +468,15 @@ ui <- fluidPage(
                       div(class = "box_outputs",
                           h4_title(i18n$t("Ward Occupancy Rates")),
                           div(class = "box_outputs_content",
-                          i18n$t("Occupancy rate per type of ward per month"),
-                          plotOutput("bed_occupancy_ward", width = "80%")
+                              i18n$t("Occupancy rate per type of ward per month"),
+                              plotOutput("bed_occupancy_ward", width = "80%")
                           )
                       ),
                       div(class = "box_outputs",
                           h4_title(i18n$t("HAI Prevalence")),
                           div(class = "box_outputs_content",
-                          i18n$t("HAI point prevalence by type of ward"),
-                          plotOutput("hai_rate_ward", width = "80%")
+                              i18n$t("HAI point prevalence by type of ward"),
+                              plotOutput("hai_rate_ward", width = "80%")
                           )
                       )
              ),
@@ -486,20 +488,20 @@ ui <- fluidPage(
                                div(class = "box_outputs",
                                    h4_title(i18n$t("Blood Culture Contaminants")),
                                    div(class = "box_outputs_content",
-                                   fluidRow(
-                                     column(6, gaugeOutput("contaminants_gauge", width = "100%", height = "100px"), br()),
-                                     column(6, htmlOutput("contaminants_pct", width = "100%", height = "100px"))
-                                   )
+                                       fluidRow(
+                                         column(6, gaugeOutput("contaminants_gauge", width = "100%", height = "100px"), br()),
+                                         column(6, htmlOutput("contaminants_pct", width = "100%", height = "100px"))
+                                       )
                                    )
                                ),
                                div(class = "box_outputs",
                                    h4_title(i18n$t("Specimen Types")),
                                    div(class = "box_outputs_content",
-                                   i18n$t("Number of specimens per specimen type"),
-                                   highchartOutput("culture_specimen_type", height = "400px"),
-                                   
-                                   i18n$t("Culture results per specimen type"),
-                                   highchartOutput("culture_specgroup", height = "350px")
+                                       i18n$t("Number of specimens per specimen type"),
+                                       highchartOutput("culture_specimen_type", height = "400px"),
+                                       
+                                       i18n$t("Culture results per specimen type"),
+                                       highchartOutput("culture_specgroup", height = "350px")
                                    )
                                )
                         ),
@@ -507,21 +509,21 @@ ui <- fluidPage(
                                div(class = "box_outputs",
                                    h4_title(i18n$t("Growth / No Growth")),
                                    div(class = "box_outputs_content",
-                                   fluidRow(
-                                     column(6, gaugeOutput("isolates_growth_gauge", width = "100%", height = "100px"), br()),
-                                     column(6, htmlOutput("isolates_growth_pct", width = "100%", height = "100px"))
-                                   )
+                                       fluidRow(
+                                         column(6, gaugeOutput("isolates_growth_gauge", width = "100%", height = "100px"), br()),
+                                         column(6, htmlOutput("isolates_growth_pct", width = "100%", height = "100px"))
+                                       )
                                    )
                                ),
                                div(class = "box_outputs",
                                    h4_title(i18n$t("Isolates")),
                                    div(class = "box_outputs_content",
-                                   i18n$t("Most frequent 10 organisms in the plot and complete listing in the table. Contaminants are in red."),
-                                   highchartOutput("isolates_organism_nc"),
-                                   highchartOutput("isolates_organism_contaminant"),
-                                   br(), br(),
-                                   DTOutput("isolates_organism_table", width = "95%"),
-                                   br()
+                                       i18n$t("Most frequent 10 organisms in the plot and complete listing in the table. Contaminants are in red."),
+                                       highchartOutput("isolates_organism_nc"),
+                                       highchartOutput("isolates_organism_contaminant"),
+                                       br(), br(),
+                                       DTOutput("isolates_organism_table", width = "95%"),
+                                       br()
                                    )
                                )
                         )
