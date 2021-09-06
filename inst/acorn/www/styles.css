@@ -2,6 +2,12 @@
 https://bootswatch.com/flatly/
 https://bootswatch.com/4/flatly/bootstrap.css */
 
+.jhr {
+  display: inline;
+  vertical-align: middle;
+  padding-left: 10px;
+}
+
 #shiny-notification-panel {
   top: calc(50%);
   left: calc(30%);

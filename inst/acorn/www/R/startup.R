@@ -40,14 +40,25 @@ shared_acornamr_sec <- readRDS("./www/cred/bucket_cred/shared_acornamr_sec.rds")
 i18n <- Translator$new(translation_json_path = "./www/translations/translation.json")
 i18n$set_translation_language("en")
 
-# define all functions
-for(file in list.files('./www/R/functions/'))  source(paste0('./www/R/functions/', file), local = TRUE)
-
-acorn_theme <- bs_theme(bootswatch = "flatly", version = 4, "border-width" = "2px")
-acorn_theme_la <- bs_theme(bootswatch = "flatly", version = 4, "border-width" = "2px", base_font = "Phetsarath OT")
-
-h4_title <- function(...)  div(class = "h4_title", ...)
-
-tab <- function(...) {
-  shiny::tabPanel(..., class = "p-3 border border-top-0 rounded-bottom")
-}
+lang <- data.frame(
+  val = c("en", "fr", "la", "vn"),
+  img = c(
+    "<img src = './images/flags/gb.png' width = 20px><div class='jhr'>English</div></img>",
+    "<img src = './images/flags/fr.png' width = 20px><div class='jhr'>French</div></img>",
+    "<img src = './images/flags/la.png' width = 20px><div class='jhr'>Lao</div></img>",
+    "<img src = './images/flags/vn.png' width = 20px><div class='jhr'>Vietnamese</div></img>"
+  )
+)
+  
+  
+  # define all functions
+  for(file in list.files('./www/R/functions/'))  source(paste0('./www/R/functions/', file), local = TRUE)
+  
+  acorn_theme <- bs_theme(bootswatch = "flatly", version = 4, "border-width" = "2px")
+  acorn_theme_la <- bs_theme(bootswatch = "flatly", version = 4, "border-width" = "2px", base_font = "Phetsarath OT")
+  
+  h4_title <- function(...)  div(class = "h4_title", ...)
+  
+  tab <- function(...) {
+    shiny::tabPanel(..., class = "p-3 border border-top-0 rounded-bottom")
+  }
