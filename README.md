@@ -18,7 +18,7 @@ The ACORN Dashboard is a tool to connect, visualise and analyse ACORN collected 
 
 The app is available in three forms: a web app, a standalone app (Windows OS only), and an R package.
 
-(1) (Windows OS, macOS or Linux) The latest release of the web app can be accessed at https://moru.shinyapps.io/acorn-prototype/.
+(1) (Windows OS, macOS or Linux) The latest release of the web app can be accessed at https://moru.shinyapps.io/acorn2/.
 
 (2) (Windows OS) A standalone version of the app can be downloaded from [this repository' releases section](https://github.com/acornamr/acorn-dashboard/releases).
 
