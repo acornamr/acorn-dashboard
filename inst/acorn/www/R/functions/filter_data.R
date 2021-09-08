@@ -1,5 +1,5 @@
 fun_filter_enrolment <- function(data, input) {
-  if( is.null(data) ) return(NULL)
+  if( is_empty(data) ) return(NULL)
   
   data <- data %>% 
     filter(surveillance_category %in% input$filter_surveillance_cat,
@@ -29,7 +29,7 @@ fun_filter_enrolment <- function(data, input) {
 }
 
 fun_filter_specimen <- function(data, input) { 
-  if( is.null(data) ) return(NULL)
+  if( is_empty(data) ) return(NULL)
   
   if(! "blood" %in% input$filter_method_collection)           data <- data %>% filter(specgroup != "Blood")
   if(! "other_not_blood" %in% input$filter_method_collection) data <- data %>% filter(specgroup == "Blood")
@@ -43,7 +43,7 @@ fun_filter_isolate <- function(data, input) {
 }
 
 fun_filter_survey <- function(data, input) {
-  if( is.null(data) ) return(NULL)
+  if( is_empty(data) ) return(NULL)
   
   data %>% filter(ward_type %in% input$filter_ward_type,
                   survey_date >= input$filter_date_enrolment[1],
@@ -56,7 +56,7 @@ fun_filter_blood_only <- function(data)  data %>% filter(specgroup == "Blood")
 # Function that returns a deduplicated dataset following the provided method: by patient-episode or by patient Id
 # It's essential to use this only once possible other filters (surveillance type...) have already been applied
 fun_deduplication <- function(data, method = NULL) {
-  if(is.null(method)) stop("No deduplication method provided.")
+  if(is_empty(method)) stop("No deduplication method provided.")
   
   if(method == "No deduplication of isolates")  return(data)
   

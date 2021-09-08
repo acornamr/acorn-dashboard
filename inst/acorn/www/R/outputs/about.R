@@ -1,6 +1,6 @@
 output$about <- renderText({
   
-  about_data <- ifelse(is.null(meta()),
+  about_data <- ifelse(is_empty(meta()),
                        "No data available.<br><br>",
                        glue("Data generated on the {meta()$time_generation}: 
                             <ul>

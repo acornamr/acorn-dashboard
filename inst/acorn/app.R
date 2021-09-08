@@ -145,8 +145,7 @@ ui <- fluidPage(
                                pickerInput(
                                  "selected_language", label = span(icon("language"), i18n$t("Language")),
                                  choices = lang$val,
-                                 choicesOpt = list(content = lang$img),
-                                 width = "200px"
+                                 choicesOpt = list(content = lang$img)
                                ),
                                div(id = "login-basic",
                                    div(class = "well",
@@ -842,7 +841,7 @@ server <- function(input, output, session) {
     redcap_F03F01              = list(status = "hidden", msg = ""),
     redcap_consistent_outcomes = list(status = "hidden", msg = ""),
     redcap_age_category        = list(status = "hidden", msg = ""),
-    redcap_hai_dates           = list(status = "hidden", msg = ""),
+    redcap_hai_status          = list(status = "hidden", msg = ""),
     
     linkage_caseB  = list(status = "hidden", msg = ""),
     linkage_caseC  = list(status = "hidden", msg = ""),
@@ -1088,7 +1087,11 @@ server <- function(input, output, session) {
     
     source("./www/R/data/02_process_redcap_f01f05.R", local = TRUE)
     source("./www/R/data/01_read_redcap_hai.R", local = TRUE)
-    source("./www/R/data/02_process_redcap_hai.R", local = TRUE)
+
+    ifelse(is_empty(dl_hai_dta), 
+           checklist_status$redcap_hai_status <- list(status = "warning", msg = i18n$t("There is no HAI survey data")),
+           source("./www/R/data/02_process_redcap_hai.R", local = TRUE)
+    )
     
     removeModal()
     
