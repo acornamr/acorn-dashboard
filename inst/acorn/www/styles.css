@@ -2,6 +2,12 @@
 https://bootswatch.com/flatly/
 https://bootswatch.com/4/flatly/bootstrap.css */
 
+#twitter_follow {
+  margin-top: 50px;
+  font-size: 110%;
+  text-decoration-line: underline;
+}
+
 .jhr {
   display: inline;
   vertical-align: middle;

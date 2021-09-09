@@ -183,7 +183,8 @@ ui <- fluidPage(
                                         ),
                                         conditionalPanel("input.selected_language == 'fr'",
                                                          includeMarkdown("./www/markdown/about_acorn_2_fr.md")
-                                        )
+                                        ),
+                                        htmlOutput("twitter_feed")
                                  )
                                )
                         )
@@ -751,6 +752,14 @@ server <- function(input, output, session) {
     )
   })
   
+  
+  output$twitter_feed <- renderText({
+    ifelse(!nzchar(Sys.getenv("SHINY_PORT")),
+           HTML("<div id='twitter_follow'><a href = 'https://twitter.com/ACORN_AMR'><i class='fab fa-twitter' role='presentation' aria-label='twitter icon'></i>Follow us on Twitter, @ACORN_AMR</a></div>"),
+           HTML("<a class='twitter-timeline' data-width='100%' data-height='700' data-theme='light' href='https://twitter.com/ACORN_AMR?ref_src=twsrc%5Etfw'>Tweets by ACORN_AMR</a> <script async src='https://platform.twitter.com/widgets.js' charset='utf-8'></script>")
+    )
+  })
+  
   # (TODO v2.1) Management of filters shortcuts ----
   observeEvent(input$shortcut_filter_1, {})
   observeEvent(input$shortcut_filter_2, {})
@@ -1084,10 +1093,10 @@ server <- function(input, output, session) {
       showNotification(i18n$t("Critical issue detected: no data or wrong data format on REDCap server. Please report to ACORN data managers. Until resolution, only existing .acorn files can be used."), duration = NULL, type = "error", closeButton = FALSE)
       return()
     }
-
+    
     source("./www/R/data/02_process_redcap_f01f05.R", local = TRUE)
     source("./www/R/data/01_read_redcap_hai.R", local = TRUE)
-
+    
     ifelse(is_empty(dl_hai_dta), 
            checklist_status$redcap_hai_status <- list(status = "warning", msg = i18n$t("There is no HAI survey data")),
            source("./www/R/data/02_process_redcap_hai.R", local = TRUE)
