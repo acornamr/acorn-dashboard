@@ -169,21 +169,15 @@ ui <- fluidPage(
                                fluidRow(
                                  column(6,
                                         conditionalPanel("input.selected_language != 'fr'",
-                                                         includeMarkdown("./www/markdown/about_acorn_1_en.md")
+                                                         includeMarkdown("./www/markdown/about_acorn_en.md")
                                         ),
                                         conditionalPanel("input.selected_language == 'fr'",
-                                                         includeMarkdown("./www/markdown/about_acorn_1_fr.md")
-                                        ),
+                                                         includeMarkdown("./www/markdown/about_acorn_fr.md")
+                                        )
                                  ),
                                  column(6,
                                         h5(i18n$t("ACORN Participating Countries")),
                                         span(img(src = "./images/Map-ACORN-Sites-Global.png", id = "map_sites")),
-                                        conditionalPanel("input.selected_language != 'fr'",
-                                                         includeMarkdown("./www/markdown/about_acorn_2_en.md")
-                                        ),
-                                        conditionalPanel("input.selected_language == 'fr'",
-                                                         includeMarkdown("./www/markdown/about_acorn_2_fr.md")
-                                        ),
                                         htmlOutput("twitter_feed")
                                  )
                                )

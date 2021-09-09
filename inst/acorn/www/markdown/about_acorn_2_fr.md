@@ -1,3 +1,0 @@
-##### Pathogènes Cibles
-
-Les données AMR de tous les organismes de culture sont capturées et analysées par le système de surveillance ACORN. Les organismes cibles sont ceux de la liste WHO GLASS : *Streptococcus pneumoniae*, *Staphylococcus aureus*, *Salmonella spp.* (typhoidal et  non-typhoidal), *Pseudomonas aeruginosa*, *Neisseria meningitidis*, *Klebsiella pneumoniae*, *Haemophilus influenzae*, *Escherichia coli*, et *Acinetobacter spp*.
