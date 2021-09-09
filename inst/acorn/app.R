@@ -1084,7 +1084,7 @@ server <- function(input, output, session) {
       showNotification(i18n$t("Critical issue detected: no data or wrong data format on REDCap server. Please report to ACORN data managers. Until resolution, only existing .acorn files can be used."), duration = NULL, type = "error", closeButton = FALSE)
       return()
     }
-    
+
     source("./www/R/data/02_process_redcap_f01f05.R", local = TRUE)
     source("./www/R/data/01_read_redcap_hai.R", local = TRUE)
 
