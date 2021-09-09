@@ -1238,8 +1238,10 @@ server <- function(input, output, session) {
     ))
   })
   
-  # On confirmation that the file is being saved on server ----
+  
   observeEvent(input$save_acorn_server_confirm, { 
+    # On confirmation that the file is being saved on server ----
+    
     removeModal()
     id <- notify(i18n$t("Trying to save .acorn file on server."))
     on.exit({Sys.sleep(2); removeNotification(id)}, add = TRUE)
@@ -1275,7 +1277,7 @@ server <- function(input, output, session) {
     ## Non anonymised data ----
     redcap_f01f05_dta <- redcap_f01f05_dta()
     redcap_hai_dta <- redcap_hai_dta()
-    lab_dta <- lab_dta()
+    lab_dta <- lab_dta() %>% filter(patid %in% redcap_f01f05_dta$patient_id)
     acorn_dta <- acorn_dta()
     corresp_org_antibio <- corresp_org_antibio()
     lab_code <- lab_code()
@@ -1294,7 +1296,7 @@ server <- function(input, output, session) {
                secret = acorn_cred()$acorn_s3_secret,
                region = acorn_cred()$acorn_s3_region)
     
-    # update list of files to load
+    ## Update list of files to load ----
     dta <- get_bucket(bucket = acorn_cred()$acorn_s3_bucket,
                       key =  acorn_cred()$acorn_s3_key,
                       secret = acorn_cred()$acorn_s3_secret,
@@ -1307,6 +1309,8 @@ server <- function(input, output, session) {
     
     updatePickerInput(session, 'acorn_files_server', choices = acorn_files, selected = acorn_files[1])
     
+    
+    ## Switch to analysis ----
     checklist_status$acorn_dta_saved_server <- list(status = "okay", msg = i18n$t(".acorn file saved on server."))
     notify(i18n$t("Successfully saved .acorn file in the cloud. You can now explore acorn data."), id = id)
     startAnim(session, "float_about", type = "swing")
@@ -1314,8 +1318,9 @@ server <- function(input, output, session) {
   })
   
   
-  # On confirmation that the file is being saved locally ----
+  
   output$save_acorn_local_confirm <- downloadHandler(
+    # On confirmation that the file is being saved locally ----
     filename = glue("{input$name_file_dup}.acorn"),
     content = function(file) {
       removeModal()
