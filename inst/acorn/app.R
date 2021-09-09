@@ -755,7 +755,7 @@ server <- function(input, output, session) {
   
   output$twitter_feed <- renderText({
     ifelse(!nzchar(Sys.getenv("SHINY_PORT")),
-           HTML("<div id='twitter_follow'><a href = 'https://twitter.com/ACORN_AMR'><i class='fab fa-twitter' role='presentation' aria-label='twitter icon'></i>Follow us on Twitter, @ACORN_AMR</a></div>"),
+           HTML("<div id='twitter_follow'><a href = 'https://twitter.com/ACORN_AMR' target='_blank'><i class='fab fa-twitter' role='presentation' aria-label='twitter icon'></i>Follow us on Twitter, @ACORN_AMR</a></div>"),
            HTML("<a class='twitter-timeline' data-width='100%' data-height='700' data-theme='light' href='https://twitter.com/ACORN_AMR?ref_src=twsrc%5Etfw'>Tweets by ACORN_AMR</a> <script async src='https://platform.twitter.com/widgets.js' charset='utf-8'></script>")
     )
   })
