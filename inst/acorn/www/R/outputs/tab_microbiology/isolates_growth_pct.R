@@ -8,6 +8,7 @@ output$isolates_growth_pct <- renderText({
   )
   
   n <- dta %>%
+    fun_filter_cultured_only() %>%
     fun_filter_growth_only() %>%
     fun_deduplication(method = input$deduplication_method) %>%
     pull(specid) %>% n_distinct()
