@@ -880,7 +880,7 @@ server <- function(input, output, session) {
                 "Patient ID" = patient_id, 
                 "ACORN ID" = acorn_id,
                 "Date of admission" = date_admission, 
-                "Infection Episode" = infection_episode_nb,
+                "Infection Episode" = episode_count,
                 "Date of episode enrolment" = date_episode_enrolment, 
                 "Discharge date" = ho_discharge_date, 
                 "Discharge status" = ho_discharge_status,

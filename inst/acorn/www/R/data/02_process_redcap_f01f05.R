@@ -204,7 +204,7 @@ infection <- infection %>% transmute(
   ho_days_icu = as.numeric(ho_days_icu), 
   # deleted, 
   # f03_infection_hospital_outcome_complete, 
-  infection_episode_nb = as.numeric(group),
+  # group,
   ho_date_enrolment = as_date(ho_dmdtc), 
   ho_final_diag = recode(ho_fin_infect_diag, BJ = "Bone / Joint", CVS = "Cardiovascular system",
                          CNS = "Central nervous system", URTI = "ENT / Upper respiratory tract",
@@ -303,7 +303,7 @@ infection <- infection %>% transmute(
   # End F05
 ) %>%
   mutate(
-    episode_id = paste0(acorn_id, date_enrolment),
+    episode_id = glue("{acorn_id}-{date_enrolment}"),
     has_clinical_outcome = !is.na(ho_discharge_date),
     has_d28_outcome = !is.na(d28_date)) %>%
   mutate(across(cmb_aids:cmb_tub, ~ ifelse(. == "", NA, .))) %>%
@@ -316,6 +316,8 @@ infection <- infection %>% transmute(
                   transfer_hospital = "Unknown",
                   ho_final_diag = "Unknown diagnosis"))
 
+# episode_count for enrolment log
+infection <- infection |> group_by(episode_id) |> mutate(episode_count = row_number())
 
 # Flag if Day28 is not dead and clinical outcome is dead
 test <- infection %>% filter(ho_discharge_status == "Dead", d28_status != "Dead") %>% select(redcap_id, acorn_id)
@@ -405,7 +407,7 @@ infection$cci <- (infection$age_category == "Adult") * (
 
 # Reorder columns for save into .acorn
 infection <- infection %>% 
-  select("redcap_id", "episode_id",
+  select("redcap_id", "episode_id", "episode_count",
          # F01:
          "site_id", "date_enrolment", "patient_id", "acorn_id", "age_year", 
          "age_day", "sex", "date_admission", "transfer_hospital", "transfer_facility", 
@@ -444,7 +446,7 @@ infection <- infection %>%
          # F03
          "has_clinical_outcome",
          "ho_discharge_status", "ho_discharge_to", "ho_discharge_date", 
-         "ho_days_icu", "infection_episode_nb", "ho_date_enrolment", "ho_final_diag", 
+         "ho_days_icu", "ho_date_enrolment", "ho_final_diag", 
          # F04
          "has_d28_outcome",
          "d28_date", "d28_status", 
