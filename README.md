@@ -2,7 +2,6 @@
 
 # Overview
 
-<img src="./misc/acorn_sticker.png" alt = "ACORN sticker" height = "150" style = "float: right;/">
 A Clinically Oriented antimicrobial Resistance Network (ACORN) is a Wellcome funded project led by the Mahidol-Oxford Tropical Medicine Research Unit and the Oxford University of Oxford Clinical Research Unit.
 The major aim of ACORN is to develop and test a comprehensive data capture system for patient-focussed antimicrobial resistance (AMR) surveillance in low- and middle-income countries settings.
 
