@@ -60,7 +60,7 @@ dl_redcap_f03 <- dl_redcap_f01f05_dta %>%
 
 ## Test "Every hospital outcome record (F03) has a matching infection episode record (F02)" ----
 test <- dl_redcap_f03$recordid[! dl_redcap_f03$id_dmdtc %in% dl_redcap_f02$id_dmdtc]
-ifelse(nrow(test) == 0, 
+ifelse(is_empty(test),
        { checklist_status$redcap_F03F02 <- list(status = "okay", msg = i18n$t("Every hospital outcome record (F03) has a matching infection episode (F02)."))},
        { 
          checklist_status$redcap_F03F02 <- list(status = "warning", msg = i18n$t("Some hospital outcome records (F03) don't have a matching infection episode (F02). These records have been removed."))
@@ -91,7 +91,7 @@ ifelse(nrow(test) == 0,
 
 ## Test that "Every hospital outcome form (F03) has a matching patient enrolment (F01)"
 test <- dl_redcap_f03$recordid[! dl_redcap_f03$recordid %in% patient_enrolment$recordid]
-ifelse(nrow(test) == 0, 
+ifelse(is_empty(test),
        { checklist_status$redcap_F03F01 <- list(status = "okay", msg = i18n$t("Every hospital outcome record (F03) has a matching patient enrolment (F01).")) },
        { 
          checklist_status$redcap_F03F01 <- list(status = "warning", msg = i18n$t("Some hospital outcome records (F03) don't have a matching patient enrolment (F01).")) 
@@ -197,12 +197,9 @@ infection <- infection %>% transmute(
   # f02_deleted, 
   # f02_infected_episode_complete, 
   # Start fields from F03:
-  total_infection_episode_nb = as.numeric(no_num_episode), 
-  ho_discharge_status = recode(ho_dischargestatus, "ALIVE" = "Alive", "DEAD" = "Dead", 
-                               "MORIBUND" = "Discharged to die at home", "LAMA" = "Left against medical advice"),
-  ho_discharge_to = recode(ho_dischargeto, "HOM" = "Home", "HOS" = "Other hospital", 
-                           "LTC" = "Long-term care facility", "NA" = "Not applicable (death)",
-                           "UNK" = "Unknown"),
+  # no_num_episode,
+  ho_discharge_status = recode(ho_dischargestatus, "ALIVE" = "Alive", "DEAD" = "Dead", "MORIBUND" = "Discharged to die at home", "LAMA" = "Left against medical advice"),
+  ho_discharge_to = recode(ho_dischargeto, "HOM" = "Home", "HOS" = "Other hospital", "LTC" = "Long-term care facility", "NA" = "Not applicable (death)", "UNK" = "Unknown"),
   ho_discharge_date = as_date(ho_discharge_date), 
   ho_days_icu = as.numeric(ho_days_icu), 
   # deleted, 
@@ -446,7 +443,6 @@ infection <- infection %>%
          "antibiotic_any_other", "antibiotic_other_text", 
          # F03
          "has_clinical_outcome",
-         "total_infection_episode_nb", 
          "ho_discharge_status", "ho_discharge_to", "ho_discharge_date", 
          "ho_days_icu", "infection_episode_nb", "ho_date_enrolment", "ho_final_diag", 
          # F04
