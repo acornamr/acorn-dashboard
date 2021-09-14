@@ -20,7 +20,7 @@ output$contaminants_pct <- renderText({
     pull(specid) %>% n_distinct()
   
   ifelse(total == 0,
-         paste(em("No Blood Culture")),
+         paste(em(i18n$t("No Blood Culture"))),
          paste(h3(paste0(round(100 * n / total, 1), "%")), i18n$t("of blood cultures grew a potential contaminant."))
   )
                 

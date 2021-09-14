@@ -1,4 +1,4 @@
-app_version <- "2.0.4"  # Make sure that the app version is identical in DESCRIPTION and build_standalone_Windows.R
+app_version <- "2.0.5"  # Make sure that the app version is identical in DESCRIPTION and build_standalone_Windows.R
 
 # IMPORTANT: packages listed here should be identical in run_app.R and DESCRIPTION
 library(aws.s3)
@@ -41,8 +41,9 @@ i18n <- Translator$new(translation_json_path = "./www/translations/translation.j
 i18n$set_translation_language("en")
 
 lang <- data.frame(
-  val = c("en", "fr", "la", "vn"),
+  val = c("ba", "en", "fr", "la", "vn"),
   img = c(
+    "<img src = './images/flags/id.png' width = 20px><div class='jhr'>Bahasa Indonesia</div></img>",
     "<img src = './images/flags/gb.png' width = 20px><div class='jhr'>English</div></img>",
     "<img src = './images/flags/fr.png' width = 20px><div class='jhr'>French</div></img>",
     "<img src = './images/flags/la.png' width = 20px><div class='jhr'>Lao</div></img>",
