@@ -866,8 +866,7 @@ server <- function(input, output, session) {
                                       fun_filter_survey(input = input))
   acorn_dta_filter <- reactive(acorn_dta() %>% 
                                  fun_filter_enrolment(input = input) %>% 
-                                 fun_filter_specimen(input = input) %>%
-                                 fun_filter_isolate(input = input))
+                                 fun_filter_specimen(input = input))
   
   # Enrolment log
   enrolment_log <- reactive({

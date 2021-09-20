@@ -38,10 +38,6 @@ fun_filter_specimen <- function(data, input) {
   return(data)
 }
 
-fun_filter_isolate <- function(data, input) {
-  return(data)
-}
-
 fun_filter_survey <- function(data, input) {
   if( is_empty(data) ) return(NULL)
   
