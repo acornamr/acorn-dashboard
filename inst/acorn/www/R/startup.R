@@ -16,6 +16,7 @@ library(readxl)  # to read lab data
 library(REDCapR)  # to read clinical data
 library(RSQLite)  # to read lab data
 library(rmarkdown)  # pandoc_available()
+library(rvest)  # html_element()
 library(shiny)
 library(shinyanimate)
 library(shiny.i18n)  # i18n$t()

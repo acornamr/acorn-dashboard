@@ -142,6 +142,7 @@ ui <- fluidPage(
                       fluidRow(
                         column(3,
                                uiOutput('site_logo'),
+                               htmlOutput("app_github_versions"), br(),
                                pickerInput(
                                  "selected_language", label = span(icon("language"), i18n$t("Language")),
                                  choices = lang$val,
