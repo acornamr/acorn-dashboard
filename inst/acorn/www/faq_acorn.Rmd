@@ -39,8 +39,6 @@ The enrolment log provides a real-time summary of all patient enrolments and inf
 The expected 28 day follow-up date is 28 days following the final enrolment date for the admission (i.e. if 3 enrolments / infection episodes in admission, the 28 day follow-up was 28 days after enrolment #3).
 The second tab of the enrolment log Excel file contains a high-level summary of structural data errors, such as where an F02 (Infection episode form), F03 (Infection hospital outcome form), F04 (D28 form), or F05 (BSI episode form) cannot be linked to a F01 (Enrolment form). These errors can be further investigated by logging into the ACORN REDCap database and/or by discussion with the ACORN data manager.
 
-
-
 ### Clinical and Lab data linkage
 
 We describe below how routinely collected microbiology laboratory data is linked to clinical data in the app.
@@ -75,48 +73,6 @@ Most patients will have a single infection episode per admission, so will presen
 - For these, the specimen is linked the first episode only (and the later linkage removed).
 
 <img src= "images/linkage_cases.png" style="width: 100%"/>
-
-
-### Read .acorn files in R
-
-.acorn files can be read and loaded in memory with the command `base::load`.
-
-for example `load(file = "/Users/olivier/Desktop/KH001_2023-08-24_01H59.acorn")` loads the following R objects:
-
-- `redcap_f01f05_dta`: one patient enrolment per row. patient_id is hashed.
-- `redcap_hai_dta`: one survey element per row.
-- `corresp_org_antibio`: matrix of antibiotics and bugs as per the 
-- `acorn_dta`: one isolate per row. Contains only isolates that can be linked to a patient enrolment in `redcap_f01f05_dta`. patient_id is hashed.
-- `data_dictionary`: all data of the site lab data dictionary file that has been used during the generation of the .acorn file.
-- `lab_code`: all data of the ACORN2 lab code file that has been used during the generation of the .acorn file.
-- `meta`: metadata collected on generation of the .acorn file.
-
-
-With each file NAME.acorn, a NAME.acorn_non_anonymised is also created.
-
-This NAME.acorn_non_anonymised can also be loaded with the same command `load(file = "NAME.acorn_non_anonymised")` (supposing the file is located in the current working directory).
-
-The file contains the same objects as NAME.acorn, but with patient ids NOT hashed in `redcap_f01f05_dta` and `acorn_dta`. The file contains one element in addition:
-
-- `lab_dta`: one row per isolate as per the lab file provided on generation of the .acorn file.
-
-
-The non_anonmyised `.acorn` files must be handled carefully and securely, as they contain raw patient identifiers: these files may be used by local investigators to link data / bacterial isolates to additional research projects / quality improvement activities. Please contact the ACORN team for more information.
-
-## Dashboard Management
-
-### Modify the dashboard theme/language
-
-Every site can customize the ACORN dashboard.
-
-You can update ACORN logo by providing a logo (pgn format)
-
-You can ask for changes in the theme by providing a list of values for variables:
-
-- Base theme is flatly: https://bootswatch.com/flatly/; [CSS](https://bootswatch.com/4/flatly/bootstrap.css)
-- List of BS4 variables: https://github.com/rstudio/bslib/blob/master/inst/lib/bs/scss/_variables.scss 
-
-The dashboard can be made accessible in any language provided with translated elements in a tabular fomat. Please contact the ACORN team for more information.
 
 ## Contact ACORN Team
 
