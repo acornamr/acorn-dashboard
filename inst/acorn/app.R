@@ -837,7 +837,7 @@ server <- function(input, output, session) {
     lab_data_qc_7 = list(status = "hidden", msg = ""),
     lab_data_qc_8 = list(status = "hidden", msg = ""),
     
-    redcap_not_empty           = list(status = "hidden", msg = ""),
+    redcap_f01f05_status       = list(status = "hidden", msg = ""),
     redcap_columns             = list(status = "hidden", msg = ""),
     redcap_acornid             = list(status = "hidden", msg = ""),
     redcap_F04F01              = list(status = "hidden", msg = ""),
@@ -850,13 +850,13 @@ server <- function(input, output, session) {
     
     linkage_caseB  = list(status = "hidden", msg = ""),
     linkage_caseC  = list(status = "hidden", msg = ""),
-    linkage_result = list(status = "info", msg = "No .acorn has been generated"), # )i18n$t("No .acorn has been generated")),
+    linkage_result = list(status = "info", msg = "No .acorn has been generated"),
     
-    redcap_f01f05_dta = list(status = "info", msg = "Clinical data not provided"), # i18n$t("Clinical data not provided")),
-    lab_dta           = list(status = "info", msg = "Lab data not provided"), # i18n$t("Lab data not provided")),
+    redcap_f01f05_dta = list(status = "info", msg = "Clinical data not provided"),
+    lab_dta           = list(status = "info", msg = "Lab data not provided"),
     
     acorn_dta_saved_local = list(status = "hidden", msg = ""),
-    acorn_dta_saved_server = list(status = "info", msg = "No .acorn has been saved") # i18n$t("No .acorn has been saved"))
+    acorn_dta_saved_server = list(status = "info", msg = "No .acorn has been saved")
   )
   
   # Secondary datasets (derived from primary datasets)
@@ -1066,57 +1066,100 @@ server <- function(input, output, session) {
   
   # On "Get Clinical Data from REDCap server" ----
   observeEvent(input$get_redcap_data, {
-    if(! has_internet()) {
+    continue <<- TRUE
+
+    if(input$cred_site == "demo") {
+      showNotification(i18n$t("Can't connect to REDCap with 'demo' credentials"), type = "error")
+      continue <<- FALSE
+      fail_read_redcap  <<- FALSE
+    }
+    
+    if (!has_internet()) {
       showNotification(i18n$t("Not connected to internet."), type = "error")
-      Sys.sleep(5)
-      return()
+      continue <<- FALSE
+      fail_read_redcap  <<- FALSE
     }
     
-    showModal(modalDialog(
-      title = i18n$t("Retriving data from REDCap server."), footer = NULL, size = "l",
-      div(
-        p(i18n$t("It might take a couple of minutes. This window will close on completion.")),
-        textOutput("text_redcap_f01f05_log"),
-        textOutput("text_redcap_hai_log")))
-    )
+    if (continue) {
+      showModal(modalDialog(
+        title = i18n$t("Retriving data from REDCap server."), footer = modalButton(i18n$t("Dismiss")), size = "l",
+        div(
+          p(i18n$t("It might take a couple of minutes. This window will close on completion.")),
+          textOutput("text_redcap_f01f05_log"),
+          textOutput("text_redcap_hai_log"))
+      ))
+      fail_read_redcap  <<- FALSE
+      source("./www/R/data/01_read_redcap_f01f05.R", local = TRUE)
+    }
     
-    source("./www/R/data/01_read_redcap_f01f05.R", local = TRUE)
+    # Case when REDCap log "CRITICAL ERROR: REDCap server is offline!" and also returns an empty dataframe.
+    if (!fail_read_redcap) {
+      if (is_empty(dl_redcap_f01f05_dta))  fail_read_redcap  <<- TRUE
+    }
     
-    if(any(c(checklist_status$redcap_not_empty$status,
-             checklist_status$redcap_columns$status) == "ko")) {
+    if(fail_read_redcap) {
+      shinyjs::html(id = "text_redcap_f01f05_log", i18n$t("Issue detected with REDCap data. Please report to ACORN data managers. Until resolution, only existing .acorn files can be used."), add = TRUE)
+      checklist_status$redcap_f01f05_status <- list(status = "ko", msg = i18n$t("The REDCap dataset is empty/in wrong format. Please contact ACORN support."))
+      continue <<- FALSE
+    }
+    
+    if (continue) {
+      if (!fail_read_redcap) {
+        if(nrow(dl_redcap_f01f05_dta) == 0 | ncol(dl_redcap_f01f05_dta) != 211 & ! all(names(dl_redcap_f01f05_dta) == columns_redcap)) {
+          shinyjs::html(id = "text_redcap_f01f05_log", i18n$t("Issue detected with REDCap data. Please report to ACORN data managers. Until resolution, only existing .acorn files can be used."), add = TRUE)
+          checklist_status$redcap_f01f05_status <- list(status = "ko", msg = i18n$t("The REDCap dataset is empty/in wrong format. Please contact ACORN support."))
+          continue <<- FALSE
+        }
+      }
+    }
+    
+    if(continue) { 
+      shinyjs::html(id = "text_redcap_f01f05_log", "<hr/>", add = TRUE)
+      checklist_status$redcap_f01f05_status <- list(status = "okay", msg = i18n$t("The REDCap dataset is in the right format."))
+      source("./www/R/data/02_process_redcap_f01f05.R", local = TRUE)
+    }
+    
+    if(continue) {
+      source("./www/R/data/01_read_redcap_hai.R", local = TRUE)
+    }
+    
+    # Case when REDCap log "CRITICAL ERROR: REDCap server is offline!" and also returns an empty dataframe.
+    if(continue) {
+      if (!fail_read_redcap) {
+        if (is_empty(dl_hai_dta))  fail_read_redcap  <<- TRUE
+      }
       
-      showNotification(i18n$t("Critical issue detected: no data or wrong data format on REDCap server. Please report to ACORN data managers. Until resolution, only existing .acorn files can be used."), duration = NULL, type = "error", closeButton = FALSE)
-      return()
-    }
-    
-    source("./www/R/data/02_process_redcap_f01f05.R", local = TRUE)
-    source("./www/R/data/01_read_redcap_hai.R", local = TRUE)
-    
-    ifelse(is_empty(dl_hai_dta), 
-           checklist_status$redcap_hai_status <- list(status = "warning", msg = i18n$t("There is no HAI survey data")),
-           source("./www/R/data/02_process_redcap_hai.R", local = TRUE)
-    )
-    
-    removeModal()
-    
-    if(any(c(checklist_status$redcap_not_empty$status,
-             checklist_status$redcap_columns$status,
-             checklist_status$redcap_acornid$status,
-             checklist_status$redcap_F04F01$status,
-             checklist_status$redcap_F03F02$status,
-             checklist_status$redcap_F02F01$status,
-             checklist_status$redcap_F03F01$status,
-             checklist_status$redcap_consistent_outcomes$status,
-             checklist_status$redcap_age_category$status) == "ko")) {
-      checklist_status$redcap_f01f05_dta <- list(status = "ko", msg = i18n$t("Critical errors with clinical data."))
+      if(fail_read_redcap) {
+        shinyjs::html(id = "text_redcap_f01f05_log", i18n$t("Issue detected with REDCap data. Please report to ACORN data managers. Until resolution, only existing .acorn files can be used."), add = TRUE)
+        checklist_status$redcap_hai_status <- list(status = "warning", msg = i18n$t("There is no HAI survey data"))
+      }
       
-      showNotification(i18n$t("There is a critical issue with clinical data. The issue should be fixed in REDCap."), type = "error", duration = NULL)
-    } else {
-      checklist_status$redcap_f01f05_dta <- list(status = "okay", msg = i18n$t(("Clinical data successfully provided.")))
+      source("./www/R/data/02_process_redcap_hai.R", local = TRUE)
+      
+      ifelse(any(c(checklist_status$redcap_acornid$status,
+                   checklist_status$redcap_F04F01$status,
+                   checklist_status$redcap_F03F02$status,
+                   checklist_status$redcap_F02F01$status,
+                   checklist_status$redcap_F03F01$status,
+                   checklist_status$redcap_consistent_outcomes$status,
+                   checklist_status$redcap_age_category$status) == "ko"),
+             {
+               checklist_status$redcap_f01f05_dta <- list(status = "ko", msg = i18n$t("Critical errors with clinical data."))
+               showNotification(i18n$t("There is a critical issue with clinical data. The issue should be fixed in REDCap."), type = "error", duration = NULL)
+               continue <<- FALSE
+             },
+             {
+               checklist_status$redcap_f01f05_dta <- list(status = "okay", msg = i18n$t(("Clinical data successfully provided."))) 
+             }
+      )
     }
-    redcap_f01f05_dta(infection)
-    redcap_hai_dta(dl_hai_dta)
-    acorn_origin("generated")
+    
+    if(continue) {
+      redcap_f01f05_dta(infection)
+      redcap_hai_dta(dl_hai_dta)
+      acorn_origin("generated")
+      removeModal()
+    }
   })
   
   # On "Download Enrolment Log" ----
