@@ -86,7 +86,8 @@ https://bootswatch.com/4/flatly/bootstrap.css */
 }
 
 #logo-img {
-  width: 100%
+  width: 100%;
+  margin-bottom: 20px;
 }
 
 #header-filter {
