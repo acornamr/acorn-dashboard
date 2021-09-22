@@ -64,6 +64,7 @@ if (window.hljs) {
 <li><a href="#antimicrobial-resistance-reporting">⚠️ Antimicrobial resistance reporting ⚠️</a></li>
 <li><a href="#blood-culture-contaminants">⚠️Blood culture contaminants ⚠️</a></li>
 <li><a href="#target-pathogens">Target pathogens</a></li>
+<li><a href="#definition-of-updated-charlson-comorbidity-index-ucci">Definition of Updated Charlson Comorbidity Index (uCCI)</a></li>
 </ul></li>
 <li><a href="#data-processing">Data Processing</a>
 <ul>
@@ -93,6 +94,119 @@ if (window.hljs) {
 <div id="target-pathogens" class="section level3">
 <h3>Target pathogens</h3>
 <p>ACORN will capture data on cultured organisms. However, specific surveillance targets are the blood culture relevant organism on WHO GLASS pathogen list (2021 update): <em>Acinetobacter</em> species, <em>Escherichia coli</em>, <em>Haemophilus influenzae</em>, <em>Klebsiella pneumoniae</em>, <em>Neisseria meningitidis</em>, <em>Pseudomonas aeruginosa</em>, <em>Salmonella enterica</em> (non-typhoidal and typhoidal), <em>Staphylococcus aureus</em>, <em>Streptococcus pneumoniae</em>.</p>
+</div>
+<div id="definition-of-updated-charlson-comorbidity-index-ucci" class="section level3">
+<h3>Definition of Updated Charlson Comorbidity Index (uCCI)</h3>
+<p>In ACORN, the uCCI is calculated for adult patients (&gt;= 18 y.o.) only.</p>
+<p>Key reference: <em>Ternavasio-de la Vega HG et al (2018). The updated Charlson comorbidity index is a useful predictor of mortality in patients with Staphylococcus aureus bacteraemia. Epidemiology and Infection 146, 122–2130. <a href="https://doi.org/10.1017/S0950268818002480" class="uri">https://doi.org/10.1017/S0950268818002480</a></em></p>
+<table>
+<colgroup>
+<col width="54%" />
+<col width="11%" />
+<col width="34%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Comorbid conditions</th>
+<th>uCCI weights</th>
+<th>ACORN comorbidity</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Myocardial infarction</td>
+<td>0</td>
+<td>NOT INCLUDED*</td>
+</tr>
+<tr class="even">
+<td>Congestive heart failure</td>
+<td>2</td>
+<td>Congestive heart failure</td>
+</tr>
+<tr class="odd">
+<td>Peripheral vascular disease</td>
+<td>0</td>
+<td>NOT INCLUDED*</td>
+</tr>
+<tr class="even">
+<td>Cerebrovascular disease</td>
+<td>0</td>
+<td>NOT INCLUDED*</td>
+</tr>
+<tr class="odd">
+<td>Dementia</td>
+<td>2</td>
+<td>Dementia</td>
+</tr>
+<tr class="even">
+<td>Chronic pulmonary disease</td>
+<td>1</td>
+<td>Chronic pulmonary disease</td>
+</tr>
+<tr class="odd">
+<td>Rheumatic disease</td>
+<td>1</td>
+<td>Connective tissue / rheumatologic disease</td>
+</tr>
+<tr class="even">
+<td>Peptic ulcer disease</td>
+<td>0</td>
+<td>Peptic ulcer*</td>
+</tr>
+<tr class="odd">
+<td>Mild liver disease</td>
+<td>2</td>
+<td>Mild liver disease</td>
+</tr>
+<tr class="even">
+<td>Diabetes without chronic complication</td>
+<td>0</td>
+<td>Diabetes*</td>
+</tr>
+<tr class="odd">
+<td>Diabetes with chronic complication</td>
+<td>1</td>
+<td>Diabetes with end organ damage</td>
+</tr>
+<tr class="even">
+<td>Hemiplegia or paraplegia</td>
+<td>2</td>
+<td>Hemi- or paraplegia</td>
+</tr>
+<tr class="odd">
+<td>Renal disease</td>
+<td>1</td>
+<td>Renal disease</td>
+</tr>
+<tr class="even">
+<td>Any malignancy without metastasis, including leukaemia and lymphoma</td>
+<td>2</td>
+<td>Cancer/leukaemia</td>
+</tr>
+<tr class="odd">
+<td>Moderate or severe liver disease</td>
+<td>4</td>
+<td>Moderate or severe liver disease</td>
+</tr>
+<tr class="even">
+<td>Metastatic solid tumour</td>
+<td>6</td>
+<td>Metastatic solid tumour</td>
+</tr>
+<tr class="odd">
+<td>AIDS (excluded asymptomatic infection)</td>
+<td>4</td>
+<td>AIDS</td>
+</tr>
+<tr class="even">
+<td>Maximum comorbidity score</td>
+<td>24</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p></br></p>
+<p>Additional ACORN comorbidities, which were requested to be included by the WHO GLASS team as LMIC relevant, are not included as part of the uCCI: malaria, malnutrition, peptic ulcer*, diabetes*, tuberculosis, HIV on ART, HIV without ART (those marked with an * were included in the original CCI).</p>
 </div>
 </div>
 <div id="data-processing" class="section level2">
