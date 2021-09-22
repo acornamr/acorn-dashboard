@@ -118,8 +118,7 @@ lang <- data.frame(
   # define all functions
   for(file in list.files('./www/R/functions/'))  source(paste0('./www/R/functions/', file), local = TRUE)
   
-  acorn_theme <- bs_theme(bootswatch = "flatly", version = 4, "border-width" = "2px")
-  acorn_theme_la <- bs_theme(bootswatch = "flatly", version = 4, "border-width" = "2px", base_font = "Phetsarath OT")
+  acorn_theme_la <- bslib::bs_theme("border-width" = "2px", base_font = "Phetsarath OT")
   
   h4_title <- function(...)  div(class = "h4_title", ...)
   

@@ -4,7 +4,7 @@ source('./www/R/startup.R', local = TRUE)
 # Definition of UI ----
 ui <- fluidPage(
   title = "ACORN | A Clinically Oriented antimicrobial Resistance Network",
-  theme = acorn_theme,
+  theme = bslib::bs_theme(version = 4, bootswatch = "flatly", "border-width" = "2px"),
   includeCSS("www/styles.css"),
   withAnim(),  # to add animation to UI elements using shinyanimate
   usei18n(i18n),  # for translation
@@ -31,6 +31,7 @@ ui <- fluidPage(
   
   navbarPage(id = 'tabs',
              title = a(img(src = "logo_acorn.png", style = "height: 40px; position: relative;")),
+             windowTitle = "ACORN | A Clinically Oriented antimicrobial Resistance Network",
              collapsible = TRUE, inverse = FALSE, 
              position = "static-top",
              
@@ -324,7 +325,7 @@ ui <- fluidPage(
                                          column(3, i18n$t("Variables in Table:")),
                                          column(9,
                                                 checkboxGroupButtons("variables_table", label = NULL, 
-                                                                     size = "sm", status = "primary", checkIcon = list(yes = icon("check-square"), no = icon("square-o")), individual = TRUE,
+                                                                     size = "sm", status = "primary", checkIcon = list(yes = icon("check-square"), no = icon("square")), individual = TRUE,
                                                                      choices = c("Place of Infection" = "surveillance_category", "Type of Ward" = "ward_type", "Ward" = "ward", "Clinical Outcome" = "clinical_outcome", "Day-28 Outcome" = "d28_outcome"), 
                                                                      selected = c("surveillance_category", "ward_type", "ward", "clinical_outcome", "d28_outcome"))
                                          )
@@ -742,11 +743,9 @@ server <- function(input, output, session) {
   hideTab("tabs", target = "amr")
   
   # Management of CSS ----
-  observe({
-    session$setCurrentTheme(
-      if (isTRUE(input$selected_language == "la")) acorn_theme_la else acorn_theme
-    )
-  })
+  # observe({
+  #     if (isTRUE(input$selected_language == "la"))  session$setCurrentTheme(acorn_theme_la)
+  # })
   
   
   output$twitter_feed <- renderText({
