@@ -13,7 +13,7 @@ output$app_github_versions <- renderText({
   v_app_version <- glue("v{app_version}")
   
   if(exists("version_github") & version_github == v_app_version) return(paste0("<div class='cl-success'><i class='fa fa-check'></i>", 
-                                                                             i18n$t("You are using the latest release version of the ACORN Dashboard!"), 
+                                                                             i18n$t("Your ACORN Dashboard is up to date."), 
                                                                              "</div>"))
 
   if(exists("version_github") & version_github != v_app_version) return(paste0("<div class='cl-warning'><i class='fa fa-exclamation-triangle'></i>", 

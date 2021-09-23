@@ -95,20 +95,6 @@ https://bootswatch.com/4/flatly/bootstrap.css */
   padding-bottom: 20px;
 }
 
-#float_about {
-  top: 10px;
-  right: 90px;
-  z-index: 999999999;
-  position: absolute;
-}
-
-#float_faq {
-  top: 10px;
-  right: 10px;
-  z-index: 999999999;
-  position: absolute;
-}
-
 .checklist {
   width: 300px;
 }
