@@ -1089,17 +1089,17 @@ server <- function(input, output, session) {
       ))
       fail_read_redcap  <<- FALSE
       source("./www/R/data/01_read_redcap_f01f05.R", local = TRUE)
-    }
-    
-    # Case when REDCap log "CRITICAL ERROR: REDCap server is offline!" and also returns an empty dataframe.
-    if (!fail_read_redcap) {
-      if (is_empty(dl_redcap_f01f05_dta))  fail_read_redcap  <<- TRUE
-    }
-    
-    if(fail_read_redcap) {
-      shinyjs::html(id = "text_redcap_f01f05_log", i18n$t("Issue detected with REDCap data. Please report to ACORN data managers. Until resolution, only existing .acorn files can be used."), add = TRUE)
-      checklist_status$redcap_f01f05_status <- list(status = "ko", msg = i18n$t("The REDCap dataset is empty/in wrong format. Please contact ACORN support."))
-      continue <<- FALSE
+      
+      # Case when REDCap log "CRITICAL ERROR: REDCap server is offline!" and also returns an empty dataframe.
+      if (!fail_read_redcap) {
+        if (is_empty(dl_redcap_f01f05_dta))  fail_read_redcap  <<- TRUE
+      }
+      
+      if(fail_read_redcap) {
+        shinyjs::html(id = "text_redcap_f01f05_log", i18n$t("Issue detected with REDCap data. Please report to ACORN data managers. Until resolution, only existing .acorn files can be used."), add = TRUE)
+        checklist_status$redcap_f01f05_status <- list(status = "ko", msg = i18n$t("The REDCap dataset is empty/in wrong format. Please contact ACORN support."))
+        continue <<- FALSE
+      }
     }
     
     if (continue) {
