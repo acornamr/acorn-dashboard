@@ -1,4 +1,5 @@
-app_version <- "2.0.6"  # Make sure that the app version is identical in DESCRIPTION and build_standalone_Windows.R
+app_version <- "2.0.7"  # Make sure that the app version is identical in DESCRIPTION and build_standalone_Windows.R
+session_start_time <- format(Sys.time(), "%Y-%m-%d_%HH%M")
 
 # IMPORTANT: packages listed here should be identical in run_app.R and DESCRIPTION
 library(aws.s3)
@@ -10,12 +11,12 @@ library(flexdashboard)  # gaugeOutput()
 library(glue)
 library(highcharter)
 library(lubridate)
-library(openssl)
+library(markdown)  # to avoid issue with includeMarkdown() on shinyapps.io deployment
+library(openssl)  # aes_cbc_decrypt()
 library(readr)  # to read lab data
 library(readxl)  # to read lab data
 library(REDCapR)  # to read clinical data
 library(RSQLite)  # to read lab data
-library(rmarkdown)  # pandoc_available()
 library(rvest)  # html_element()
 library(shiny)
 library(shinyanimate)
@@ -26,6 +27,10 @@ library(tidyverse)
 library(writexl)
 
 cols_sir <- c("#2c3e50", "#f39c12", "#e74c3c")  # resp. S, I, R
+
+acorn_theme <-    bslib::bs_theme(version = 4, bootswatch = "flatly", "border-width" = "2px")
+acorn_theme_la <- bslib::bs_theme(version = 4, bootswatch = "flatly", "border-width" = "2px", base_font = "Phetsarath OT")
+
 hc_export_kind <- c("downloadJPEG", "downloadCSV")
 
 code_sites <- c("demo",
@@ -93,8 +98,6 @@ columns_redcap <- c("recordid", "redcap_repeat_instrument", "redcap_repeat_insta
                     "bsi_is_primary", "bsi_sec_source", "bsi_sec_source_oth", "bsi_is_com_implant", 
                     "bsi_is_com_2days", "bsi_is_com_fever", "f05_deleted", "f05_bsi_complete")
 
-session_start_time <- format(Sys.time(), "%Y-%m-%d_%HH%M")
-
 # safe to expose since the shared_acornamr bucket can only be listed/read
 shared_acornamr_key <- readRDS("./www/cred/bucket_cred/shared_acornamr_key.rds")
 shared_acornamr_sec <- readRDS("./www/cred/bucket_cred/shared_acornamr_sec.rds")
@@ -113,15 +116,6 @@ lang <- data.frame(
     "<img src = './images/flags/vn.png' width = 20px><div class='jhr'>Vietnamese</div></img>"
   )
 )
-  
-  
-  # define all functions
-  for(file in list.files('./www/R/functions/'))  source(paste0('./www/R/functions/', file), local = TRUE)
-  
-  acorn_theme_la <- bslib::bs_theme("border-width" = "2px", base_font = "Phetsarath OT")
-  
-  h4_title <- function(...)  div(class = "h4_title", ...)
-  
-  tab <- function(...) {
-    shiny::tabPanel(..., class = "p-3 border border-top-0 rounded-bottom")
-  }
+
+# source functions
+for(file in list.files('./www/R/functions/'))  source(paste0('./www/R/functions/', file), local = TRUE)
