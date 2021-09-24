@@ -2,6 +2,9 @@
 https://bootswatch.com/flatly/
 https://bootswatch.com/4/flatly/bootstrap.css */
 
+/* Makes the navbar smaller */
+.navbar { padding-top: 0.1rem; padding-bottom: 0.1rem; }
+
 #twitter_follow {
   margin-top: 50px;
   font-size: 110%;
@@ -66,15 +69,6 @@ https://bootswatch.com/4/flatly/bootstrap.css */
   border-color: black;
   border-top-style: double;
   border-width: 3px 0 0 0;
-}
-
-.box_filter {
-  padding: 2px;
-}
-
-/* Otherwise the navbar is very tall */
-.navbar-static-top{
-  height: 60px;
 }
 
 #filter_box {

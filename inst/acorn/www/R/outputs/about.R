@@ -1,7 +1,7 @@
 output$about <- renderText({
   
   about_data <- ifelse(is_empty(meta()),
-                       "No data available.<br><br>",
+                       "No data available.",
                        glue("Data generated on the {meta()$time_generation}: 
                             <ul>
                             <li>App version: {meta()$app_version}</li>
@@ -10,5 +10,9 @@ output$about <- renderText({
                             <li>Comments: {meta()$comment}</li></ul>")
   )
   
-  paste(p(glue("App version: {app_version}")), about_data)
+  paste(
+    div(class = "alert alert-primary",
+      p(glue("App version: {app_version}")), HTML(about_data)
+      )
+  )
 })
