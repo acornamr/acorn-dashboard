@@ -13,21 +13,22 @@ https://bootswatch.com/4/flatly/bootstrap.css */
   padding-left: 10px;
 }
 
+/* https://github.com/rstudio/shiny/issues/2988 */
 #shiny-notification-panel {
-  top: calc(50%);
-  left: calc(30%);
+  top: 0;
+  bottom: unset;
+  left: 0;
+  right: 0;
   margin-left: auto;
   margin-right: auto;
   width: 100%;
-  height: 100%;
-  font-size: 120%;
-  opacity = 0.2;
+  max-width: 450px;
 }
 
 .shiny-notification {
   opacity: 1;
-  max-width: 500px;
   text-align: center;
+  font-size: 110%;
 }
 
 
