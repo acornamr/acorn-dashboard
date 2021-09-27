@@ -1,5 +1,7 @@
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
+> ACORN | A Clinically Oriented antimicrobial Resistance Network
+
 # Overview
 
 A Clinically Oriented antimicrobial Resistance Network (ACORN) is a Wellcome funded project led by the Mahidol-Oxford Tropical Medicine Research Unit and the Oxford University of Oxford Clinical Research Unit.
