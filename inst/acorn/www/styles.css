@@ -94,17 +94,18 @@ https://bootswatch.com/4/flatly/bootstrap.css */
   width: 300px;
 }
 
-.faq {
-  width: 800px;
-}
 
+/*# TODO v2.1: reactivate this section
 .filter_box_small {
   width: 300px;
 }
+*/
 
 .text_center {
   text-align: center;
 }
+
+/* For box outputs */
 
 .box_outputs {
   margin-bottom: 25px;
@@ -129,15 +130,7 @@ https://bootswatch.com/4/flatly/bootstrap.css */
   margin-bottom: 5px;
 }
 
-.summary_filter_start {
-  text-align: center;
-}
-
-.summary_filter_end {
-  color: gray;
-  text-align: center;
-}
-
+/* For summary numbers in boxes */
 .box_summary {
   border: 2px solid #2c3e50;
   padding: 5px;
@@ -145,6 +138,7 @@ https://bootswatch.com/4/flatly/bootstrap.css */
   margin: 5px;
   background-color: rgba(0,0,0,0.03);
 }
+
 
 .right {
   float: right;
@@ -155,25 +149,8 @@ https://bootswatch.com/4/flatly/bootstrap.css */
    color: #e74c3c;
 }
 
-/* quick access to different font sizes */
-.f-50 { font-size: 50%; }
-.f-60 { font-size: 60%;}
-.f-75 { font-size: 75%;}
-.f-85 { font-size: 85%;}
-.f-100 { font-size: 100%; }
-.f-115 { font-size: 115%; }
-.f-125 { font-size: 125%; }
-.f-150 { font-size: 150%; }
-.f-200 { font-size: 200%; }
-
 .smallcaps {
   font-variant: small-caps;
   font-weight: 900;
   font-size: 125%;
 }
-
-/* quick access to width */
-.w-25 { width: 25%; }
-.w-33 { width: 33%; }
-.w-50 { width: 50%; }
-.w-100 { width: 100%; }

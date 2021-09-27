@@ -9,7 +9,7 @@ output$nb_enrolments <- renderText({
     div(class = "box_summary", 
         span(class = "numb", nb_enrolments_filter), 
         span(class = "smallcaps", i18n$t("Patient enrolments")),
-        span(class = "badge badge-light f-100 right", ifelse(prop < 100, glue("{prop}% of {nb_enrolments} total"), ""))
+        span(class = "badge badge-light right", ifelse(prop < 100, glue("{prop}% of {nb_enrolments} total"), ""))
     )
   )
 })
@@ -25,7 +25,7 @@ output$nb_patients_microbiology <- renderText({
     div(class = "box_summary", 
         span(class = "numb", nb_microbiology_filter), 
         span(class = "smallcaps", i18n$t("With Microbiology")),
-        span(class = "badge badge-light f-100 right", glue("{prop}% of {nb_enrolments_filter}"))
+        span(class = "badge badge-light right", glue("{prop}% of {nb_enrolments_filter}"))
     )
   )
 })
@@ -41,7 +41,7 @@ output$nb_specimens <- renderText({
     div(class = "box_summary", 
         span(class = "numb", nb_specimens), 
         span(class = "smallcaps", i18n$t("Specimens Collected")),
-        span(class = "badge badge-light f-100 right", paste(nb_per, i18n$t("specimens per enrolment")))
+        span(class = "badge badge-light right", paste(nb_per, i18n$t("specimens per enrolment")))
     )
   )
 })
