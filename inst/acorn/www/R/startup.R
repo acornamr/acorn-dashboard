@@ -109,11 +109,11 @@ i18n$set_translation_language("en")
 lang <- data.frame(
   val = c("ba", "en", "fr", "la", "vn"),
   img = c(
-    "<img src = './images/flags/id.png' width = 20px><div class='jhr'>Bahasa Indonesia</div></img>",
-    "<img src = './images/flags/gb.png' width = 20px><div class='jhr'>English</div></img>",
-    "<img src = './images/flags/fr.png' width = 20px><div class='jhr'>French</div></img>",
-    "<img src = './images/flags/la.png' width = 20px><div class='jhr'>Lao</div></img>",
-    "<img src = './images/flags/vn.png' width = 20px><div class='jhr'>Vietnamese</div></img>"
+    "<img src = './images/flags/id.png' width = 20px><div class='language_name'>Bahasa Indonesia</div></img>",
+    "<img src = './images/flags/gb.png' width = 20px><div class='language_name'>English</div></img>",
+    "<img src = './images/flags/fr.png' width = 20px><div class='language_name'>French</div></img>",
+    "<img src = './images/flags/la.png' width = 20px><div class='language_name'>Lao</div></img>",
+    "<img src = './images/flags/vn.png' width = 20px><div class='language_name'>Vietnamese</div></img>"
   )
 )
 
