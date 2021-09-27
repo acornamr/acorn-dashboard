@@ -23,7 +23,7 @@ ui <- page(
                    div(id = "filter_box", class = "well",
                        fluidRow(
                          column(8,
-                                div(class = "smallcaps", class = "center", span(icon("hospital-user"), i18n$t("Enrolments"))),
+                                div(class = "smallcaps", class = "text_center", span(icon("hospital-user"), i18n$t("Enrolments"))),
                                 checkboxGroupButtons("filter_enrolments",
                                                      choices = c("Surveillance Category", "Type of Ward", "Date of Enrolment/Survey", "Age Category",
                                                                  "Initial Diagnosis", "Final Diagnosis", "Clinical Severity", "Clinical/D28 Outcome",
@@ -70,7 +70,7 @@ ui <- page(
                                 actionLink("shortcut_reset_filters", label = span(icon("ban"), i18n$t("Reset Enrolments Filters")))
                          ),
                          column(4,
-                                div(class = "smallcaps", class = "center", span(icon("vial"), i18n$t("Specimens, Isolates"))),
+                                div(class = "smallcaps", class = "text_center", span(icon("vial"), i18n$t("Specimens, Isolates"))),
                                 prettyCheckboxGroup("filter_method_collection", NULL,  shape = "curve", status = "primary", inline = TRUE,
                                                     choiceNames = c("Blood Culture", "Other Specimens:"),
                                                     choiceValues = c("blood", "other_not_blood"),
@@ -131,7 +131,7 @@ ui <- page(
                  ),
                  div(id = "login-basic",
                      div(class = "well",
-                         h5(class = "text-center",  i18n$t("Please log in")),
+                         h5(class = "text_center",  i18n$t("Please log in")),
                          selectInput("cred_site", tagList(icon("hospital"), i18n$t("Site")),
                                      choices = code_sites),
                          conditionalPanel("input.cred_site != 'demo'", div(
@@ -139,7 +139,7 @@ ui <- page(
                            passwordInput("cred_password", tagList(icon("unlock-alt"), i18n$t("Password")), placeholder = "enter password")
                          )
                          ), 
-                         div(class = "text-center",
+                         div(class = "text_center",
                              actionButton("cred_login", label = i18n$t("Log in"), class = "btn-primary"),
                              div(em(i18n$t("To log out, close the app.")))
                          )
@@ -169,7 +169,7 @@ ui <- page(
     # Tab Data Management ----
     nav(span(icon("database"), i18n$t("Data Management")), value = "data_management",
         p(i18n$t("What do you want to do?")),
-        div(class = "center",
+        div(class = "text_center",
             radioGroupButtons("choice_datamanagement", NULL,
                               choiceValues = c("generate", "load_cloud", "load_local"),
                               choiceNames = c("Generate .acorn from clinical and lab data", "Load existing .acorn from cloud", "Load existing .acorn from local file"),
