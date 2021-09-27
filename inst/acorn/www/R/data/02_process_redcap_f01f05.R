@@ -1,5 +1,4 @@
 message("02_process_redcap_f01f05.R")
-
 # patient_enrolment ----
 ## Create patient_enrolment dataframe with data from F01 and F04 - one row per enrolment ----
 patient_enrolment <- dl_redcap_f01f05_dta %>% 
@@ -8,6 +7,12 @@ patient_enrolment <- dl_redcap_f01f05_dta %>%
          f04odkreckey:f04_d28_complete,
          f05odkreckey:f05_bsi_complete) %>%
   filter(is.na(redcap_repeat_instrument))
+
+
+# Remove REDCap records where the "Is mark as delete record" is set to "Yes" for F01, F04 and F05.
+patient_enrolment <- patient_enrolment |> 
+  replace_na(list(f01_deleted = "N", f04_deleted = "N", f05_deleted = "N")) |> 
+  filter(f01_deleted != "Y", f04_deleted != "Y", f05_deleted != "Y")
 
 ## Test that "Every record has an ACORN id" ----
 test <- patient_enrolment[is.na(patient_enrolment$acornid), c("recordid", "acornid")]
@@ -41,10 +46,22 @@ dl_redcap_f02 <- dl_redcap_f01f05_dta %>%
   filter(!is.na(redcap_repeat_instrument)) %>%
   mutate(id_dmdtc = glue("{recordid}-{hpd_dmdtc}"))
 
+# Remove REDCap records where the "Is mark as delete record" is set to "Yes" for F02.
+dl_redcap_f02 <- dl_redcap_f02 |> 
+  replace_na(list(f02_deleted = "N")) |> 
+  filter(f02_deleted != "Y")
+
 dl_redcap_f03 <- dl_redcap_f01f05_dta %>% 
   select(c(recordid:redcap_repeat_instance, 
            odkreckey:f03_infection_hospital_outcome_complete)) %>%
-  filter(is.na(redcap_repeat_instrument)) %>%
+  filter(is.na(redcap_repeat_instrument))
+
+# Remove REDCap records where the "Is mark as delete record" is set to "Yes" for F03.
+dl_redcap_f03 <- dl_redcap_f03 |> 
+  replace_na(list(deleted = "N")) |> 
+  filter(deleted != "Y")
+
+dl_redcap_f03 <- dl_redcap_f03 %>%
   rename(ho_dmdtc_EPISODE_1 = ho_dmdtc1, ho_fin_infect_diag_EPISODE_1 = ho_fin_infect_diag1,
          ho_dmdtc_EPISODE_2 = ho_dmdtc2, ho_fin_infect_diag_EPISODE_2 = ho_fin_infect_diag2,
          ho_dmdtc_EPISODE_3 = ho_dmdtc3, ho_fin_infect_diag_EPISODE_3 = ho_fin_infect_diag3,
@@ -74,11 +91,8 @@ infection_episode <- full_join(dl_redcap_f02,
                                by = "id_dmdtc") %>%
   select(!redcap_repeat_instrument)
 
-
 ## Test that "Every infection episode (F02) has a matching patient enrolment (F01)" ----
-# we detect that by finding recordid for which siteid (required value) is missing
-# if it happens, we elminate any recordid of all datasets and warn
-test <- patient_enrolment[is.na(patient_enrolment$siteid), c("recordid", "acornid")]
+test <- patient_enrolment[! dl_redcap_f02$recordid %in% patient_enrolment$recordid, c("recordid", "acornid")]
 ifelse(nrow(test) == 0, 
        { checklist_status$redcap_F02F01 <- list(status = "okay", msg = i18n$t("Every infection episode record (F02) has a matching patient enrolment (F01).")) }, 
        { 
