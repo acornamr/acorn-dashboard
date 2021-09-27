@@ -19,7 +19,7 @@ library(REDCapR)  # to read clinical data
 library(RSQLite)  # to read lab data
 library(rvest)  # html_element()
 library(shiny)
-library(shinyanimate)
+library(shinyanimate)  # startAnim()
 library(shiny.i18n)  # i18n$t()
 library(shinyjs)
 library(shinyWidgets)  # chooseSliderSkin()

@@ -53,11 +53,6 @@ https://bootswatch.com/4/flatly/bootstrap.css */
   color: #f39c12;
 }
 
-.cl-warning a:link { color:#f39c12; text-decoration:none; font-weight:bold; }
-.cl-warning a:visited { color: #f39c12; text-decoration:none; font-weight:bold; }
-.cl-warning a:hover { color: #f39c12; text-decoration:underline; font-weight:bold; }
-.cl-warning a:active { color: #f39c12; text-decoration:underline; font-weight:bold; }
-
 .cl-fail {
   color: #e74c3c;
 }
