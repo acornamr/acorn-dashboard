@@ -1,10 +1,11 @@
-output$profile_outcome_diagnosis <- renderHighchart({
-  
+output$followup_outcome_clin_diag <- renderHighchart({
   req(redcap_f01f05_dta_filter())
   req(nrow(redcap_f01f05_dta_filter()) > 0)
   
   df <- redcap_f01f05_dta_filter() %>%
     filter(has_clinical_outcome) %>%
+    mutate(surveillance_diag =  glue("Initial: {surveillance_diag}"),
+           ho_final_diag = glue("Final: {ho_final_diag}")) %>%
     group_by(surveillance_diag, ho_final_diag) %>% count() %>% ungroup() %>%
     rename(from = surveillance_diag, to = ho_final_diag, weight = n) %>% 
     mutate(id = paste0(from, " - ", to, ": ", weight)) %>%

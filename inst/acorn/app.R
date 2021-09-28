@@ -433,7 +433,7 @@ ui <- page(
                      h4_title(i18n$t("Initial & Final Surveillance Diagnosis")),
                      div(class = "box_outputs_content",
                          i18n$t("The 10 most common initial-final diagnosis combinations:"),
-                         highchartOutput("profile_outcome_diagnosis", height = "500px")
+                         highchartOutput("followup_outcome_clin_diag", height = "500px")
                      )
                  )
           )
