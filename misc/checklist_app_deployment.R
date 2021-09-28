@@ -8,7 +8,7 @@ rsconnect::deployApp(appDir = "./inst/acorn/",
 
 
 # if it works:
-# take a snapshot of installated package
+# take a snapshot of installed package
 renv::snapshot()
 
 # deploy on production URL

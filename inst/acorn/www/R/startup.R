@@ -1,4 +1,4 @@
-app_version <- "2.0.7"  # Make sure that the app version is identical in DESCRIPTION and build_standalone_Windows.R
+app_version <- "2.0.8"  # Make sure that the app version is identical in DESCRIPTION and build_standalone_Windows.R
 session_start_time <- format(Sys.time(), "%Y-%m-%d_%HH%M")
 
 # IMPORTANT: packages listed here should be identical in run_app.R and DESCRIPTION
@@ -107,11 +107,12 @@ i18n <- Translator$new(translation_json_path = "./www/translations/translation.j
 i18n$set_translation_language("en")
 
 lang <- data.frame(
-  val = c("ba", "en", "fr", "la", "vn"),
+  val = c("ba", "en", "fr", "kh", "la", "vn"),
   img = c(
     "<img src = './images/flags/id.png' width = 20px><div class='language_name'>Bahasa Indonesia</div></img>",
     "<img src = './images/flags/gb.png' width = 20px><div class='language_name'>English</div></img>",
     "<img src = './images/flags/fr.png' width = 20px><div class='language_name'>French</div></img>",
+    "<img src = './images/flags/kh.png' width = 20px><div class='language_name'>Khmer</div></img>",
     "<img src = './images/flags/la.png' width = 20px><div class='language_name'>Lao</div></img>",
     "<img src = './images/flags/vn.png' width = 20px><div class='language_name'>Vietnamese</div></img>"
   )
