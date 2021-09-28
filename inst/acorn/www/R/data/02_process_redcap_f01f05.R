@@ -1,6 +1,10 @@
 message("02_process_redcap_f01f05.R")
-# patient_enrolment ----
-## Create patient_enrolment dataframe with data from F01 and F04 - one row per enrolment ----
+# Remove REDCap records where the "Is mark as delete record" is set to "Yes" for F01, F02, F03, F04 and F05. ----
+dl_redcap_f01f05_dta <- dl_redcap_f01f05_dta %>%
+  replace_na(list(f01_deleted = "N", f02_deleted = "N", deleted = "N", f04_deleted = "N", f05_deleted = "N")) |> 
+  filter(f01_deleted != "Y", f02_deleted != "Y", deleted  != "Y", f04_deleted != "Y", f05_deleted != "Y")
+
+# Create patient_enrolment dataframe with data from F01 and F04 - one row per enrolment. ----
 patient_enrolment <- dl_redcap_f01f05_dta %>% 
   select(recordid:redcap_repeat_instance, 
          f01odkreckey:f01_enrolment_complete, 
@@ -8,13 +12,7 @@ patient_enrolment <- dl_redcap_f01f05_dta %>%
          f05odkreckey:f05_bsi_complete) %>%
   filter(is.na(redcap_repeat_instrument))
 
-
-# Remove REDCap records where the "Is mark as delete record" is set to "Yes" for F01, F04 and F05.
-patient_enrolment <- patient_enrolment |> 
-  replace_na(list(f01_deleted = "N", f04_deleted = "N", f05_deleted = "N")) |> 
-  filter(f01_deleted != "Y", f04_deleted != "Y", f05_deleted != "Y")
-
-## Test that "Every record has an ACORN id" ----
+# Test that "Every record has an ACORN id". ----
 test <- patient_enrolment[is.na(patient_enrolment$acornid), c("recordid", "acornid")]
 ifelse(nrow(test) == 0, 
        { checklist_status$redcap_acornid <- list(status = "okay", msg = i18n$t("All records have an ACORN ID")) }, 
@@ -24,8 +22,8 @@ ifelse(nrow(test) == 0,
                                                   tibble(issue = "Missing ACORN id", redcap_id = test$recordid, acorn_id = test$acornid))
        })
 
-## Test that "Every D28 form (F04) matches exactly one patient enrolment (F01)" ----
-# for every recordid, when d28_date is filled (mandatory field in F04), siteid should be filled (mandatory field in F01)
+# Test that "Every D28 form (F04) matches exactly one patient enrolment (F01)". ----
+# For every recordid, when d28_date is filled (mandatory field in F04), siteid should be filled (mandatory field in F01).
 recordid_F04 <- patient_enrolment$recordid[!is.na(patient_enrolment$d28_date)]
 test <- patient_enrolment[is.na(patient_enrolment$siteid[patient_enrolment$recordid %in% recordid_F04]), c("recordid", "acornid")]
 ifelse(nrow(test) == 0, 
@@ -36,30 +34,17 @@ ifelse(nrow(test) == 0,
                                                   tibble(issue = "F04 record without matching F01", redcap_id = test$recordid, acorn_id = test$acornid))
        })
 
-# infection_episode ----
-
-## Create infection_episode dataframe with one row per infection episode ----
-# by combining F02 and F03
+# Create infection_episode dataframe with one row per infection episode by combining F02 and F03. ----
 dl_redcap_f02 <- dl_redcap_f01f05_dta %>% 
   select(c(recordid:redcap_repeat_instance,
            f02odkreckey:f02_infected_episode_complete)) %>%
   filter(!is.na(redcap_repeat_instrument)) %>%
   mutate(id_dmdtc = glue("{recordid}-{hpd_dmdtc}"))
 
-# Remove REDCap records where the "Is mark as delete record" is set to "Yes" for F02.
-dl_redcap_f02 <- dl_redcap_f02 |> 
-  replace_na(list(f02_deleted = "N")) |> 
-  filter(f02_deleted != "Y")
-
 dl_redcap_f03 <- dl_redcap_f01f05_dta %>% 
   select(c(recordid:redcap_repeat_instance, 
            odkreckey:f03_infection_hospital_outcome_complete)) %>%
   filter(is.na(redcap_repeat_instrument))
-
-# Remove REDCap records where the "Is mark as delete record" is set to "Yes" for F03.
-dl_redcap_f03 <- dl_redcap_f03 |> 
-  replace_na(list(deleted = "N")) |> 
-  filter(deleted != "Y")
 
 dl_redcap_f03 <- dl_redcap_f03 %>%
   rename(ho_dmdtc_EPISODE_1 = ho_dmdtc1, ho_fin_infect_diag_EPISODE_1 = ho_fin_infect_diag1,
@@ -75,7 +60,7 @@ dl_redcap_f03 <- dl_redcap_f03 %>%
   filter(!is.na(ho_dmdtc)) %>%
   mutate(id_dmdtc = glue("{recordid}-{ho_dmdtc}"))
 
-## Test "Every hospital outcome record (F03) has a matching infection episode record (F02)" ----
+# Test that "Every hospital outcome record (F03) has a matching infection episode record (F02)". ----
 test <- dl_redcap_f03$recordid[! dl_redcap_f03$id_dmdtc %in% dl_redcap_f02$id_dmdtc]
 ifelse(is_empty(test),
        { checklist_status$redcap_F03F02 <- list(status = "okay", msg = i18n$t("Every hospital outcome record (F03) has a matching infection episode (F02)."))},
@@ -91,7 +76,7 @@ infection_episode <- full_join(dl_redcap_f02,
                                by = "id_dmdtc") %>%
   select(!redcap_repeat_instrument)
 
-## Test that "Every infection episode (F02) has a matching patient enrolment (F01)" ----
+# Test that "Every infection episode (F02) has a matching patient enrolment (F01)". ----
 test <- patient_enrolment[! dl_redcap_f02$recordid %in% patient_enrolment$recordid, c("recordid", "acornid")]
 ifelse(nrow(test) == 0, 
        { checklist_status$redcap_F02F01 <- list(status = "okay", msg = i18n$t("Every infection episode record (F02) has a matching patient enrolment (F01).")) }, 
@@ -103,7 +88,7 @@ ifelse(nrow(test) == 0,
        })
 
 
-## Test that "Every hospital outcome form (F03) has a matching patient enrolment (F01)"
+# Test that "Every hospital outcome form (F03) has a matching patient enrolment (F01)". ----
 test <- dl_redcap_f03$recordid[! dl_redcap_f03$recordid %in% patient_enrolment$recordid]
 ifelse(is_empty(test),
        { checklist_status$redcap_F03F01 <- list(status = "okay", msg = i18n$t("Every hospital outcome record (F03) has a matching patient enrolment (F01).")) },
@@ -114,7 +99,7 @@ ifelse(is_empty(test),
        })
 
 
-# consolidate patient_enrolment & infection_episode in infection ----
+# Consolidate patient_enrolment & infection_episode in infection. ----
 infection <- left_join(
   infection_episode %>% select(-c("f02odkreckey", "odkreckey", "id_dmdtc")), 
   patient_enrolment %>% select(-c("redcap_repeat_instrument", "redcap_repeat_instance", "f01odkreckey",
@@ -122,7 +107,7 @@ infection <- left_join(
                                   "hpd_adm_date_cfm", "f04odkreckey")), 
   by = "recordid")
 
-# rename / drop (by commenting) / recode columns
+# Rename / drop (by commenting) / recode columns. ----
 infection <- infection %>% transmute(
   redcap_id = recordid,
   # redcap_repeat_instance,
@@ -330,10 +315,10 @@ infection <- infection %>% transmute(
                   transfer_hospital = "Unknown",
                   ho_final_diag = "Unknown diagnosis"))
 
-# episode_count for enrolment log
+# Create episode_count for enrolment log. ----
 infection <- infection |> group_by(episode_id) |> mutate(episode_count = row_number()) |> ungroup()
 
-# Flag if Day28 is not dead and clinical outcome is dead
+# Flag if Day28 is not "Dead" and clinical outcome is "Dead". ----
 test <- infection %>% filter(ho_discharge_status == "Dead", d28_status != "Dead") %>% select(redcap_id, acorn_id)
 ifelse(nrow(test) == 0, 
        { checklist_status$redcap_consistent_outcomes <- list(status = "okay", msg = i18n$t("Clinical and day-28 outcomes are consistent.")) },
@@ -343,7 +328,7 @@ ifelse(nrow(test) == 0,
                                                   tibble(issue = "Clinical and day-28 outcomes not consistent", redcap_id = test$redcap_id, acorn_id = test$acorn_id))
        })
 
-# Summarise the age with age_year and age_day
+# Summarise the age with age_year and age_day. ----
 infection$age_day[is.na(infection$age_day) & is.na(infection$birthday)] <- 0
 infection$age_month[is.na(infection$age_month) & is.na(infection$birthday)] <- 0
 infection$age_year[is.na(infection$age_year) & is.na(infection$birthday)] <- 0
@@ -353,7 +338,7 @@ infection$age_day <- infection$calc_age_day # to replace in the original locatio
 infection$age_year <- round(infection$age_day / 365.25, 2) # to make a calculated age in years based on age_day: this is age in years at date of enrolment
 infection <- infection %>% select(-birthday, -calc_age_day, -age_month)
 
-# Infer age_category when missing from age_day and age_year
+# Infer age_category when missing from age_day and age_year. ----
 infection <- infection %>% mutate(age_category_calc = case_when(
   age_day <= 28 ~ "Neonate",
   age_year <= 17 ~ "Child",
@@ -362,7 +347,7 @@ infection <- infection %>% mutate(age_category_calc = case_when(
 
 infection$age_category[is.na(infection$age_category)] <- infection$age_category_calc[is.na(infection$age_category)]
 
-## Test that "Calculated age is consistent with 'Age Category'"
+# Test that "Calculated age is consistent with 'Age Category'". ----
 test <- bind_rows(infection %>% filter(age_category == "Adult", age_year < 18),
                   infection %>% filter(age_category == "Child", age_year > 17 | age_day <= 28),
                   infection %>% filter(age_category == "Neonate", age_day > 28)) %>% 
@@ -377,7 +362,7 @@ ifelse(nrow(test) == 0,
        })
 
 
-# Define Clinical Severity, qSOFA score
+# Define Clinical Severity, qSOFA score. ----
 equal_yes <- function(x) replace_na(x, "No") == "Yes"
 
 infection$clinical_severity_score <- 
@@ -401,7 +386,7 @@ infection$clinical_severity_score <-
       equal_yes(infection$neo_convul)
   )
 
-# Define Updated Charlson Comorbidity Index (uCCI)
+# Define Updated Charlson Comorbidity Index (uCCI). ----
 not_empty <- function(x) replace_na(x, "") != ""
 
 infection$cci <- (infection$age_category == "Adult") * (
@@ -419,7 +404,7 @@ infection$cci <- (infection$age_category == "Adult") * (
     4 * not_empty(infection$cmb_aids)
 )
 
-# Reorder columns for save into .acorn
+# Reorder columns for save into .acorn. ----
 infection <- infection %>% 
   select("redcap_id", "episode_id", "episode_count",
          # F01:
