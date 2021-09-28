@@ -1003,7 +1003,7 @@ server <- function(input, output, session) {
           unlist()
         acorn_dates <- as.vector(dta[names(dta) == 'Contents.LastModified'])
         ord_acorn_dates <- order(as.POSIXct(acorn_dates))
-        acorn_files <- rev(tail(as.vector(dta[names(dta) == 'Contents.Key'])[ord_acorn_dates], 10))
+        acorn_files <- rev(tail(as.vector(dta[names(dta) == 'Contents.Key'])[ord_acorn_dates], 20))  # 20 because of .acorn_non_anonymised
         
         if(! is.null(acorn_files)) { acorn_files <- acorn_files[endsWith(acorn_files, ".acorn")] }
         if(! is.null(acorn_files)) { updatePickerInput(session, 'acorn_files_server', choices = acorn_files, selected = acorn_files[1]) }
