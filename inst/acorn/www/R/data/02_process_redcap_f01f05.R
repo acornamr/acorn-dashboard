@@ -21,16 +21,6 @@ patient_enrolment <- dl_redcap_f01f05_dta %>%
          f05odkreckey:f05_bsi_complete) %>%
   filter(is.na(redcap_repeat_instrument))
 
-# Test that "Every record has an ACORN id". ----
-test <- patient_enrolment[is.na(patient_enrolment$acornid), c("recordid", "acornid")]
-ifelse(nrow(test) == 0, 
-       { checklist_status$redcap_acornid <- list(status = "okay", msg = i18n$t("All records have an ACORN ID")) }, 
-       { 
-         checklist_status$redcap_acornid <- list(status = "warning", msg = i18n$t("Not all records have an ACORN ID")) 
-         checklist_status$log_errors <- bind_rows(checklist_status$log_errors, 
-                                                  tibble(issue = "Missing ACORN id", redcap_id = test$recordid, acorn_id = test$acornid))
-       })
-
 # Test that "Every D28 form (F04) matches exactly one patient enrolment (F01)". ----
 # For every recordid, when d28_date is filled (mandatory field in F04), siteid should be filled (mandatory field in F01).
 recordid_F04 <- patient_enrolment$recordid[!is.na(patient_enrolment$d28_date)]

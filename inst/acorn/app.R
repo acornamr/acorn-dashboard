@@ -829,7 +829,6 @@ server <- function(input, output, session) {
     
     redcap_f01f05_status       = list(status = "hidden", msg = ""),
     redcap_columns             = list(status = "hidden", msg = ""),
-    redcap_acornid             = list(status = "hidden", msg = ""),
     redcap_F04F01              = list(status = "hidden", msg = ""),
     redcap_F03F02              = list(status = "hidden", msg = ""),
     redcap_F02F01              = list(status = "hidden", msg = ""),
@@ -1125,8 +1124,7 @@ server <- function(input, output, session) {
       
       source("./www/R/data/02_process_redcap_hai.R", local = TRUE)
       
-      ifelse(any(c(checklist_status$redcap_acornid$status,
-                   checklist_status$redcap_F04F01$status,
+      ifelse(any(c(checklist_status$redcap_F04F01$status,
                    checklist_status$redcap_F03F02$status,
                    checklist_status$redcap_F02F01$status,
                    checklist_status$redcap_F03F01$status,
