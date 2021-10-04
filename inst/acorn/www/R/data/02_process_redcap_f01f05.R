@@ -4,6 +4,15 @@ dl_redcap_f01f05_dta <- dl_redcap_f01f05_dta %>%
   replace_na(list(f01_deleted = "N", f02_deleted = "N", deleted = "N", f04_deleted = "N", f05_deleted = "N")) |> 
   filter(f01_deleted != "Y", f02_deleted != "Y", deleted  != "Y", f04_deleted != "Y", f05_deleted != "Y")
 
+# Delete records that have a missing acornid. ----
+recordid_to_delete <- dl_redcap_f01f05_dta |> 
+  filter(is.na(redcap_repeat_instrument)) |>  # remove rows from F02 forms as all these rows have a missing acornid.
+  filter(is.na(acornid)) |> 
+  pull(recordid)
+
+dl_redcap_f01f05_dta <- dl_redcap_f01f05_dta |> 
+  filter(! recordid %in% recordid_to_delete)
+
 # Create patient_enrolment dataframe with data from F01 and F04 - one row per enrolment. ----
 patient_enrolment <- dl_redcap_f01f05_dta %>% 
   select(recordid:redcap_repeat_instance, 
