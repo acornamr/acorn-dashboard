@@ -1,8 +1,9 @@
 message("02_process_redcap_f01f05.R")
-# Remove REDCap records where the "Is mark as delete record" is set to "Yes" for F01, F02, F03, F04 and F05. ----
+
+# Remove REDCap records where the "Is mark as delete record" is set to "Yes" for F01 ----
 dl_redcap_f01f05_dta <- dl_redcap_f01f05_dta %>%
   replace_na(list(f01_deleted = "N", f02_deleted = "N", deleted = "N", f04_deleted = "N", f05_deleted = "N")) |> 
-  filter(f01_deleted != "Y", f02_deleted != "Y", deleted  != "Y", f04_deleted != "Y", f05_deleted != "Y")
+  filter(f01_deleted != "Y")
 
 # Delete records that have a missing acornid. ----
 recordid_to_delete <- dl_redcap_f01f05_dta |> 
@@ -13,7 +14,22 @@ recordid_to_delete <- dl_redcap_f01f05_dta |>
 dl_redcap_f01f05_dta <- dl_redcap_f01f05_dta |> 
   filter(! recordid %in% recordid_to_delete)
 
-# Create patient_enrolment dataframe with data from F01 and F04 - one row per enrolment. ----
+# Management of REDCap records where the "Is mark as delete record" is set to "Yes" for F02, F03, F04 or F05 ----
+# If a form F02 is marked as deleted, remove the corresponding row.
+dl_redcap_f01f05_dta <- dl_redcap_f01f05_dta |> 
+  filter(!(!is.na(redcap_repeat_instrument) & f02_deleted == "Y"))
+
+# If a form F03, F04 or F05 is marked as deleted, set corresponding data elements to NA (except for _deleted and _complete).
+dl_redcap_f01f05_dta <- dl_redcap_f01f05_dta |> 
+  mutate(across(odkreckey:ho_days_icu, 
+                ~ replace(., deleted == "Y", NA))) |> 
+  mutate(across(f04odkreckey:d28_death_date, 
+                ~ replace(., f04_deleted == "Y", NA))) |> 
+  mutate(across(f05odkreckey:bsi_is_com_fever, 
+                ~ replace(., f05_deleted == "Y", NA)))
+
+
+# Create patient_enrolment dataframe with data from F01, F04 and F05 - one row per enrolment. ----
 patient_enrolment <- dl_redcap_f01f05_dta %>% 
   select(recordid:redcap_repeat_instance, 
          f01odkreckey:f01_enrolment_complete, 
@@ -197,7 +213,7 @@ infection <- infection %>% transmute(
   # Start fields from F03:
   # no_num_episode,
   ho_discharge_status = recode(ho_dischargestatus, "ALIVE" = "Alive", "DEAD" = "Dead", "MORIBUND" = "Discharged to die at home", "LAMA" = "Left against medical advice"),
-  ho_discharge_to = recode(ho_dischargeto, "HOM" = "Home", "HOS" = "Other hospital", "LTC" = "Long-term care facility", "NA" = "Not applicable (death)", "UNK" = "Unknown"),
+  ho_discharge_to = recode(ho_dischargeto, "HOM" = "Home", "HOS" = "Other hospital", "LTC" = "Long-term care facility", "NA" = "Not applicable (death)", "UNK" = "Unknown"),   # "Not applicable (death)" category is coded "NA" and will be imported by R as a missing value.
   ho_discharge_date = as_date(ho_discharge_date), 
   ho_days_icu = as.numeric(ho_days_icu), 
   # deleted, 
