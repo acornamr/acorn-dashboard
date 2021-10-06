@@ -26,7 +26,7 @@ library(shinyWidgets)  # chooseSliderSkin()
 library(tidyverse)
 library(writexl)
 
-cols_sir <- c("#2c3e50", "#f39c12", "#e74c3c")  # resp. S, I, R
+cols_sir <- c("S" = "#2c3e50", "I" = "#f39c12", "R" = "#e74c3c")
 
 acorn_theme <-    bslib::bs_theme(version = 4, bootswatch = "flatly", "border-width" = "2px")
 acorn_theme_la <- bslib::bs_theme(version = 4, bootswatch = "flatly", "border-width" = "2px", base_font = "Phetsarath OT")
