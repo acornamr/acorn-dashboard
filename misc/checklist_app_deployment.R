@@ -4,12 +4,15 @@
 # deploy on dev URL
 rsconnect::deployApp(appDir = "./inst/acorn/", 
                      appName = "acorn2-dev", 
-                     account = "moru")
+                     account = "moru",
+                     forceUpdate = TRUE)
 
 
-# if it works:
+# if the deployment on the dev URL works:
 # take a snapshot of installed package
 renv::snapshot()
+
+# commit to GitHub
 
 # deploy on production URL
 rsconnect::deployApp(appDir = "./inst/acorn/", 
