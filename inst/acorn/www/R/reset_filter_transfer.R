@@ -1,0 +1,1 @@
+updatePrettySwitch(session, "filter_transfer", label = "Only Non-Transferred Patients", value = FALSE)

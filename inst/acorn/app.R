@@ -90,18 +90,7 @@ ui <- page(
                                 )
                          )
                        )
-                   ),
-                   # TODO v2.1: reactivate this section
-                   # dropMenu(
-                   #   class = "filter_box_small",
-                   #   actionLink("quick_filters", "Quick Filters", icon = icon("sliders-h")),
-                   #   actionLink("shortcut_filter_1", label = span(icon("filter"), " Patients with Pneumonia, BC only")),
-                   #   br(),
-                   #   actionLink("shortcut_filter_2", label = span(icon("filter"), " Below 5 y.o. HAI")),
-                   #   br(),
-                   #   br(),
-                   #   actionLink("shortcut_reset_filters", label = span(icon("ban"), " Reset All Filters")),
-                   # )
+                   )
             ),
             column(3,
                    htmlOutput("nb_enrolments"),
@@ -745,12 +734,21 @@ server <- function(input, output, session) {
     )
   })
   
-  # (TODO v2.1) Management of filters shortcuts ----
-  observeEvent(input$shortcut_filter_1, {})
-  observeEvent(input$shortcut_filter_2, {})
-  observeEvent(input$shortcut_reset_filters, 
-               source('./www/R/reset_enrolment_input.R', local = TRUE)
-  )
+  # Management of filters. ----
+  observeEvent(input$shortcut_reset_filters, source("./www/R/reset_filter_enrolments.R", local = TRUE))
+  
+  observe({
+    req(acorn_dta())
+    if(! "Surveillance Category" %in% input$filter_enrolments)  source("./www/R/reset_filter_surveillance_cat.R", local = TRUE)
+    if(! "Type of Ward" %in% input$filter_enrolments)  source("./www/R/reset_filter_ward_type.R", local = TRUE)
+    if(! "Date of Enrolment/Survey" %in% input$filter_enrolments)  source("./www/R/reset_filter_date_enrolment.R", local = TRUE)
+    if(! "Age Category" %in% input$filter_enrolments)  source("./www/R/reset_filter_age_cat.R", local = TRUE)
+    if(! "Initial Diagnosis" %in% input$filter_enrolments)  source("./www/R/reset_filter_diagnosis_initial.R", local = TRUE)
+    if(! "Final Diagnosis" %in% input$filter_enrolments)  source("./www/R/reset_filter_diagnosis_final.R", local = TRUE)
+    if(! "Clinical Severity" %in% input$filter_enrolments)  source("./www/R/reset_filter_clinical_severity.R", local = TRUE)
+    if(! "Clinical/D28 Outcome" %in% input$filter_enrolments)  source("./www/R/reset_filter_outcome.R", local = TRUE)
+    if(! "Transfer" %in% input$filter_enrolments)  source("./www/R/reset_filter_transfer.R", local = TRUE)
+  })
   
   # Source files with code to generate outputs ----
   file_list <- list.files(path = "./www/R/outputs", pattern = "*.R", recursive = TRUE)
