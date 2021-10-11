@@ -5,8 +5,9 @@
 if(FALSE) {
   rm(list = ls())
   remove.packages("shinybox")
-  detach("package:shinybox", unload = TRUE)
-  remotes::install_github("ocelhay/shinybox", auth_token = "")
+  # v0.2 working as of 2021-10-11
+  remotes::install_github("ocelhay/shinybox", ref = "v0.2")
+  # remotes::install_github("ocelhay/shinybox", ref = "master")
 }
 library(shinybox)
 
@@ -16,11 +17,10 @@ acorn::run_app()
 # if needed rebuild NAMSEPACE (somehow macOS is less stringent about this)
 
 # Create a directory for the app.
-time <- format(Sys.time(), "%Y-%m-%d_%H%M%S")
-build_path <- paste0("C:/Users/olivi/Desktop/", time)
+build_path <- paste0("C:/Users/olivi/Desktop/", format(Sys.time(), "%Y-%m-%d_%H%M%S"))
 dir.create(build_path)
 
-shinybox(
+shinybox::shinybox(
   app_name = "ACORN",
   author = "Olivier Celhay, Paul Turner",
   description = "A Dashboard for ACORN AMR Data",
