@@ -1,4 +1,4 @@
-app_version <- "2.0.8"  # Make sure that the app version is identical in DESCRIPTION and build_standalone_Windows.R
+app_version <- "2.0.9"  # Make sure that the app version is identical in DESCRIPTION and build_standalone_Windows.R
 session_start_time <- format(Sys.time(), "%Y-%m-%d_%HH%M")
 
 # IMPORTANT: packages listed here should be identical in run_app.R and DESCRIPTION
