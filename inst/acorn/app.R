@@ -7,7 +7,7 @@ ui <- page(
   includeCSS("www/styles.css"),
   withAnim(),  # to add animation to UI elements using shinyanimate
   usei18n(i18n),  # for translation
-  useShinyjs(),
+  shinyjs::useShinyjs(),
   page_navbar(
     title = a(img(src = "logo_acorn.png", style = "height: 45px; position: relative;")),
     id = "tabs",
@@ -298,7 +298,7 @@ ui <- page(
                                                        selected = c("surveillance_category", "ward_type", "ward", "clinical_outcome", "d28_outcome"))
                            )
                          ),
-                         DTOutput("table_patients", width = "95%")
+                         DT::DTOutput("table_patients", width = "95%")
                      )
                  )
           )
@@ -487,7 +487,7 @@ ui <- page(
                          highchartOutput("isolates_organism_nc"),
                          highchartOutput("isolates_organism_contaminant"),
                          br(), br(),
-                         DTOutput("isolates_organism_table", width = "95%"),
+                         DT::DTOutput("isolates_organism_table", width = "95%"),
                          br()
                      )
                  )
@@ -879,7 +879,7 @@ server <- function(input, output, session) {
   output$enrolment_log_table <- renderUI({
     req(enrolment_log())
     req(acorn_origin() == "generated")
-    DTOutput("table_enrolment_log")
+    DT::DTOutput("table_enrolment_log")
   })
   
   output$enrolment_log_dl <- renderUI({
@@ -938,10 +938,10 @@ server <- function(input, output, session) {
                  "AWS_SECRET_ACCESS_KEY" = shared_acornamr_sec,
                  "AWS_DEFAULT_REGION" = "eu-west-3")
       
-      cred <- try(s3read_using(FUN = read_encrypted_cred, 
-                               pwd = input$cred_password,
-                               object = file_cred,
-                               bucket = "shared-acornamr"),
+      cred <- try(aws.s3::s3read_using(FUN = read_encrypted_cred, 
+                                       pwd = input$cred_password,
+                                       object = file_cred,
+                                       bucket = "shared-acornamr"),
                   silent = TRUE)
       
       if (inherits(cred, 'try-error')) {
@@ -985,7 +985,7 @@ server <- function(input, output, session) {
     # Connect to AWS S3 server ----
     if(acorn_cred()$acorn_s3) {
       
-      connect_server_test <- bucket_exists(
+      connect_server_test <- aws.s3::bucket_exists(
         bucket = acorn_cred()$acorn_s3_bucket,
         key =  acorn_cred()$acorn_s3_key,
         secret = acorn_cred()$acorn_s3_secret,
@@ -993,10 +993,10 @@ server <- function(input, output, session) {
       
       if(connect_server_test) {
         # Update select list with .acorn files on the server
-        dta <- get_bucket(bucket = acorn_cred()$acorn_s3_bucket,
-                          key =  acorn_cred()$acorn_s3_key,
-                          secret = acorn_cred()$acorn_s3_secret,
-                          region = acorn_cred()$acorn_s3_region) %>%
+        dta <- aws.s3::get_bucket(bucket = acorn_cred()$acorn_s3_bucket,
+                                  key =  acorn_cred()$acorn_s3_key,
+                                  secret = acorn_cred()$acorn_s3_secret,
+                                  region = acorn_cred()$acorn_s3_region) %>%
           unlist()
         acorn_dates <- as.vector(dta[names(dta) == 'Contents.LastModified'])
         ord_acorn_dates <- order(as.POSIXct(acorn_dates))
@@ -1159,7 +1159,6 @@ server <- function(input, output, session) {
   
   
   # On "Provide Lab data" ----
-  # input$file_lab_dba | input$file_lab_sql | 
   observeEvent(c(input$file_lab_tab, input$file_lab_dba, input$file_lab_sql), 
                {
                  id <- notify(i18n$t("Reading lab data."))

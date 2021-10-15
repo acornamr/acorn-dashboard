@@ -2,26 +2,31 @@ app_version <- "2.0.9"  # Make sure that the app version is identical in DESCRIP
 session_start_time <- format(Sys.time(), "%Y-%m-%d_%HH%M")
 
 # IMPORTANT: packages listed here should be identical in run_app.R and DESCRIPTION
-library(aws.s3)
+# (all calls are using aws.s3::)
+# library(aws.s3)
 library(bslib)  # bs_theme()
 library(curl)
 library(DBI)  # to read lab data
-library(DT)
+#  (all calls are using DT::)
+# library(DT)
 library(flexdashboard)  # gaugeOutput()
 library(glue)
 library(highcharter)
 library(lubridate)
 library(markdown)  # to avoid issue with includeMarkdown() on shinyapps.io deployment
 library(openssl)  # aes_cbc_decrypt()
-library(readr)  # to read lab data
+# (all calls are using readr::)
+# library(readr)  # to read lab data
 library(readxl)  # to read lab data
 library(REDCapR)  # to read clinical data
-library(RSQLite)  # to read lab data
+# (all calls are using RSQLite::)
+# library(RSQLite)  # to read lab data
 library(rvest)  # html_element()
 library(shiny)
 library(shinyanimate)  # startAnim()
 library(shiny.i18n)  # i18n$t()
-library(shinyjs)
+#  (all calls are using shinyjs::)
+# library(shinyjs)
 library(shinyWidgets)  # chooseSliderSkin()
 library(tidyverse)
 library(writexl)

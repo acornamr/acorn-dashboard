@@ -16,7 +16,7 @@ try({
     
     if (extension_file_lab_data == "csv")  dta <- readr::read_csv(path_lab_file, guess_max = 10000)
     if (extension_file_lab_data == "txt")  dta <- readr::read_tsv(path_lab_file, guess_max = 10000)
-    if (extension_file_lab_data %in% c("xls", "xlsx")) dta <- readxl::read_excel(path_lab_file, guess_max = 10000)
+    if (extension_file_lab_data %in% c("xls", "xlsx")) dta <- read_excel(path_lab_file, guess_max = 10000)
   }
 })
 

@@ -39,5 +39,5 @@ Imports:
     shinyjs,
     shinyWidgets,
     tidyverse,
-    writexl,
+    writexl
 RoxygenNote: 7.1.2

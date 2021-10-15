@@ -1,4 +1,4 @@
-output$isolates_organism_table <- renderDT({
+output$isolates_organism_table <- DT::renderDT({
   req(acorn_dta_filter())
   req(nrow(acorn_dta_filter()) > 0)
   

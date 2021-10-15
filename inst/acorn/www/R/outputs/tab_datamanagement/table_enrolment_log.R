@@ -1,4 +1,4 @@
-output$table_enrolment_log <- renderDT({
+output$table_enrolment_log <- DT::renderDT({
   req(redcap_f01f05_dta())
   req(enrolment_log())
   

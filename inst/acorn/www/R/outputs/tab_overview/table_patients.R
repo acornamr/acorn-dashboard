@@ -1,4 +1,4 @@
-output$table_patients <- renderDT({
+output$table_patients <- DT::renderDT({
   req(redcap_f01f05_dta_filter())
   
   grouping_vars <- input$variables_table
