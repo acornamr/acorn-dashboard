@@ -1,4 +1,4 @@
-file_lab_code <- try(save_object(object = "ACORN2_lab_codes.xlsx",
+file_lab_code <- try(aws.s3::save_object(object = "ACORN2_lab_codes.xlsx",
                                  bucket = "shared-acornamr", 
                                  key    = shared_acornamr_key,
                                  secret = shared_acornamr_sec,
@@ -10,16 +10,16 @@ if (inherits(file_lab_code, 'try-error')) {
   return()
 }
 
-read_lab_code <- function(sheet) read_excel(file_lab_code, sheet = sheet, 
+read_lab_code <- function(sheet) readxl::read_excel(file_lab_code, sheet = sheet, 
                                             col_types = c("text", "text", "text", "text", "text", "numeric", "numeric", "text", "text"), 
                                             na = "NA")
 
 lab_code <- list(
-  whonet.spec = read_excel(file_lab_code, sheet = "spectypes.whonet"),
-  orgs.antibio = read_excel(file_lab_code, sheet = "orgs.antibio"),
-  whonet.orgs = read_excel(file_lab_code, sheet = "orgs.whonet"),
-  acorn.bccontaminants = read_excel(file_lab_code, sheet = "acorn.bccontaminants"), # [UPDATED ACORN2]
-  acorn.ast.groups = read_excel(file_lab_code, sheet = "acorn.ast.groups"),
+  whonet.spec = readxl::read_excel(file_lab_code, sheet = "spectypes.whonet"),
+  orgs.antibio = readxl::read_excel(file_lab_code, sheet = "orgs.antibio"),
+  whonet.orgs = readxl::read_excel(file_lab_code, sheet = "orgs.whonet"),
+  acorn.bccontaminants = readxl::read_excel(file_lab_code, sheet = "acorn.bccontaminants"), # [UPDATED ACORN2]
+  acorn.ast.groups = readxl::read_excel(file_lab_code, sheet = "acorn.ast.groups"),
   ast.aci = read_lab_code(sheet = "aci"),  # Gram negatives - Acinetobacter
   ast.col = read_lab_code(sheet = "col"),   # Enterobacteriaceae (all)
   ast.hin = read_lab_code(sheet = "hin"),  # Haemophilus influenzae
@@ -31,5 +31,5 @@ lab_code <- list(
   ast.ent = read_lab_code(sheet = "ent"),  # Gram positives - Enterococcus sp (all)
   ast.sau = read_lab_code(sheet = "sau"),  # Staphylococcus aureus
   ast.spn = read_lab_code(sheet = "spn"),  # Streptococcus pneumoniae
-  notes = read_excel(file_lab_code, sheet = "notes", skip = 1, col_names = paste("Notes", 1:3), col_types = "text")
+  notes = readxl::read_excel(file_lab_code, sheet = "notes", skip = 1, col_names = paste("Notes", 1:3), col_types = "text")
 )

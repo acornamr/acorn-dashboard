@@ -15,7 +15,7 @@ script <- map(files, read_lines, n_max = -1L) |> unlist()
 script <- read_lines("./inst/acorn/app.R", skip = 0, n_max = -1L)
 
 vec <- str_extract_all(script, '(?<=n\\$t\\(")(.*?)(?=\")') |> unlist() |> unique() |> sort()
-en_fr <- read_excel(path = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_fr.xlsx")
+en_fr <- readxl::read_excel(path = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_fr.xlsx")
 
 setdiff(en_fr$en, vec)
 setdiff(vec, en_fr$en)

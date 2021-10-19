@@ -1,42 +1,47 @@
 app_version <- "2.0.9"  # Make sure that the app version is identical in DESCRIPTION and build_standalone_Windows.R
 session_start_time <- format(Sys.time(), "%Y-%m-%d_%HH%M")
 
-# IMPORTANT: packages listed here should be identical in run_app.R and DESCRIPTION
+# IMPORTANT: ensure that there is a match between the calls below and:
+# - run_app.R
+# - DESCRIPTION
+# - NAMESPACE
+
 # These calls are not required as all functions from these packages are prefixed with pack_name::
 # library(aws.s3)
+# library(DBI)
 # library(DT)
 # library(flexdashboard)
+# library(openssl)
 # library(readr)
+# library(readxl)
+# library(REDCapR)
 # library(RSQLite)
+# library(rvest)
 # library(shinyanimate)
 # library(shinyjs)
+# library(writexl)
 
-library(bslib)  # bs_theme()
+library(bslib)
 library(curl)
-library(DBI)  # to read lab data
 library(glue)
 library(highcharter)
 library(lubridate)
 library(markdown)  # to avoid issue with includeMarkdown() on shinyapps.io deployment
-library(openssl)  # aes_cbc_decrypt()
-library(readxl)  # to read lab data
-library(REDCapR)  # to read clinical data
-library(rvest)  # html_element()
 library(shiny)
 library(shiny.i18n)  # i18n$t()
 library(shinyWidgets)  # chooseSliderSkin()
 library(tidyverse)
-library(writexl)
 
-cols_sir <- c("S" = "#2c3e50", "I" = "#f39c12", "R" = "#e74c3c")
 
-acorn_theme <-    bslib::bs_theme(version = 4, bootswatch = "flatly", "border-width" = "2px")
-acorn_theme_la <- bslib::bs_theme(version = 4, bootswatch = "flatly", "border-width" = "2px", base_font = "Phetsarath OT")
+cols_sir <- c("#2c3e50", "#f39c12", "#e74c3c")  # resp. S, I and R
+
+acorn_theme    <- bs_theme(version = 4, bootswatch = "flatly", "border-width" = "2px")
+acorn_theme_la <- bs_theme(version = 4, bootswatch = "flatly", "border-width" = "2px", base_font = "Phetsarath OT")
 
 hc_export_kind <- c("downloadJPEG", "downloadCSV")
 
 code_sites <- c("demo",
-                read_delim(file = "./www/data/ACORN2_site_codes.csv", delim = ";", show_col_types = FALSE) %>% pull(`ACORN2 site code`))
+                readr::read_delim(file = "./www/data/ACORN2_site_codes.csv", delim = ";", show_col_types = FALSE) %>% pull(`ACORN2 site code`))
 
 columns_redcap <- c("recordid", "redcap_repeat_instrument", "redcap_repeat_instance", 
                     "f01odkreckey", "acornid_odk", "adm_date_odk", "siteid", "siteid_cfm", 

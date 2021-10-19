@@ -1,4 +1,4 @@
-output$d28_outcome_gauge <- flexdashboard::renderflexdashboard::gauge({
+output$d28_outcome_gauge <- flexdashboard::renderGauge({
   req(redcap_f01f05_dta_filter())
   req(nrow(redcap_f01f05_dta_filter()) > 0)
   
@@ -11,7 +11,7 @@ output$d28_outcome_gauge <- flexdashboard::renderflexdashboard::gauge({
     pull(redcap_id) %>%
     n_distinct()
   
-  flexdashboard::gauge(n, min = 0, max = total, abbreviate = FALSE, gaugeSectors(colors = "#2c3e50"))
+  flexdashboard::gauge(n, min = 0, max = total, abbreviate = FALSE, flexdashboard::gaugeSectors(colors = "#2c3e50"))
 })
 
 output$d28_outcome_pct <- renderText({

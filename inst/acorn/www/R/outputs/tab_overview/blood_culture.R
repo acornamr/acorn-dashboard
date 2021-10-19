@@ -1,4 +1,4 @@
-output$profile_blood_culture_gauge <- flexdashboard::renderflexdashboard::gauge({
+output$profile_blood_culture_gauge <- flexdashboard::renderGauge({
   req(acorn_dta_filter())
   req(redcap_f01f05_dta_filter())
   
@@ -11,7 +11,7 @@ output$profile_blood_culture_gauge <- flexdashboard::renderflexdashboard::gauge(
     pull(redcap_id) %>%
     n_distinct()
   
-  flexdashboard::gauge(n_blood_culture, min = 0, max = total, abbreviate = FALSE, gaugeSectors(colors = "#e31a1c"))
+  flexdashboard::gauge(n_blood_culture, min = 0, max = total, abbreviate = FALSE, flexdashboard::gaugeSectors(colors = "#e31a1c"))
 })
 
 output$profile_blood_culture_pct <- renderText({

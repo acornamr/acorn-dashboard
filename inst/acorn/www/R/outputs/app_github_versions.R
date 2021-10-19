@@ -1,9 +1,9 @@
 output$app_github_versions <- renderText({
   
   try(
-    version_github <- read_html("https://github.com/acornamr/acorn-dashboard/releases/latest") |> 
-      html_element(".release-header .f1") |>
-      html_text() |>
+    version_github <- rvest::read_html("https://github.com/acornamr/acorn-dashboard/releases/latest") |> 
+      rvest::html_element(".release-header .f1") |>
+      rvest::html_text() |>
       str_trim(),
     silent = TRUE
   )

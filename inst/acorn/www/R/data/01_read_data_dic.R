@@ -3,7 +3,7 @@ ifelse(input$format_lab_data %in% c("WHONET .dBase", "WHONET .SQLite"),
        format_data_dic <- "WHONET",
        format_data_dic <- "TABULAR")
 
-file_dic <- try(save_object(object = glue("ACORN2_lab_data_dictionary_{acorn_cred()$site}_{format_data_dic}.xlsx"), 
+file_dic <- try(aws.s3::save_object(object = glue("ACORN2_lab_data_dictionary_{acorn_cred()$site}_{format_data_dic}.xlsx"), 
                             bucket = acorn_cred()$acorn_s3_bucket,
                             key =  acorn_cred()$acorn_s3_key,
                             secret = acorn_cred()$acorn_s3_secret,
@@ -19,8 +19,8 @@ if (inherits(file_dic, "try-error")) {
 }
 
 data_dictionary <- list(file_path = file_dic)
-data_dictionary$variables <- read_excel(data_dictionary$file_path, sheet = "variables")
-data_dictionary$test.res <- read_excel(data_dictionary$file_path, sheet = "test.results")
-data_dictionary$local.spec <- read_excel(data_dictionary$file_path, sheet = "spec.types")
-data_dictionary$local.orgs <- read_excel(data_dictionary$file_path, sheet = "organisms")
-data_dictionary$notes <- read_excel(data_dictionary$file_path, sheet = "notes")
+data_dictionary$variables <- readxl::read_excel(data_dictionary$file_path, sheet = "variables")
+data_dictionary$test.res <- readxl::read_excel(data_dictionary$file_path, sheet = "test.results")
+data_dictionary$local.spec <- readxl::read_excel(data_dictionary$file_path, sheet = "spec.types")
+data_dictionary$local.orgs <- readxl::read_excel(data_dictionary$file_path, sheet = "organisms")
+data_dictionary$notes <- readxl::read_excel(data_dictionary$file_path, sheet = "notes")

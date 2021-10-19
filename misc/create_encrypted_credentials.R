@@ -4,7 +4,7 @@ library(readxl)
 library(tidyverse)
 rm(list = ls())
 
-all_cred <- read_excel("/Users/olivier/Documents/Projets/ACORN/Data/ACORN2_cred.xlsx", sheet = "cred") %>%
+all_cred <- readxl::read_excel("/Users/olivier/Documents/Projets/ACORN/Data/ACORN2_cred.xlsx", sheet = "cred") %>%
   filter(!is.na(site))
   
 
@@ -26,7 +26,7 @@ for (i in 1:nrow(all_cred)) {
                   acorn_s3_secret = user$acorn_s3_secret),
     connection = NULL)
   
-  encrypted_cred <- aes_cbc_encrypt(cred, key = sha256(charToRaw(user$pwd)))
+  encrypted_cred <- aes_cbc_encrypt(cred, key = openssl::sha256(charToRaw(user$pwd)))
   saveRDS(encrypted_cred, glue("/Users/olivier/Desktop/encrypted_cred_{user$site}_{user$user}.rds"))
 }
 

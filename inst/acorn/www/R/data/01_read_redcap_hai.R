@@ -1,7 +1,7 @@
 dl_hai_dta <- tryCatch(
   { withCallingHandlers({
     shinyjs::html(id = "text_redcap_hai_log",  "<strong>REDCap HAI data retrieval log: </strong>")
-    redcap_read(
+    REDCapR::redcap_read(
       batch_size = 500,
       redcap_uri = acorn_cred()$redcap_uri,
       token = acorn_cred()$redcap_hai_api,

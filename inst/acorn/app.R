@@ -1,11 +1,12 @@
 # ACORN shiny app main script
+
 source('./www/R/startup.R', local = TRUE)
 
 # Definition of UI ----
 ui <- page(
   theme = acorn_theme,
   includeCSS("www/styles.css"),
-  withAnim(),  # to add animation to UI elements using shinyanimate
+  shinyanimate::withAnim(),
   usei18n(i18n),  # for translation
   shinyjs::useShinyjs(),
   page_navbar(
@@ -900,8 +901,8 @@ server <- function(input, output, session) {
     if (input$cred_site == "demo") {
       # The demo should work offline
       cred <- readRDS("./www/cred/bucket_site/encrypted_cred_demo.rds")
-      key_user <- sha256(charToRaw("demo"))
-      cred <- unserialize(aes_cbc_decrypt(cred, key = key_user))
+      key_user <- openssl::sha256(charToRaw("demo"))
+      cred <- unserialize(openssl::aes_cbc_decrypt(cred, key = key_user))
       
       if(cred$site != input$cred_site)  {
         showNotification(i18n$t("Problem with credentials. Please contact ACORN support."), 
@@ -1286,9 +1287,9 @@ server <- function(input, output, session) {
     meta(meta)
     
     ## Anonymised data ----
-    redcap_f01f05_dta <- redcap_f01f05_dta() %>% mutate(patient_id = md5(patient_id))
+    redcap_f01f05_dta <- redcap_f01f05_dta() %>% mutate(patient_id = openssl::md5(patient_id))
     redcap_hai_dta <- redcap_hai_dta()
-    acorn_dta <- acorn_dta() %>% mutate(patient_id = md5(patient_id))
+    acorn_dta <- acorn_dta() %>% mutate(patient_id = openssl::md5(patient_id))
     corresp_org_antibio <- corresp_org_antibio()
     lab_code <- lab_code()
     data_dictionary <- data_dictionary()
@@ -1321,12 +1322,12 @@ server <- function(input, output, session) {
     save(meta, redcap_f01f05_dta, redcap_hai_dta, lab_dta, acorn_dta, corresp_org_antibio, lab_code, data_dictionary,
          file = file_non_anonymised)
     
-    put_object(file = file_non_anonymised,
-               object = name_file_non_anonymised,
-               bucket = acorn_cred()$acorn_s3_bucket,
-               key =  acorn_cred()$acorn_s3_key,
-               secret = acorn_cred()$acorn_s3_secret,
-               region = acorn_cred()$acorn_s3_region)
+    aws.s3::put_object(file = file_non_anonymised,
+                       object = name_file_non_anonymised,
+                       bucket = acorn_cred()$acorn_s3_bucket,
+                       key =  acorn_cred()$acorn_s3_key,
+                       secret = acorn_cred()$acorn_s3_secret,
+                       region = acorn_cred()$acorn_s3_region)
     
     ## Update list of files to load ----
     dta <- aws.s3::get_bucket(bucket = acorn_cred()$acorn_s3_bucket,
@@ -1364,9 +1365,9 @@ server <- function(input, output, session) {
       meta(meta)
       
       # Anonymised
-      redcap_f01f05_dta <- redcap_f01f05_dta() %>% mutate(patient_id = md5(patient_id))
+      redcap_f01f05_dta <- redcap_f01f05_dta() %>% mutate(patient_id = openssl::md5(patient_id))
       redcap_hai_dta <- redcap_hai_dta()
-      acorn_dta <- acorn_dta() %>% mutate(patient_id = md5(patient_id))
+      acorn_dta <- acorn_dta() %>% mutate(patient_id = openssl::md5(patient_id))
       corresp_org_antibio <- corresp_org_antibio()
       lab_code <- lab_code()
       data_dictionary <- data_dictionary()
