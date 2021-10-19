@@ -68,6 +68,7 @@ https://bootswatch.com/4/flatly/bootstrap.css */
 
 #filter_box {
   min-width: 100%;
+  margin-right: 15px;
   padding-top: 2px;
   padding-right: 15px;
   padding-bottom: 2px;
@@ -89,12 +90,9 @@ https://bootswatch.com/4/flatly/bootstrap.css */
   width: 300px;
 }
 
-
-/*# TODO v2.1: reactivate this section
-.filter_box_small {
-  width: 300px;
+#save_acorn_server {
+  margin-bottom: 50px;
 }
-*/
 
 .text_center {
   text-align: center;

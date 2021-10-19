@@ -20,10 +20,10 @@ output$isolates_organism_table <- DT::renderDT({
     rename(Organism = orgname, Contaminant = contaminant) %>%
     arrange(desc(N))
   
-  datatable(dta,
+  DT::datatable(dta,
             rownames = FALSE,
             filter = "top",
             style = "bootstrap",
             options = list(scrollX = TRUE, scrollY = 300, paging = FALSE, dom = "lrtip")) %>%
-    formatPercentage('Frequency', digits = 1)
+    DT::formatPercentage('Frequency', digits = 1)
 })

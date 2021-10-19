@@ -279,7 +279,7 @@ ui <- page(
                      h4_title(icon("tint"), i18n$t("Enrolments with Blood Culture")),
                      div(class = "box_outputs_content",
                          fluidRow(
-                           column(6, gaugeOutput("profile_blood_culture_gauge", width = "100%", height = "100px")),
+                           column(6, flexdashboard::gaugeOutput("profile_blood_culture_gauge", width = "100%", height = "100px")),
                            column(6, htmlOutput("profile_blood_culture_pct", width = "100%", height = "100px"))
                          )
                      )
@@ -386,7 +386,7 @@ ui <- page(
                      h4_title(i18n$t("Clinical Outcome")),
                      div(class = "box_outputs_content",
                          fluidRow(
-                           column(6, gaugeOutput("clinical_outcome_gauge", width = "100%", height = "100px")),
+                           column(6, flexdashboard::gaugeOutput("clinical_outcome_gauge", width = "100%", height = "100px")),
                            column(6, htmlOutput("clinical_outcome_pct", width = "100%", height = "70px"))
                          ),
                          h5(i18n$t("Clinical Outcome Status:")),
@@ -399,7 +399,7 @@ ui <- page(
                      h4_title(i18n$t("Day 28")),
                      div(class = "box_outputs_content",
                          fluidRow(
-                           column(6, gaugeOutput("d28_outcome_gauge", width = "100%", height = "100px")),
+                           column(6, flexdashboard::gaugeOutput("d28_outcome_gauge", width = "100%", height = "100px")),
                            column(6, htmlOutput("d28_outcome_pct", width = "100%", height = "70px"))
                          ),
                          h5(i18n$t("Day 28 Status:")),
@@ -454,7 +454,7 @@ ui <- page(
                      h4_title(i18n$t("Blood Culture Contaminants")),
                      div(class = "box_outputs_content",
                          fluidRow(
-                           column(6, gaugeOutput("contaminants_gauge", width = "100%", height = "100px"), br()),
+                           column(6, flexdashboard::gaugeOutput("contaminants_gauge", width = "100%", height = "100px"), br()),
                            column(6, htmlOutput("contaminants_pct", width = "100%", height = "100px"))
                          )
                      )
@@ -475,7 +475,7 @@ ui <- page(
                      h4_title(i18n$t("Growth / No Growth")),
                      div(class = "box_outputs_content",
                          fluidRow(
-                           column(6, gaugeOutput("isolates_growth_gauge", width = "100%", height = "100px"), br()),
+                           column(6, flexdashboard::gaugeOutput("isolates_growth_gauge", width = "100%", height = "100px"), br()),
                            column(6, htmlOutput("isolates_growth_pct", width = "100%", height = "100px"))
                          )
                      )
@@ -916,10 +916,10 @@ server <- function(input, output, session) {
     if (input$cred_site != "demo") {
       file_cred <- glue("encrypted_cred_{tolower(input$cred_site)}_{input$cred_user}.rds")
       # Stop if the connection can't be established
-      connect <- try(get_bucket(bucket = "shared-acornamr", 
-                                key    = shared_acornamr_key,
-                                secret = shared_acornamr_sec,
-                                region = "eu-west-3") %>% unlist(),
+      connect <- try(aws.s3::get_bucket(bucket = "shared-acornamr", 
+                                        key    = shared_acornamr_key,
+                                        secret = shared_acornamr_sec,
+                                        region = "eu-west-3") %>% unlist(),
                      silent = TRUE)
       
       if (inherits(connect, 'try-error')) {
@@ -1013,11 +1013,11 @@ server <- function(input, output, session) {
     id <- notify(i18n$t("Loading data."))
     on.exit({Sys.sleep(2); removeNotification(id)}, add = TRUE)
     
-    acorn_file <- get_object(object = input$acorn_files_server, 
-                             bucket = acorn_cred()$acorn_s3_bucket,
-                             key =  acorn_cred()$acorn_s3_key,
-                             secret = acorn_cred()$acorn_s3_secret,
-                             region = acorn_cred()$acorn_s3_region)
+    acorn_file <- aws.s3::get_object(object = input$acorn_files_server, 
+                                     bucket = acorn_cred()$acorn_s3_bucket,
+                                     key =  acorn_cred()$acorn_s3_key,
+                                     secret = acorn_cred()$acorn_s3_secret,
+                                     region = acorn_cred()$acorn_s3_region)
     load(rawConnection(acorn_file))
     acorn_origin("loaded")
     
@@ -1029,7 +1029,7 @@ server <- function(input, output, session) {
     
     source('./www/R/update_input_widgets.R', local = TRUE)
     notify(i18n$t("Successfully loaded data."), id = id)
-    startAnim(session, "container_about", type = "swing")
+    shinyanimate::startAnim(session, "container_about", type = "swing")
     focus_analysis()
   })
   
@@ -1046,7 +1046,7 @@ server <- function(input, output, session) {
     
     source('./www/R/update_input_widgets.R', local = TRUE)
     notify(i18n$t("Successfully loaded data."), id = id)
-    startAnim(session, "container_about", type = "swing")
+    shinyanimate::startAnim(session, "container_about", type = "swing")
     focus_analysis()
   })
   
@@ -1072,7 +1072,8 @@ server <- function(input, output, session) {
         div(
           p(i18n$t("It might take a couple of minutes. This window will close on completion.")),
           textOutput("text_redcap_f01f05_log"),
-          textOutput("text_redcap_hai_log"))
+          textOutput("text_redcap_hai_log")
+        )
       ))
       fail_read_redcap  <<- FALSE
       source("./www/R/data/01_read_redcap_f01f05.R", local = TRUE)
@@ -1298,12 +1299,12 @@ server <- function(input, output, session) {
     save(meta, redcap_f01f05_dta, redcap_hai_dta, acorn_dta, corresp_org_antibio, lab_code, data_dictionary,
          file = file)
     
-    put_object(file = file,
-               object = name_file,
-               bucket = acorn_cred()$acorn_s3_bucket,
-               key =  acorn_cred()$acorn_s3_key,
-               secret = acorn_cred()$acorn_s3_secret,
-               region = acorn_cred()$acorn_s3_region)
+    aws.s3::put_object(file = file,
+                       object = name_file,
+                       bucket = acorn_cred()$acorn_s3_bucket,
+                       key =  acorn_cred()$acorn_s3_key,
+                       secret = acorn_cred()$acorn_s3_secret,
+                       region = acorn_cred()$acorn_s3_region)
     
     ## Non anonymised data ----
     redcap_f01f05_dta <- redcap_f01f05_dta()
@@ -1328,10 +1329,10 @@ server <- function(input, output, session) {
                region = acorn_cred()$acorn_s3_region)
     
     ## Update list of files to load ----
-    dta <- get_bucket(bucket = acorn_cred()$acorn_s3_bucket,
-                      key =  acorn_cred()$acorn_s3_key,
-                      secret = acorn_cred()$acorn_s3_secret,
-                      region = acorn_cred()$acorn_s3_region)
+    dta <- aws.s3::get_bucket(bucket = acorn_cred()$acorn_s3_bucket,
+                              key =  acorn_cred()$acorn_s3_key,
+                              secret = acorn_cred()$acorn_s3_secret,
+                              region = acorn_cred()$acorn_s3_region)
     dta <- unlist(dta)
     acorn_dates <- as.vector(dta[names(dta) == 'Contents.LastModified'])
     ord_acorn_dates <- order(as.POSIXct(acorn_dates))
@@ -1344,7 +1345,7 @@ server <- function(input, output, session) {
     ## Switch to analysis ----
     checklist_status$acorn_dta_saved_server <- list(status = "okay", msg = i18n$t(".acorn file saved on server."))
     notify(i18n$t("Successfully saved .acorn file in the cloud. You can now explore acorn data."), id = id)
-    startAnim(session, "container_about", type = "swing")
+    shinyanimate::startAnim(session, "container_about", type = "swing")
     focus_analysis()
   })
   
@@ -1374,7 +1375,7 @@ server <- function(input, output, session) {
            file = file)
       checklist_status$acorn_dta_saved_local <- list(status = "okay", msg = i18n$t("Successfully saved .acorn file locally."))
       showNotification(i18n$t("Successfully saved .acorn file locally. You can now explore acorn data."), duration = 5)
-      startAnim(session, "container_about", type = "swing")
+      shinyanimate::startAnim(session, "container_about", type = "swing")
       focus_analysis()
       
       if(checklist_status$acorn_dta_saved_server$status != "okay")  {

@@ -25,8 +25,8 @@ output$table_patients <- DT::renderDT({
     rename_all(recode, surveillance_category = "Place of Infection", clinical_outcome = "Clinical Outcome",
                d28_outcome = "Day 28 Outcome", ward_type = "Type of Ward", ward = "Ward", n = "Enrolments")
   
-  datatable(dta,
+  DT::datatable(dta,
             rownames = FALSE, filter = "top",
             options = list(scrollX = TRUE, scrollY = 300, paging = FALSE)) %>%
-    formatPercentage('Proportion', digits = 1)
+    DT::formatPercentage("Proportion", digits = 1)
 })

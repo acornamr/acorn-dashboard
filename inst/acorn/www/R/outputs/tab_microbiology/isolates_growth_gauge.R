@@ -1,4 +1,4 @@
-output$isolates_growth_gauge <- renderGauge({
+output$isolates_growth_gauge <- flexdashboard::renderflexdashboard::gauge({
     req(acorn_dta_filter())
     req(nrow(acorn_dta_filter()) > 0)
 
@@ -18,5 +18,5 @@ output$isolates_growth_gauge <- renderGauge({
     fun_deduplication(method = input$deduplication_method) %>%
     pull(specid) %>% n_distinct()
   
-  gauge(n, min = 0, max = total, abbreviate = FALSE, gaugeSectors(colors = "#2c3e50"))
+  flexdashboard::gauge(n, min = 0, max = total, abbreviate = FALSE, gaugeSectors(colors = "#2c3e50"))
 })
