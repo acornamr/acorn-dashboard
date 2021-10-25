@@ -1,6 +1,6 @@
 message("02_process_redcap_f01f05.R")
 
-# Remove REDCap records where the "Is mark as delete record" is set to "Yes" for F01 ----
+# Delete records where the "Is mark as delete record" is set to "Yes" for F01 ----
 dl_redcap_f01f05_dta <- dl_redcap_f01f05_dta %>%
   replace_na(list(f01_deleted = "N", f02_deleted = "N", deleted = "N", f04_deleted = "N", f05_deleted = "N")) |> 
   filter(f01_deleted != "Y")
