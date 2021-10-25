@@ -5,15 +5,6 @@ dl_redcap_f01f05_dta <- dl_redcap_f01f05_dta %>%
   replace_na(list(f01_deleted = "N", f02_deleted = "N", deleted = "N", f04_deleted = "N", f05_deleted = "N")) |> 
   filter(f01_deleted != "Y")
 
-# Delete records that have a missing acornid. ----
-recordid_to_delete <- dl_redcap_f01f05_dta |> 
-  filter(is.na(redcap_repeat_instrument)) |>  # remove rows from F02 forms as all these rows have a missing acornid.
-  filter(is.na(acornid)) |> 
-  pull(recordid)
-
-dl_redcap_f01f05_dta <- dl_redcap_f01f05_dta |> 
-  filter(! recordid %in% recordid_to_delete)
-
 # Management of REDCap records where the "Is mark as delete record" is set to "Yes" for F02, F03, F04 or F05 ----
 # If a form F02 is marked as deleted, remove the corresponding row.
 dl_redcap_f01f05_dta <- dl_redcap_f01f05_dta |> 
@@ -114,7 +105,7 @@ ifelse(is_empty(test),
        })
 
 
-# Consolidate patient_enrolment & infection_episode in infection tibble. ----
+# Consolidate patient_enrolment & infection_episode in infection dataframe. ----
 infection <- left_join(
   infection_episode %>% select(-c("f02odkreckey", "odkreckey", "id_dmdtc")), 
   patient_enrolment %>% select(-c("redcap_repeat_instrument", "redcap_repeat_instance", "f01odkreckey",
@@ -359,6 +350,17 @@ ifelse(nrow(test) == 0,
          checklist_status$log_errors <- bind_rows(checklist_status$log_errors, 
                                                   tibble(issue = "Clinical and day-28 outcomes not consistent", redcap_id = test$redcap_id, acorn_id = test$acorn_id))
        })
+
+# Delete records that have a missing acornid. ----
+test <- infection %>% filter(is.na(acorn_id))
+ifelse(nrow(test) == 0, 
+       { checklist_status$redcap_missing_acorn_id <- list(status = "okay", msg = i18n$t("All valid records have an ACORN ID.")) },
+       {
+         checklist_status$redcap_missing_acorn_id <- list(status = "warning", msg = i18n$t("Some records with a missing ACORN ID. These records have been removed."))
+         checklist_status$log_errors <- bind_rows(checklist_status$log_errors, 
+                                                  tibble(issue = "Missing ACORN ID", redcap_id = test$redcap_id, acorn_id = "Missing"))
+       })
+infection <- infection |> filter(! is.na(acorn_id))
 
 # Summarise the age with age_year and age_day. ----
 infection$age_day[is.na(infection$age_day) & is.na(infection$birthday)] <- 0

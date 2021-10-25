@@ -830,6 +830,7 @@ server <- function(input, output, session) {
     redcap_F03F01              = list(status = "hidden", msg = ""),
     redcap_multiple_F02        = list(status = "hidden", msg = ""),
     redcap_consistent_outcomes = list(status = "hidden", msg = ""),
+    redcap_missing_acorn_id    = list(status = "hidden", msg = ""),
     redcap_age_category        = list(status = "hidden", msg = ""),
     redcap_hai_status          = list(status = "hidden", msg = ""),
     

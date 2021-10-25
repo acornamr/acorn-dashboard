@@ -6,6 +6,7 @@ output$checklist_qc_clinical <- renderText({
                                            "redcap_F03F01",
                                            "redcap_multiple_F02",
                                            "redcap_consistent_outcomes",
+                                           "redcap_missing_acorn_id",
                                            "redcap_age_category",
                                            "redcap_hai_status",
                                            "redcap_f01f05_dta"))
