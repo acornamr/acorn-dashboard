@@ -335,7 +335,9 @@ test <- infection |>
   group_by(acorn_id, date_admission, date_episode_enrolment) |> 
   mutate(duplicated_f02 = n() > 1) |> 
   ungroup() |> 
-  filter(duplicated_f02)
+  filter(duplicated_f02) |> 
+  distinct(redcap_id, acorn_id)
+  
 
 ifelse(nrow(test) == 0, 
        { checklist_status$redcap_multiple_F02 <- list(status = "okay", msg = i18n$t("There are no multiple F02 with identical ACORN ID, admission date, and episode enrolment date.")) },
