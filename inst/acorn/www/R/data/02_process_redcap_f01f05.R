@@ -114,7 +114,7 @@ ifelse(is_empty(test),
        })
 
 
-# Consolidate patient_enrolment & infection_episode in infection. ----
+# Consolidate patient_enrolment & infection_episode in infection tibble. ----
 infection <- left_join(
   infection_episode %>% select(-c("f02odkreckey", "odkreckey", "id_dmdtc")), 
   patient_enrolment %>% select(-c("redcap_repeat_instrument", "redcap_repeat_instance", "f01odkreckey",
@@ -122,7 +122,6 @@ infection <- left_join(
                                   "hpd_adm_date_cfm", "f04odkreckey")), 
   by = "recordid")
 
-# Rename / drop (by commenting) / recode columns. ----
 infection <- infection %>% transmute(
   redcap_id = recordid,
   # redcap_repeat_instance,
