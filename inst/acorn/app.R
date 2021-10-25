@@ -1151,8 +1151,8 @@ server <- function(input, output, session) {
     filename = glue("enrolment_log_{format(Sys.time(), '%Y-%m-%d_%H%M')}.xlsx"),
     content = function(file)  writexl::write_xlsx(
       list(
-        enrolment_log(),
-        checklist_status$log_errors
+        "Enrolment Log" = enrolment_log(),
+        "Errors Log" = checklist_status$log_errors
       ), path = file)
   )
   
