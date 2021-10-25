@@ -330,6 +330,22 @@ infection <- infection %>% transmute(
                   transfer_hospital = "Unknown",
                   ho_final_diag = "Unknown diagnosis"))
 
+#  Test the presence of "multiple F02 with identical ACORN ID, admission date, and episode enrolment date". ----
+test <- infection |> 
+  group_by(acorn_id, date_admission, date_episode_enrolment) |> 
+  mutate(duplicated_f02 = n() > 1) |> 
+  ungroup() |> 
+  filter(duplicated_f02)
+
+ifelse(nrow(test) == 0, 
+       { checklist_status$redcap_multiple_F02 <- list(status = "okay", msg = i18n$t("There are no multiple F02 with identical ACORN ID, admission date, and episode enrolment date.")) },
+       {
+         checklist_status$redcap_multiple_F02 <- list(status = "warning", msg = i18n$t("There are multiple F02 with identical ACORN ID, admission date, and episode enrolment date."))
+         checklist_status$log_errors <- bind_rows(checklist_status$log_errors, 
+                                                  tibble(issue = "Multiple F02 with identical ACORN ID, admission date, and episode enrolment date.", redcap_id = test$redcap_id, acorn_id = test$acorn_id))
+       })
+
+
 # Create episode_count for enrolment log. ----
 infection <- infection |> group_by(episode_id) |> mutate(episode_count = row_number()) |> ungroup()
 
