@@ -30,8 +30,10 @@ patient_enrolment <- dl_redcap_f01f05_dta %>%
 
 # Test that "Every D28 form (F04) matches exactly one patient enrolment (F01)". ----
 # For every recordid, when d28_date is filled (mandatory field in F04), siteid should be filled (mandatory field in F01).
-recordid_F04 <- patient_enrolment$recordid[!is.na(patient_enrolment$d28_date)]
-test <- patient_enrolment[is.na(patient_enrolment$siteid[patient_enrolment$recordid %in% recordid_F04]), c("recordid", "acornid")]
+test <- patient_enrolment |> 
+  filter(!is.na(d28_date), is.na(siteid)) |> 
+  select("recordid", "acornid")
+
 ifelse(nrow(test) == 0, 
        { checklist_status$redcap_F04F01 <- list(status = "okay", msg = i18n$t("Every D28 record (F04) matches exactly one patient enrolment (F01).")) },
        { 
