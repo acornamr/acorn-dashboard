@@ -1293,7 +1293,7 @@ server <- function(input, output, session) {
     ## Anonymised data ----
     redcap_f01f05_dta <- redcap_f01f05_dta() %>% mutate(patient_id = openssl::md5(patient_id))
     acorn_dta <- acorn_dta() %>% mutate(patient_id = openssl::md5(patient_id))
-    lab_dta <- lab_dta() %>% filter(patid %in% redcap_f01f05_dta$patient_id) %>% mutate(patient_id = openssl::md5(patient_id))
+    lab_dta <- lab_dta() %>% filter(patid %in% redcap_f01f05_dta$patient_id) %>% mutate(patid = openssl::md5(patid))
     
     name_file <- glue("{input$name_file}.acorn")
     file <- file.path(tempdir(), name_file)
@@ -1369,7 +1369,7 @@ server <- function(input, output, session) {
       ## Anonymised data ----
       redcap_f01f05_dta <- redcap_f01f05_dta() %>% mutate(patient_id = openssl::md5(patient_id))
       acorn_dta <- acorn_dta() %>% mutate(patient_id = openssl::md5(patient_id))
-      lab_dta <- lab_dta() %>% filter(patid %in% redcap_f01f05_dta$patient_id) %>% mutate(patient_id = openssl::md5(patient_id))
+      lab_dta <- lab_dta() %>% filter(patid %in% redcap_f01f05_dta$patient_id) %>% mutate(patid = openssl::md5(patid))
       
       save(meta, redcap_f01f05_dta, redcap_hai_dta, lab_dta, acorn_dta, corresp_org_antibio, lab_code, data_dictionary,
            file = file)
