@@ -1277,6 +1277,7 @@ server <- function(input, output, session) {
     id <- notify(i18n$t("Trying to save .acorn file on server."))
     on.exit({Sys.sleep(2); removeNotification(id)}, add = TRUE)
     
+    ## Common to anonymised and non-anonymised. ----
     meta <- list(time_generation = session_start_time,
                  app_version = app_version,
                  site = input$cred_site,
@@ -1284,18 +1285,19 @@ server <- function(input, output, session) {
                  comment = input$meta_acorn_comment)
     meta(meta)
     
-    ## Anonymised data ----
-    redcap_f01f05_dta <- redcap_f01f05_dta() %>% mutate(patient_id = openssl::md5(patient_id))
     redcap_hai_dta <- redcap_hai_dta()
-    acorn_dta <- acorn_dta() %>% mutate(patient_id = openssl::md5(patient_id))
     corresp_org_antibio <- corresp_org_antibio()
     lab_code <- lab_code()
     data_dictionary <- data_dictionary()
     
+    ## Anonymised data ----
+    redcap_f01f05_dta <- redcap_f01f05_dta() %>% mutate(patient_id = openssl::md5(patient_id))
+    acorn_dta <- acorn_dta() %>% mutate(patient_id = openssl::md5(patient_id))
+    lab_dta <- lab_dta() %>% filter(patid %in% redcap_f01f05_dta$patient_id) %>% mutate(patient_id = openssl::md5(patient_id))
+    
     name_file <- glue("{input$name_file}.acorn")
     file <- file.path(tempdir(), name_file)
-    
-    save(meta, redcap_f01f05_dta, redcap_hai_dta, acorn_dta, corresp_org_antibio, lab_code, data_dictionary,
+    save(meta, redcap_f01f05_dta, redcap_hai_dta, lab_dta, acorn_dta, corresp_org_antibio, lab_code, data_dictionary,
          file = file)
     
     aws.s3::put_object(file = file,
@@ -1307,21 +1309,16 @@ server <- function(input, output, session) {
     
     ## Non anonymised data ----
     redcap_f01f05_dta <- redcap_f01f05_dta()
-    redcap_hai_dta <- redcap_hai_dta()
-    lab_dta <- lab_dta() %>% filter(patid %in% redcap_f01f05_dta$patient_id)
     acorn_dta <- acorn_dta()
-    corresp_org_antibio <- corresp_org_antibio()
-    lab_code <- lab_code()
-    data_dictionary <- data_dictionary()
+    lab_dta <- lab_dta() %>% filter(patid %in% redcap_f01f05_dta$patient_id) 
     
-    name_file_non_anonymised <- glue("{input$name_file}.acorn_non_anonymised")
-    file_non_anonymised <- file.path(tempdir(), name_file_non_anonymised)
-    
+    name_file <- glue("{input$name_file}.acorn_non_anonymised")
+    file <- file.path(tempdir(), name_file)
     save(meta, redcap_f01f05_dta, redcap_hai_dta, lab_dta, acorn_dta, corresp_org_antibio, lab_code, data_dictionary,
-         file = file_non_anonymised)
+         file = file)
     
-    aws.s3::put_object(file = file_non_anonymised,
-                       object = name_file_non_anonymised,
+    aws.s3::put_object(file = file,
+                       object = name_file,
                        bucket = acorn_cred()$acorn_s3_bucket,
                        key =  acorn_cred()$acorn_s3_key,
                        secret = acorn_cred()$acorn_s3_secret,
@@ -1331,8 +1328,8 @@ server <- function(input, output, session) {
     dta <- aws.s3::get_bucket(bucket = acorn_cred()$acorn_s3_bucket,
                               key =  acorn_cred()$acorn_s3_key,
                               secret = acorn_cred()$acorn_s3_secret,
-                              region = acorn_cred()$acorn_s3_region)
-    dta <- unlist(dta)
+                              region = acorn_cred()$acorn_s3_region) |> 
+      unlist()
     acorn_dates <- as.vector(dta[names(dta) == 'Contents.LastModified'])
     ord_acorn_dates <- order(as.POSIXct(acorn_dates))
     acorn_files <- rev(tail(as.vector(dta[names(dta) == 'Contents.Key'])[ord_acorn_dates], 10))
@@ -1355,6 +1352,8 @@ server <- function(input, output, session) {
     filename = glue("{input$name_file_dup}.acorn"),
     content = function(file) {
       removeModal()
+      
+      ## Common to anonymised and non-anonymised. ----
       meta <- list(time_generation = session_start_time,
                    app_version = app_version,
                    site = input$cred_site,
@@ -1362,16 +1361,19 @@ server <- function(input, output, session) {
                    comment = input$meta_acorn_comment_dup)
       meta(meta)
       
-      # Anonymised
-      redcap_f01f05_dta <- redcap_f01f05_dta() %>% mutate(patient_id = openssl::md5(patient_id))
       redcap_hai_dta <- redcap_hai_dta()
-      acorn_dta <- acorn_dta() %>% mutate(patient_id = openssl::md5(patient_id))
       corresp_org_antibio <- corresp_org_antibio()
       lab_code <- lab_code()
       data_dictionary <- data_dictionary()
       
-      save(meta, redcap_f01f05_dta, redcap_hai_dta, acorn_dta, corresp_org_antibio, lab_code, data_dictionary,
+      ## Anonymised data ----
+      redcap_f01f05_dta <- redcap_f01f05_dta() %>% mutate(patient_id = openssl::md5(patient_id))
+      acorn_dta <- acorn_dta() %>% mutate(patient_id = openssl::md5(patient_id))
+      lab_dta <- lab_dta() %>% filter(patid %in% redcap_f01f05_dta$patient_id) %>% mutate(patient_id = openssl::md5(patient_id))
+      
+      save(meta, redcap_f01f05_dta, redcap_hai_dta, lab_dta, acorn_dta, corresp_org_antibio, lab_code, data_dictionary,
            file = file)
+      
       checklist_status$acorn_dta_saved_local <- list(status = "okay", msg = i18n$t("Successfully saved .acorn file locally."))
       showNotification(i18n$t("Successfully saved .acorn file locally. You can now explore acorn data."), duration = 5)
       shinyanimate::startAnim(session, "container_about", type = "swing")
