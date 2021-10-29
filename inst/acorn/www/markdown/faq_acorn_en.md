@@ -114,7 +114,7 @@ If you have questions about the project or the app, please [contact the ACORN te
 
 ### <a name="h40"></a> Acknowledgments and Credits
 
-App Development Team: [Olivier Celhay](https://olivier.celhay.net), [Paul Turner](mailto:Pault@tropmedres.ac). With contributions from Naomi Waithira, Prapass Wannapinij, Elizabeth Ashley, Rogier van Doorn. 
+App Development Team: <a href="https://olivier.celhay.net" target="_blank">Olivier Celhay</a>, [Paul Turner](mailto:Pault@tropmedres.ac). With contributions from Naomi Waithira, Prapass Wannapinij, Elizabeth Ashley, Rogier van Doorn. 
 
 Software:
 
