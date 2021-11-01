@@ -38,7 +38,7 @@ amr.l.int$ast.cat[amr.l.int$result == 330033] <- "R"
 amr.l.int$ast.cat[amr.l.int$GUIDELINES == "CLSI" & amr.l.int$TESTMETHOD == "DISK" & amr.l.int$result >= amr.l.int$S] <- "S"
 amr.l.int$ast.cat[amr.l.int$GUIDELINES == "CLSI" & amr.l.int$TESTMETHOD == "DISK" & amr.l.int$result > amr.l.int$R & amr.l.int$result < amr.l.int$S] <- "I"
 amr.l.int$ast.cat[amr.l.int$GUIDELINES == "CLSI" & amr.l.int$TESTMETHOD == "DISK" & amr.l.int$result <= amr.l.int$R] <- "R"
-# Disks - CLSI (categorised by >= for S and < for R (with I in between))
+# Disks - EUCAST (categorised by >= for S and < for R (with I in between))
 amr.l.int$ast.cat[amr.l.int$GUIDELINES == "EUCAST" & amr.l.int$TESTMETHOD == "DISK" & amr.l.int$result >= amr.l.int$S] <- "S"
 amr.l.int$ast.cat[amr.l.int$GUIDELINES == "EUCAST" & amr.l.int$TESTMETHOD == "DISK" & amr.l.int$result >= amr.l.int$R & amr.l.int$result < amr.l.int$S] <- "I"
 amr.l.int$ast.cat[amr.l.int$GUIDELINES == "EUCAST" & amr.l.int$TESTMETHOD == "DISK" & amr.l.int$result < amr.l.int$R] <- "R"
