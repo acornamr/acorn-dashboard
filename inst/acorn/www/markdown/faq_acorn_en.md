@@ -1,4 +1,7 @@
-### FAQ Content
+<div class = "alert alert-light">
+Visit <a href='https://acornamr.net/'>https://acornamr.net/</a> to learn more about ACORN and <a href='https://twitter.com/ACORN_AMR'>Twitter for the latest development.</a>
+If you have questions about the project or the app, please <a href='mailto:acorn@tropmedres.ac'>contact the ACORN team.</a>
+</div>
 
 - [Microbiology data](#h10)
   - [Deduplication of culture / bacterial isolate data](#h11)
@@ -9,8 +12,7 @@
 - [Data Processing](#h20)
   - [Enrolment/Error Log](#h21)
   - [Clinical and Lab data linkage](#h22)
-- [Contact ACORN Team](#h30)
-- [Acknowledgments and Credits](#h40)
+- [Acknowledgments and Credits](#h30)
 
 ### <a name="h10"></a> Microbiology data
 
@@ -108,11 +110,7 @@ Most patients will have a single infection episode per admission, so will presen
 
 <img src= "images/linkage_cases.png" style="width: 100%"/>
 
-### <a name="h30"></a> Contact ACORN Team
-
-If you have questions about the project or the app, please [contact the ACORN team.](mailto:acorn@tropmedres.ac)
-
-### <a name="h40"></a> Acknowledgments and Credits
+### <a name="h30"></a> Acknowledgments and Credits
 
 App Development Team: <a href="https://olivier.celhay.net" target="_blank">Olivier Celhay</a>, [Paul Turner](mailto:Pault@tropmedres.ac). With contributions from Naomi Waithira, Prapass Wannapinij, Elizabeth Ashley, Rogier van Doorn. 
 

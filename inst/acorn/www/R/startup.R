@@ -1,4 +1,4 @@
-app_version <- "2.0.9"  # Make sure that the app version is identical in DESCRIPTION and build_standalone_Windows.R
+app_version <- "2.1.0"  # Make sure that the app version is identical in DESCRIPTION and build_standalone_Windows.R
 session_start_time <- format(Sys.time(), "%Y-%m-%d_%HH%M")
 
 # IMPORTANT: ensure that there is a match between the calls below and:
@@ -39,6 +39,11 @@ acorn_theme    <- bs_theme(version = 4, bootswatch = "flatly", "border-width" = 
 acorn_theme_la <- bs_theme(version = 4, bootswatch = "flatly", "border-width" = "2px", base_font = "Phetsarath OT")
 
 hc_export_kind <- c("downloadJPEG", "downloadCSV")
+
+choices_datamanagement <- c("Generate and load .acorn </br> from clinical and lab data", 
+                            "Load .acorn </br> from cloud", 
+                            "Load .acorn </br> from local file",
+                            "Info on </br> loaded .acorn")
 
 code_sites <- c("demo",
                 readr::read_delim(file = "./www/data/ACORN2_site_codes.csv", delim = ";", show_col_types = FALSE) %>% pull(`ACORN2 site code`))

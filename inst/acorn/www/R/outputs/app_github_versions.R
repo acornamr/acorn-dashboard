@@ -14,7 +14,7 @@ output$app_github_versions <- renderText({
   if(is.na(version_github))  return(HTML(i18n$t("You are running ACORN dashboard"), " ", v_app_version, " ", "<a href = https://github.com/acornamr/acorn-dashboard/releases/latest target='_blank' class = 'alert-link'>", i18n$t("You can check here if it's the latest production release.")))
   
   if(version_github == v_app_version) return(HTML("<div class='alert alert-success'><i class='fa fa-check'></i>&nbsp;", 
-                                                                             i18n$t("Your ACORN dashboard is up to date."), "</div>"))
+                                                                             i18n$t("Your ACORN dashboard is up to date"), " (", v_app_version, ")", "</div>"))
 
   if(version_github != v_app_version) return(HTML("<div class='alert alert-warning'><i class='fa fa-exclamation-triangle'></i>&nbsp;", 
                                                                              i18n$t("You are running ACORN dashboard"),
