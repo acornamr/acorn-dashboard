@@ -1,5 +1,5 @@
 <div class = "alert alert-light">
-Visit <a href='https://acornamr.net/'>https://acornamr.net/</a> to learn more about ACORN and <a href='https://twitter.com/ACORN_AMR'>Twitter for the latest development.</a>
+Visit <a href='https://acornamr.net/' target='_blank'>https://acornamr.net/</a> to learn more about ACORN and <a href='https://twitter.com/ACORN_AMR' target='_blank'>Twitter for the latest developments.</a>
 If you have questions about the project or the app, please <a href='mailto:acorn@tropmedres.ac'>contact the ACORN team.</a>
 </div>
 
