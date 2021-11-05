@@ -17,7 +17,6 @@ script <- read_lines("./inst/acorn/app.R", skip = 0, n_max = -1L)
 vec <- str_extract_all(script, '(?<=n\\$t\\(")(.*?)(?=\")') |> unlist() |> unique() |> sort()
 
 
-# should also include the elements in i18n_r() - have to do it manually
 # translate - [ ] dropdown duplication of isolate / 
 #           - [ ] dropdown heuristic
 

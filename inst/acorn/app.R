@@ -118,19 +118,17 @@ ui <- page(
                  div(id = "login-basic",
                      div(class = "well",
                          h5(class = "text_center",  i18n$t("Please log in")),
-                         selectInput("cred_site", tagList(icon("hospital"), i18n$t("Site")),
-                                     choices = code_sites),
-                         conditionalPanel("input.cred_site != 'demo'", div(
+                         div(class = "text-center", i18n$t("(To log out, close the app.)")),
+                         selectInput("cred_site", "", choices = code_sites),
+                         conditionalPanel("input.cred_site != 'Run Demo' && input.cred_site != 'Upload Local .acorn'", div(
                            textInput("cred_user", tagList(icon("user"), i18n$t("User")), placeholder = "enter user name"),
                            passwordInput("cred_password", tagList(icon("unlock-alt"), i18n$t("Password")), placeholder = "enter password")
                          )
                          ), 
                          div(class = "text_center",
-                             actionButton("cred_login", label = i18n$t("Log in"), class = "btn-primary"),
-                             div(em(i18n$t("To log out, close the app.")))
+                             actionButton("cred_login", label = i18n$t("Log in"), class = "btn-primary")
                          )
-                     ),
-                     span(i18n$t("or "), actionLink("direct_upload_acorn", i18n$t("upload a local acorn file.")))
+                     )
                  )
           ),
           column(9,
@@ -155,114 +153,107 @@ ui <- page(
     # Tab Data Management ----
     nav(span(icon("database"), i18n$t("Data Management")), value = "data_management",
         p(i18n$t("What do you want to do?")),
-        div(class = "text_center",
-            radioGroupButtons("choice_datamanagement", NULL,
-                              choiceValues = c("generate", "load_cloud", "load_local", "info"),
-                              choiceNames = choices_datamanagement,
-                              selected = NULL, individual = TRUE,
-                              checkIcon = list(yes = icon("hand-point-right")))
-        ),
-        hr(),
-        ## Choice Generate ----
-        conditionalPanel("input.choice_datamanagement == 'generate'",
-                         div(
-                           fluidRow(
-                             column(4,    
-                                    h5(i18n$t("(1/4) Download Clinical data")), p(i18n$t("and generate enrolment log.")),
-                                    actionButton("get_redcap_data", i18n$t("Get data from REDCap"), icon = icon('cloud-download-alt'))
-                             ),
-                             column(8,
-                                    htmlOutput("checklist_qc_clinical")
-                             )
-                           ),
-                           br(), br(),
-                           fluidRow(
-                             column(4,    
-                                    uiOutput("enrolment_log_dl")
-                             ),
-                             column(8,
-                                    uiOutput("enrolment_log_table")
-                             )
-                           ),
-                           hr(),
-                           fluidRow(
-                             column(4,
-                                    h5(i18n$t("(2/4) Provide Lab data")),
-                                    pickerInput("format_lab_data", 
-                                                options = list(title = "Select lab data format"),
-                                                # options = list(title = i18n$t("Select lab data format:")),
-                                                choices = c("WHONET .dBase", "WHONET .SQLite", "Tabular"), 
-                                                multiple = FALSE,
-                                                selected = NULL),
-                                    
-                                    conditionalPanel("input.format_lab_data == 'WHONET .dBase'",
-                                                     fileInput("file_lab_dba", NULL,  buttonLabel = "Browse for dBase file")
-                                    ),
-                                    conditionalPanel("input.format_lab_data == 'WHONET .SQLite'",
-                                                     fileInput("file_lab_sql", NULL,  buttonLabel = "Browse for sqlite file", accept = c(".sqlite3", ".sqlite", ".db"))
-                                    ),
-                                    conditionalPanel("input.format_lab_data == 'Tabular'",
-                                                     fileInput("file_lab_tab", NULL,  buttonLabel = "Browse for file", accept = c(".csv", ".txt", ".xls", ".xlsx"))
-                                    )
-                             ),
-                             column(8,
-                                    htmlOutput("checklist_qc_lab")
-                             )
-                           ),
-                           hr(),
-                           fluidRow(
-                             column(4, 
-                                    h5(i18n$t("(3/4) Combine Clinical and Lab data")),
-                                    actionButton("generate_acorn_data", i18n$t("Generate .acorn file"))
-                             ),
-                             column(8,
-                                    htmlOutput("checklist_generate")
-                             )
-                           ),
-                           hr(),
-                           fluidRow(
-                             column(4, 
-                                    h5(i18n$t("(4/4) Save .acorn file")),
-                                    tags$div(
-                                      materialSwitch("save_switch", label = "Local", 
-                                                     inline = TRUE, status = "primary", value = TRUE),
-                                      tags$span(icon("cloud"), "Server"),
-                                      conditionalPanel("! input.save_switch",
-                                                       actionButton("save_acorn_local", i18n$t("Save .acorn file"))
-                                      ),
-                                      conditionalPanel("input.save_switch",
-                                                       actionButton("save_acorn_server", span(icon('cloud-upload-alt'), i18n$t("Save .acorn file")))
-                                      )
-                                    )
-                             ),
-                             column(8,
-                                    htmlOutput("checklist_save")
-                             )
-                           )
+        
+        navs_tab(id = "data_management_tabs",
+          nav(title = i18n$t("Generate and load .acorn from clinical and lab data"), value = "generate",
+              br(),
+              fluidRow(
+                column(4,    
+                       h5(i18n$t("(1/4) Download Clinical data")), p(i18n$t("and generate enrolment log.")),
+                       actionButton("get_redcap_data", i18n$t("Get data from REDCap"), icon = icon('cloud-download-alt'))
+                ),
+                column(8,
+                       htmlOutput("checklist_qc_clinical")
+                )
+              ),
+              br(), br(),
+              fluidRow(
+                column(4,    
+                       uiOutput("enrolment_log_dl")
+                ),
+                column(8,
+                       uiOutput("enrolment_log_table")
+                )
+              ),
+              hr(),
+              fluidRow(
+                column(4,
+                       h5(i18n$t("(2/4) Provide Lab data")),
+                       pickerInput("format_lab_data", 
+                                   options = list(title = "Select lab data format"),
+                                   # options = list(title = i18n$t("Select lab data format:")),
+                                   choices = c("WHONET .dBase", "WHONET .SQLite", "Tabular"), 
+                                   multiple = FALSE,
+                                   selected = NULL),
+                       
+                       conditionalPanel("input.format_lab_data == 'WHONET .dBase'",
+                                        fileInput("file_lab_dba", NULL,  buttonLabel = "Browse for dBase file")
+                       ),
+                       conditionalPanel("input.format_lab_data == 'WHONET .SQLite'",
+                                        fileInput("file_lab_sql", NULL,  buttonLabel = "Browse for sqlite file", accept = c(".sqlite3", ".sqlite", ".db"))
+                       ),
+                       conditionalPanel("input.format_lab_data == 'Tabular'",
+                                        fileInput("file_lab_tab", NULL,  buttonLabel = "Browse for file", accept = c(".csv", ".txt", ".xls", ".xlsx"))
+                       )
+                ),
+                column(8,
+                       htmlOutput("checklist_qc_lab")
+                )
+              ),
+              hr(),
+              fluidRow(
+                column(4, 
+                       h5(i18n$t("(3/4) Combine Clinical and Lab data")),
+                       actionButton("generate_acorn_data", i18n$t("Generate .acorn file"))
+                ),
+                column(8,
+                       htmlOutput("checklist_generate")
+                )
+              ),
+              hr(),
+              fluidRow(
+                column(4, 
+                       h5(i18n$t("(4/4) Save .acorn file")),
+                       tags$div(
+                         materialSwitch("save_switch", label = "Local", 
+                                        inline = TRUE, status = "primary", value = TRUE),
+                         tags$span(icon("cloud"), "Server"),
+                         conditionalPanel("! input.save_switch",
+                                          actionButton("save_acorn_local", i18n$t("Save .acorn file"))
+                         ),
+                         conditionalPanel("input.save_switch",
+                                          actionButton("save_acorn_server", span(icon('cloud-upload-alt'), i18n$t("Save .acorn file")))
                          )
-        ),
-        ## Choice Load cloud ----
-        conditionalPanel("input.choice_datamanagement == 'load_cloud'",
-                         fluidRow(
-                           column(3,
-                                  pickerInput('acorn_files_server', choices = NULL, label = NULL,
-                                              options = pickerOptions(actionsBox = TRUE, noneSelectedText = "No file selected", liveSearch = FALSE,
-                                                                      showTick = TRUE, header = "10 most recent files:"))
-                           ),
-                           column(9,
-                                  conditionalPanel(condition = "input.acorn_files_server",
-                                                   actionButton("load_acorn_server", span(icon("cloud-download-alt"), i18n$t("Load selected .acorn")))
-                                  )
-                           )
-                         )
-        ),
-        ## Choice Load local ----
-        conditionalPanel("input.choice_datamanagement == 'load_local'",
-                         fileInput("load_acorn_local", label = NULL, buttonLabel =  i18n$t("Load .acorn"), accept = '.acorn')
-        ),
-        ## Choice Info ----
-        conditionalPanel("input.choice_datamanagement == 'info'",
-                         htmlOutput("info_data"),
+                       )
+                ),
+                column(8,
+                       htmlOutput("checklist_save")
+                )
+              )
+          ),
+          nav(title = i18n$t("Load .acorn from cloud"), value = "load_cloud",
+              br(),
+              fluidRow(
+                column(3,
+                       pickerInput('acorn_files_server', choices = NULL, label = NULL,
+                                   options = pickerOptions(actionsBox = TRUE, noneSelectedText = "No file selected", liveSearch = FALSE,
+                                                           showTick = TRUE, header = "10 most recent files:"))
+                ),
+                column(9,
+                       conditionalPanel(condition = "input.acorn_files_server",
+                                        actionButton("load_acorn_server", span(icon("cloud-download-alt"), i18n$t("Load selected .acorn")))
+                       )
+                )
+              )
+          ),
+          nav(title = i18n$t("Load .acorn from local file"), value = "load_local",
+              br(),
+              fileInput("load_acorn_local", label = NULL, buttonLabel =  i18n$t("Load .acorn"), accept = '.acorn')
+          ),
+          nav(title = i18n$t("Info on loaded .acorn"),  value = "info",
+              br(),
+              htmlOutput("info_data")
+          )
         )
     ),
     # Tab Overview ----
@@ -708,6 +699,21 @@ ui <- page(
 # Definition of server ----
 server <- function(input, output, session) {
   
+  # Hide tabs on app launch.
+  nav_hide("tabs", target = "data_management")
+  nav_hide("tabs", target = "overview")
+  nav_hide("tabs", target = "follow_up")
+  nav_hide("tabs", target = "hai")
+  nav_hide("tabs", target = "microbiology")
+  nav_hide("tabs", target = "amr")
+  
+  output$twitter_feed <- renderText({
+    ifelse(!nzchar(Sys.getenv("SHINY_PORT")),
+           HTML(glue("<div id='twitter_follow'><a href = 'https://twitter.com/ACORN_AMR' target='_blank'><i class='fab fa-twitter' role='presentation' aria-label='twitter icon'></i>{i18n$t('Follow us on Twitter')}, @ACORN_AMR</a></div>")),
+           HTML("<a class='twitter-timeline' data-width='100%' data-height='700' data-theme='light' href='https://twitter.com/ACORN_AMR?ref_src=twsrc%5Etfw'>Tweets by ACORN_AMR</a> <script async src='https://platform.twitter.com/widgets.js' charset='utf-8'></script>")
+    )
+  })
+  
   observeEvent(input$show_faq, {
     showModal(modalDialog(
       title = "Frequently Asked Questions",
@@ -717,7 +723,7 @@ server <- function(input, output, session) {
     ))
   })
   
-  
+  # Download in acorn/Excel formats.
   output$download_data_acorn_format <- downloadHandler(
     filename = function()  glue("acorn_data_{session_start_time}.acorn"),
     content = function(file) {
@@ -773,21 +779,6 @@ server <- function(input, output, session) {
     }
   )
   
-  # Hide tabs on app launch ----
-  nav_hide("tabs", target = "data_management")
-  nav_hide("tabs", target = "overview")
-  nav_hide("tabs", target = "follow_up")
-  nav_hide("tabs", target = "hai")
-  nav_hide("tabs", target = "microbiology")
-  nav_hide("tabs", target = "amr")
-  
-  output$twitter_feed <- renderText({
-    ifelse(!nzchar(Sys.getenv("SHINY_PORT")),
-           HTML(glue("<div id='twitter_follow'><a href = 'https://twitter.com/ACORN_AMR' target='_blank'><i class='fab fa-twitter' role='presentation' aria-label='twitter icon'></i>{i18n$t('Follow us on Twitter')}, @ACORN_AMR</a></div>")),
-           HTML("<a class='twitter-timeline' data-width='100%' data-height='700' data-theme='light' href='https://twitter.com/ACORN_AMR?ref_src=twsrc%5Etfw'>Tweets by ACORN_AMR</a> <script async src='https://platform.twitter.com/widgets.js' charset='utf-8'></script>")
-    )
-  })
-  
   # Management of filters. ----
   observeEvent(input$shortcut_reset_filters, source("./www/R/reset_filter_enrolments.R", local = TRUE))
   
@@ -808,37 +799,13 @@ server <- function(input, output, session) {
   file_list <- list.files(path = "./www/R/outputs", pattern = "*.R", recursive = TRUE)
   for (file in file_list) source(paste0("./www/R/outputs/", file), local = TRUE)$value
   
-  # Multi-language ----
-  # translation of radioGroupButtons - https://github.com/Appsilon/shiny.i18n/issues/54
-  i18n_r <- reactive(i18n)  # translation of radioGroupButtons 1/3
   
-  # live language change on the browser side
+  # Live language change on the browser side ----
   observeEvent(input$selected_language, {
     update_lang(session, input$selected_language)
-    i18n_r()$set_translation_language(input$selected_language) # translation of radioGroupButtons 2/3
     
     if (isTRUE(input$selected_language != "la"))  session$setCurrentTheme(acorn_theme)
     if (isTRUE(input$selected_language == "la"))  session$setCurrentTheme(acorn_theme_la)
-  })
-  
-  # translation of radioGroupButtons 3/3
-  observe({
-    updateRadioGroupButtons(session = session, "choice_datamanagement", NULL,
-                            choiceValues = c("generate", "load_cloud", "load_local", "info"),
-                            choiceNames = i18n_r()$t(choices_datamanagement),
-                            selected = NULL, status = "success",
-                            checkIcon = list(yes = icon("hand-point-right")))
-  })
-  
-  # allow to upload acorn file and not being logged
-  observeEvent(input$direct_upload_acorn, {
-    nav_show("tabs", target = "data_management", select = TRUE)
-    
-    updateRadioGroupButtons(session = session, "choice_datamanagement", i18n$t("What do you want to do?"),
-                            choiceNames = i18n_r()$t(choices_datamanagement[3]),
-                            choiceValues = "load_local",
-                            selected = NULL, status = "success",
-                            checkIcon = list(yes = icon("hand-point-right")))
   })
   
   # Definition of reactive elements for data ----
@@ -939,26 +906,33 @@ server <- function(input, output, session) {
   
   # On login ----
   observeEvent(input$cred_login, {
+    if (input$cred_site == "Upload Local .acorn") {
+
+      nav_hide("data_management_tabs", target = "generate")
+      nav_hide("data_management_tabs", target = "load_cloud")
+      
+      nav_show("tabs", target = "data_management", select = TRUE)
+      nav_select("data_management_tabs", selected = "load_local")
+      return()
+    }
+    
     id <- notify(i18n$t("Attempting to connect."))
     on.exit({Sys.sleep(2); removeNotification(id)}, add = TRUE)
     
-    if (input$cred_site == "demo") {
-      # The demo should work offline
+    if (input$cred_site == "Run Demo") {
       cred <- readRDS("./www/cred/bucket_site/encrypted_cred_demo.rds")
       key_user <- openssl::sha256(charToRaw("demo"))
       cred <- unserialize(openssl::aes_cbc_decrypt(cred, key = key_user))
       
-      if(cred$site != input$cred_site)  {
-        showNotification(i18n$t("Problem with credentials. Please contact ACORN support."), 
-                         duration = 20, type = "error")
-        return()
-      }
-      
       acorn_cred(cred)
       notify(i18n$t("Successfully logged in."), id = id)
+      
+      nav_hide("data_management_tabs", target = "generate")
+      nav_show("data_management_tabs", target = "load_cloud")
+      nav_select("data_management_tabs", selected = "load_cloud")
     }
     
-    if (input$cred_site != "demo") {
+    if (input$cred_site != "Run Demo") {
       file_cred <- glue("encrypted_cred_{tolower(input$cred_site)}_{input$cred_user}.rds")
       # Stop if the connection can't be established
       connect <- try(aws.s3::get_bucket(bucket = "shared-acornamr", 
@@ -1001,17 +975,15 @@ server <- function(input, output, session) {
       
       acorn_cred(cred)
       notify(i18n$t("Successfully logged in."), id = id)
+      
+      nav_show("data_management_tabs", target = "generate")
+      nav_show("data_management_tabs", target = "load_cloud")
+      nav_select("data_management_tabs", selected = "generate")
     }
     
     nav_show("tabs", target = "data_management", select = TRUE)
     
-    updateRadioGroupButtons(session = session, "choice_datamanagement", i18n$t("What do you want to do?"),
-                            choiceValues = c("generate", "load_cloud", "load_local", "info"),
-                            choiceNames = i18n_r()$t(choices_datamanagement),
-                            selected = NULL, status = "success",
-                            checkIcon = list(yes = icon("hand-point-right")))
-    
-    # reinitiate everything so that previousely loaded .acorn data isn't there anymore
+    # Remove previousely loaded .acorn data.
     meta(NULL)
     redcap_f01f05_dta(NULL)
     redcap_hai_dta(NULL)
@@ -1100,12 +1072,6 @@ server <- function(input, output, session) {
   # On "Get Clinical Data from REDCap server" ----
   observeEvent(input$get_redcap_data, {
     continue <<- TRUE
-    
-    if(input$cred_site == "demo") {
-      showNotification(i18n$t("Can't connect to REDCap with 'demo' credentials"), type = "error")
-      continue <<- FALSE
-      fail_read_redcap  <<- FALSE
-    }
     
     if (!has_internet()) {
       showNotification(i18n$t("Not connected to internet."), type = "error")

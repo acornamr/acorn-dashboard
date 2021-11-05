@@ -45,7 +45,7 @@ choices_datamanagement <- c("Generate and load .acorn </br> from clinical and la
                             "Load .acorn </br> from local file",
                             "Info on </br> loaded .acorn")
 
-code_sites <- c("demo",
+code_sites <- c("Run Demo", "Upload Local .acorn",
                 readr::read_delim(file = "./www/data/ACORN2_site_codes.csv", delim = ";", show_col_types = FALSE) %>% pull(`ACORN2 site code`))
 
 columns_redcap <- c("recordid", "redcap_repeat_instrument", "redcap_repeat_instance", 
