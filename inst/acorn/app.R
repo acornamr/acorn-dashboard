@@ -501,8 +501,9 @@ ui <- page(
           column(3,
                  prettySwitch("combine_SI", i18n$t("Combine Susceptible + Intermediate"), status = "primary")
           ),
-          column(8, offset = 1,
-                 em(i18n$t("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable."))
+          column(8, offset = 1, 
+                 div(class = "alert alert-dismissible alert-warning", 
+                     i18n$t("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable."))
           )
         ),
         tabsetPanel(
@@ -1370,7 +1371,7 @@ server <- function(input, output, session) {
                        key =  acorn_cred()$acorn_s3_key,
                        secret = acorn_cred()$acorn_s3_secret,
                        region = acorn_cred()$acorn_s3_region)
-
+    
     ## Update list of files to load ----
     acorn_files <- aws.s3::get_bucket_df(bucket = acorn_cred()$acorn_s3_bucket,
                                          key =  acorn_cred()$acorn_s3_key,
