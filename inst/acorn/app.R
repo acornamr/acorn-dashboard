@@ -1036,6 +1036,13 @@ server <- function(input, output, session) {
                                      secret = acorn_cred()$acorn_s3_secret,
                                      region = acorn_cred()$acorn_s3_region)
     load(rawConnection(acorn_file))
+    
+    # Test that acorn file has been generated with 2.1.xx
+    if(!exists("acorn"))  {
+      showNotification(i18n$t("ACORN data is not of the right format. Only data generated with v2.1 is compatible."), duration = 10, type = "error")
+      return()
+    }
+    
     acorn_origin("loaded")
     meta(acorn$meta)
     redcap_f01f05_dta(acorn$redcap_f01f05_dta)
@@ -1054,6 +1061,13 @@ server <- function(input, output, session) {
   # On "Load .acorn" file from local ----
   observeEvent(input$load_acorn_local, {
     load(input$load_acorn_local$datapath)
+    
+    # Test that acorn file has been generated with 2.1.xx
+    if(!exists("acorn"))  {
+      showNotification(i18n$t("ACORN data is not of the right format. Only data generated with v2.1 is compatible."), duration = 10, type = "error")
+      return()
+    }
+    
     acorn_origin("loaded")
     meta(acorn$meta)
     redcap_f01f05_dta(acorn$redcap_f01f05_dta)
