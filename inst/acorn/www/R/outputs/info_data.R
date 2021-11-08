@@ -8,7 +8,7 @@ output$info_data <- renderText({
                                 glue(
                                   "Data generated on the {time_generation} (local time) with: 
                                   <ul>
-                                  <li>Used dashboard version: {meta()$app_version}</li>
+                                  <li>Dashboard version: {meta()$app_version}</li>
                                   <li>Site: {meta()$site}</li>
                                   <li>User: {meta()$user}</li>
                                   <li>Comments: {meta()$comment}</li>
@@ -16,7 +16,7 @@ output$info_data <- renderText({
                             glue(
                               "Data generated on the {time_generation} (local time) with: 
                               <ul>
-                              <li>Used dashboard version: {meta()$app_version}</li>
+                              <li>Dashboard version: {meta()$app_version}</li>
                               <li>Site: {meta()$site}</li>
                               <li>User: {meta()$user}</li>
                               <li>Comments: {meta()$comment}</li>
