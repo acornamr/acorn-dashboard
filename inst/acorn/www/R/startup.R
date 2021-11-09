@@ -1,4 +1,4 @@
-app_version <- "2.1.0"  # Make sure that the app version is identical in DESCRIPTION and build_standalone_Windows.R
+app_version <- "2.1.1"  # Make sure that the app version is identical in DESCRIPTION and build_standalone_Windows.R
 session_start_time <- format(Sys.time(), "%Y-%m-%d_%HH%M")
 
 # IMPORTANT: ensure that there is a match between the calls below and:
@@ -29,7 +29,7 @@ library(lubridate)
 library(markdown)  # to avoid issue with includeMarkdown() on shinyapps.io deployment
 library(shiny)
 library(shiny.i18n)  # i18n$t()
-library(shinyWidgets)  # chooseSliderSkin()
+library(shinyWidgets)  # prettyCheckboxGroup()
 library(tidyverse)
 
 

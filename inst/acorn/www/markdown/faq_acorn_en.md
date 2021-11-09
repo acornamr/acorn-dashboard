@@ -3,6 +3,7 @@ Visit <a href='https://acornamr.net/' target='_blank'>https://acornamr.net/</a> 
 If you have questions about the project or the app, please <a href='mailto:acorn@tropmedres.ac'>contact the ACORN team.</a>
 </div>
 
+- [Clinical data](#h00)
 - [Microbiology data](#h10)
   - [Deduplication of culture / bacterial isolate data](#h11)
   - [Antimicrobial resistance reporting](#h12)
@@ -13,6 +14,11 @@ If you have questions about the project or the app, please <a href='mailto:acorn
   - [Enrolment/Error Log](#h21)
   - [Clinical and Lab data linkage](#h22)
 - [Acknowledgments and Credits](#h30)
+
+
+### <a name="h00"></a> Clinical data
+
+Healthcare associated infections (HCAI) are defined as a subset of CAI, where the patient was known to have had exposure to healthcare facilities in the three months prior to admission.
 
 ### <a name="h10"></a> Microbiology data
 
@@ -87,9 +93,9 @@ We describe below how routinely collected microbiology laboratory data is linked
 
 ##### Logic rules for the linkage
 
-These are slightly different for CAI and HAI (F02 `ifd_surcate`).
+These are slightly different for HCAI/CAI and HAI (F02 `ifd_surcate`).
 
-**For CAI**, we wish to associate specimens that were collected (lab data file `specdate`) from within 2 days of the patient hospital admission date (F01 `hpd_adm_date`): i.e. admission date + / - 2 days.
+**For HCAI/CAI**, we wish to associate specimens that were collected (lab data file `specdate`) from within 2 days of the patient hospital admission date (F01 `hpd_adm_date`): i.e. admission date + / - 2 days.
 
 - This is important since some specimens will be collected just before admission (i.e. from out-patient department / clinic) and the patient admitted once result is known or when a bed becomes available).
 - Linkage is performed on clinical (`usubjid` and `hpd_adm_date`) to lab (`patid` and `specdate`).
@@ -103,9 +109,9 @@ These are slightly different for CAI and HAI (F02 `ifd_surcate`).
 
 Most patients will have a single infection episode per admission, so will present no problems for linkage.
 
-- Patients with well separated CAI and HAI during the same admission are also no problem: case {A} below.
-- Patients with a CAI and a stated HAI onset of admission D2 would be a problem, but these should not happen in ACORN2 (HAI considered from D3 onwards – case {B} below).
-- Potential problem: if a patient is discharged and then rapidly re-admitted (within 2 days), then infection specimen windows could overlap (case {C} below, but could also be HAI – CAI overlap).
+- Patients with well separated HCAI/CAI and HAI during the same admission are also no problem: case {A} below.
+- Patients with a HCAI/CAI and a stated HAI onset of admission D2 would be a problem, but these should not happen in ACORN2 (HAI considered from D3 onwards – case {B} below).
+- Potential problem: if a patient is discharged and then rapidly re-admitted (within 2 days), then infection specimen windows could overlap (case {C} below, but could also be HAI – HCAI/CAI overlap).
 - For these, the specimen is linked the first episode only (and the later linkage removed).
 
 <img src= "images/linkage_cases.png" style="width: 100%"/>

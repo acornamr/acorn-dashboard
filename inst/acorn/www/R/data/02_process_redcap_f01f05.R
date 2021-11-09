@@ -264,9 +264,9 @@ infection <- infection %>% transmute(
   cmb_pep = recode(cmb_comorbidities___pep, "0" = "", "1" = "Peptic ulcer"), 
   cmb_renal = recode(cmb_comorbidities___renal, "0" = "", "1" = "Renal disease"), 
   cmb_tub = recode(cmb_comorbidities___tub, "0" = "", "1" = "Tuberculosis"), 
-  cmb_other_overnight = recode(cmb_overnight, "N" = "No", "Y" = "Yes"), 
-  cmb_other_rhc = recode(cmb_rhc, "N" = "No", "Y" = "Yes"), 
-  cmb_other_surgery = recode(cmb_surgery, "N" = "No", "Y" = "Yes"), 
+  cmb_other_overnight = recode(cmb_overnight, "N" = "No", "Y" = "Yes", "UNK" = "Unknown"), 
+  cmb_other_rhc = recode(cmb_rhc, "N" = "No", "Y" = "Yes", "UNK" = "Unknown"), 
+  cmb_other_surgery = recode(cmb_surgery, "N" = "No", "Y" = "Yes", "UNK" = "Unknown"), 
   # f01_deleted, 
   # f01_enrolment_complete, 
   # End F01
@@ -320,7 +320,19 @@ infection <- infection %>% transmute(
                   sex = "Unknown sex",
                   blood_collect = "Unknown",
                   transfer_hospital = "Unknown",
+                  cmb_other_overnight = "Unknown",
+                  cmb_other_rhc = "Unknown",
+                  cmb_other_surgery = "Unknown",
                   ho_final_diag = "Unknown diagnosis"))
+
+# Split CAI into CAI and HCAI. ----
+infection <- infection |> mutate(
+  surveillance_category = case_when(
+    surveillance_category == "HAI" ~ "HAI",
+    surveillance_category == "CAI" & (cmb_other_overnight == "Yes" | cmb_other_rhc == "Yes" | cmb_other_surgery == "Yes") ~ "HCAI",
+    TRUE ~ "CAI"
+  )
+)
 
 #  Test the presence of "multiple F02 with identical ACORN ID, admission date, and episode enrolment date". ----
 test <- infection |> 
