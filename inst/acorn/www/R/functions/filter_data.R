@@ -8,7 +8,10 @@ fun_filter_enrolment <- function(data, input) {
            date_episode_enrolment <= input$filter_date_enrolment[2],
            age_category %in% input$filter_age_cat,
            surveillance_diag %in% input$filter_diagnosis_initial,
-           ho_final_diag %in% input$filter_diagnosis_final)
+           ho_final_diag %in% input$filter_diagnosis_final,
+           cci >= input$filter_uCCI[1],
+           cci <= input$filter_uCCI[2]
+           )
   
   
   data <- bind_rows(data %>% 

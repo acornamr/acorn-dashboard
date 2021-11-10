@@ -438,7 +438,7 @@ infection$clinical_severity_score <-
 not_empty <- function(x) replace_na(x, "") != ""
 
 infection$cci <- (infection$age_category == "Adult") * (
-  2 * not_empty(infection$cmb_cog) + 
+    2 * not_empty(infection$cmb_cog) + 
     2 * not_empty(infection$cmb_dem) +
     not_empty(infection$cmb_cpd) +
     not_empty(infection$cmb_rheu) +

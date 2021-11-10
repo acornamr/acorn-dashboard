@@ -1,0 +1,1 @@
+updateSliderInput(session, "filter_uCCI", "Updated Charlson Comorbidity Index", min = 0, max = 24, value = c(0, 24))

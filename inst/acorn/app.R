@@ -27,7 +27,7 @@ ui <- page(
                                 div(class = "smallcaps", class = "text_center", span(icon("hospital-user"), i18n$t("Enrolments"))),
                                 checkboxGroupButtons("filter_enrolments",
                                                      choices = c("Surveillance Category", "Type of Ward", "Date of Enrolment/Survey", "Age Category",
-                                                                 "Initial Diagnosis", "Final Diagnosis", "Clinical Severity", "Clinical/D28 Outcome",
+                                                                 "Initial Diagnosis", "Final Diagnosis", "Clinical Severity", "uCCI", "Clinical/D28 Outcome",
                                                                  "Transfer"),
                                                      selected = NULL,
                                                      status = "light", direction = "horizontal", size = "sm", individual = TRUE,
@@ -60,6 +60,9 @@ ui <- page(
                                                  sliderInput("filter_severity_adult", "Adult qSOFA score", min = 0, max = 3, value = c(0, 3)),
                                                  prettySwitch("filter_severity_child_0", "Include Child/Neonate with 0 severity criteria", status = "primary", value = TRUE, slim = TRUE),
                                                  prettySwitch("filter_severity_child_1", "Include Child/Neonate with ≥ 1 severity criteria", status = "primary", value = TRUE, slim = TRUE)
+                                ),
+                                conditionalPanel("input.filter_enrolments.includes('uCCI')",
+                                                 sliderInput("filter_uCCI", "Updated Charlson Comorbidity Index", min = 0, max = 24, value = c(0, 24))
                                 ),
                                 conditionalPanel("input.filter_enrolments.includes('Clinical/D28 Outcome')",
                                                  prettySwitch("filter_outcome_clinical", "Only with Clinical Outcome", status = "primary", value = FALSE, slim = TRUE),
@@ -791,6 +794,7 @@ server <- function(input, output, session) {
     if(! "Initial Diagnosis" %in% input$filter_enrolments)         source("./www/R/reset_filters/reset_filter_diagnosis_initial.R", local = TRUE)
     if(! "Final Diagnosis" %in% input$filter_enrolments)           source("./www/R/reset_filters/reset_filter_diagnosis_final.R", local = TRUE)
     if(! "Clinical Severity" %in% input$filter_enrolments)         source("./www/R/reset_filters/reset_filter_clinical_severity.R", local = TRUE)
+    if(! "uCCI" %in% input$filter_enrolments)                      source("./www/R/reset_filters/reset_filter_uCCI.R", local = TRUE)
     if(! "Clinical/D28 Outcome" %in% input$filter_enrolments)      source("./www/R/reset_filters/reset_filter_outcome.R", local = TRUE)
     if(! "Transfer" %in% input$filter_enrolments)                  source("./www/R/reset_filters/reset_filter_transfer.R", local = TRUE)
   })
