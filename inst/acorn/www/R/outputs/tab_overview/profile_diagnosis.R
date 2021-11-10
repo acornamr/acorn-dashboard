@@ -4,6 +4,7 @@ output$profile_diagnosis <- renderHighchart({
   redcap_f01f05_dta_filter() %>%
     group_by(surveillance_diag) %>%
     summarise(n = n(), .groups = "drop") %>%
+    arrange(desc(n)) %>%
     mutate(freq = round(100*n / sum(n))) %>%
     hchart(type = "bar", hcaes(x = "surveillance_diag", y = "n")) %>%
     hc_yAxis(title = "", stackLabels = list(enabled = TRUE)) %>%
