@@ -62,7 +62,7 @@ ui <- page(
                                                  prettySwitch("filter_severity_child_1", "Include Child/Neonate with ≥ 1 severity criteria", status = "primary", value = TRUE, slim = TRUE)
                                 ),
                                 conditionalPanel("input.filter_enrolments.includes('uCCI')",
-                                                 sliderInput("filter_uCCI", "Updated Charlson Comorbidity Index", min = 0, max = 24, value = c(0, 24))
+                                                 sliderInput("filter_uCCI", "Updated Charlson Comorbidity Index (only adults)", min = 0, max = 24, value = c(0, 24))
                                 ),
                                 conditionalPanel("input.filter_enrolments.includes('Clinical/D28 Outcome')",
                                                  prettySwitch("filter_outcome_clinical", "Only with Clinical Outcome", status = "primary", value = FALSE, slim = TRUE),
@@ -337,9 +337,15 @@ ui <- page(
         fluidRow(
           column(6, 
                  div(class = "box_outputs",
+                     h4_title(i18n$t("Updated Charlson Comorbidity Index (uCCI)")),
+                     div(class = "box_outputs_content",
+                         highchartOutput("profile_ucci", height = "300px")
+                     )
+                 ),
+                 div(class = "box_outputs",
                      h4_title(icon("arrows-alt-h"), i18n$t("Patients Transferred")),
                      div(class = "box_outputs_content",
-                         highchartOutput("profile_transfer_hospital")
+                         highchartOutput("profile_transfer_hospital", height = "200px")
                      )
                  )
           ),
@@ -348,7 +354,7 @@ ui <- page(
                      h4_title(i18n$t("Patient Comorbidities")),
                      div(class = "box_outputs_content",
                          prettySwitch("comorbidities_combinations", label = i18n$t("Show comorbidities combinations"), status = "primary", value = FALSE, slim = TRUE),
-                         highchartOutput("profile_comorbidities")
+                         highchartOutput("profile_comorbidities", height = "500px")
                      )
                  )
           )
