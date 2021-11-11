@@ -10,6 +10,7 @@ If you have questions about the project or the app, please <a href='mailto:acorn
   - [Blood culture contaminants](#h13)
   - [Target pathogens](#h14)
   - [Definition of Updated Charlson Comorbidity Index (uCCI)](#h15)
+  - [AWaRe classification](#h16)
 - [Data Processing](#h20)
   - [Enrolment/Error Log](#h21)
   - [Clinical and Lab data linkage](#h22)
@@ -72,6 +73,9 @@ Key reference: *Ternavasio-de la Vega HG et al (2018). The updated Charlson como
 
 Additional ACORN comorbidities, which were requested to be included by the WHO GLASS team as LMIC relevant, are not included as part of the uCCI: malaria, malnutrition, peptic ulcer\*, diabetes\*, tuberculosis, HIV on ART, HIV without ART (those marked with an \* were included in the original CCI).
 
+#### <a name="h16"></a> AWaRe classification
+
+The "Empiric Antibiotic Testing" plot of the "Overview" tab is colored based on the <a href="https://www.who.int/publications/i/item/WHOEMPIAU2019.11" target="_blank">2019 WHO AWaRe classification of antibiotics for evaluation and monitoring of use.</a> 
 
 ### <a name="h20"></a> Data Processing
 

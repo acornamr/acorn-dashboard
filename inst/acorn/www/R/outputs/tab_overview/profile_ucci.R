@@ -1,5 +1,6 @@
 output$profile_ucci <- renderHighchart({
   req(acorn_dta_filter())
+  req(nrow(acorn_dta_filter()) > 0)
   
   acorn_dta_filter() %>% 
     mutate(cci = case_when(

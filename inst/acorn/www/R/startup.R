@@ -34,6 +34,11 @@ library(tidyverse)
 
 
 cols_sir <- c("#2c3e50", "#f39c12", "#e74c3c")  # resp. S, I and R
+cols_access <- c("Watch" = "#2c3e50", 
+                 "Access" = "#f39c12", 
+                 "Reserve" = "#e74c3c", 
+                 "Unknown" = "#969696")
+
 
 acorn_theme    <- bs_theme(version = 4, bootswatch = "flatly", "border-width" = "2px")
 acorn_theme_la <- bs_theme(version = 4, bootswatch = "flatly", "border-width" = "2px", base_font = "Phetsarath OT")
@@ -47,6 +52,13 @@ choices_datamanagement <- c("Generate and load .acorn </br> from clinical and la
 
 code_sites <- c("Run Demo", "Upload Local .acorn",
                 readr::read_delim(file = "./www/data/ACORN2_site_codes.csv", delim = ";", show_col_types = FALSE) %>% pull(`ACORN2 site code`))
+
+aware <- readr::read_delim(file = "./www/data/AWaRe_WHO_2019.csv", delim = "\t", show_col_types = FALSE) |> 
+  transmute(
+    category,
+    antibiotic_code = paste0("antibiotic_", tolower(atc_code))
+  )
+
 
 columns_redcap <- c("recordid", "redcap_repeat_instrument", "redcap_repeat_instance", 
                     "f01odkreckey", "acornid_odk", "adm_date_odk", "siteid", "siteid_cfm", 

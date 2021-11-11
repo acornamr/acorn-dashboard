@@ -321,7 +321,7 @@ ui <- page(
                  div(class = "box_outputs",
                      h4_title(i18n$t("Diagnosis at Enrolment")),
                      div(class = "box_outputs_content",
-                         highchartOutput("profile_diagnosis")
+                         highchartOutput("profile_diagnosis", height = "500px")
                      )
                  )
           ),
@@ -329,7 +329,8 @@ ui <- page(
                  div(class = "box_outputs",
                      h4_title(i18n$t("Empiric Antibiotics Prescribed")),
                      div(class = "box_outputs_content",
-                         highchartOutput("profile_antibiotics")
+                         prettySwitch("antibiotics_combinations", label = i18n$t("Show antibiotics combinations"), status = "primary", value = FALSE, slim = TRUE),
+                         highchartOutput("profile_antibiotics", height = "500px")
                      )
                  )
           )
