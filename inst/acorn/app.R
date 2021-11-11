@@ -759,10 +759,10 @@ server <- function(input, output, session) {
         list(
           "meta" = meta() |> as_tibble(),
           "redcap_hai_dta" = redcap_hai_dta(),
-          "corresp_org_antibio" = corresp_org_antibio(),
           "redcap_f01f05_dta" = redcap_f01f05_dta() %>% mutate(patient_id = openssl::md5(patient_id)),
-          "acorn_dta" = acorn_dta() %>% mutate(patient_id = openssl::md5(patient_id)),
           "lab_dta" = lab_dta() %>% filter(patid %in% redcap_f01f05_dta()$patient_id) %>% mutate(patid = openssl::md5(patid)),
+          "acorn_dta" = acorn_dta() %>% mutate(patient_id = openssl::md5(patient_id)),
+          "corresp_org_antibio" = corresp_org_antibio(),
           "data_dictionary_variables" = data_dictionary()$variables,
           "data_dictionary_test.res" = data_dictionary()$test.res,
           "data_dictionary_local.spec" = data_dictionary()$local.spec,
