@@ -6,20 +6,9 @@ session_start_time <- format(Sys.time(), "%Y-%m-%d_%HH%M")
 # - DESCRIPTION
 # - NAMESPACE
 
-# These calls are not required as all functions from these packages are prefixed with pack_name::
-# library(aws.s3)
-# library(DBI)
-# library(DT)
-# library(flexdashboard)
-# library(openssl)
-# library(readr)
-# library(readxl)
-# library(REDCapR)
-# library(RSQLite)
-# library(rvest)
-# library(shinyanimate)
-# library(shinyjs)
-# library(writexl)
+# Calls to these packages are not required as all used functions are prefixed with pack_name::
+# aws.s3, ComplexUpset, DBI, DT, flexdashboard, openssl, readr, readxl, REDCapR, RSQLite,
+# rvest, shinyanimate, shinyjs, writexl
 
 library(bslib)
 library(curl)
@@ -39,7 +28,6 @@ cols_access <- c("Watch" = "#2c3e50",
                  "Reserve" = "#e74c3c", 
                  "Unknown" = "#969696")
 
-
 acorn_theme    <- bs_theme(version = 4, bootswatch = "flatly", "border-width" = "2px")
 acorn_theme_la <- bs_theme(version = 4, bootswatch = "flatly", "border-width" = "2px", base_font = "Phetsarath OT")
 
@@ -58,7 +46,6 @@ aware <- readr::read_delim(file = "./www/data/AWaRe_WHO_2019.csv", delim = "\t",
     category,
     antibiotic_code = paste0("antibiotic_", tolower(atc_code))
   )
-
 
 columns_redcap <- c("recordid", "redcap_repeat_instrument", "redcap_repeat_instance", 
                     "f01odkreckey", "acornid_odk", "adm_date_odk", "siteid", "siteid_cfm", 

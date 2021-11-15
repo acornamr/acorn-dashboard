@@ -19,6 +19,7 @@ Depends:
 Imports:
     aws.s3,
     bslib,
+    ComplexUpset,
     curl,
     DBI,
     DT,

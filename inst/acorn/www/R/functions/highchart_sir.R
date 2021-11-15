@@ -54,7 +54,7 @@ highchart_sir <- function(data_input, organism_input, corresp, combine_SI, dedup
       complete(resistance, nesting(name))
     
     
-    sir_results <- left_join(sir_results, corresp, by = c('name' = 'antibio_code')) %>%
+    sir_results <- left_join(sir_results, corresp, by = c("name" = "antibio_code")) %>%
       filter(UQ(as.symbol(matching_name_column)) == "show") %>%
       ungroup() %>%
       mutate(antibio_group = str_replace(antibio_group, "Other", "zzzOther")) %>%

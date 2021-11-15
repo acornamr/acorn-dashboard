@@ -7,9 +7,8 @@
 #' 
 #' @export
 #'
-#' @import aws.s3 bslib curl DBI DT flexdashboard glue highcharter lubridate markdown openssl readr readxl REDCapR 
-#' RSQLite rvest shiny shinyanimate shiny.i18n shinyjs shinyWidgets tidyverse writexl
-#' 
+#' @import aws.s3 bslib ComplexUpset curl DBI DT flexdashboard glue highcharter lubridate markdown openssl readr readxl
+#' REDCapR RSQLite rvest shiny shinyanimate shiny.i18n shinyjs shinyWidgets tidyverse writexl
 
 run_app <- function(options = list()) {
   app_directory <- system.file("acorn", package = "acorn")

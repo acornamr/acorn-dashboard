@@ -158,105 +158,105 @@ ui <- page(
         p(i18n$t("What do you want to do?")),
         
         navs_tab(id = "data_management_tabs",
-          nav(title = i18n$t("Generate and load .acorn from clinical and lab data"), value = "generate",
-              br(),
-              fluidRow(
-                column(4,    
-                       h5(i18n$t("(1/4) Download Clinical data")), p(i18n$t("and generate enrolment log.")),
-                       actionButton("get_redcap_data", i18n$t("Get data from REDCap"), icon = icon('cloud-download-alt'))
-                ),
-                column(8,
-                       htmlOutput("checklist_qc_clinical")
-                )
-              ),
-              br(), br(),
-              fluidRow(
-                column(4,    
-                       uiOutput("enrolment_log_dl")
-                ),
-                column(8,
-                       uiOutput("enrolment_log_table")
-                )
-              ),
-              hr(),
-              fluidRow(
-                column(4,
-                       h5(i18n$t("(2/4) Provide Lab data")),
-                       pickerInput("format_lab_data", 
-                                   options = list(title = "Select lab data format"),
-                                   # options = list(title = i18n$t("Select lab data format:")),
-                                   choices = c("WHONET .dBase", "WHONET .SQLite", "Tabular"), 
-                                   multiple = FALSE,
-                                   selected = NULL),
-                       
-                       conditionalPanel("input.format_lab_data == 'WHONET .dBase'",
-                                        fileInput("file_lab_dba", NULL,  buttonLabel = "Browse for dBase file")
+                 nav(title = i18n$t("Generate and load .acorn from clinical and lab data"), value = "generate",
+                     br(),
+                     fluidRow(
+                       column(4,    
+                              h5(i18n$t("(1/4) Download Clinical data")), p(i18n$t("and generate enrolment log.")),
+                              actionButton("get_redcap_data", i18n$t("Get data from REDCap"), icon = icon('cloud-download-alt'))
                        ),
-                       conditionalPanel("input.format_lab_data == 'WHONET .SQLite'",
-                                        fileInput("file_lab_sql", NULL,  buttonLabel = "Browse for sqlite file", accept = c(".sqlite3", ".sqlite", ".db"))
+                       column(8,
+                              htmlOutput("checklist_qc_clinical")
+                       )
+                     ),
+                     br(), br(),
+                     fluidRow(
+                       column(4,    
+                              uiOutput("enrolment_log_dl")
                        ),
-                       conditionalPanel("input.format_lab_data == 'Tabular'",
-                                        fileInput("file_lab_tab", NULL,  buttonLabel = "Browse for file", accept = c(".csv", ".txt", ".xls", ".xlsx"))
+                       column(8,
+                              uiOutput("enrolment_log_table")
                        )
-                ),
-                column(8,
-                       htmlOutput("checklist_qc_lab")
-                )
-              ),
-              hr(),
-              fluidRow(
-                column(4, 
-                       h5(i18n$t("(3/4) Combine Clinical and Lab data")),
-                       actionButton("generate_acorn_data", i18n$t("Generate .acorn file"))
-                ),
-                column(8,
-                       htmlOutput("checklist_generate")
-                )
-              ),
-              hr(),
-              fluidRow(
-                column(4, 
-                       h5(i18n$t("(4/4) Save .acorn file")),
-                       tags$div(
-                         materialSwitch("save_switch", label = "Local", 
-                                        inline = TRUE, status = "primary", value = TRUE),
-                         tags$span(icon("cloud"), "Server"),
-                         conditionalPanel("! input.save_switch",
-                                          actionButton("save_acorn_local", i18n$t("Save .acorn file"))
-                         ),
-                         conditionalPanel("input.save_switch",
-                                          actionButton("save_acorn_server", span(icon('cloud-upload-alt'), i18n$t("Save .acorn file")))
-                         )
+                     ),
+                     hr(),
+                     fluidRow(
+                       column(4,
+                              h5(i18n$t("(2/4) Provide Lab data")),
+                              pickerInput("format_lab_data", 
+                                          options = list(title = "Select lab data format"),
+                                          # options = list(title = i18n$t("Select lab data format:")),
+                                          choices = c("WHONET .dBase", "WHONET .SQLite", "Tabular"), 
+                                          multiple = FALSE,
+                                          selected = NULL),
+                              
+                              conditionalPanel("input.format_lab_data == 'WHONET .dBase'",
+                                               fileInput("file_lab_dba", NULL,  buttonLabel = "Browse for dBase file")
+                              ),
+                              conditionalPanel("input.format_lab_data == 'WHONET .SQLite'",
+                                               fileInput("file_lab_sql", NULL,  buttonLabel = "Browse for sqlite file", accept = c(".sqlite3", ".sqlite", ".db"))
+                              ),
+                              conditionalPanel("input.format_lab_data == 'Tabular'",
+                                               fileInput("file_lab_tab", NULL,  buttonLabel = "Browse for file", accept = c(".csv", ".txt", ".xls", ".xlsx"))
+                              )
+                       ),
+                       column(8,
+                              htmlOutput("checklist_qc_lab")
                        )
-                ),
-                column(8,
-                       htmlOutput("checklist_save")
-                )
-              )
-          ),
-          nav(title = i18n$t("Load .acorn from cloud"), value = "load_cloud",
-              br(),
-              fluidRow(
-                column(3,
-                       pickerInput('acorn_files_server', choices = NULL, label = NULL,
-                                   options = pickerOptions(actionsBox = TRUE, noneSelectedText = "No file selected", liveSearch = FALSE,
-                                                           showTick = TRUE, header = "10 most recent files:"))
-                ),
-                column(9,
-                       conditionalPanel(condition = "input.acorn_files_server",
-                                        actionButton("load_acorn_server", span(icon("cloud-download-alt"), i18n$t("Load selected .acorn")))
+                     ),
+                     hr(),
+                     fluidRow(
+                       column(4, 
+                              h5(i18n$t("(3/4) Combine Clinical and Lab data")),
+                              actionButton("generate_acorn_data", i18n$t("Generate .acorn file"))
+                       ),
+                       column(8,
+                              htmlOutput("checklist_generate")
                        )
-                )
-              )
-          ),
-          nav(title = i18n$t("Load .acorn from local file"), value = "load_local",
-              br(),
-              fileInput("load_acorn_local", label = NULL, buttonLabel =  i18n$t("Load .acorn"), accept = '.acorn')
-          ),
-          nav(title = i18n$t("Info on loaded .acorn"),  value = "info",
-              br(),
-              htmlOutput("info_data")
-          )
+                     ),
+                     hr(),
+                     fluidRow(
+                       column(4, 
+                              h5(i18n$t("(4/4) Save .acorn file")),
+                              tags$div(
+                                materialSwitch("save_switch", label = "Local", 
+                                               inline = TRUE, status = "primary", value = TRUE),
+                                tags$span(icon("cloud"), "Server"),
+                                conditionalPanel("! input.save_switch",
+                                                 actionButton("save_acorn_local", i18n$t("Save .acorn file"))
+                                ),
+                                conditionalPanel("input.save_switch",
+                                                 actionButton("save_acorn_server", span(icon('cloud-upload-alt'), i18n$t("Save .acorn file")))
+                                )
+                              )
+                       ),
+                       column(8,
+                              htmlOutput("checklist_save")
+                       )
+                     )
+                 ),
+                 nav(title = i18n$t("Load .acorn from cloud"), value = "load_cloud",
+                     br(),
+                     fluidRow(
+                       column(3,
+                              pickerInput('acorn_files_server', choices = NULL, label = NULL,
+                                          options = pickerOptions(actionsBox = TRUE, noneSelectedText = "No file selected", liveSearch = FALSE,
+                                                                  showTick = TRUE, header = "10 most recent files:"))
+                       ),
+                       column(9,
+                              conditionalPanel(condition = "input.acorn_files_server",
+                                               actionButton("load_acorn_server", span(icon("cloud-download-alt"), i18n$t("Load selected .acorn")))
+                              )
+                       )
+                     )
+                 ),
+                 nav(title = i18n$t("Load .acorn from local file"), value = "load_local",
+                     br(),
+                     fileInput("load_acorn_local", label = NULL, buttonLabel =  i18n$t("Load .acorn"), accept = '.acorn')
+                 ),
+                 nav(title = i18n$t("Info on loaded .acorn"),  value = "info",
+                     br(),
+                     htmlOutput("info_data")
+                 )
         )
     ),
     # Tab Overview ----
@@ -503,31 +503,52 @@ ui <- page(
                  prettySwitch("combine_SI", i18n$t("Combine Susceptible + Intermediate"), status = "primary")
           ),
           column(8, offset = 1, 
-                 div(class = "alert alert-dismissible alert-warning", 
-                     i18n$t("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable."))
+                 
           )
         ),
         tabsetPanel(
           nav(
-            span(em("Acinetobacter"), " species"), 
-            fluidRow(
-              column(2,
-                     br(), 
-                     htmlOutput("nb_isolates_acinetobacter")
-              ),
-              column(10,
-                     conditionalPanel(condition = "output.test_acinetobacter_sir",
-                                      highchartOutput("acinetobacter_sir", height = "400px"),
-                                      h4(i18n$t("Resistance to Carbapenems Over Time")),
-                                      highchartOutput("acinetobacter_sir_evolution", height = "400px")
-                     ),
-                     conditionalPanel(condition = "! output.test_acinetobacter_sir", 
-                                      h4(i18n$t("There is no data to display for this organism.")))
-              )
+            span(em("Acinetobacter"), br(), " species"),
+            
+            conditionalPanel(condition = "! output.test_acinetobacter_sir", 
+                             h4(i18n$t("There is no data to display for this organism."))),
+            conditionalPanel(condition = "output.test_acinetobacter_sir", 
+                             div(
+                               fluidRow(
+                                 column(6,
+                                        htmlOutput("nb_isolates_acinetobacter")
+                                 ),
+                                 column(6,
+                                        div(class = "text-warning", 
+                                            span(icon("exclamation-triangle"),
+                                            i18n$t("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable.")))
+                                 )
+                               ),
+                               br(),
+                               fluidRow(
+                                 column(6,
+                                        h4(i18n$t("SIR Evaluation")),
+                                        highchartOutput("acinetobacter_sir", height = "400px")
+                                 ),
+                                 column(6,
+                                        h4(i18n$t("Co-resistances")),
+                                        plotOutput("acinetobacter_co_resistance", height = "400px"),
+                                        conditionalPanel(condition = "! input.combine_SI", 
+                                                         i18n$t("Susceptible & Intermediate are always combined in this visualisation of co-resistances.")
+                                        ),
+                                        i18n$t("Horizontal bars show the size of a set of SR results while vertical bars show the number of resistant isolates for the corresponding antibiotic.")
+                                 )
+                               ),
+                               fluidRow(
+                                 column(12,
+                                        h4(i18n$t("Resistance to Carbapenems Over Time")),
+                                        highchartOutput("acinetobacter_sir_evolution", height = "400px")
+                                 ))
+                             )
             )
           ),
           nav(
-            em("Escherichia coli"),
+            HTML("<em>Escherichia <br/>coli</em>"),
             fluidRow(
               column(2,
                      br(), 
@@ -547,7 +568,7 @@ ui <- page(
             )
           ),
           nav(
-            em("Haemophilus influenzae"), 
+            HTML("<em>Haemophilus <br/>influenzae</em>"), 
             fluidRow(
               column(2,
                      br(), 
@@ -563,7 +584,7 @@ ui <- page(
             )
           ),
           nav(
-            em("Klebsiella pneumoniae"),
+            HTML("<em>Klebsiella <br/>pneumoniae</em>"), 
             fluidRow(
               column(2,
                      br(), 
@@ -583,7 +604,7 @@ ui <- page(
             )
           ),
           nav(
-            em("Neisseria meningitidis"), 
+            HTML("<em>Neisseria <br/>meningitidis</em>"), 
             fluidRow(
               column(2,
                      br(), 
@@ -599,7 +620,7 @@ ui <- page(
             )
           ),
           nav(
-            em("Pseudomonas aeruginosa"), 
+            HTML("<em>Pseudomonas <br/>aeruginosa</em>"), 
             fluidRow(
               column(2,
                      br(), 
@@ -617,7 +638,7 @@ ui <- page(
             )
           ),
           nav(
-            span(em("Salmonella"), "species"),
+            HTML("<em>Salmonella</em> <br/>species"),
             fluidRow(
               column(2,
                      br(), 
@@ -641,7 +662,7 @@ ui <- page(
             )
           ),
           nav(
-            em("Staphylococcus aureus"),
+            HTML("<em>Staphylococcus <br/>aureus</em>"), 
             fluidRow(
               column(2,
                      br(), 
@@ -659,7 +680,7 @@ ui <- page(
             )
           ),
           nav(
-            em("Streptococcus pneumoniae"),
+            HTML("<em>Streptococcus <br/>pneumoniae</em>"),
             fluidRow(
               column(2,
                      br(),
@@ -918,7 +939,7 @@ server <- function(input, output, session) {
   # On login ----
   observeEvent(input$cred_login, {
     if (input$cred_site == "Upload Local .acorn") {
-
+      
       nav_hide("data_management_tabs", target = "generate")
       nav_hide("data_management_tabs", target = "load_cloud")
       

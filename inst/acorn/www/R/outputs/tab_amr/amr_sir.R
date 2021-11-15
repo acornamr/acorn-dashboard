@@ -1,9 +1,14 @@
 # Acinetobacter species ----
 output$acinetobacter_sir <- renderHighchart({
   req(acorn_dta_filter())
-  organism_input <- "Acinetobacter sp"
-  highchart_sir(data_input = acorn_dta_filter(), organism_input = organism_input, corresp = corresp_org_antibio(), 
+  highchart_sir(data_input = acorn_dta_filter(), organism_input = "Acinetobacter sp", corresp = corresp_org_antibio(), 
                 combine_SI = input$combine_SI, deduplication_method = input$deduplication_method)
+})
+
+output$acinetobacter_co_resistance <- renderPlot({
+  req(acorn_dta_filter())
+  upset_co_resistance(data_input = acorn_dta_filter(), organism_input = "Acinetobacter sp", corresp = corresp_org_antibio(), 
+                      deduplication_method = input$deduplication_method)
 })
 
 output$acinetobacter_sir_evolution <- renderHighchart({
