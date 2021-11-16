@@ -60,14 +60,24 @@ fun_deduplication <- function(data, method = NULL) {
   if(method == "No deduplication of isolates")  return(data)
   
   if(method == "Deduplication by patient-episode") { 
-    data_dedup <- data %>% group_by(patient_id, episode_id, orgname, specgroup) %>% 
-      slice(1) %>% ungroup()
+    data_dedup <- data |> 
+      arrange(date_episode_enrolment) |> 
+      group_by(patient_id, episode_id, orgname, specgroup) |>
+      slice(1) |> ungroup()
     return(data_dedup)
   }
   
   if(method == "Deduplication by patient ID") { 
-    data_dedup <- data %>% group_by(patient_id, orgname, specgroup) %>% 
-      slice(1) %>% ungroup()
+    data_dedup <- data |> 
+      arrange(date_episode_enrolment) |>
+      mutate(surveillance_category_regroup = 
+               case_when(
+                 surveillance_category == "HAI" ~ "HAI",
+                 surveillance_category == "CAI" | surveillance_category == "HCAI" ~ "CAI",
+                 TRUE ~ "Unknown"
+               )) |> 
+      group_by(patient_id, orgname, specgroup, surveillance_category_regroup) |> 
+      slice(1) |> ungroup() |> select(-surveillance_category_regroup)
     return(data_dedup)
   }
 }
