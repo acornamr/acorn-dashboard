@@ -759,11 +759,13 @@ server <- function(input, output, session) {
     filename = function()  glue("acorn_data_{session_start_time}.acorn"),
     content = function(file) {
       ## Anonymised data ----
-      acorn <- list(meta = meta(), 
+      acorn <- list(about = about,
+                    meta = meta(), 
                     redcap_f01f05_dta = redcap_f01f05_dta() %>% mutate(patient_id = openssl::md5(patient_id)), 
                     redcap_hai_dta = redcap_hai_dta(), 
                     lab_dta = lab_dta() %>% filter(patid %in% redcap_f01f05_dta()$patient_id) %>% mutate(patid = openssl::md5(patid)), 
                     acorn_dta = acorn_dta() %>% mutate(patient_id = openssl::md5(patient_id)), 
+                    tables_dictionary = tables_dictionary,
                     corresp_org_antibio = corresp_org_antibio(), 
                     lab_code = lab_code(), 
                     data_dictionary = data_dictionary())
@@ -778,11 +780,13 @@ server <- function(input, output, session) {
       writexl::write_xlsx(
         ## Anonymised data ----
         list(
+          "about" = about,
           "meta" = meta() |> as_tibble(),
           "redcap_hai_dta" = redcap_hai_dta(),
           "redcap_f01f05_dta" = redcap_f01f05_dta() %>% mutate(patient_id = openssl::md5(patient_id)),
           "lab_dta" = lab_dta() %>% filter(patid %in% redcap_f01f05_dta()$patient_id) %>% mutate(patid = openssl::md5(patid)),
           "acorn_dta" = acorn_dta() %>% mutate(patient_id = openssl::md5(patient_id)),
+          "tables_dictionary" = tables_dictionary,
           "corresp_org_antibio" = corresp_org_antibio(),
           "data_dictionary_variables" = data_dictionary()$variables,
           "data_dictionary_test.res" = data_dictionary()$test.res,
@@ -944,7 +948,7 @@ server <- function(input, output, session) {
       nav_hide("data_management_tabs", target = "load_cloud")
       
       nav_show("tabs", target = "data_management", select = TRUE)
-      nav_select("data_management_tabs", selected = "load_local")
+      nav_show("data_management_tabs", target = "load_local", select = TRUE)
       return()
     }
     
@@ -960,8 +964,10 @@ server <- function(input, output, session) {
       notify(i18n$t("Successfully logged in."), id = id)
       
       nav_hide("data_management_tabs", target = "generate")
-      nav_show("data_management_tabs", target = "load_cloud")
-      nav_select("data_management_tabs", selected = "load_cloud")
+      nav_hide("data_management_tabs", target = "load_local")
+      
+      nav_show("tabs", target = "data_management", select = TRUE)
+      nav_show("data_management_tabs", target = "load_cloud", select = TRUE)
     }
     
     if (input$cred_site != "Run Demo") {
@@ -1010,6 +1016,7 @@ server <- function(input, output, session) {
       
       nav_show("data_management_tabs", target = "generate")
       nav_show("data_management_tabs", target = "load_cloud")
+      nav_show("data_management_tabs", target = "load_local")
       nav_select("data_management_tabs", selected = "generate")
     }
     
@@ -1347,11 +1354,13 @@ server <- function(input, output, session) {
     ## Anonymised data ----
     name_file <- glue("{input$name_file_server}.acorn")
     file <- file.path(tempdir(), name_file)
-    acorn <- list(meta = meta(), 
+    acorn <- list(about = about,
+                  meta = meta(), 
                   redcap_f01f05_dta = redcap_f01f05_dta() %>% mutate(patient_id = openssl::md5(patient_id)), 
                   redcap_hai_dta = redcap_hai_dta(), 
                   lab_dta = lab_dta() %>% filter(patid %in% redcap_f01f05_dta()$patient_id) %>% mutate(patid = openssl::md5(patid)), 
                   acorn_dta = acorn_dta() %>% mutate(patient_id = openssl::md5(patient_id)), 
+                  tables_dictionary = tables_dictionary,
                   corresp_org_antibio = corresp_org_antibio(), 
                   lab_code = lab_code(), 
                   data_dictionary = data_dictionary())
@@ -1367,11 +1376,13 @@ server <- function(input, output, session) {
     ## Non anonymised data ----
     name_file <- glue("{input$name_file_server}.acorn_non_anonymised")
     file <- file.path(tempdir(), name_file)
-    acorn <- list(meta = meta(), 
+    acorn <- list(about = about,
+                  meta = meta(), 
                   redcap_f01f05_dta = redcap_f01f05_dta(), 
                   redcap_hai_dta = redcap_hai_dta(), 
                   lab_dta = lab_dta() %>% filter(patid %in% redcap_f01f05_dta()$patient_id), 
                   acorn_dta = acorn_dta(), 
+                  tables_dictionary = tables_dictionary,
                   corresp_org_antibio = corresp_org_antibio(), 
                   lab_code = lab_code(), 
                   data_dictionary = data_dictionary())
@@ -1419,11 +1430,13 @@ server <- function(input, output, session) {
                    comment = input$meta_acorn_comment_local)
       meta(meta)
       
-      acorn <- list(meta = meta(), 
+      acorn <- list(about = about,
+                    meta = meta(), 
                     redcap_f01f05_dta = redcap_f01f05_dta() %>% mutate(patient_id = openssl::md5(patient_id)), 
                     redcap_hai_dta = redcap_hai_dta(), 
                     lab_dta = lab_dta() %>% filter(patid %in% redcap_f01f05_dta()$patient_id) %>% mutate(patid = openssl::md5(patid)), 
                     acorn_dta = acorn_dta() %>% mutate(patient_id = openssl::md5(patient_id)), 
+                    tables_dictionary = tables_dictionary,
                     corresp_org_antibio = corresp_org_antibio(), 
                     lab_code = lab_code(), 
                     data_dictionary = data_dictionary())

@@ -1,0 +1,443 @@
+﻿column;redcap_f01f05_dta;redcap_acorn_dta;redcap_hai_dta;redcap_lab_dta;REDCap Form;REDCap Form Label;REDCap Form Field Name;Details
+redcap_id;Yes;Yes;;;;;;
+episode_id;Yes;Yes;;;;;;
+episode_count;Yes;Yes;;;;;;
+site_id;Yes;Yes;Yes;;multiple;Q01. Hospital code;SITEID;
+date_enrolment;Yes;Yes;;;F01;Q03. Date of enrolment;DMDTC;The date the patient was first enrolled into ACORN on this admission.
+patient_id;Yes;Yes;;;F01;Q04. Patient ID;USUBJID;Local patient ID / hospital number. If no local patient ID system used, enter the ACORN ID here.
+acorn_id;Yes;Yes;;;multiple;Q06. ACORN ID;ACORNID;Anonymous ACORN surveillance ID number.
+age_year;Yes;Yes;;;F01 derived;Calculated field in 02_process_redcap_f01f05.R;;
+age_day;Yes;Yes;;;F01 derived;Calculated field in 02_process_redcap_f01f05.R;;
+sex;Yes;Yes;;;F01;Q12. Gender;SEX;Gender of the patient.
+date_admission;Yes;Yes;;;multiple;Q13. Date of admission;HPD_ADM_DATE;Admission date of the patient to the hospital.
+transfer_hospital;Yes;Yes;;;F01;Q15. Transfer from another hospital;HPD_IS_HOSP_DATE;Enter “YES” if the patient was transferred directly from another hospital.
+transfer_facility;Yes;Yes;;;F01;Q16. Transfer from another facility (e.g. long-term care facility) ;HPD_IS_OTHFACI_DATE;
+date_hospitalisation;Yes;Yes;;;F01;Q17. Date of hospitalisation (if transfer from another facility);HPD_HOSP_DATE;
+admission_type;Yes;Yes;;;F01;Q18. Admission type;HPD_ADMTYPE;
+admission_reason;Yes;Yes;;;F01;Q19. Primary admission reason;HPD_ADMREASON;
+cmb_none;Yes;Yes;;;F01;Q20. Comorbidities;CMB_COMORBIDITIES;"""None"" or blank"
+comorbidities;Yes;Yes;;;F01 derived;Calculated field in 02_process_redcap_f01f05.R;;"All comorbidities detected separated with "" & """
+cmb_aids;Yes;Yes;;;F01;Q20. Comorbidities;CMB_COMORBIDITIES;"""AIDS"" or blank"
+cmb_onc;Yes;Yes;;;F01;Q20. Comorbidities;CMB_COMORBIDITIES;"""Cancer / leukaemia"" or blank"
+cmb_cpd;Yes;Yes;;;F01;Q20. Comorbidities;CMB_COMORBIDITIES;"""Chronic pulmonary disease"" or blank"
+cmb_cog;Yes;Yes;;;F01;Q20. Comorbidities;CMB_COMORBIDITIES;"""Congestive heart failure"" or blank"
+cmb_rheu;Yes;Yes;;;F01;Q20. Comorbidities;CMB_COMORBIDITIES;"""Connective tissue / rheumatologic disease"" or blank"
+cmb_dem;Yes;Yes;;;F01;Q20. Comorbidities;CMB_COMORBIDITIES;"""Dementia"" or blank"
+cmb_diab;Yes;Yes;;;F01;Q20. Comorbidities;CMB_COMORBIDITIES;"""Diabetes"" or blank"
+cmb_diad;Yes;Yes;;;F01;Q20. Comorbidities;CMB_COMORBIDITIES;"""Diabetes with end organ damage"" or blank"
+cmb_hop;Yes;Yes;;;F01;Q20. Comorbidities;CMB_COMORBIDITIES;"""Hemi- or paraplegia"" or blank"
+cmb_hivwa;Yes;Yes;;;F01;Q20. Comorbidities;CMB_COMORBIDITIES;"""HIV on ART"" or blank"
+cmb_hivna;Yes;Yes;;;F01;Q20. Comorbidities;CMB_COMORBIDITIES;"""HIV without ART"" or blank"
+cmb_mlr;Yes;Yes;;;F01;Q20. Comorbidities;CMB_COMORBIDITIES;"""Malaria"" or blank"
+cmb_mal;Yes;Yes;;;F01;Q20. Comorbidities;CMB_COMORBIDITIES;"""Malnutrition"" or blank"
+cmb_mst;Yes;Yes;;;F01;Q20. Comorbidities;CMB_COMORBIDITIES;"""Metastatic solid tumour"" or blank"
+cmb_mld;Yes;Yes;;;F01;Q20. Comorbidities;CMB_COMORBIDITIES;"""Mild liver disease"" or blank"
+cmb_liv;Yes;Yes;;;F01;Q20. Comorbidities;CMB_COMORBIDITIES;"""Moderate or severe liver disease"" or blank"
+cmb_pep;Yes;Yes;;;F01;Q20. Comorbidities;CMB_COMORBIDITIES;"""Peptic ulcer"" or blank"
+cmb_renal;Yes;Yes;;;F01;Q20. Comorbidities;CMB_COMORBIDITIES;"""Renal disease"" or blank"
+cmb_tub;Yes;Yes;;;F01;Q20. Comorbidities;CMB_COMORBIDITIES;"""Tuberculosis"" or blank"
+cmb_other_overnight;Yes;Yes;;;F01;Q21. Overnight hospitalisation in 3 months (90 days) before admission;CMB_OVERNIGHT;Ask patient directly if not recorded in clinical notes.
+cmb_other_rhc;Yes;Yes;;;F01;Q22. Regular hospital contact (e.g. dialysis, cancer treatment in the 3 months (90 days) before admission);CMB_RHC;Ask patient directly if not recorded in clinical notes.
+cmb_other_surgery;Yes;Yes;;;F01;Q23. Surgery in the last 3 months (90 days) before admission;;Ask patient directly if not recorded in clinical notes.
+date_episode_enrolment;Yes;Yes;;;F02;Q07. Date of episode enrolment;HPD_DMDTC;Enter the date the patient was enrolled for this patient episode (i.e. the date of completing this form).
+age_category;Yes;Yes;;;F02;Q08. Patient age category ;HPD_AGEGROUP;Select adult (≥18y), child (1m - 17y), or neonate (<28d) as appropriate.
+age_category_calc;Yes;Yes;;;;Calculated field in 02_process_redcap_f01f05.R;;
+surveillance_category;Yes;Yes;;;F02 derived;Q09. Surveillance category ;IFD_SURCATE;Modified to include HCAI.
+hai_date_symptom_onset;Yes;Yes;;;F02;Q10. Date of symptom onset (HAI only);HPD_ONSET_DATE;Enter the date on which symptoms were first noted / recorded for the suspected HAI episode
+ward_type;Yes;Yes;Yes;;F02;Q11. Ward Type;HPD_ADM_WARDTYPE;Select appropriate ward category (closest match).
+ward;Yes;Yes;Yes;;F02;Q12. Ward;HPD_ADM_WARD;Local ward name.
+surveillance_diag;Yes;Yes;;;F02;Q13.Clinically suspected infection (reason for IV antibiotic prescription)  ;HO_IV_ANTI_REASON;Enter the MOST LIKELY clinical infection category (see table below).
+adult_altered_mentation;Yes;Yes;;;F02;Q14. Altered mentation (GCS <15);SER_GCS_UNDER15;
+adult_respiratory_rate;Yes;Yes;;;F02;Q15. Respiratory rate (≥22 /min);SER_RR_22UP;
+adult_blood_pressure;Yes;Yes;;;F02;Q16. Systolic blood pressure (<100 mmHg);SER_SBP_UNDER100;
+adult_abnormal_temp;Yes;Yes;;;F02;Q17. Abnormal core temperature (see explanation below);SER_ABNORMAL_TEMP_ADULT;
+child_neo_abnormal_temp;Yes;Yes;;;F02;Q18. Abnormal core temperature (see explanation below);SER_ABNORMAL_TEMP;
+child_neo_inapp_tachycardia;Yes;Yes;;;F02;Q19. Inappropriate tachycardia (see explanation below);SER_INAPP_TACHYCARDIA;
+child_neo_alter_mental;Yes;Yes;;;F02;Q20. Altered mental state (see explanation below);SER_ALTER_MENTAL;
+child_neo_reduce_pp;Yes;Yes;;;F02;Q21. Reduced peripheral perfusion or prolonged capillary refill time (see explanation below);SER_REDUCE_PP;
+neo_reduce;Yes;Yes;;;F02;Q22. Reduced level of activity;SER_NEO_REDUCE;
+neo_feed;Yes;Yes;;;F02;Q23. Feeding difficulty;SER_NEO_FEED;
+neo_convul;Yes;Yes;;;F02;Q24. Convulsions;SER_NEO_CONVUL;
+clinical_severity_score;Yes;Yes;;;F02 derived;Calculated field in 02_process_redcap_f01f05.R;;
+cci;Yes;Yes;;;F02 derived;Calculated field in 02_process_redcap_f01f05.R;;
+med_device_none;Yes;Yes;;;F02;Q25. Medical devices present on the day of HAI symptom onset;HAI_HAVE_MED_DEVICE;"""None"" or blank"
+med_device_pcv;Yes;Yes;;;F02;Q25. Medical devices present on the day of HAI symptom onset;HAI_HAVE_MED_DEVICE;"""Peripheral IV catheter"" or blank"
+med_device_cvc;Yes;Yes;;;F02;Q25. Medical devices present on the day of HAI symptom onset;HAI_HAVE_MED_DEVICE;"""Central IV catheter"" or blank"
+med_device_iuc;Yes;Yes;;;F02;Q25. Medical devices present on the day of HAI symptom onset;HAI_HAVE_MED_DEVICE;"""Urinary catheter"" or blank"
+med_device_vent;Yes;Yes;;;F02;Q25. Medical devices present on the day of HAI symptom onset;HAI_HAVE_MED_DEVICE;"""Intubation / Mechanical ventilation"" or blank"
+icu_48_hai;Yes;Yes;;;F02;Q26. Admitted to ICU for more than 48 hours (2 days) since admission and day of HAI symptom onset;HAI_ICU48DAYS;
+surgery_hai;Yes;Yes;;;F02;Q27. Surgery since admission and day of HAI symptom onset;HAI_HAVE_SUR;
+blood_collect;Yes;Yes;;;F02;Q28. Blood culture collected within 24 hours of admission (CAI) / symptom onset (HAI);MIC_BLOODCOLLECT;
+received_antibio;Yes;Yes;;;F02;Q29. Received ≥1 dose of a systemic antibiotic in the 24 hours before the blood culture collected;MIC_REC_ANTIBIOTIC;
+antibiotic_j01gb06;Yes;Yes;;;F02;Q30. Systemic antibiotics prescribed on date of admission (CAI) / symptom onset (HAI);ANTIBIOTIC;
+antibiotic_j01ca04;Yes;Yes;;;F02;Q30. Systemic antibiotics prescribed on date of admission (CAI) / symptom onset (HAI);ANTIBIOTIC;
+antibiotic_j01cr02;Yes;Yes;;;F02;Q30. Systemic antibiotics prescribed on date of admission (CAI) / symptom onset (HAI);ANTIBIOTIC;
+antibiotic_j01ca01;Yes;Yes;;;F02;Q30. Systemic antibiotics prescribed on date of admission (CAI) / symptom onset (HAI);ANTIBIOTIC;
+antibiotic_j01cr01;Yes;Yes;;;F02;Q30. Systemic antibiotics prescribed on date of admission (CAI) / symptom onset (HAI);ANTIBIOTIC;
+antibiotic_j01fa10;Yes;Yes;;;F02;Q30. Systemic antibiotics prescribed on date of admission (CAI) / symptom onset (HAI);ANTIBIOTIC;
+antibiotic_j01ce01;Yes;Yes;;;F02;Q30. Systemic antibiotics prescribed on date of admission (CAI) / symptom onset (HAI);ANTIBIOTIC;
+antibiotic_j01de01;Yes;Yes;;;F02;Q30. Systemic antibiotics prescribed on date of admission (CAI) / symptom onset (HAI);ANTIBIOTIC;
+antibiotic_j01dd08;Yes;Yes;;;F02;Q30. Systemic antibiotics prescribed on date of admission (CAI) / symptom onset (HAI);ANTIBIOTIC;
+antibiotic_j01dd01;Yes;Yes;;;F02;Q30. Systemic antibiotics prescribed on date of admission (CAI) / symptom onset (HAI);ANTIBIOTIC;
+antibiotic_j01dd02;Yes;Yes;;;F02;Q30. Systemic antibiotics prescribed on date of admission (CAI) / symptom onset (HAI);ANTIBIOTIC;
+antibiotic_j01dd04;Yes;Yes;;;F02;Q30. Systemic antibiotics prescribed on date of admission (CAI) / symptom onset (HAI);ANTIBIOTIC;
+antibiotic_j01db01;Yes;Yes;;;F02;Q30. Systemic antibiotics prescribed on date of admission (CAI) / symptom onset (HAI);ANTIBIOTIC;
+antibiotic_j01ma02;Yes;Yes;;;F02;Q30. Systemic antibiotics prescribed on date of admission (CAI) / symptom onset (HAI);ANTIBIOTIC;
+antibiotic_j01fa09;Yes;Yes;;;F02;Q30. Systemic antibiotics prescribed on date of admission (CAI) / symptom onset (HAI);ANTIBIOTIC;
+antibiotic_j01ff01;Yes;Yes;;;F02;Q30. Systemic antibiotics prescribed on date of admission (CAI) / symptom onset (HAI);ANTIBIOTIC;
+antibiotic_j01cf02;Yes;Yes;;;F02;Q30. Systemic antibiotics prescribed on date of admission (CAI) / symptom onset (HAI);ANTIBIOTIC;
+antibiotic_j01ee01;Yes;Yes;;;F02;Q30. Systemic antibiotics prescribed on date of admission (CAI) / symptom onset (HAI);ANTIBIOTIC;
+antibiotic_j01xx09;Yes;Yes;;;F02;Q30. Systemic antibiotics prescribed on date of admission (CAI) / symptom onset (HAI);ANTIBIOTIC;
+antibiotic_j01dh04;Yes;Yes;;;F02;Q30. Systemic antibiotics prescribed on date of admission (CAI) / symptom onset (HAI);ANTIBIOTIC;
+antibiotic_j01aa02;Yes;Yes;;;F02;Q30. Systemic antibiotics prescribed on date of admission (CAI) / symptom onset (HAI);ANTIBIOTIC;
+antibiotic_j01dh03;Yes;Yes;;;F02;Q30. Systemic antibiotics prescribed on date of admission (CAI) / symptom onset (HAI);ANTIBIOTIC;
+antibiotic_j01fa01;Yes;Yes;;;F02;Q30. Systemic antibiotics prescribed on date of admission (CAI) / symptom onset (HAI);ANTIBIOTIC;
+antibiotic_j01gb03;Yes;Yes;;;F02;Q30. Systemic antibiotics prescribed on date of admission (CAI) / symptom onset (HAI);ANTIBIOTIC;
+antibiotic_j01dh51;Yes;Yes;;;F02;Q30. Systemic antibiotics prescribed on date of admission (CAI) / symptom onset (HAI);ANTIBIOTIC;
+antibiotic_j01ma12;Yes;Yes;;;F02;Q30. Systemic antibiotics prescribed on date of admission (CAI) / symptom onset (HAI);ANTIBIOTIC;
+antibiotic_j01xx08;Yes;Yes;;;F02;Q30. Systemic antibiotics prescribed on date of admission (CAI) / symptom onset (HAI);ANTIBIOTIC;
+antibiotic_j01dh02;Yes;Yes;;;F02;Q30. Systemic antibiotics prescribed on date of admission (CAI) / symptom onset (HAI);ANTIBIOTIC;
+antibiotic_j01xd01;Yes;Yes;;;F02;Q30. Systemic antibiotics prescribed on date of admission (CAI) / symptom onset (HAI);ANTIBIOTIC;
+antibiotic_j01ma14;Yes;Yes;;;F02;Q30. Systemic antibiotics prescribed on date of admission (CAI) / symptom onset (HAI);ANTIBIOTIC;
+antibiotic_j01ma06;Yes;Yes;;;F02;Q30. Systemic antibiotics prescribed on date of admission (CAI) / symptom onset (HAI);ANTIBIOTIC;
+antibiotic_j01ma01;Yes;Yes;;;F02;Q30. Systemic antibiotics prescribed on date of admission (CAI) / symptom onset (HAI);ANTIBIOTIC;
+antibiotic_j01ce02;Yes;Yes;;;F02;Q30. Systemic antibiotics prescribed on date of admission (CAI) / symptom onset (HAI);ANTIBIOTIC;
+antibiotic_j01cr05;Yes;Yes;;;F02;Q30. Systemic antibiotics prescribed on date of admission (CAI) / symptom onset (HAI);ANTIBIOTIC;
+antibiotic_j01fa06;Yes;Yes;;;F02;Q30. Systemic antibiotics prescribed on date of admission (CAI) / symptom onset (HAI);ANTIBIOTIC;
+antibiotic_j01xa02;Yes;Yes;;;F02;Q30. Systemic antibiotics prescribed on date of admission (CAI) / symptom onset (HAI);ANTIBIOTIC;
+antibiotic_j01aa07;Yes;Yes;;;F02;Q30. Systemic antibiotics prescribed on date of admission (CAI) / symptom onset (HAI);ANTIBIOTIC;
+antibiotic_j01aa12;Yes;Yes;;;F02;Q30. Systemic antibiotics prescribed on date of admission (CAI) / symptom onset (HAI);ANTIBIOTIC;
+antibiotic_j01xa01;Yes;Yes;;;F02;Q30. Systemic antibiotics prescribed on date of admission (CAI) / symptom onset (HAI);ANTIBIOTIC;
+antibiotic_unknown;Yes;Yes;;;F02;Q30. Systemic antibiotics prescribed on date of admission (CAI) / symptom onset (HAI);ANTIBIOTIC;
+antibiotic_any_other;Yes;Yes;;;F02;Q30. Systemic antibiotics prescribed on date of admission (CAI) / symptom onset (HAI);ANTIBIOTIC;
+antibiotic_other_text;Yes;Yes;;;F02;Q31. If other antibiotic please specify;ANTIBIOTIC_OTHER;
+has_clinical_outcome;Yes;Yes;;;F03 derived;Calculated field in 02_process_redcap_f01f05.R;;"TRUE if there is a ""Date of Discharge"" (Q20), FALSE otherwise."
+ho_discharge_status;Yes;Yes;;;F03;Q18. Discharge status;HO_DISCHARGESTATUS;
+ho_discharge_to;Yes;Yes;;;F03;Q19. Discharge to;HO_DISCHARGETO;
+ho_discharge_date;Yes;Yes;;;F03;Q20. Date of discharge;HO_DISCHARGE_DATE;
+ho_days_icu;Yes;Yes;;;F03;Q21. Total number of days on ICU since admission.;HO_DAYS_ICU;
+ho_date_enrolment;Yes;Yes;;;F03;Q08. Date of episode enrolment;HO_DMDTC;
+ho_final_diag;Yes;Yes;;;F03;Q09.Final infection episode diagnosis ;HO_FIN_INFECT_EPISODE_DIAG;
+has_d28_outcome;Yes;Yes;;;F04 derived;Calculated field in 02_process_redcap_f01f05.R;;"TRUE if there is a ""Date of 28 days review"" (Q07), FALSE otherwise."
+d28_date;Yes;Yes;;;F04;Q07. Date of 28 days review;D28_DATE;
+d28_status;Yes;Yes;;;F04;Q08. Status at 28 days;D28_STATUS;
+d28_death_date;Yes;Yes;;;F04;Q09. Date of death (if post-discharge);D28_DEATH_DATE;
+bsi_ward_type;Yes;Yes;;;F05;Q07. Ward Type;WARDTYPE;
+bsi_ward;Yes;Yes;;;F05;Q08. Ward;WARD;
+bsi_culture_date;Yes;Yes;;;F05;Q09. Blood culture date;BSI_CULTURE_DATE;
+bsi_pahtogen;Yes;Yes;;;F05;Q10. Blood culture pathogen;BSI_PAHTOGEN;
+bsi_ast_date;Yes;Yes;;;F05;Q11. Date AST results reported to attending medical doctor;BSI_AST_DATE;
+bsi_ast_date_unknown___unk;Yes;Yes;;;F05;Q11. Date AST results reported to attending medical doctor;BSI_AST_DATE_UNKNOWN;
+bsi_immune_hiv;Yes;Yes;;;F05;Q12. HIV (CD4 ≤200/mm3);BSI_IMMUNE_HIV;
+bsi_immune_endstage;Yes;Yes;;;F05;Q13. End-stage renal disease requiring dialysis;BSI_IMMUNE_ENDSTAGE;
+bsi_immune_insulin;Yes;Yes;;;F05;Q14. Insulin-dependent diabetes mellitus;BSI_IMMUNE_INSULIN;
+bsi_immune_malignant;Yes;Yes;;;F05;Q15. Active malignancy;BSI_IMMUNE_MALIGNANT;
+bsi_immune_cytotoxic;Yes;Yes;;;F05;Q16. Cytotoxic chemotherapy ≤6 months;BSI_IMMUNE_CYTOTOXIC;
+bsi_immune_prednisolone;Yes;Yes;;;F05;Q17. Prednisolone therapy ≥10mg/day;BSI_IMMUNE_PREDNISOLONE;
+bsi_immune_cirrhosis;Yes;Yes;;;F05;Q18. Child C cirrhosis;BSI_IMMUNE_CIRRHOSIS;
+bsi_immune_neutropenia;Yes;Yes;;;F05;Q19. Neutropenia (≤500/mm3);BSI_IMMUNE_NEUTROPENIA;
+bsi_immune_haema;Yes;Yes;;;F05;Q20. Haematopoietic stem-cell transplantation;BSI_IMMUNE_HAEMA;
+bsi_immune_organtran;Yes;Yes;;;F05;Q21. Solid organ transplantation;BSI_IMMUNE_ORGANTRAN;
+bsi_score_temp;Yes;Yes;;;F05;Q22. Temperature (°C);BSI_SCORE_TEMP;
+bsi_score_temp_unknown___unk;Yes;Yes;;;F05;Q22. Temperature (°C);BSI_SCORE_TEMP_UNKNOWN;
+bsi_score_resprate;Yes;Yes;;;F05;Q23. Respiratory rate (/min);BSI_SCORE_RESPRATE;
+bsi_score_resprate_unknown___unk;Yes;Yes;;;F05;Q23. Respiratory rate (/min);BSI_SCORE_RESPRATE_UNKNOWN;
+bsi_score_hrate;Yes;Yes;;;F05;Q24. Heart rate (/min);BSI_SCORE_HRATE;
+bsi_score_hrate_unknown___unk;Yes;Yes;;;F05;Q24. Heart rate (/min);BSI_SCORE_HRATE_UNKNOWN;
+bsi_score_sys;Yes;Yes;;;F05;Q25. Systolic BP (mmHg);BSI_SCORE_SYS;
+bsi_score_sys_unknown___unk;Yes;Yes;;;F05;Q25. Systolic BP (mmHg);BSI_SCORE_SYS_UNKNOWN;
+bsi_mentalstatus;Yes;Yes;;;F05;Q26. Mental status;BSI_MENTALSTATUS;
+bsi_acute_hypo;Yes;Yes;;;F05;Q27. Acute hypotensive event ;BSI_ACUTE_HYPO;
+bsi_48h_intvas;Yes;Yes;;;F05;Q28. Intravenous vasopressor agents required;BSI_48H_INTVAS;
+bsi_48h_mv;Yes;Yes;;;F05;Q29. Mechanical ventilation needed;BSI_48H_MV;
+bsi_48h_ca;Yes;Yes;;;F05;Q30. Cardiac arrest;BSI_48H_CA;
+bsi_antibiotic_count;Yes;Yes;;;F05;Q31. Number of antibiotic treatment;BSI_ANTIBIOTIC_COUNT;
+bsi_antibiotic1_name;Yes;Yes;;;F05;Q32. Drug name;BSI_ANTIBIOTIC1_NAME;
+bsi_antibiotic1_name_other;Yes;Yes;;;F05;Q33. Drug name (Other);BSI_ANTIBIOTIC1_NAME_OTHER;
+bsi_antibiotic1_startdate;Yes;Yes;;;F05;Q34. Start date;BSI_ANTIBIOTIC1_STARTDATE;
+bsi_antibiotic1_enddate;Yes;Yes;;;F05;Q35. End date;BSI_ANTIBIOTIC1_ENDDATE;
+bsi_antibiotic1_route;Yes;Yes;;;F05;Q36. Route;BSI_ANTIBIOTIC1_ROUTE;
+bsi_antibiotic2_name;Yes;Yes;;;F05;Q37. Drug name;BSI_ANTIBIOTIC2_NAME;
+bsi_antibiotic2_name_other;Yes;Yes;;;F05;Q38. Drug name (Other);BSI_ANTIBIOTIC2_NAME_OTHER;
+bsi_antibiotic2_startdate;Yes;Yes;;;F05;Q39. Start date;BSI_ANTIBIOTIC2_STARTDATE;
+bsi_antibiotic2_enddate;Yes;Yes;;;F05;Q40. End date;BSI_ANTIBIOTIC2_ENDDATE;
+bsi_antibiotic2_route;Yes;Yes;;;F05;Q41. Route;BSI_ANTIBIOTIC2_ROUTE;
+bsi_antibiotic3_name;Yes;Yes;;;F05;Q42. Drug name;BSI_ANTIBIOTIC3_NAME;
+bsi_antibiotic3_name_other;Yes;Yes;;;F05;Q43. Drug name (Other);BSI_ANTIBIOTIC3_NAME_OTHER;
+bsi_antibiotic3_startdate;Yes;Yes;;;F05;Q44. Start date;BSI_ANTIBIOTIC3_STARTDATE;
+bsi_antibiotic3_enddate;Yes;Yes;;;F05;Q45. End date;BSI_ANTIBIOTIC3_ENDDATE;
+bsi_antibiotic3_route;Yes;Yes;;;F05;Q46. Route;BSI_ANTIBIOTIC3_ROUTE;
+bsi_antibiotic4_name;Yes;Yes;;;F05;Q47. Drug name;BSI_ANTIBIOTIC4_NAME;
+bsi_antibiotic4_name_other;Yes;Yes;;;F05;Q48. Drug name (Other);BSI_ANTIBIOTIC4_NAME_OTHER;
+bsi_antibiotic4_startdate;Yes;Yes;;;F05;Q49. Start date;BSI_ANTIBIOTIC4_STARTDATE;
+bsi_antibiotic4_enddate;Yes;Yes;;;F05;Q50. End date;BSI_ANTIBIOTIC4_ENDDATE;
+bsi_antibiotic4_route;Yes;Yes;;;F05;Q51. Route;BSI_ANTIBIOTIC4_ROUTE;
+bsi_antibiotic5_name;Yes;Yes;;;F05;Q52. Drug name;BSI_ANTIBIOTIC5_NAME;
+bsi_antibiotic5_name_oth;Yes;Yes;;;F05;Q53. Drug name (Other);BSI_ANTIBIOTIC5_NAME_OTH;
+bsi_antibiotic5_startdate;Yes;Yes;;;F05;Q54. Start date;BSI_ANTIBIOTIC5_STARTDATE;
+bsi_antibiotic5_enddate;Yes;Yes;;;F05;Q55. End date;BSI_ANTIBIOTIC5_ENDDATE;
+bsi_antibiotic5_route;Yes;Yes;;;F05;Q56. Route;BSI_ANTIBIOTIC5_ROUTE;
+bsi_is_primary;Yes;Yes;;;F05;Q57. Was BSI primary or secondary ;BSI_IS_PRIMARY;
+bsi_sec_source;Yes;Yes;;;F05;Q58. If secondary, what was the likely source;BSI_SEC_SOURCE;
+bsi_sec_source_oth;Yes;Yes;;;F05;Q59. Other, please specify;BSI_SEC_SOURCE_OTH;
+bsi_is_com_implant;Yes;Yes;;;F05;Q60. Presence of implanted prosthesis;BSI_IS_COM_IMPLANT;
+bsi_is_com_2days;Yes;Yes;;;F05;Q61. Duration of BSI >2 days;BSI_IS_COM_2DAYS;
+bsi_is_com_fever;Yes;Yes;;;F05;Q62. BSI-related fever >3 days;BSI_IS_COM_FEVER;
+specid;;Yes;;Yes;;;;
+specdate;;Yes;;Yes;;;;
+spectype.whonet;;Yes;;Yes;;;;
+spectype.local;;Yes;;Yes;;;;
+orgnum;;Yes;;Yes;;;;
+org.whonet;;Yes;;Yes;;;;
+org.local;;Yes;;Yes;;;;
+blac;;Yes;;Yes;;;;
+ind.cli;;Yes;;Yes;;;;
+cpm;;Yes;;Yes;;;;
+esbl;;Yes;;Yes;;;;
+mrsa;;Yes;;Yes;;;;
+vre;;Yes;;Yes;;;;
+AMC_NM;;Yes;;Yes;;;;
+AMP_NM;;Yes;;Yes;;;;
+ATM_NM;;Yes;;Yes;;;;
+AZM_NE;;Yes;;Yes;;;;
+CHL_NM;;Yes;;Yes;;;;
+CIP_NE;;Yes;;Yes;;;;
+CIP_NM;;Yes;;Yes;;;;
+CLI_NM;;Yes;;Yes;;;;
+CRO_NE;;Yes;;Yes;;;;
+CRO_NM;;Yes;;Yes;;;;
+CTX_NM;;Yes;;Yes;;;;
+ERY_NM;;Yes;;Yes;;;;
+ETP_NM;;Yes;;Yes;;;;
+FEP_NM;;Yes;;Yes;;;;
+GEN_NM;;Yes;;Yes;;;;
+IPM_NM;;Yes;;Yes;;;;
+LVX_NM;;Yes;;Yes;;;;
+MEM_NM;;Yes;;Yes;;;;
+MFX_NM;;Yes;;Yes;;;;
+NIT_NM;;Yes;;Yes;;;;
+OXA_NM;;Yes;;Yes;;;;
+PEN_NE;;Yes;;Yes;;;;
+PEN_NM;;Yes;;Yes;;;;
+SXT_NE;;Yes;;Yes;;;;
+SXT_NM;;Yes;;Yes;;;;
+TCY_NM;;Yes;;Yes;;;;
+TZP_NM;;Yes;;Yes;;;;
+VAN_NE;;Yes;;Yes;;;;
+VAN_NM;;Yes;;Yes;;;;
+AMC_ND20;;Yes;;Yes;;;;
+AMP_ND10;;Yes;;Yes;;;;
+CAZ_ND30;;Yes;;Yes;;;;
+CHL_ND30;;Yes;;Yes;;;;
+CIP_ND5;;Yes;;Yes;;;;
+CLI_ND2;;Yes;;Yes;;;;
+CRO_ND30;;Yes;;Yes;;;;
+ERY_ND15;;Yes;;Yes;;;;
+FOX_ND30;;Yes;;Yes;;;;
+GEN_ND10;;Yes;;Yes;;;;
+MEM_ND10;;Yes;;Yes;;;;
+NIT_ND300;;Yes;;Yes;;;;
+OXA_ND1;;Yes;;Yes;;;;
+PEN_ND10;;Yes;;Yes;;;;
+SXT_ND1_2;;Yes;;Yes;;;;
+TCY_ND30;;Yes;;Yes;;;;
+VAN_ND30;;Yes;;Yes;;;;
+AMK_ND30;;Yes;;Yes;;;;
+AMK_NE;;Yes;;Yes;;;;
+AMK_NM;;Yes;;Yes;;;;
+AMC_NE;;Yes;;Yes;;;;
+AMP_NE;;Yes;;Yes;;;;
+SAM_ND10;;Yes;;Yes;;;;
+SAM_NE;;Yes;;Yes;;;;
+SAM_NM;;Yes;;Yes;;;;
+AZM_ND15;;Yes;;Yes;;;;
+AZM_NM;;Yes;;Yes;;;;
+ATM_ND30;;Yes;;Yes;;;;
+ATM_NE;;Yes;;Yes;;;;
+FEP_ND30;;Yes;;Yes;;;;
+FEP_NE;;Yes;;Yes;;;;
+CTX_ND30;;Yes;;Yes;;;;
+CTX_NE;;Yes;;Yes;;;;
+FOX_NE;;Yes;;Yes;;;;
+FOX_NM;;Yes;;Yes;;;;
+CAZ_NE;;Yes;;Yes;;;;
+CAZ_NM;;Yes;;Yes;;;;
+CHL_NE;;Yes;;Yes;;;;
+CLI_NE;;Yes;;Yes;;;;
+COL_NM;;Yes;;Yes;;;;
+DOR_ND10;;Yes;;Yes;;;;
+DOR_NE;;Yes;;Yes;;;;
+DOR_NM;;Yes;;Yes;;;;
+ETP_ND10;;Yes;;Yes;;;;
+ETP_NE;;Yes;;Yes;;;;
+ERY_NE;;Yes;;Yes;;;;
+GEN_NE;;Yes;;Yes;;;;
+IPM_ND10;;Yes;;Yes;;;;
+IPM_NE;;Yes;;Yes;;;;
+LVX_ND5;;Yes;;Yes;;;;
+LVX_NE;;Yes;;Yes;;;;
+MEM_NE;;Yes;;Yes;;;;
+MFX_ND5;;Yes;;Yes;;;;
+MFX_NE;;Yes;;Yes;;;;
+NIT_NE;;Yes;;Yes;;;;
+OFX_ND5;;Yes;;Yes;;;;
+OFX_NE;;Yes;;Yes;;;;
+OFX_NM;;Yes;;Yes;;;;
+OXA_NE;;Yes;;Yes;;;;
+PEF_ND5;;Yes;;Yes;;;;
+TZP_ND100;;Yes;;Yes;;;;
+TZP_NE;;Yes;;Yes;;;;
+SPT_ND100;;Yes;;Yes;;;;
+SPT_NE;;Yes;;Yes;;;;
+SPT_NM;;Yes;;Yes;;;;
+TCY_NE;;Yes;;Yes;;;;
+AMK_ED30;;Yes;;Yes;;;;
+AMK_EE;;Yes;;Yes;;;;
+AMK_EM;;Yes;;Yes;;;;
+AMC_ED2;;Yes;;Yes;;;;
+AMC_ED20;;Yes;;Yes;;;;
+AMC_EE;;Yes;;Yes;;;;
+AMC_EM;;Yes;;Yes;;;;
+AMP_ED2;;Yes;;Yes;;;;
+AMP_ED10;;Yes;;Yes;;;;
+AMP_EE;;Yes;;Yes;;;;
+AMP_EM;;Yes;;Yes;;;;
+SAM_EE;;Yes;;Yes;;;;
+SAM_EM;;Yes;;Yes;;;;
+AZM_EE;;Yes;;Yes;;;;
+AZM_EM;;Yes;;Yes;;;;
+ATM_ED30;;Yes;;Yes;;;;
+ATM_EE;;Yes;;Yes;;;;
+ATM_EM;;Yes;;Yes;;;;
+FEP_ED30;;Yes;;Yes;;;;
+FEP_EE;;Yes;;Yes;;;;
+FEP_EM;;Yes;;Yes;;;;
+CTX_ED5;;Yes;;Yes;;;;
+CTX_EE;;Yes;;Yes;;;;
+CTX_EM;;Yes;;Yes;;;;
+FOX_ED30;;Yes;;Yes;;;;
+FOX_EE;;Yes;;Yes;;;;
+FOX_EM;;Yes;;Yes;;;;
+CAZ_ED10;;Yes;;Yes;;;;
+CAZ_EE;;Yes;;Yes;;;;
+CAZ_EM;;Yes;;Yes;;;;
+CRO_ED30;;Yes;;Yes;;;;
+CRO_EE;;Yes;;Yes;;;;
+CRO_EM;;Yes;;Yes;;;;
+CHL_ED30;;Yes;;Yes;;;;
+CHL_EE;;Yes;;Yes;;;;
+CHL_EM;;Yes;;Yes;;;;
+CIP_ED5;;Yes;;Yes;;;;
+CIP_EE;;Yes;;Yes;;;;
+CIP_EM;;Yes;;Yes;;;;
+CLI_ED2;;Yes;;Yes;;;;
+CLI_EE;;Yes;;Yes;;;;
+CLI_EM;;Yes;;Yes;;;;
+COL_EM;;Yes;;Yes;;;;
+DOR_ED10;;Yes;;Yes;;;;
+DOR_EE;;Yes;;Yes;;;;
+DOR_EM;;Yes;;Yes;;;;
+ETP_ED10;;Yes;;Yes;;;;
+ETP_EE;;Yes;;Yes;;;;
+ETP_EM;;Yes;;Yes;;;;
+ERY_ED15;;Yes;;Yes;;;;
+ERY_EE;;Yes;;Yes;;;;
+ERY_EM;;Yes;;Yes;;;;
+GEN_ED10;;Yes;;Yes;;;;
+GEN_EE;;Yes;;Yes;;;;
+GEN_EM;;Yes;;Yes;;;;
+IPM_ED10;;Yes;;Yes;;;;
+IPM_EE;;Yes;;Yes;;;;
+IPM_EM;;Yes;;Yes;;;;
+LVX_ED5;;Yes;;Yes;;;;
+LVX_EE;;Yes;;Yes;;;;
+LVX_EM;;Yes;;Yes;;;;
+MEM_ED10;;Yes;;Yes;;;;
+MEM_EE;;Yes;;Yes;;;;
+MEM_EM;;Yes;;Yes;;;;
+MFX_ED5;;Yes;;Yes;;;;
+MFX_EE;;Yes;;Yes;;;;
+MFX_EM;;Yes;;Yes;;;;
+NIT_ED100;;Yes;;Yes;;;;
+NIT_EE;;Yes;;Yes;;;;
+NIT_EM;;Yes;;Yes;;;;
+OFX_ED5;;Yes;;Yes;;;;
+OFX_EE;;Yes;;Yes;;;;
+OFX_EM;;Yes;;Yes;;;;
+OXA_ED1;;Yes;;Yes;;;;
+OXA_EE;;Yes;;Yes;;;;
+OXA_EM;;Yes;;Yes;;;;
+PEN_ED1;;Yes;;Yes;;;;
+PEN_EE;;Yes;;Yes;;;;
+PEN_EM;;Yes;;Yes;;;;
+PEF_ED5;;Yes;;Yes;;;;
+TZP_ED30;;Yes;;Yes;;;;
+TZP_EE;;Yes;;Yes;;;;
+TZP_EM;;Yes;;Yes;;;;
+SPT_ED;;Yes;;Yes;;;;
+SPT_EE;;Yes;;Yes;;;;
+SPT_EM;;Yes;;Yes;;;;
+TCY_ED30;;Yes;;Yes;;;;
+TCY_EE;;Yes;;Yes;;;;
+TCY_EM;;Yes;;Yes;;;;
+SXT_ED1_2;;Yes;;Yes;;;;
+SXT_EE;;Yes;;Yes;;;;
+SXT_EM;;Yes;;Yes;;;;
+VAN_ED5;;Yes;;Yes;;;;
+VAN_EE;;Yes;;Yes;;;;
+VAN_EM;;Yes;;Yes;;;;
+specid.acorn;;Yes;;Yes;;;;
+orgnum.acorn;;Yes;;Yes;;;;
+isolateid;;Yes;;Yes;;;;
+specgroup;;Yes;;Yes;;;;
+orgname;;Yes;;Yes;;;;
+contaminant;;Yes;;Yes;;;;
+ast.group;;Yes;;Yes;;;;
+AMC;;Yes;;Yes;;;;
+AMP;;Yes;;Yes;;;;
+ATM;;Yes;;Yes;;;;
+AZM;;Yes;;Yes;;;;
+CHL;;Yes;;Yes;;;;
+CIP;;Yes;;Yes;;;;
+CLI;;Yes;;Yes;;;;
+CRO;;Yes;;Yes;;;;
+CTX;;Yes;;Yes;;;;
+ERY;;Yes;;Yes;;;;
+ETP;;Yes;;Yes;;;;
+FEP;;Yes;;Yes;;;;
+GEN;;Yes;;Yes;;;;
+IPM;;Yes;;Yes;;;;
+LVX;;Yes;;Yes;;;;
+MEM;;Yes;;Yes;;;;
+MFX;;Yes;;Yes;;;;
+NIT;;Yes;;Yes;;;;
+OXA;;Yes;;Yes;;;;
+PEN;;Yes;;Yes;;;;
+SXT;;Yes;;Yes;;;;
+TCY;;Yes;;Yes;;;;
+TZP;;Yes;;Yes;;;;
+VAN;;Yes;;Yes;;;;
+CAZ;;Yes;;Yes;;;;
+FOX;;Yes;;Yes;;;;
+AMK;;Yes;;Yes;;;;
+SAM;;Yes;;Yes;;;;
+COL;;Yes;;Yes;;;;
+DOR;;Yes;;Yes;;;;
+OFX;;Yes;;Yes;;;;
+PEF;;Yes;;Yes;;;;
+SPT;;Yes;;Yes;;;;
+carbapenem;;Yes;;Yes;;Calculated field in 08_ast_interpretation_nonstandard.R;;
+fluoroquinolone;;Yes;;Yes;;Calculated field in 08_ast_interpretation_nonstandard.R;;
+thirdgenceph;;Yes;;Yes;;Calculated field in 08_ast_interpretation_nonstandard.R;;
+PEN_MEN;;Yes;;Yes;;;;
+CRO_MEN;;Yes;;Yes;;;;
+CTX_MEN;;Yes;;Yes;;;;
+date_cai_hai;;Yes;;;;Calculated field in 10_link_clinical_assembly.R;;Date of symptom onset if HAI or date admission if CAI/HCAI.
+survey_date;;;Yes;;F06;Q03. Date of survey;SURVEY_DATE;
+mixed_ward;;;Yes;;F06;Q06. Mixed ward (Yes, if patients from multiple services/specialities are housed on the ward.);MIXWARD;
+ward_beds;;;Yes;;F06;Q07. Total number of beds;WARD_BEDS;
+ward_patients;;;Yes;;F06;Q08. Total number of patients resident in a bed at 8am on the day of the survey;WARD_PATIENTS;
+ward_med_patients;;;Yes;;F06;Q09. Number of medical patients;WARD_MED_PATIENTS;
+ward_sur_patients;;;Yes;;F06;Q10. Number of surgical patients;WARD_SUR_PATIENTS;
+ward_icu_patients;;;Yes;;F06;Q11. Number of ICU patients;WARD_ICU_PATIENTS;
+patid;;;;Yes;;;;
