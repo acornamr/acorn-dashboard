@@ -3,14 +3,14 @@ redcap_id;Yes;Yes;;;;;;
 episode_id;Yes;Yes;;;;;;
 episode_count;Yes;Yes;;;;;;
 site_id;Yes;Yes;Yes;;multiple;Q01. Hospital code;SITEID;
-date_enrolment;Yes;Yes;;;F01;Q03. Date of enrolment;DMDTC;The date the patient was first enrolled into ACORN on this admission.
-patient_id;Yes;Yes;;;F01;Q04. Patient ID;USUBJID;Local patient ID / hospital number. If no local patient ID system used, enter the ACORN ID here.
-acorn_id;Yes;Yes;;;multiple;Q06. ACORN ID;ACORNID;Anonymous ACORN surveillance ID number.
+date_enrolment;Yes;Yes;;;F01;Q03. Date of enrolment;DMDTC;
+patient_id;Yes;Yes;;;F01;Q04. Patient ID;USUBJID;
+acorn_id;Yes;Yes;;;multiple;Q06. ACORN ID;ACORNID;
 age_year;Yes;Yes;;;F01 derived;Calculated field in 02_process_redcap_f01f05.R;;
 age_day;Yes;Yes;;;F01 derived;Calculated field in 02_process_redcap_f01f05.R;;
-sex;Yes;Yes;;;F01;Q12. Gender;SEX;Gender of the patient.
-date_admission;Yes;Yes;;;multiple;Q13. Date of admission;HPD_ADM_DATE;Admission date of the patient to the hospital.
-transfer_hospital;Yes;Yes;;;F01;Q15. Transfer from another hospital;HPD_IS_HOSP_DATE;Enter “YES” if the patient was transferred directly from another hospital.
+sex;Yes;Yes;;;F01;Q12. Gender;SEX;
+date_admission;Yes;Yes;;;multiple;Q13. Date of admission;HPD_ADM_DATE;
+transfer_hospital;Yes;Yes;;;F01;Q15. Transfer from another hospital;HPD_IS_HOSP_DATE;
 transfer_facility;Yes;Yes;;;F01;Q16. Transfer from another facility (e.g. long-term care facility) ;HPD_IS_OTHFACI_DATE;
 date_hospitalisation;Yes;Yes;;;F01;Q17. Date of hospitalisation (if transfer from another facility);HPD_HOSP_DATE;
 admission_type;Yes;Yes;;;F01;Q18. Admission type;HPD_ADMTYPE;
@@ -43,10 +43,10 @@ date_episode_enrolment;Yes;Yes;;;F02;Q07. Date of episode enrolment;HPD_DMDTC;En
 age_category;Yes;Yes;;;F02;Q08. Patient age category ;HPD_AGEGROUP;Select adult (≥18y), child (1m - 17y), or neonate (<28d) as appropriate.
 age_category_calc;Yes;Yes;;;;Calculated field in 02_process_redcap_f01f05.R;;
 surveillance_category;Yes;Yes;;;F02 derived;Q09. Surveillance category ;IFD_SURCATE;Modified to include HCAI.
-hai_date_symptom_onset;Yes;Yes;;;F02;Q10. Date of symptom onset (HAI only);HPD_ONSET_DATE;Enter the date on which symptoms were first noted / recorded for the suspected HAI episode
-ward_type;Yes;Yes;Yes;;F02;Q11. Ward Type;HPD_ADM_WARDTYPE;Select appropriate ward category (closest match).
-ward;Yes;Yes;Yes;;F02;Q12. Ward;HPD_ADM_WARD;Local ward name.
-surveillance_diag;Yes;Yes;;;F02;Q13.Clinically suspected infection (reason for IV antibiotic prescription)  ;HO_IV_ANTI_REASON;Enter the MOST LIKELY clinical infection category (see table below).
+hai_date_symptom_onset;Yes;Yes;;;F02;Q10. Date of symptom onset (HAI only);HPD_ONSET_DATE;
+ward_type;Yes;Yes;Yes;;F02;Q11. Ward Type;HPD_ADM_WARDTYPE;
+ward;Yes;Yes;Yes;;F02;Q12. Ward;HPD_ADM_WARD;
+surveillance_diag;Yes;Yes;;;F02;Q13.Clinically suspected infection (reason for IV antibiotic prescription)  ;HO_IV_ANTI_REASON;
 adult_altered_mentation;Yes;Yes;;;F02;Q14. Altered mentation (GCS <15);SER_GCS_UNDER15;
 adult_respiratory_rate;Yes;Yes;;;F02;Q15. Respiratory rate (≥22 /min);SER_RR_22UP;
 adult_blood_pressure;Yes;Yes;;;F02;Q16. Systolic blood pressure (<100 mmHg);SER_SBP_UNDER100;

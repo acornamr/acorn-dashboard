@@ -754,7 +754,7 @@ server <- function(input, output, session) {
     ))
   })
   
-  # Download in acorn/Excel formats.
+  # Download in acorn/Excel formats. ----
   output$download_data_acorn_format <- downloadHandler(
     filename = function()  glue("acorn_data_{session_start_time}.acorn"),
     content = function(file) {
@@ -765,7 +765,7 @@ server <- function(input, output, session) {
                     redcap_hai_dta = redcap_hai_dta(), 
                     lab_dta = lab_dta() %>% filter(patid %in% redcap_f01f05_dta()$patient_id) %>% mutate(patid = openssl::md5(patid)), 
                     acorn_dta = acorn_dta() %>% mutate(patient_id = openssl::md5(patient_id)), 
-                    tables_dictionary = tables_dictionary,
+                    tables_dictionary = tables_dictionary(),
                     corresp_org_antibio = corresp_org_antibio(), 
                     lab_code = lab_code(), 
                     data_dictionary = data_dictionary())
@@ -777,6 +777,7 @@ server <- function(input, output, session) {
   output$download_data_excel_format <- downloadHandler(
     filename = function()  glue("acorn_data_{session_start_time}.xlsx"),
     content = function(file) {
+      
       writexl::write_xlsx(
         ## Anonymised data ----
         list(
@@ -786,7 +787,7 @@ server <- function(input, output, session) {
           "redcap_f01f05_dta" = redcap_f01f05_dta() %>% mutate(patient_id = openssl::md5(patient_id)),
           "lab_dta" = lab_dta() %>% filter(patid %in% redcap_f01f05_dta()$patient_id) %>% mutate(patid = openssl::md5(patid)),
           "acorn_dta" = acorn_dta() %>% mutate(patient_id = openssl::md5(patient_id)),
-          "tables_dictionary" = tables_dictionary,
+          "tables_dictionary" = tables_dictionary(),
           "corresp_org_antibio" = corresp_org_antibio(),
           "data_dictionary_variables" = data_dictionary()$variables,
           "data_dictionary_test.res" = data_dictionary()$test.res,
@@ -844,7 +845,7 @@ server <- function(input, output, session) {
     if (isTRUE(input$selected_language == "la"))  session$setCurrentTheme(acorn_theme_la)
   })
   
-  # Definition of reactive elements for data ----
+  # Definition of reactive elements ----
   acorn_cred <- reactiveVal()
   acorn_origin <- reactiveVal()
   
@@ -854,6 +855,7 @@ server <- function(input, output, session) {
   redcap_hai_dta <- reactiveVal()
   lab_dta <- reactiveVal()
   acorn_dta <- reactiveVal()
+  tables_dictionary <-  reactiveVal()
   corresp_org_antibio <- reactiveVal()
   lab_code <- reactiveVal()
   data_dictionary <- reactiveVal()
@@ -1088,6 +1090,13 @@ server <- function(input, output, session) {
     redcap_hai_dta(acorn$redcap_hai_dta)
     lab_dta(acorn$lab_dta)
     acorn_dta(acorn$acorn_dta)
+    
+    # For backward compatibility with 2.1.1.
+    ifelse(!is.null(acorn$tables_dictionary),
+           tables_dictionary(acorn$tables_dictionary),
+           tables_dictionary(current_tables_dictionary)
+    )
+    
     corresp_org_antibio(acorn$corresp_org_antibio)
     lab_code(acorn$lab_code)
     data_dictionary(acorn$data_dictionary)
@@ -1113,6 +1122,13 @@ server <- function(input, output, session) {
     redcap_hai_dta(acorn$redcap_hai_dta)
     lab_dta(acorn$lab_dta)
     acorn_dta(acorn$acorn_dta)
+    
+    # For backward compatibility with 2.1.1.
+    ifelse(!is.null(acorn$tables_dictionary),
+           tables_dictionary(acorn$tables_dictionary),
+           tables_dictionary(current_tables_dictionary)
+    )
+    
     corresp_org_antibio(acorn$corresp_org_antibio)
     lab_code(acorn$lab_code)
     data_dictionary(acorn$data_dictionary)
@@ -1360,7 +1376,7 @@ server <- function(input, output, session) {
                   redcap_hai_dta = redcap_hai_dta(), 
                   lab_dta = lab_dta() %>% filter(patid %in% redcap_f01f05_dta()$patient_id) %>% mutate(patid = openssl::md5(patid)), 
                   acorn_dta = acorn_dta() %>% mutate(patient_id = openssl::md5(patient_id)), 
-                  tables_dictionary = tables_dictionary,
+                  tables_dictionary = tables_dictionary(),
                   corresp_org_antibio = corresp_org_antibio(), 
                   lab_code = lab_code(), 
                   data_dictionary = data_dictionary())
@@ -1382,7 +1398,7 @@ server <- function(input, output, session) {
                   redcap_hai_dta = redcap_hai_dta(), 
                   lab_dta = lab_dta() %>% filter(patid %in% redcap_f01f05_dta()$patient_id), 
                   acorn_dta = acorn_dta(), 
-                  tables_dictionary = tables_dictionary,
+                  tables_dictionary = tables_dictionary(),
                   corresp_org_antibio = corresp_org_antibio(), 
                   lab_code = lab_code(), 
                   data_dictionary = data_dictionary())
@@ -1436,7 +1452,7 @@ server <- function(input, output, session) {
                     redcap_hai_dta = redcap_hai_dta(), 
                     lab_dta = lab_dta() %>% filter(patid %in% redcap_f01f05_dta()$patient_id) %>% mutate(patid = openssl::md5(patid)), 
                     acorn_dta = acorn_dta() %>% mutate(patient_id = openssl::md5(patient_id)), 
-                    tables_dictionary = tables_dictionary,
+                    tables_dictionary = tables_dictionary(),
                     corresp_org_antibio = corresp_org_antibio(), 
                     lab_code = lab_code(), 
                     data_dictionary = data_dictionary())

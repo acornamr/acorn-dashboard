@@ -48,19 +48,19 @@ aware <- readr::read_delim(file = "./www/data/AWaRe_WHO_2019.csv", delim = "\t",
   )
 
 about <- tribble(
-  ~ element, ~ content,
-  "meta", "metadata on acorn data generation.",
-  "redcap_hai_dta", "HAI (REDCap F06) form data with one row per submission.",
-  "redcap_f01f05_dta", "REDCap F01,...,F05 forms data with one row per episode.",
-  "lab_dta", "Lab data provided.",
-  "acorn_dta", "REDCap F01,...,F05 forms + Lab data consolidated with one row per isolate.",
-  "tables_dictionary", "dictionary of the tables redcap_hai_dta, redcap_f01f05_dta, lab_dta, and acorn_dta.",
-  "corresp_org_antibio", "organisms that are shown for each antibiotic.",
-  "data_dictionary_", "all (unformated) sheets from the ACORN2_lab_data_dictionary_XXyyy.xlsx file.",
-  "lab_codes_", "all (unformated) sheets from the ACORN2_lab_codes.xlsx file."
+  ~ sheet, ~ content,
+  "meta",                "Metadata on acorn data generation.",
+  "redcap_hai_dta",      "HAI (REDCap F06) form data with one row per submission.",
+  "redcap_f01f05_dta",   "REDCap F01,...,F05 forms data with one row per episode.",
+  "lab_dta",             "Lab data provided for patients enrolled in ACORN.",
+  "acorn_dta",           "REDCap F01,...,F05 forms + Lab data consolidated with one row per isolate.",
+  "tables_dictionary",   "Dictionary of the _dta tables: redcap_hai_dta, redcap_f01f05_dta, lab_dta, and acorn_dta.",
+  "corresp_org_antibio", "Organisms that are shown for each antibiotic.",
+  "data_dictionary_",    "All (unformated) sheets from the site ACORN2_lab_data_dictionary.xlsx file.",
+  "lab_codes_",          "All (unformated) sheets from the ACORN2_lab_codes.xlsx file."
 )
 
-tables_dictionary <- readr::read_delim(file = "./www/data/tables_dictionary.csv", delim = ";", show_col_types = FALSE)
+current_tables_dictionary <- readr::read_delim(file = "./www/data/tables_dictionary.csv", delim = ";", show_col_types = FALSE)
 
 columns_redcap <- c("recordid", "redcap_repeat_instrument", "redcap_repeat_instance", 
                     "f01odkreckey", "acornid_odk", "adm_date_odk", "siteid", "siteid_cfm", 
