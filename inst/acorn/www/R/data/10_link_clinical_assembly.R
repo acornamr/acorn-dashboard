@@ -1,5 +1,7 @@
 message("10_link_clinical_assembly.R")
 
+clin <- redcap_f01f05_dta()
+
 # Detection of cases B
 caseB <- clin %>% 
   mutate(date_cai_hai = case_when(
