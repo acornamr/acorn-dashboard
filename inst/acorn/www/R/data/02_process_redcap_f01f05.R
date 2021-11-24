@@ -334,6 +334,21 @@ infection <- infection |> mutate(
   )
 )
 
+
+# Test if there are D28 follow-up done before the expected D28 date. ----
+test <- infection |> 
+  filter(d28_date < (date_episode_enrolment + 28)) |> 
+  select(redcap_id, acorn_id)
+
+ifelse(nrow(test) == 0, 
+       { checklist_status$redcap_D28_date <- list(status = "okay", msg = i18n$t("There are no D28 follow-up done before the expected D28 date.")) },
+       {
+         checklist_status$redcap_D28_date <- list(status = "warning", msg = i18n$t("There are D28 follow-up done before the expected D28 date."))
+         checklist_status$log_errors <- bind_rows(checklist_status$log_errors, 
+                                                  tibble(issue = "D28 follow-up done before the expected D28 date.", redcap_id = test$redcap_id, acorn_id = test$acorn_id))
+       })
+
+
 #  Test the presence of "multiple F02 with identical ACORN ID, admission date, and episode enrolment date". ----
 test <- infection |> 
   group_by(acorn_id, date_admission, date_episode_enrolment) |> 

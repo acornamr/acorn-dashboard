@@ -876,6 +876,7 @@ server <- function(input, output, session) {
     redcap_f01f05_status       = list(status = "hidden", msg = ""),
     redcap_columns             = list(status = "hidden", msg = ""),
     redcap_F04F01              = list(status = "hidden", msg = ""),
+    redcap_D28_date            = list(status = "hidden", msg = ""),
     redcap_F03F02              = list(status = "hidden", msg = ""),
     redcap_F02F01              = list(status = "hidden", msg = ""),
     redcap_F03F01              = list(status = "hidden", msg = ""),
