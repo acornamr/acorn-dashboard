@@ -855,7 +855,7 @@ server <- function(input, output, session) {
   redcap_hai_dta <- reactiveVal()
   lab_dta <- reactiveVal()
   acorn_dta <- reactiveVal()
-  tables_dictionary <-  reactiveVal()
+  tables_dictionary <-  reactiveVal(current_tables_dictionary)
   corresp_org_antibio <- reactiveVal()
   lab_code <- reactiveVal()
   data_dictionary <- reactiveVal()
