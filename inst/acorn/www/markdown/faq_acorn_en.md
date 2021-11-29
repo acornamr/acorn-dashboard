@@ -39,7 +39,7 @@ Healthcare associated infections (HCAI) are defined as a subset of CAI, where th
 
 Class-level resistance to fluoroquinolones, 3rd generation cephalosporins, and carbapenems is calculated automatically for selected target organisms. Organism appropriate AST results are combined such that if any drug in the group is resistant, then the class is labelled resistant. Results of extended spectrum beta-lactamase and carbapenemase tests are included. For this calculation, the intermediate category is counted as susceptible, thus providing a conservative estimate of resistance. Where included in the laboratory testing repertoire and data file, results of beta-lactamase and inducible clindamycin testing are incorporated into reporting of beta-lactam (penicillin / ampicillin) and macrolide susceptibility results. Meningitis and non-meningitis breakpoints are reported separately for Streptococcus pneumoniae and penicillin, ceftriaxone, and cefotaxime.
 
-#### <a name="h13"></a> ⚠️Blood culture contaminants ⚠️
+#### <a name="h13"></a> ⚠️ Blood culture contaminants ⚠️
 
 It is possible to remove bacterial species which have a high probability of being a skin contaminant from the microbiology organism lists and tables. The following organism groups are considered contaminants: coagulase negative staphylococci, micrococci, Gram positive bacilli / diphtheroids. Blood cultures with of growth of >= 1 contaminant organism are labelled as contaminated, irrespective of growth of pathogens.
 

@@ -12,7 +12,7 @@
 			"en" : "Welcome",
 			"fr" : "Bienvenue",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "សូមស្វាគមន៍",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -20,7 +20,7 @@
 			"en" : "Language",
 			"fr" : "Langue",
 			"la" : "ພາສາ",
-			"kh" : "TBT",
+			"kh" : "ភាសា",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -28,7 +28,7 @@
 			"en" : "ACORN Participating Countries",
 			"fr" : "Pays Participants au Projet ACORN",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "ប្រទេសដែលចូលរួមការអង្កេតតាមដាន​ ACORN",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -36,7 +36,7 @@
 			"en" : "What is ACORN?",
 			"fr" : "Qu'est ce qu'ACORN ?",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "តើ ACORN គឺជាអ្វី?",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -44,7 +44,7 @@
 			"en" : "About",
 			"fr" : "À Propos",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "អំពី",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -52,7 +52,7 @@
 			"en" : "Please log in",
 			"fr" : "Connection",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "សូមចុះឈ្មោះចូល",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -60,7 +60,7 @@
 			"en" : "Successfully logged in.",
 			"fr" : "Connection réussie.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "ការចុះឈ្មោះចូលបានជោគជ័យ។",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -68,7 +68,7 @@
 			"en" : "Site",
 			"fr" : "Site",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "ទីតាំង",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -76,7 +76,7 @@
 			"en" : "User",
 			"fr" : "Utilisateur",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "អ្នកប្រើប្រាស់",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -84,7 +84,7 @@
 			"en" : "Password",
 			"fr" : "Mot de passe",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "ពាក្យសម្ងាត់",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -92,7 +92,7 @@
 			"en" : "Log in",
 			"fr" : "Se connecter",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "ចុះឈ្មោះចូល",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -100,7 +100,7 @@
 			"en" : "To log out, close the app.",
 			"fr" : "Quitter l'application pour se déconnecter.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "ចាកចេញ, បិទកម្មវីធី។",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -108,7 +108,7 @@
 			"en" : "upload a local acorn file.",
 			"fr" : "téléverser un fichier acorn.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "បញ្ចូលឯកសារ​ acorn។",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -116,7 +116,7 @@
 			"en" : "Data Management",
 			"fr" : "Gestion des Données",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "ការគ្រប់គ្រងទិន្នន័យ",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -124,7 +124,7 @@
 			"en" : "What do you want to do?",
 			"fr" : "Comment voulez-vous procéder ?",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "តើអ្នកចង់ធ្វើអ្វី?",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -132,7 +132,7 @@
 			"en" : "The REDCap dataset contains data.",
 			"fr" : "Le fichier téléchargé de REDCap contient des données.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "សំណុំទិន្នន័យ REDCap មានទិន្នន័យ។",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -140,7 +140,7 @@
 			"en" : "The REDCap dataset is empty. Please contact ACORN support.",
 			"fr" : "Les données REDCap sont vides. Merci de contacter l'équipe ACORN.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "សំណុំទិន្នន័យ REDCap គ្មានទិន្នន័យ។ សូមធ្វើការទាក់ទងផ្នែកជំនួយ ACORN។",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -148,7 +148,7 @@
 			"en" : "The REDCap dataset column names do not match. Please contact ACORN support.",
 			"fr" : "Les colonnes des données REDCap ne correspondent pas. Merci de contacter l'équipe ACORN.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "ឈ្មោះតារាងជួរឈរនៃសំណុំទិន្នន័យ REDCap​ មិនត្រូវគ្នា។ សូមធ្វើការទាក់ទងផ្នែកជំនួយ ACORN។",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -156,7 +156,7 @@
 			"en" : "The REDCap dataset column names match.",
 			"fr" : "Les colonnes des données REDCap correspondent.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "ឈ្មោះតារាងជួរឈរនៃសំណុំទិន្នន័យ REDCap​ ត្រូវគ្នា។",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -164,7 +164,7 @@
 			"en" : "Critical errors with clinical data.",
 			"fr" : "Erreurs critiques avec les données cliniques.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "កំហុសឆ្គងសំខាន់ៗក្នុងផ្នែកទិន្នន័យគ្លីនិក។",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -172,7 +172,7 @@
 			"en" : "There is a critical issue with clinical data. The issue should be fixed in REDCap.",
 			"fr" : "Il y a une erreur critiqe avec les données cliniques. Cette erreur doit être réparée dans REDCap.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "មានបញ្ហាសំខាន់មួយក្នុងផ្នែកទិន្នន័យគ្លីនិក។ បញ្ហាគួរតែកែសម្រួលក្នុង REDCap។",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -180,7 +180,7 @@
 			"en" : "Clinical data successfully provided.",
 			"fr" : "Les données clinique ont bien été fournies",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "ផ្តល់ទិន្នន័យគ្លីនិកដោយជោគជ័យ។",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -188,7 +188,7 @@
 			"en" : "Reading lab data.",
 			"fr" : "Lecture des données de lab.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "កំពុងពិនិត្យនិងផ្ទៀងផ្ទាត់ទិន្នន័យមន្ទីរពិសោធន៍។​",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -196,7 +196,7 @@
 			"en" : "Processing lab data.",
 			"fr" : "Traitement des données de lab.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "កំពុងដំណើរការទិន្នន័យមន្ទីរពិសោធន៍។",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -204,7 +204,7 @@
 			"en" : "Lab data successfully processed!",
 			"fr" : "Traitement des données de lab achevé avec succès !",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "ទិន្នន័យមន្ទីរពិសោធន៍ដំណើរការដោយជោគជ័យ!",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -212,7 +212,7 @@
 			"en" : "Generating .acorn",
 			"fr" : "Création du fichier .acorn",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "កំពុងបង្កើតឯកសារ .acorn",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -220,7 +220,7 @@
 			"en" : "Supply first valid clinical and lab data.",
 			"fr" : "Fournir en premier lieu des données clinique et de lab valides.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "ផ្តល់ទិន្នន័យគ្លីនិក​និងមន្ទីពិសោធន៍ដែលមានសុពលភាពជាមុន។",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -228,7 +228,7 @@
 			"en" : ".acorn data successfully generated!",
 			"fr" : "Le fichier .acorn a bien été généré",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "បង្កើតទិន្នន័យ .acorn​ ដោយជោគជ័យ!",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -236,7 +236,7 @@
 			"en" : "No .acorn data loaded.",
 			"fr" : "Aucun fichier .acorn n'a été chargé.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "គ្មានទិន្នន័យ .acorn ត្រូវបានផ្ទុកទេ។​",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -244,7 +244,7 @@
 			"en" : ".acorn not saved.",
 			"fr" : "Fichier .acorn n'est pas sauvegardé.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : ".acorn មិនត្រូវបានរក្សាទុកទេ",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -252,7 +252,7 @@
 			"en" : "Not connected to internet.",
 			"fr" : "Pas de connection à internet détecté.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "មិនបានភ្ជាប់ទៅនឹងអ៊ីនធឺណិត",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -260,7 +260,7 @@
 			"en" : "Attempting to connect.",
 			"fr" : "Tentative de connection.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "កំពុងព្យាយាមភ្ជាប់",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -268,7 +268,7 @@
 			"en" : "Clinical data not provided",
 			"fr" : "Données clinique non fournies",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "ទិន្នន័យគ្លីនិកមិនត្រូវបានផ្តល់",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -276,7 +276,7 @@
 			"en" : "Lab data not provided",
 			"fr" : "Données de laboratoire non fournies",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "ទិន្នន័យមន្ទីរពិសោធន៍មិនត្រូវបានផ្តល់",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -284,7 +284,7 @@
 			"en" : "No .acorn has been generated",
 			"fr" : "Aucun .acorn n'a été généré",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "គ្មានទិន្នន័យ .acorn ត្រូវបានបង្កើត",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -292,7 +292,7 @@
 			"en" : "No .acorn has been saved",
 			"fr" : "Aucun .acorn n'a été sauvé.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "គ្មានទិន្នន័យ .acorn ត្រូវបានរក្សាទុក",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -300,7 +300,7 @@
 			"en" : "Generate .acorn from clinical and lab data",
 			"fr" : "Générer .acorn depuis les données clinique et de laboratoire",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "បង្កើត .acorn ពីទិន្នន័យគ្លីនិកនិងមន្ទីរពិសោធន៍",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -308,7 +308,7 @@
 			"en" : "Load existing .acorn from cloud",
 			"fr" : "Charger un .acorn depuis un serveur",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "ប្រតិបត្តិការទិន្នន័យ .acorn ពី cloud",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -316,7 +316,7 @@
 			"en" : "Load existing .acorn from local file",
 			"fr" : "Charger un .acorn à partir d'un fichier local",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "ប្រតិបត្តិការទិន្នន័យ .acorn ពីឯកសារក្នុងកុំព្យូទ័រ",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -324,7 +324,7 @@
 			"en" : "Download Enrolment Log (.xlsx)",
 			"fr" : "Télécharger un fichier de suivi des recrutements (.xlsx)",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "ទាញយកបញ្ជីអ្នកចូលរួមការអង្កេតតាមដាន (.xlsx)",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -332,7 +332,7 @@
 			"en" : "First sheet is the log of all enrolments retrived from REDCap (as per adjacent table). The second sheet is a listing of all flagged elements.",
 			"fr" : "Le premier onglet comprend tous les recrutements téléchargés depuis REDCap (voir table ci-contre). Le second onglet liste tous les éléments potentiellement à corriger.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "សន្លឹកទីមួយគឺជាបញ្ជីអ្នកចូលរួមការអង្កេតតាមដានទាំងអស់ដែលបានទាញយកពី REDCap (ដូចទៅនឹងតារាងក្បែរគ្នា)។ សន្លឹកទីពីរគឺជាបញ្ជីនៃកំហុសឆ្គងទាំងអស់។",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -340,7 +340,7 @@
 			"en" : "Loading data.",
 			"fr" : "Chargement des données.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "ទិន្នន័យកំពុងតែប្រតិបត្តិការ។",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -348,7 +348,7 @@
 			"en" : "Successfully loaded data.",
 			"fr" : "Chargement des données réalisé avec succès.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "ទិន្នន័យប្រតិបត្តិការដោយជោគជ័យ។",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -356,7 +356,7 @@
 			"en" : "Retriving data from REDCap server.",
 			"fr" : "Récupération des données depuis le serveur REDcap.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "ទាញយកទិន្នន័យពីម៉ាស៊ីនមេ REDCap។",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -364,7 +364,7 @@
 			"en" : "It might take a couple of minutes. This window will close on completion.",
 			"fr" : "Cela peut prendre plusieurs minutes. Cette fenêtre se fermera automatiquement.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "វាប្រហែលចំណាយពេលពីរបីនាទី។  ផ្ទាំងនេះនឹងបិទពេលដំណើរការចប់។",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -372,7 +372,7 @@
 			"en" : "Critical issue detected: no data or wrong data format on REDCap server. Please report to ACORN data managers. Until resolution, only existing .acorn files can be used.",
 			"fr" : "Problème critique détecté : pas de données ou format de données incorrect sur le serveur REDCap. Merci de rapporter ce message au data manager ACORN. En attendant de trouver une solution, seul les fichiers .acorn existant peuvent être utilisés.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "រកឃើញបញ្ហាសំខាន់៖ គ្មានទិន្នន័យ ឬខុសទម្រង់ទិន្នន័យនៅលើម៉ាស៊ីនមេ REDCap។ សូមរាយការណ៍ទៅអ្នកគ្រប់គ្រងទិន្នន័យ។ រហូតដល់មានដំណោះស្រាយ មានតែឯកសារ​ .acorn ពីរមុនដែលអាចប្រើប្រាស់បាន។​",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -380,7 +380,7 @@
 			"en" : "Save acorn data",
 			"fr" : "Sauvegarder des données acorn",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "រក្សាទុកទិន្នន័យ acorn",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -388,7 +388,7 @@
 			"en" : "Cancel",
 			"fr" : "Annuler",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "បដិសេដ",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -396,7 +396,7 @@
 			"en" : "(Optional) Comments:",
 			"fr" : "(Optionnel) Commentaires:",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "(មិនចាំចាច់) យោលបល់៖",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -404,7 +404,7 @@
 			"en" : "Save on Server",
 			"fr" : "Sauvegarder sur serveur",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "រក្សាទុកក្នុងម៉ាស៊ីនមេ",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -412,7 +412,7 @@
 			"en" : "File name:",
 			"fr" : "Nom de fichier:",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "ឈ្មោះឯកសារ៖",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -420,7 +420,7 @@
 			"en" : "Trying to save .acorn file on server.",
 			"fr" : "Tentative de sauvegarde du fichier .acorn sur serveur.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "កំពុងព្យាយាមរក្សាទុកឯកសារ .acorn ក្នុងម៉ាស៊ីនមេ។​",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -428,7 +428,7 @@
 			"en" : ".acorn file saved on server.",
 			"fr" : "Fichier .acorn sauvegardé sur le serveur.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "ឯកសារ .acorn ត្រូវបានរក្សាទុកក្នុងម៉ាស៊ីនមេ។​",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -436,7 +436,7 @@
 			"en" : "Successfully saved .acorn file in the cloud. You can now explore acorn data.",
 			"fr" : "Fichier .acorn sauvegardé sur le serveur. Vous pouvez maintenant explorer les données acorn.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "ឯកសារ .acorn ត្រូវបានរក្សាទុកក្នុង cloud ដោយជោគជ័យ។ ឥឡូវ​នេះអ្នកអាចពិនិត្យមើលទិន្នន័យ acorn។",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -444,7 +444,7 @@
 			"en" : "Successfully saved .acorn file locally.",
 			"fr" : "Fichier .acorn sauvegardé locallement.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "ឯកសារ .acorn ត្រូវបានរក្សាទុកក្នុងកុំព្យូទ័រដោយជោគជ័យ។",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -452,7 +452,7 @@
 			"en" : "Successfully saved .acorn file locally. You can now explore acorn data.",
 			"fr" : "Fichier .acorn sauvegardé locallement. Vous pouvez maintenant explorer les données acorn.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "ឯកសារ .acorn ត្រូវបានរក្សាទុកក្នុងកុំព្យូទ័រដោយជោគជ័យ។​ ឥឡូវ​នេះអ្នកអាចពិនិត្យមើលទិន្នន័យ acorn",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -460,7 +460,7 @@
 			"en" : "Consider saving .acorn file on the cloud for additional security.",
 			"fr" : "Pour plus de sécurité, envisagez une sauvegarde des données sur un serveur.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "ពិចារណាក្នុងការរក្សាទុកឯកសារ .acorn ក្នុង cloud សម្រាប់ការបន្ថែមសុវត្ថិភាព",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -468,7 +468,7 @@
 			"en" : "Select lab data format:",
 			"fr" : "Choisir le format des données de laboratoire",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "ជ្រើសរើសទម្រង់នៃទិន្នន័យមន្ទីរពិសោធន៍៖",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -476,7 +476,7 @@
 			"en" : "(1/4) Download Clinical data",
 			"fr" : "(1/4) Télécharger les Données Clinique",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "(១/៤) ទាយយកទិន្នន័យគ្លីនិក",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -484,7 +484,7 @@
 			"en" : "and generate enrolment log.",
 			"fr" : "et générer un fichier de suivi des recrutements.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "ហើយបង្កើតបញ្ជីអ្នកចូលរួមការអង្កេតតាមដាន",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -492,7 +492,7 @@
 			"en" : "Get data from REDCap",
 			"fr" : "Obtenir des données depuis REDCap",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "ទាយទិន្នន័យពី REDCap",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -500,7 +500,7 @@
 			"en" : "(2/4) Provide Lab data",
 			"fr" : "(2/4) Fournir des données de laboratoire",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "(២/៤) ផ្តល់ទិន្នន័យមន្ទីរពិសោធន៍",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -508,7 +508,7 @@
 			"en" : "(3/4) Combine Clinical and Lab data",
 			"fr" : "(3/4) Combiner les données clinique et de laboratoire",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "(៣/៤) រួមបញ្ចូលទិន្នន័យគ្លីនិកនិងមន្ទីរពិសោធន៍ចូលគ្នា",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -516,7 +516,7 @@
 			"en" : "Save .acorn file",
 			"fr" : "Sauvegarder un ficher .acorn",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "រក្សាទុកឯកសារ .acorn",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -524,7 +524,7 @@
 			"en" : "Generate .acorn file",
 			"fr" : "Générer un fichier .acorn",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "បង្កើតឯកសារ .acorn",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -532,7 +532,7 @@
 			"en" : "(4/4) Save .acorn file",
 			"fr" : "(4/4) Sauvegarder un ficher .acorn",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "(៤/៤)​ រក្សាទុកឯកសារ .acorn",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -540,7 +540,7 @@
 			"en" : "Overview",
 			"fr" : "Aperçu",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "ទិដ្ឋភាពទូទៅ",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -548,7 +548,7 @@
 			"en" : "Date of Enrolment",
 			"fr" : "Date d'Enrôlement",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "ថ្ងៃចូលរួមការអង្កេតតាមដាន",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -556,7 +556,7 @@
 			"en" : "See by Week",
 			"fr" : "Montrer par Semaine",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "មើលតាមសប្តាហ៍",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -564,7 +564,7 @@
 			"en" : "Enrolments with Blood Culture",
 			"fr" : "Enrôlements avec hémoculture",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "ការចូលរួមការអង្កេតតាមដានជាមួយការបណ្តុះមេរោគក្នុងឈាម",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -572,7 +572,7 @@
 			"en" : "Distribution of Enrolments",
 			"fr" : "Distribution des Enrôlements",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "របាយអ្នកចូលរួមការអង្កេតតាមដាន",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -580,7 +580,7 @@
 			"en" : "Variables in Table:",
 			"fr" : "Variables dans la Table:",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "អថេរក្នុងតារាង៖",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -588,7 +588,7 @@
 			"en" : "Enrolments by (type of) Ward",
 			"fr" : "Enrôlements par (type de) service",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "ការចូលរួមការអង្កេតតាមដានតាម​ (ប្រភេទ) អគារ",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -596,7 +596,7 @@
 			"en" : "See Breakdown by Ward",
 			"fr" : "Montrer la Répartition par Service",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "មើលតាមអគារនីមួយៗ",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -604,7 +604,7 @@
 			"en" : "Patient Age Distribution",
 			"fr" : "Distribution des ages des patients",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "របាយអាយុអ្នកជំងឺ",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -612,7 +612,7 @@
 			"en" : "Diagnosis at Enrolment",
 			"fr" : "Diagnostics à l'Enrôlement",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "រោគវិនិច្ឆ័យនៅថ្ងៃចូលរួមការអង្កេតតាមដាន",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -620,7 +620,7 @@
 			"en" : "Empiric Antibiotics Prescribed",
 			"fr" : "Antibiotiques Empiriques Prescris",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "អង់ទីប៊ីយ៉ូទិកដែលផ្តល់",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -628,7 +628,7 @@
 			"en" : "Patients Transferred",
 			"fr" : "Patients Transferrés",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "អ្នកជំងឺដែលបានបញ្ជូនពីមន្ទីរពេទ្យផ្សេង",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -636,7 +636,7 @@
 			"en" : "Patient Comorbidities",
 			"fr" : "Comorbiditées",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "ស្ថានភាពជំងឺបន្សំនានារបស់អ្នកជំងឺ",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -644,7 +644,7 @@
 			"en" : "Show comorbidities combinations",
 			"fr" : "Montrer les combinaisons de comorbiditées",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "បង្ហាញការរួមបញ្ទូលគ្នានៃស្ថានភាពជំងឺបន្សំនានា",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -652,7 +652,7 @@
 			"en" : "Blood culture collected within 24 hours of admission (CAI) / symptom onset (HAI)",
 			"fr" : "Hémoculture collectée dans les 24 heures d'admission (CAI) / au début des symptômes (HAI)",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "បូមឈាមបណ្តុំមេរោគក្នុងកំឡុងពេល២៤ម៉ោងនៃការសម្រាកពេទ្យ (CAI) / ការចាប់ផ្តើមការចេញរោគសញ្ញា (HAI)",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -660,7 +660,7 @@
 			"en" : "Follow-up",
 			"fr" : "Suivi",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "ការតាមដានបន្ត",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -668,7 +668,7 @@
 			"en" : "Clinical Outcome",
 			"fr" : "Résultat Clinique",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "លទ្ធផលគ្លីនិក",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -676,7 +676,7 @@
 			"en" : "Clinical Outcome Status:",
 			"fr" : "Statut des résultats cliniques:",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "ស្ថានភាពលទ្ធផលគ្លីនិក៖",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -684,7 +684,7 @@
 			"en" : "Day 28",
 			"fr" : "Jour 28",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "ថ្ងៃទី២៨",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -692,7 +692,7 @@
 			"en" : "Day 28 Status:",
 			"fr" : "Statut au jour 28:",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "ស្ថានភាពថ្ងៃទី២៨៖",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -700,7 +700,7 @@
 			"en" : "Bloodstream Infection (BSI)",
 			"fr" : "Infection du Sang (BSI)",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "ការបង្ករោគដោយសារមេរោគក្នុងឈាម​ (BSI)",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -708,7 +708,7 @@
 			"en" : "Initial & Final Surveillance Diagnosis",
 			"fr" : "Diagnostic de surveillance initial et final",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "រោគវិនិច្ឆ័យដំបូង និងចុងក្រោយនៃការចូលរួមការអង្កេតតាមដាន",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -716,7 +716,7 @@
 			"en" : "The 10 most common initial-final diagnosis combinations:",
 			"fr" : "Les 10 combinaisons de diagnostic initial-final les plus courantes :",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "ការរួមបញ្ចូលគ្នានៃរោគវិនិច្ឆ័យដំបូងនិងចុងក្រោយទាំង១០ដែលកើតច្រើនជាងគេ៖",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -724,7 +724,7 @@
 			"en" : "Ward Occupancy Rates",
 			"fr" : "Taux d'occupation des services",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "អត្រាសម្រាកពេទ្យតាមអគារ",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -732,7 +732,7 @@
 			"en" : "HAI Prevalence",
 			"fr" : "Prévalence des HAI",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "ប្រេវ៉ានឡង់ការបង្ករោគដែលមានប្រភពពីមន្ទីរពេទ្យ",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -740,7 +740,7 @@
 			"en" : "Microbiology",
 			"fr" : "Microbiologie",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "មីក្រូជីវសាស្ត្រ",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -748,7 +748,7 @@
 			"en" : "Remove blood culture contaminants from the following visualizations",
 			"fr" : "Élimine les contaminants d'hémoculture des visualisations ci-dessous",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "លុបចោលនូវការបណ្តុះមេរោគក្នុងឈាមដែល contaminants ពីរូបភាពខាងក្រោម",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -756,7 +756,7 @@
 			"en" : "Blood Culture Contaminants",
 			"fr" : "Contaminants d'Hémoculture",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "ការបណ្តុះមេរោគក្នុងឈាមដែល contaminants",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -764,7 +764,7 @@
 			"en" : "Specimen Types",
 			"fr" : "Types de Specimen",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "ប្រភេទវត្ថុវិភាគ",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -772,7 +772,7 @@
 			"en" : "Number of specimens per specimen type",
 			"fr" : "Nombre de specimens par type de specimen",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "ចំនួនវត្ថុវិភាគតាមប្រភេទនៃវត្ថុវិភាគ",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -780,7 +780,7 @@
 			"en" : "Culture results per specimen type",
 			"fr" : "Résultats de culture par type de spécimen",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "លទ្ធផលការបណ្តុះមេរោគតាមប្រភេទវត្ថុវិភាគ",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -788,7 +788,7 @@
 			"en" : "Growth / No Growth",
 			"fr" : "Croissance / Pas de croissance",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "ដុះ / មិនដុះ",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -796,7 +796,7 @@
 			"en" : "Isolates",
 			"fr" : "Isolats",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "Isolates",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -804,7 +804,7 @@
 			"en" : "Most frequent 10 organisms in the plot and complete listing in the table. Contaminants are in red.",
 			"fr" : "Les 10 organismes les plus nombreux sont dans le graphique et la liste complète dans la tables. Les contaminants sont en rouge.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "មេរោគចំនួន១០ ដែលបានរកឃើញញឹកញាប់បំផុត គឺដាក់នៅក្នុងគំនូរតាង​ និងបញ្ជីពេញលេញនៅក្នុងតារាង។ Contaminants គឺពណ៌ ក្រហម ។",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -812,7 +812,7 @@
 			"en" : "Combine Susceptible + Intermediate",
 			"fr" : "Combiner Susceptible + Intermédiaire",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "រួមបញ្ជូលគ្នានៃ Susceptible + Intermediate",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -820,7 +820,7 @@
 			"en" : "Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable.",
 			"fr" : "L'interprétation des taux et profils AMR doit prêter à caution lorsqu'en présence d'un petit nombre de cas ou d'isolats : les estimations sont alors peu fiable.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "គួរតែយកចិត្តទុកដាក់នៅ ពេលបកស្រាយ អត្រានិងទម្រង់ AMR  ដែលមានករណីតិចតួច ឬបាក់តេរី  isolates តិចតួច : ការប៉ាន់ប្រមាណ ប្រហែលជាមិនអាចជឿទុកចិត្តបាន។",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -828,7 +828,7 @@
 			"en" : "Resistance to Carbapenems Over Time",
 			"fr" : "Evolution de la Résistance aux Carbapenems",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "សុំាទៅនឹង Carbapenems Over Time",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -836,7 +836,7 @@
 			"en" : "There is no data to display for this organism.",
 			"fr" : "Cette organisme n'a pas de données à visualiser",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "គ្មានទិន្នន័យ ដើម្បីបង្ហាញសម្រាប់មេរោគនេះទេ។",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -844,7 +844,7 @@
 			"en" : "Resistance to 3rd gen. Cephalosporins Over Time",
 			"fr" : "Evolution de la Résistance aux 3rd gen. Cephalosporins",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "សុំាទៅនឹង  Cephalosporins ជំនាន់ទី៣ Over Time",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -852,7 +852,7 @@
 			"en" : "Resistance to Fluoroquinolones Over Time",
 			"fr" : "Evolution de la Résistance aux Fluoroquinolones",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "សុំាទៅនឹង Fluoroquinolones Over Time",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -860,7 +860,7 @@
 			"en" : "All Other Organisms",
 			"fr" : "Tous les Autres Organismes",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "មេរោគផ្សេងៗទៀតទាំងអស់",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -868,7 +868,7 @@
 			"en" : "Resistance to Penicillin G Over Time",
 			"fr" : "Evolution de la Résistance aux Penicillin G",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "សុំាទៅនឹង Penicillin G Over Time",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -876,7 +876,7 @@
 			"en" : "Resistance to Penicillin G - meningitis Over Time",
 			"fr" : "Evolution de la Résistance aux Penicillin G - meningitis",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "សុំាទៅនឹង Penicillin G - meningitis Over Time",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -884,7 +884,7 @@
 			"en" : "Resistance to Oxacillin Over Time",
 			"fr" : "Evolution de la Résistance aux Oxacillin",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "សុំាទៅនឹង Oxacillin Over Time",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -892,7 +892,7 @@
 			"en" : "Enrolments",
 			"fr" : "Enrôlements",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "ការចូលរួមអង្កេតតាមដាន",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -900,7 +900,7 @@
 			"en" : "Reset Enrolments Filters",
 			"fr" : "Réinitialiser les Filtres sur les Enrôlements",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "កំណត់តម្រងការចូលរួមអង្កេតតាមដានឡើងវិញ",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -908,7 +908,7 @@
 			"en" : "Specimens, Isolates",
 			"fr" : "Spécimens, Isolats",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "វត្ថុវិភាគ，isolates",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -916,7 +916,7 @@
 			"en" : "Patient enrolments",
 			"fr" : "Enrôlements",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "អ្នកជំងឺចូលរួមការអង្កេតតាមដាន",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -924,7 +924,7 @@
 			"en" : "With Microbiology",
 			"fr" : "Avec Microbiologie",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "ជាមួយនឹងមីក្រូជីវសាស្ត្រ",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -932,7 +932,7 @@
 			"en" : "Specimens Collected",
 			"fr" : "Spécimens Recueillis",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "វត្ថុវិភាគដែលប្រមូលបាន",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -940,7 +940,7 @@
 			"en" : "from cultures that have growth",
 			"fr" : "de cultures avec croissance",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "ពីការបណ្តុះមេរោគដែលដុះមេរោគ",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -948,7 +948,7 @@
 			"en" : "of Target Pathogens",
 			"fr" : "des Pathogènes Cibles",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "នៃមេរោគគោលដៅ",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -956,7 +956,7 @@
 			"en" : "of enrolments with blood culture.",
 			"fr" : "des enrôlements avec hémoculture.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "នៃការចូលរួមអង្កេតតាមដាន ជាមួយការបណ្តុះមេរោគក្នុងឈាម។",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -964,7 +964,7 @@
 			"en" : "Couldn't connect to server. Please check internet access.",
 			"fr" : "Il n'est pas possible de se connecter au server. Veuillez vérifier la connection à internet",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "មិនអាចភ្ជាប់ម៉ាស៊ីនមេទៅបានទេ។ សូមពិនិត្យមើលដំណើរការអ៊ីនធឺណិត។",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -972,7 +972,7 @@
 			"en" : "Wrong connection credentials.",
 			"fr" : "Problème avec la connection internet.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "ព័ត៌មានសម្គាល់ការតភ្ជាប់មិនត្រឹមត្រូវ។",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -980,7 +980,7 @@
 			"en" : "Problem with credentials. Please contact ACORN support.",
 			"fr" : "Problème avec les identifiants. Merci de contacter l'équipe ACORN.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "បញ្ហាជាមួយព័ត៌មានសម្គាល់។ សូមទំនាក់ទំនងទៅកាន់ផ្នែកគាំទ្រ ACORN។",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -988,7 +988,7 @@
 			"en" : "Load selected .acorn",
 			"fr" : "Charger le fichier .acorn sélectionné",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "ប្រតិបត្តិការ .acorn ដែលបានជ្រើសរើស",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -996,7 +996,7 @@
 			"en" : "Load .acorn",
 			"fr" : "Charger le fichier .acorn",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "ប្រតិបត្តិការ .acorn",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -1004,7 +1004,7 @@
 			"en" : "of cultures have growth.",
 			"fr" : "des cultures avec croissance.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "នៃការបណ្តុះមេរោគដែលដុះមេរោគ",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -1012,7 +1012,7 @@
 			"en" : "of blood cultures grew a potential contaminant.",
 			"fr" : "des hémocultures ont générées un contaminant potentiel.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "នៃការបណ្តុះមេរោគក្នុងឈាមដែលដុះ potential contaminant",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -1020,7 +1020,7 @@
 			"en" : "specimens per enrolment",
 			"fr" : "spécimens par enrôlement",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "វត្ថុវិភាគនៃអ្នកចូលរួមអង្កេតតាមដានម្នាក់",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -1028,7 +1028,7 @@
 			"en" : "Blood Culture",
 			"fr" : "Hématoculture",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "ការបណ្តុះមេរោគក្នុងឈាម",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -1036,7 +1036,7 @@
 			"en" : "Other Specimens:",
 			"fr" : "Autres Spécimens :",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "វត្ថុវិភាគផ្សេងៗ៖",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -1044,7 +1044,7 @@
 			"en" : "No deduplication of isolates",
 			"fr" : "Pas de déduplication des isolats",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "គ្មានការលុបព័ត៌មានដូចគ្នានៃ isolates ឡើយ",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -1052,7 +1052,7 @@
 			"en" : "Deduplication by patient-episode",
 			"fr" : "Déduplication par patient-épisode",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "លុបព័ត៌មានដូចគ្នាតាមវគ្គបង្ករោគរបស់អ្នកជំងឺ",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -1060,7 +1060,7 @@
 			"en" : "Deduplication by patient ID",
 			"fr" : "Déduplication par patient ID",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "លុបព័ត៌មានដូចគ្នាតាមអត្តសញ្ញាណរបស់អ្នកជំងឺ",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -1068,7 +1068,7 @@
 			"en" : "Use heuristic for time unit",
 			"fr" : "Heuristique pour déterminer l'unité de temps",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "ប្រើវិធី  heuristic សម្រាប់ខ្នាតពេលវេលា",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -1076,7 +1076,7 @@
 			"en" : "Display by month",
 			"fr" : "Afficher par mois",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "បង្ហាញតាមខែ",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -1084,7 +1084,7 @@
 			"en" : "Display by year",
 			"fr" : "Afficher par année",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "បង្ហាញតាមឆ្នាំ",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -1092,7 +1092,7 @@
 			"en" : "Occupancy rate per type of ward per month",
 			"fr" : "Taux d'occupation par type de service et par mois",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "អត្រាសម្រាកព្យាបាលទៅតាមប្រភេទនីមួយៗនៃអគារក្នុងមួយខែ",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -1100,7 +1100,7 @@
 			"en" : "HAI point prevalence by type of ward",
 			"fr" : "Prévalence des HAI par service",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "HAI point prevalance តាមប្រភេទអគារ",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -1108,7 +1108,7 @@
 			"en" : "We couldn't download the lab data dictionary. Please contact ACORN support.",
 			"fr" : "Le dictionnaire des données de lab ne peut pas être téléchargé. Merci de contacter l'équipe ACORN.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "យើងមិនអាចទាញយក ទិន្នន័យវចនានុក្រមមន្ទីរពិសោធន៍បានទេ ។ សូមទំនាក់ទំនង ទៅកាន់ផ្នែកគាំទ្រ ACORN។",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -1116,7 +1116,7 @@
 			"en" : "We couldn't download the lab codes file. Please contact ACORN support.",
 			"fr" : "Le fichier des codes de lab ne peut pas être téléchargé. Merci de contacter l'équipe ACORN.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "យើងមិនអាចទាញយក ឯកសារកូដមន្ទីរពិសោធន៍បានទេ ។​សូមទំនាក់ទំនងទៅកាន់ ACORN support។",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -1124,7 +1124,7 @@
 			"en" : "REDCap data could not be downloaded. Please try again.",
 			"fr" : "Les données REDCap n'ont pas pu être télécharger. Merci d'essayer à nouveau.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "ទិន្នន័យ REDCap មិនអាចទាញយកបានទេ។ សូមព្យាយាមម្តងទៀត។",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -1132,7 +1132,7 @@
 			"en" : "All records have an ACORN ID.",
 			"fr" : "Tous les éléments ont une ACORN ID.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "កំណត់ត្រាទាំងអស់សុទ្ធតែមាន  ACORN ID ។",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -1140,7 +1140,7 @@
 			"en" : "Not all records have an ACORN ID.",
 			"fr" : "Certains éléments n'ont pas d'ACORN ID",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "មិនមែនកំណត់ត្រាទាំងអស់សុទ្ធតែមាន ACORN ID នោះទេ។",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -1148,7 +1148,7 @@
 			"en" : "Every D28 record (F04) matches exactly one patient enrolment (F01).",
 			"fr" : "Chaque enregistrement D28 (F04) correspond avec exactement un enrôlement de patient (F01).",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "កំណត់ត្រា D28 (F04) ទាំងអស់ ត្រូវគ្នាជាមួយនឹងអ្នកជំងឺដែលចូលរួមការអង្កេតតាមដាន (F01)។",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -1156,7 +1156,7 @@
 			"en" : "Some D28 records (F04) don't have a matching patient enrolment (F01).",
 			"fr" : "Certains enregistrements D28 (F04) n'ont pas un enrôlement de patient (F01) correspondant.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "កំណត់ត្រា D28 (F04) ខ្លះមិនត្រូវគ្នាជាមួយនឹងអ្នកជំងឺដែលចូលរួមការអង្កេតតាមដាន (F01)។",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -1164,7 +1164,7 @@
 			"en" : "Every hospital outcome record (F03) has a matching infection episode (F02).",
 			"fr" : "A tout enregistrement de résultats hospitaliers (F03) correspond un épisode infectieux (F02).",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "កំណត់ត្រាលទ្ធផលនៅមន្ទីរពេទ្យទាំងអស់(F03) ត្រូវគ្នាជាមួយ វគ្គការបង្ករោគ (F02)។",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -1172,7 +1172,7 @@
 			"en" : "Some hospital outcome records (F03) don't have a matching infection episode (F02). These records have been removed.",
 			"fr" : "Certains enregistrements de résultats hospitaliers (F03) ne correspondent à aucun un épisode infectieux (F02).",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "កំណត់ត្រាលទ្ធផលនៅមន្ទីរពេទ្យមួយចំនួន (F03) មិនត្រូវគ្នាជាមួយវគ្គការបង្ករោគ (F02)។ កំណត់ត្រាទាំងនេះ ត្រូវបានដកចេញ ។",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -1180,7 +1180,7 @@
 			"en" : "Every infection episode record (F02) has a matching patient enrolment (F01).",
 			"fr" : "A tout enregistrement d'épisode infectieux (F02) correspond un enrôlement de patient (F01)",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "កំណត់ត្រាវគ្គការបង្ករោគទាំងអស់ (F02) ត្រូវគ្នាជាមួយនឹងអ្នកជំងឺដែលចូលរួមការអង្កេតតាមដាន (F01)។",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -1188,7 +1188,7 @@
 			"en" : "Some infection episode records (F02) don't have a matching patient enrolment (F01). These records have been removed.",
 			"fr" : "Certains enregistrements d'épisode infectieux (F02) ne correspondent à aucun enrôlement de patient (F01). Ces enregistrements ont été supprimés.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "កំណត់ត្រាវគ្គការបង្ករោគមួយចំនួន (F02) មិនត្រូវគ្នាជាមួយនឹងអ្នកជំងឺដែលចូលរួមការអង្កេតតាមដាន (F01)។ កំណត់ត្រាទាំងនេះ ត្រូវបានដកចេញ ។",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -1196,7 +1196,7 @@
 			"en" : "Every hospital outcome record (F03) has a matching patient enrolment (F01).",
 			"fr" : "A tout enregistrement de résultats hospitaliers (F03) correspond un enrôlement de patient (F01)",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "កំណត់ត្រាលទ្ធផលនៅមន្ទីរពេទ្យទាំងអស់ (F03) ត្រូវគ្នាជាមួយនឹងអ្នកជំងឺដែលចូលរួមការអង្កេតតាមដាន(F01)។",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -1204,7 +1204,7 @@
 			"en" : "Some hospital outcome records (F03) don't have a matching patient enrolment (F01).",
 			"fr" : "Certains enregistrements de résultats hospitaliers (F03) ne correspondent à aucun enrôlement de patient (F01)",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "កំណត់ត្រាលទ្ធផលនៅមន្ទីរពេទ្យមួយចំនួន (F03) មិនត្រូវគ្នាជាមួយនឹងអ្នកជំងឺដែលចូលរួមការអង្កេតតាមដាន (F01)។",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -1212,7 +1212,7 @@
 			"en" : "All dates of enrolment for HAI patients have a matching date in the HAI survey dataset",
 			"fr" : "Toutes les dates d'enrôlements de patients avec une HAI se trouvent dans le jeu de données d'études de HAI.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "កាលបរិច្ឆេទទាំងអស់នៃអ្នកជំងឺដែលចូលរួមការអង្កេតតាមដាន HAI មានកាលបរិច្ឆេទត្រូវគ្នាទៅនឹងសំណុំទិន្នន័យអង្កេតតាមដាន HAI",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -1220,7 +1220,7 @@
 			"en" : "Some dates of enrolment for HAI patients do have a matching date in the HAI survey dataset",
 			"fr" : "Certaines dates d'enrôlements de patients avec une HAI ne se trouvent pas dans le jeu de données d'études de HAI.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "កាលបរិច្ឆេទមួយចំនួននៃអ្នកជំងឺដែលចូលរួមការអង្កេតតាមដាន HAI មានកាលបរិច្ឆេទត្រូវគ្នាទៅនឹងសំណុំទិន្នន័យអង្កេតតាមដាន HAI",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -1228,7 +1228,7 @@
 			"en" : "Clinical and day-28 outcomes are consistent.",
 			"fr" : "Les résultats cliniques et du jour 28 sont cohérents.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "លទ្ធផលគ្លីនិក និងលទ្ធផល២៨ថ្ងៃគឺស្របគ្នា។",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -1236,7 +1236,7 @@
 			"en" : "Clinical and day-28 outcomes aren't consistent for some dead patients.",
 			"fr" : "Pour certains patients décédés, les résultats cliniques et du jour 28 ne sont pas cohérents.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "លទ្ធផលគ្លីនិក និងលទ្ធផល២៨ថ្ងៃ គឺមិនសមស្របចំពោះមួយអ្នកជំងឺដែលស្លាប់មួយចំនួន។",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -1244,7 +1244,7 @@
 			"en" : "Calculated age is consistent with 'Age Category'",
 			"fr" : "L'âge calculé est cohérent avec la catégorie d'âge.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "អាយុដែលបានគណនាគឺស្របទៅនឹង 'ប្រភេទអាយុ'",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -1252,7 +1252,7 @@
 			"en" : "Calculated age isn't always consistent with 'Age Category'",
 			"fr" : "L'âge calculé n'est pas toujours cohérent avec la catégorie d'âge.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "អាយុដែលបានគណនាគឺមិនស្របទៅនឹង 'ប្រភេទអាយុ'",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -1260,7 +1260,7 @@
 			"en" : "There are no isolate with valid AST results. Please contact ACORN support.",
 			"fr" : "Il n'y a pas d'isolat avec des résultats d'AST valides.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "គ្មាន isolate ត្រូវជាមួយនឹងលទ្ធផល AST ទេ។ សូមទាក់ទងទៅកាន់ផ្នែកគ្រាំទ្រ ACORN។",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -1268,7 +1268,7 @@
 			"en" : "Lab data successfully provided.",
 			"fr" : "Les données de laboratoire ont été fournies avec succès.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "ទិន្នន័យមន្ទីរពិសោធន៍ត្រូវបានផ្ដល់ដោយជោគជ័យ។",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -1276,7 +1276,7 @@
 			"en" : "Lab dataset contains the minimal columns.",
 			"fr" : "Le jeu de données de lab contient les colonnes minimales requises.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "សំណុំទិន្នន័យមន្ទីរពិសោធន៍មានជួរឈរតិច។",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -1284,7 +1284,7 @@
 			"en" : "Lab dataset does not contains the minimal columns.",
 			"fr" : "Le jeu de données de lab ne contient pas les colonnes minimales requises.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "សំណុំទិន្នន័យមន្ទីរពិសោធន៍មិនមានជួរឈរតិចទេ។",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -1292,7 +1292,7 @@
 			"en" : "All 'patid' are provided.",
 			"fr" : "Tous les 'patid' sont fournis.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "‘patid' ទាំងអស់ត្រូវបានផ្តល់ជូន។",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -1300,7 +1300,7 @@
 			"en" : "There are rows with missing 'patid'.",
 			"fr" : "Il existe des enregistrements avec des 'patid' manquant.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "មានជួរដេកដែលបាត់ ‘patid'។",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -1308,7 +1308,7 @@
 			"en" : "All 'specid' are provided.",
 			"fr" : "Tous les 'specid' sont fournis.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "‘specid' ទាំងអស់ត្រូវបានផ្តល់ជូន។",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -1316,7 +1316,7 @@
 			"en" : "There are rows with missing 'specid'.",
 			"fr" : "Il existe des enregistrements avec des 'specid' manquant.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "មានជួរដេកដែលបាត់ ‘specid'។",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -1324,7 +1324,7 @@
 			"en" : "All 'specdate' are provided.",
 			"fr" : "Tous les 'specdate' sont fournis.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "‘specdate' ទាំងអស់ត្រូវបានផ្តល់ជូន",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -1332,7 +1332,7 @@
 			"en" : "There are rows with missing 'specdate'.",
 			"fr" : "Il existe des enregistrements avec des 'specdate' manquant.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "មានជួរដេកដែលបាត់ ‘specdate'។",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -1340,7 +1340,7 @@
 			"en" : "All 'specdate' are today or before today.",
 			"fr" : "Tous les 'specdate' sont égales ou antérieures à aujourd'hui.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "'specdate' ទាំងអស់គឺថ្ងៃនេះ ឬមុនថ្ងៃនេះ។",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -1348,7 +1348,7 @@
 			"en" : "There are rows for which 'specdate' are after today.",
 			"fr" : "Il se trouve des enregistrements avec des 'sepcdate' dans le futur.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "មានជួរដេកដែល 'specdate' គឺបន្ទាប់ពីថ្ងៃនេះ។",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -1356,7 +1356,7 @@
 			"en" : "All 'specgroup' are provided.",
 			"fr" : "Tous les 'specgroup' sont fournis.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "‘specgroup' ទាំងអស់ត្រូវបានផ្តល់ជូន។",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -1364,7 +1364,7 @@
 			"en" : "There are rows with missing 'specgroup'.",
 			"fr" : "Il existe des enregistrements avec des 'specgroup' manquant.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "មានជួរដេកដែលបាត់ ‘specgroup'។",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -1372,7 +1372,7 @@
 			"en" : "All 'orgname' are provided.",
 			"fr" : "Tous les 'orgname' sont fournis.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "‘orgname' ទាំងអស់ត្រូវបានផ្តល់ជូន។",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -1380,7 +1380,7 @@
 			"en" : "There are rows with missing 'orgname'.",
 			"fr" : "Il existe des enregistrements avec des 'orgname' manquant.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "មានជួរដេកដែលបាត់ ‘orgname'​។",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -1388,7 +1388,7 @@
 			"en" : "There are no atypical case (one CAI / early HAI but no overlap).",
 			"fr" : "Il n'y as pas de cas atypique (une CAI / HAI très tôt mais pas de simultanéité)",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "មិនមានករណី មិនប្រក្រតីទេ (មួយ CAI / early HAI តែគ្មានការជាន់គ្នាទេ)។",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -1396,7 +1396,7 @@
 			"en" : "The following 'patient id' are atypical cases (one CAI / early HAI but no overlap):",
 			"fr" : "Les 'patient id' suivant sont des cas atypiques (une CAI / HAI très tôt mais pas de simultanéité) :",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "'patient id' ខាងក្រោមគឺមានករណីមិនប្រក្រតី (one CAI / HAI មុន តែគ្មានការជាន់គ្នាទេ)៖",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -1404,7 +1404,7 @@
 			"en" : "There are no problem case (overlapping specimen collection windows)",
 			"fr" : "Il n'y a pas de cas problématique (fenêtre de collection de spécimens qui se chevauchent)",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "មិនមានបញ្ហា (មានការជាន់គ្នា ក្នុងផ្ទាំងនៃការយកវត្ថុវិភាគ)។",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -1412,7 +1412,7 @@
 			"en" : "The following 'patient id' are problem case (overlapping specimen collection windows):",
 			"fr" : "Les 'patient id' suivant sont des cas problématiques (fenêtre de collection de spécimens qui se chevauchent)",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "'patient id' ខាងក្រោមគឺមានបញ្ហា​(មានការជាន់គ្នាក្នុងផ្ទាំងនៃការយកវត្ថុវិភាគ)៖",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -1420,7 +1420,7 @@
 			"en" : "Successfully combined clinical and lab data into .acorn file",
 			"fr" : "Les données cliniques et de laboratoire ont bien été combinées dans un fichier .acorn",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "ទិន្នន័យគ្លីនិកនិង​​មន្ទីរពិសោធន៍ ត្រូវបានរួមបញ្ចូលដោយជោគជ័យទៅក្នុងឯកសារ .acorn",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -1428,7 +1428,7 @@
 			"en" : "Error in combining clinical and lab data.",
 			"fr" : "Erreur produite en combinant les données clinique et de laboratoire.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "មានកំហុសក្នុងការរួមបញ្ចូលទិន្នន័យគ្លីនិកនិងមន្ទីរពិសោធន៍។",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -1436,7 +1436,7 @@
 			"en" : "Records in Lab data and BSI forms:",
 			"fr" : "Enregistrements dans les données de laboratoire et les formulaires BSI:",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "កត់ត្រាក្នុងទិន្នន័យគ្លីនិកនឹងមន្ទីរពិសោធន៍ក្នុងទម្រង់ BSI៖",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -1444,7 +1444,7 @@
 			"en" : "There is no HAI survey data",
 			"fr" : "Il n'y a pas de données d'enquête HAI",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "គ្មានទិន្នន័យការអង្កេតតាមដាន HAI ទេ",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -1452,7 +1452,7 @@
 			"en" : "Follow us on Twitter",
 			"fr" : "Suivez-nous sur Twitter",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "តាមដានយើងនៅលើ Twitter",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -1460,7 +1460,7 @@
 			"en" : "No Blood Culture",
 			"fr" : "Pas d'Hématoculture",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "មិនមានការបណ្តុះមេរោគក្នុងឈាម",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		}

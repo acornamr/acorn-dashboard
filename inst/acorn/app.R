@@ -137,12 +137,10 @@ ui <- page(
           column(9,
                  fluidRow(
                    column(6,
-                          conditionalPanel("input.selected_language != 'fr'",
-                                           includeMarkdown("./www/markdown/about_acorn_en.md")
-                          ),
-                          conditionalPanel("input.selected_language == 'fr'",
-                                           includeMarkdown("./www/markdown/about_acorn_fr.md")
-                          )
+                          conditionalPanel("input.selected_language != 'fr' & input.selected_language != 'kh'",
+                                           includeMarkdown("./www/markdown/about_acorn_en.md")),
+                          conditionalPanel("input.selected_language == 'fr'", includeMarkdown("./www/markdown/about_acorn_fr.md")),
+                          conditionalPanel("input.selected_language == 'kh'", includeMarkdown("./www/markdown/about_acorn_kh.md"))
                    ),
                    column(6,
                           h5(i18n$t("ACORN Participating Countries")),
@@ -746,12 +744,22 @@ server <- function(input, output, session) {
   })
   
   observeEvent(input$show_faq, {
+    
+    if(input$selected_language != "kh") {
     showModal(modalDialog(
       title = "Frequently Asked Questions",
       size = "l",
       easyClose = TRUE,
       includeMarkdown("./www/markdown/faq_acorn_en.md")
-    ))
+    ))}
+    
+    if(input$selected_language == "kh") {
+      showModal(modalDialog(
+        title = "Frequently Asked Questions",
+        size = "l",
+        easyClose = TRUE,
+        includeMarkdown("./www/markdown/faq_acorn_kh.md")
+      ))}
   })
   
   # Download in acorn/Excel formats. ----
@@ -1092,7 +1100,7 @@ server <- function(input, output, session) {
     lab_dta(acorn$lab_dta)
     acorn_dta(acorn$acorn_dta)
     
-    # For backward compatibility with 2.1.1.
+    # For backward compatibility with 2.1.1 (no tables_dictionary).
     ifelse(!is.null(acorn$tables_dictionary),
            tables_dictionary(acorn$tables_dictionary),
            tables_dictionary(current_tables_dictionary)
