@@ -796,7 +796,7 @@ server <- function(input, output, session) {
           "data_dictionary_notes" = data_dictionary()$notes,
           "lab_codes_whonet.spec" = lab_code()$whonet.spec,
           "lab_codes_orgs.antibio" = lab_code()$orgs.antibio,
-          "lab_codes_whonet.orgs" = lab_code()$whonet.orgs |> as_tibble(),
+          "lab_codes_orgs.whonet" = lab_code()$orgs.whonet |> as_tibble(),
           "lab_codes_acorn.bccontaminants" = lab_code()$acorn.bccontaminants,
           "lab_codes_acorn.ast.groups" = lab_code()$acorn.ast.groups,
           "lab_codes_ast.aci" = lab_code()$ast.aci,
@@ -1254,7 +1254,7 @@ server <- function(input, output, session) {
                  lab_code(
                    list(whonet.spec = lab_code$whonet.spec,
                         orgs.antibio = lab_code$orgs.antibio,
-                        whonet.orgs = lab_code$orgs.whonet,
+                        orgs.whonet = lab_code$orgs.whonet,
                         acorn.bccontaminants = lab_code$acorn.bccontaminants,
                         acorn.ast.groups = lab_code$acorn.ast.groups,
                         ast.aci =lab_code$ast.aci,

@@ -1,6 +1,6 @@
 message("05_map_organisms.R")
 
-whonet.orgs <- lab_code$whonet.orgs
+whonet.orgs <- lab_code$orgs.whonet
 whonet.orgs$genus.sp <- paste(whonet.orgs$GENUS, " sp", sep = "") # Make a genus/species variable
 whonet.orgs$genus.sp[whonet.orgs$genus.sp == "NA sp"] <- NA # Remove values from non-bacterial species (organism codes with no genus (e.g. viruses or "Acid fast bacilli"))
 whonet.orgs$acorn.org.code[is.na(whonet.orgs$acorn.org.code)] <- whonet.orgs$genus.sp[is.na(whonet.orgs$acorn.org.code)] # Replace missing acorn.org.codes with genus/species values as acorn.org.codes only contains values for the ACORN surveillance organisms

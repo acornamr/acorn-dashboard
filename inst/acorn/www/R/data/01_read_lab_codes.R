@@ -17,7 +17,7 @@ read_lab_code <- function(sheet) readxl::read_excel(file_lab_code, sheet = sheet
 lab_code <- list(
   whonet.spec = readxl::read_excel(file_lab_code, sheet = "spectypes.whonet"),
   orgs.antibio = readxl::read_excel(file_lab_code, sheet = "orgs.antibio"),
-  whonet.orgs = readxl::read_excel(file_lab_code, sheet = "orgs.whonet"),
+  orgs.whonet = readxl::read_excel(file_lab_code, sheet = "orgs.whonet"),
   acorn.bccontaminants = readxl::read_excel(file_lab_code, sheet = "acorn.bccontaminants"), # [UPDATED ACORN2]
   acorn.ast.groups = readxl::read_excel(file_lab_code, sheet = "acorn.ast.groups"),
   ast.aci = read_lab_code(sheet = "aci"),  # Gram negatives - Acinetobacter
