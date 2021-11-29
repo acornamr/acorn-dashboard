@@ -3,6 +3,7 @@ output$profile_antibiotics <- renderHighchart({
   req(nrow(redcap_f01f05_dta_filter()) > 0)
   
   if(! input$antibiotics_combinations) return({
+    # https://stackoverflow.com/questions/70158318/custom-colors-in-r-highcharter-barplot/
     dta <- left_join(redcap_f01f05_dta_filter() %>% 
                        select(antibiotic_j01gb06:antibiotic_other_text) %>%
                        pivot_longer(antibiotic_j01gb06:antibiotic_other_text, names_to = "antibiotic_code", values_to = "antibiotic") %>%
@@ -13,14 +14,17 @@ output$profile_antibiotics <- renderHighchart({
       group_by(antibiotic, category) |> 
       count() |> 
       arrange(desc(n)) |> 
-      mutate(category = factor(category, levels = c("Watch", "Access", "Reserve", "Unknown")))
+      mutate(category = factor(category, levels = c("Watch", "Access", "Reserve", "Unknown")))%>% 
+      ungroup() %>% 
+      mutate(antibiotic = factor(antibiotic) %>% fct_reorder(n, .desc = TRUE)) %>% 
+      mutate(cat_index = as.numeric(antibiotic))
     
     cols <- cols_access[levels(dta$category)[levels(dta$category) %in% unique(dta$category)]]
     
     dta %>%
-      hchart(type = "bar", hcaes(x = "antibiotic", y = "n", group = "category"), color = cols) %>%
+      hchart(type = "bar", hcaes(x = cat_index, y = n, group = category, name = antibiotic), color = cols) %>%
       hc_yAxis(title = "", stackLabels = list(enabled = TRUE)) %>% 
-      hc_xAxis(title = "") %>%
+      hc_xAxis(title = "", type = "category", labels = list(step = 1)) %>% 
       hc_tooltip(headerFormat = "",
                  pointFormat = "{point.n} patients have taken {point.antibiotic}") %>%
       hc_plotOptions(series = list(stacking = 'normal')) %>%
