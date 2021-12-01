@@ -23,10 +23,10 @@ library(tidyverse)
 
 
 cols_sir <- c("#2c3e50", "#f39c12", "#e74c3c")  # resp. S, I and R
-cols_access <- c("Watch" = "#2c3e50", 
-                 "Access" = "#f39c12", 
-                 "Reserve" = "#e74c3c", 
-                 "Unknown" = "#969696")
+cols_aware <- c("Access" = "#2c3e50", 
+                "Watch" = "#f39c12", 
+                "Reserve" = "#e74c3c", 
+                "Unknown" = "#969696")
 
 acorn_theme    <- bs_theme(version = 4, bootswatch = "flatly", "border-width" = "2px")
 acorn_theme_la <- bs_theme(version = 4, bootswatch = "flatly", "border-width" = "2px", base_font = "Phetsarath OT")

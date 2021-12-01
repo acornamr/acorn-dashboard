@@ -14,12 +14,12 @@ output$profile_antibiotics <- renderHighchart({
       group_by(antibiotic, category) |> 
       count() |> 
       arrange(desc(n)) |> 
-      mutate(category = factor(category, levels = c("Watch", "Access", "Reserve", "Unknown")))%>% 
+      mutate(category = factor(category, levels = c("Access", "Watch", "Reserve", "Unknown")))%>% 
       ungroup() %>% 
       mutate(antibiotic = factor(antibiotic) %>% fct_reorder(n, .desc = TRUE)) %>% 
       mutate(cat_index = as.numeric(antibiotic))
     
-    cols <- cols_access[levels(dta$category)[levels(dta$category) %in% unique(dta$category)]]
+    cols <- cols_aware[levels(dta$category)[levels(dta$category) %in% unique(dta$category)]]
     
     dta %>%
       hchart(type = "bar", hcaes(x = cat_index, y = n, group = category, name = antibiotic), color = cols) %>%
