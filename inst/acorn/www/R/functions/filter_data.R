@@ -54,6 +54,7 @@ fun_filter_blood_only <- function(data)  data %>% filter(specgroup == "Blood")
 
 # Function that returns a deduplicated dataset following the provided method: by patient-episode or by patient Id
 # It's essential to use this only once possible other filters (surveillance type...) have already been applied
+# Function last updated on 2021-12-03, using slice_min(specdate)
 fun_deduplication <- function(data, method = NULL) {
   if(is_empty(method)) stop("No deduplication method provided.")
   
@@ -63,7 +64,7 @@ fun_deduplication <- function(data, method = NULL) {
     data_dedup <- data |> 
       arrange(date_episode_enrolment) |> 
       group_by(patient_id, episode_id, orgname, specgroup) |>
-      slice(1) |> ungroup()
+      slice_min(specdate) |> ungroup()
     return(data_dedup)
   }
   
@@ -77,7 +78,7 @@ fun_deduplication <- function(data, method = NULL) {
                  TRUE ~ "Unknown"
                )) |> 
       group_by(patient_id, orgname, specgroup, surveillance_category_regroup) |> 
-      slice(1) |> ungroup() |> select(-surveillance_category_regroup)
+      slice_min(specdate) |> ungroup() |> select(-surveillance_category_regroup)
     return(data_dedup)
   }
 }
