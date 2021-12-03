@@ -534,7 +534,8 @@ ui <- page(
                                         conditionalPanel(condition = "! input.combine_SI", 
                                                          i18n$t("Susceptible & Intermediate are always combined in this visualisation of co-resistances.")
                                         ),
-                                        i18n$t("Horizontal bars show the size of a set of SR results while vertical bars show the number of resistant isolates for the corresponding antibiotic.")
+                                        i18n$t("Horizontal bars show the size of a set of SR results while vertical bars show the number of resistant isolates for the corresponding antibiotic."),
+                                        i18n$t("Only isolates that have been tested against all of the drugs are included in the upset plot.")
                                  )
                                ),
                                fluidRow(
