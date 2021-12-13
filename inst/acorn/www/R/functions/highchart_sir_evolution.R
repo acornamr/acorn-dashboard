@@ -64,7 +64,7 @@ highchart_sir_evolution <- function(data_input, organism_input, corresp, combine
   sir_results <- left_join(sir_results, 
                            corresp, 
                            by = c('name' = 'antibio_code')) %>%
-    filter(UQ(as.symbol(matching_name_column)) == "show") %>% 
+    filter(UQ(as.symbol(matching_name_column)) %in% c("show", "show_sir_only")) %>%
     filter(filter_antibio == antibio_name)
   
   
