@@ -6,7 +6,9 @@ message("08_ast_interpretation_nonstandard.R")
 amr <- amr %>% 
   mutate(carbapenem = NA, fluoroquinolone = NA, thirdgenceph = NA)
 
-# aci - Acinetobacter spp.
+# aci - Acinetobacter spp. [UPDATED ACORN2]
+amr$fluoroquinolone[amr$ast.group == "aci" & (amr$CIP == "S" | amr$LVX == "S" | amr$CIP == "I" | amr$LVX == "I")] <- "S" # Group variable for FQ-R (just ciprofloxacin and levofloxacin)
+amr$fluoroquinolone[amr$ast.group == "aci" & (amr$CIP == "R" | amr$LVX == "R")] <- "R"
 amr$thirdgenceph[amr$ast.group == "aci" & (amr$CTX == "S" | amr$CRO == "S" | amr$CAZ == "S" | amr$CTX == "I" | amr$CRO == "I" | amr$CAZ == "I")] <- "S" # Group variable for 3GC-R
 amr$thirdgenceph[amr$ast.group == "aci" & (amr$CTX == "R" | amr$CRO == "R" | amr$CAZ == "R")] <- "R"
 amr$carbapenem[amr$ast.group == "aci" & (amr$DOR == "S" | amr$IPM == "S" | amr$MEM == "S" | amr$DOR == "I" | amr$IPM == "I" | amr$MEM == "I")] <- "S" # Group variable for CPM-R
@@ -23,14 +25,22 @@ amr$carbapenem[amr$ast.group == "col" & (amr$DOR == "R" | amr$ETP == "R" | amr$I
 # ent - Enterococcus sp
 amr$VAN[amr$ast.group == "ent" & amr$vre == "POSITIVE"] <- "R" # Codes VAN == R if vre category is positive
 
-# hin - Haemophilus influenzae
+# hin - Haemophilus influenzae [UPDATED ACORN2]
 amr$AMP[amr$ast.group == "hin" & amr$blac == "POSITIVE"] <- "R" # Codes AMP == R if b-lactamase category is positive
 amr$AMC[amr$ast.group == "hin" & amr$AMP == "R" & amr$blac == "NEGATIVE"] <- "R" # Codes AMC == R in BLNAR strains (b-lactamase is negative but AMP == R)
+amr$thirdgenceph[amr$ast.group == "hin" & (amr$CTX == "S" | amr$CRO == "S" | amr$CTX == "I" | amr$CRO == "I")] <- "S" # Group variable for 3GC-R (just cefotaxime and ceftriaxone)
+amr$thirdgenceph[amr$ast.group == "hin" & (amr$CTX == "R" | amr$CRO == "R")] <- "R"
 
 # ngo - Neisseria gonorrhoeae
 amr$PEN[amr$ast.group == "ngo" & amr$blac == "POSITIVE"] <- "R" # Codes PEN == R if b-lactamase category is positive
 
-# pae- Pseudomonas aeruginosa
+# nmen - Neisseria meningitidis [ADDED ACORN2]
+amr$thirdgenceph[amr$ast.group == "nmen" & (amr$CTX == "S" | amr$CRO == "S" | amr$CTX == "I" | amr$CRO == "I")] <- "S" # Group variable for 3GC-R (just cefotaxime and ceftriaxone)
+amr$thirdgenceph[amr$ast.group == "nmen" & (amr$CTX == "R" | amr$CRO == "R")] <- "R"
+
+# pae- Pseudomonas aeruginosa [UPDATED ACORN2]
+amr$fluoroquinolone[amr$ast.group == "pae" & (amr$CIP == "S" | amr$LVX == "S" | amr$CIP == "I" | amr$LVX == "I")] <- "S" # Group variable for FQ-R (just ciprofloxacin and levofloxacin)
+amr$fluoroquinolone[amr$ast.group == "pae" & (amr$CIP == "R" | amr$LVX == "R")] <- "R"
 amr$carbapenem[amr$ast.group == "pae" & (amr$DOR == "S" | amr$IPM == "S" | amr$MEM == "S" | amr$DOR == "I" | amr$IPM == "I" | amr$MEM == "I")] <- "S" # Group variable for CPM-R
 amr$carbapenem[amr$ast.group == "pae" & (amr$DOR == "R" | amr$IPM == "R" | amr$MEM == "R" | amr$cpm == "POSITIVE")] <- "R"
 
@@ -71,3 +81,5 @@ amr$CTX_MEN <- amr$CTX # Make a meningitis CTX variable (as default for CTX - S.
 amr$CTX_MEN[amr$ast.group != "spn" | is.na(amr$ast.group)] <- NA
 amr$CTX_MEN[amr$ast.group == "spn" & (amr$CTX_NM > 0.5 | amr$CTX_NE > 0.5)] <- "I"
 amr$CTX_MEN[amr$ast.group == "spn" & (amr$CTX_NM >= 2 | amr$CTX_NE >= 2 | amr$CTX_EM > 0.5 | amr$CTX_EE > 0.5)] <- "R"
+amr$thirdgenceph[amr$ast.group == "spn" & (amr$CTX == "S" | amr$CRO == "S" | amr$CTX == "I" | amr$CRO == "I")] <- "S" # Group variable for 3GC-R (just cefotaxime and ceftriaxone, non-meningitis breakpoint)
+amr$thirdgenceph[amr$ast.group == "spn" & (amr$CTX == "R" | amr$CRO == "R")] <- "R"
