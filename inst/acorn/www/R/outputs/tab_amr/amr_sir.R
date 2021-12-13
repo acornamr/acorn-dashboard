@@ -46,6 +46,12 @@ output$ecoli_sir <- renderHighchart({
                 deduplication_method = input$deduplication_method)
 })
 
+output$ecoli_co_resistance <- renderPlot({
+  req(acorn_dta_filter())
+  upset_co_resistance(data_input = acorn_dta_filter(), organism_input = "Escherichia coli", corresp = corresp_org_antibio(), 
+                      deduplication_method = input$deduplication_method)
+})
+
 output$ecoli_sir_evolution <- renderHighchart({
   req(acorn_dta_filter())
   organism_input <- "Escherichia coli"
@@ -85,6 +91,12 @@ output$haemophilus_influenzae_sir <- renderHighchart({
                 combine_SI = input$combine_SI, deduplication_method = input$deduplication_method)
 })
 
+output$haemophilus_influenzae_co_resistance <- renderPlot({
+  req(acorn_dta_filter())
+  upset_co_resistance(data_input = acorn_dta_filter(), organism_input = "Haemophilus influenzae", corresp = corresp_org_antibio(), 
+                      deduplication_method = input$deduplication_method)
+})
+
 output$test_haemophilus_influenzae_sir <- reactive({
   req(acorn_dta_filter())
   organism_input <- "Haemophilus influenzae"
@@ -106,6 +118,12 @@ output$kpneumoniae_sir <- renderHighchart({
   organism_input <- "Klebsiella pneumoniae"
   highchart_sir(data_input = acorn_dta_filter(), organism_input = organism_input, corresp = corresp_org_antibio(), combine_SI = input$combine_SI,
                 deduplication_method = input$deduplication_method)
+})
+
+output$kpneumoniae_co_resistance <- renderPlot({
+  req(acorn_dta_filter())
+  upset_co_resistance(data_input = acorn_dta_filter(), organism_input = "Klebsiella pneumoniae", corresp = corresp_org_antibio(), 
+                      deduplication_method = input$deduplication_method)
 })
 
 output$kpneumoniae_sir_evolution <- renderHighchart({
@@ -147,6 +165,12 @@ output$neisseria_meningitidis_sir <- renderHighchart({
                 combine_SI = input$combine_SI, deduplication_method = input$deduplication_method)
 })
 
+output$neisseria_meningitidis_co_resistance <- renderPlot({
+  req(acorn_dta_filter())
+  upset_co_resistance(data_input = acorn_dta_filter(), organism_input = "Neisseria meningitidis", corresp = corresp_org_antibio(), 
+                      deduplication_method = input$deduplication_method)
+})
+
 output$test_neisseria_meningitidis_sir <- reactive({
   req(acorn_dta_filter())
   organism_input <- "Neisseria meningitidis"
@@ -168,6 +192,12 @@ output$pseudomonas_aeruginosa_sir <- renderHighchart({
   organism_input <- "Pseudomonas aeruginosa"
   highchart_sir(data_input = acorn_dta_filter(), organism_input = organism_input, corresp = corresp_org_antibio(), 
                 combine_SI = input$combine_SI, deduplication_method = input$deduplication_method)
+})
+
+output$pseudomonas_aeruginosa_co_resistance <- renderPlot({
+  req(acorn_dta_filter())
+  upset_co_resistance(data_input = acorn_dta_filter(), organism_input = "Pseudomonas aeruginosa", corresp = corresp_org_antibio(), 
+                      deduplication_method = input$deduplication_method)
 })
 
 output$pseudomonas_aeruginosa_sir_evolution <- renderHighchart({
@@ -201,6 +231,12 @@ output$saureus_sir <- renderHighchart({
                 deduplication_method = input$deduplication_method)
 })
 
+output$saureus_co_resistance <- renderPlot({
+  req(acorn_dta_filter())
+  upset_co_resistance(data_input = acorn_dta_filter(), organism_input = "Staphylococcus aureus", corresp = corresp_org_antibio(), 
+                      deduplication_method = input$deduplication_method)
+})
+
 output$saureus_sir_evolution <- renderHighchart({
   req(acorn_dta_filter())
   organism_input <- "Staphylococcus aureus"
@@ -229,6 +265,12 @@ output$spneumoniae_sir <- renderHighchart({
   organism_input <- "Streptococcus pneumoniae"
   highchart_sir(data_input = acorn_dta_filter(), organism_input = organism_input, corresp = corresp_org_antibio(), combine_SI = input$combine_SI,
                 deduplication_method = input$deduplication_method)
+})
+
+output$spneumoniae_co_resistance <- renderPlot({
+  req(acorn_dta_filter())
+  upset_co_resistance(data_input = acorn_dta_filter(), organism_input = "Streptococcus pneumoniae", corresp = corresp_org_antibio(), 
+                      deduplication_method = input$deduplication_method)
 })
 
 output$spneumoniae_sir_evolution_pen <- renderHighchart({
@@ -268,6 +310,13 @@ output$salmonella_sir <- renderHighchart({
   organism_input <- input$select_salmonella
   highchart_sir(data_input = acorn_dta_filter(), organism_input = organism_input, corresp = corresp_org_antibio(), combine_SI = input$combine_SI,
                 deduplication_method = input$deduplication_method)
+})
+
+output$salmonella_co_resistance <- renderPlot({
+  req(acorn_dta_filter())
+  organism_input <- input$select_salmonella
+  upset_co_resistance(data_input = acorn_dta_filter(), organism_input = organism_input, corresp = corresp_org_antibio(), 
+                      deduplication_method = input$deduplication_method)
 })
 
 output$salmonella_sir_evolution_ceph <- renderHighchart({

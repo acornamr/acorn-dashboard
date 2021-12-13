@@ -28,7 +28,7 @@ upset_co_resistance <- function(data_input, organism_input, corresp, deduplicati
     vec <- unique(data_input$orgname)
     organism_filter <- vec[str_detect(vec, "Acinetobacter")]
   }
-  
+
   if(organism_input == "Salmonella sp (not S. Typhi or S. Paratyphi)") {
     vec <- unique(data_input$orgname)
     organism_filter <- vec[str_detect(vec, "Salmonella") & vec != "Salmonella Typhi" & !str_detect(vec, "Salmonella Paratyphi")]
@@ -41,7 +41,14 @@ upset_co_resistance <- function(data_input, organism_input, corresp, deduplicati
     fun_deduplication(method = deduplication_method) |> 
     select(c("specid", any_of(antibio_to_show))) |> 
     select(where(~ !all(is.na(.x)))) |> 
-    mutate(across(any_of(antibio_to_show), ~ . == "R")) |> 
+    mutate(across(any_of(antibio_to_show), ~ . == "R"))
+  
+  if (! any(dta[, -1]))  return({
+    plot(c(0, 1), c(0, 1), ann = F, bty = "n", type = "n", xaxt = "n", yaxt = "n")
+    text(x = 0.5, y = 0.5, paste("There are no resistant."), cex = 1.6, col = "black")
+  })
+  
+  dta <- dta |> 
     rename_with(vec_find_names, -specid)
   
   ComplexUpset::upset(dta, colnames(dta)[-1], name = " ", width_ratio = 0.2, stripes = "white",  
