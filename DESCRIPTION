@@ -35,7 +35,6 @@ Imports:
     RSQLite,
     rvest,
     shiny,
-    shinyanimate,
     shiny.i18n,
     shinyjs,
     shinyWidgets,

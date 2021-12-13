@@ -6,7 +6,6 @@ source('./www/R/startup.R', local = TRUE)
 ui <- page(
   theme = acorn_theme,
   includeCSS("www/styles.css"),
-  shinyanimate::withAnim(),
   usei18n(i18n),  # for translation
   shinyjs::useShinyjs(),
   page_navbar(
@@ -1088,9 +1087,9 @@ server <- function(input, output, session) {
                                      region = acorn_cred()$acorn_s3_region)
     load(rawConnection(acorn_file))
     
-    # Test that acorn file has been generated with 2.1.xx
+    # (Temporary - remove after 2022-02-01) Test that acorn file has been generated with 2.1.xx
     if(!exists("acorn"))  {
-      showNotification(i18n$t("ACORN data is not of the right format. Only data generated with v2.1 is compatible."), duration = 10, type = "error")
+      showNotification(i18n$t("ACORN data is not of the right format. Only data generated with v2.1 (or later versions) is compatible."), duration = 10, type = "error")
       return()
     }
     

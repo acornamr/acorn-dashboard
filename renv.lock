@@ -870,13 +870,6 @@
       "Repository": "CRAN",
       "Hash": "9bdabea3a78fd6a0768c2a319d36264e"
     },
-    "shinyanimate": {
-      "Package": "shinyanimate",
-      "Version": "0.3.0",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "3221dc0aec95d041b8a8de65bee8362e"
-    },
     "shinyjs": {
       "Package": "shinyjs",
       "Version": "2.0.0",

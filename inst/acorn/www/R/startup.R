@@ -8,7 +8,7 @@ session_start_time <- format(Sys.time(), "%Y-%m-%d_%HH%M")
 
 # Calls to these packages are not required as all used functions are prefixed with pack_name::
 # aws.s3, ComplexUpset, DBI, DT, flexdashboard, openssl, readr, readxl, REDCapR, RSQLite,
-# rvest, shinyanimate, shinyjs, writexl
+# rvest, shinyjs, writexl
 
 library(bslib)
 library(curl)
