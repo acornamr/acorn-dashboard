@@ -14,7 +14,9 @@ If you have questions about the project or the app, please <a href='mailto:acorn
 - [ដំណើរការទិន្នន័យ](#h20)
   - [បញ្ជីអ្នកចូលរួមអង្កេតតាមដាន/ បញ្ជីកំហុសឆ្គង](#h21)
   - [Clinical and Lab data linkage](#h22)
-- [Acknowledgments and Credits](#h30)
+- [Miscellaneous](#h30)
+  - [Save Plot as Image](#h31)
+- [Acknowledgments and Credits](#h40)
 
 
 ### <a name="h00"></a> Clinical data
@@ -126,7 +128,13 @@ Most patients will have a single infection episode per admission, so will presen
 
 <img src= "images/linkage_cases.png" style="width: 100%"/>
 
-### <a name="h30"></a> Acknowledgments and Credits
+### <a name="h30"></a> Miscellaneous
+
+####  <a name="h31"></a> Save Plot as Image
+
+<img src= "images/save_plot_image.gif" style="width: 80%"/>
+
+### <a name="h40"></a> Acknowledgments and Credits
 
 App Development Team: <a href="https://olivier.celhay.net" target="_blank">Olivier Celhay</a>, [Paul Turner](mailto:Pault@tropmedres.ac). With contributions from Naomi Waithira, Prapass Wannapinij, Elizabeth Ashley, Rogier van Doorn. 
 
