@@ -9,7 +9,7 @@ rsconnect::deployApp(appDir = "./inst/acorn/",
 
 
 # if the deployment on the dev URL works:
-# take a snapshot of installed package
+# take a snapshot of installed packages
 renv::snapshot()
 
 # commit to GitHub
