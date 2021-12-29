@@ -15,14 +15,16 @@ ui <- page(
     window_title = "ACORN | A Clinically Oriented antimicrobial Resistance Network",
     collapsible = TRUE, inverse = FALSE, 
     position = "static-top",
+    
     header = div(conditionalPanel(
       condition = "input.tabs != 'welcome' & input.tabs != 'data_management'",
+      uiOutput("quick_access"),
       div(id = "header-filter",
           fluidRow(
-            column(9,
+            column(12,
                    div(id = "filter_box", class = "well",
                        fluidRow(
-                         column(8,
+                         column(6,
                                 div(class = "smallcaps", class = "text_center", span(icon("hospital-user"), i18n$t("Enrolments"))),
                                 checkboxGroupButtons("filter_enrolments",
                                                      choices = c("Surveillance Category", "Type of Ward", "Date of Enrolment/Survey", "Age Category",
@@ -72,8 +74,8 @@ ui <- page(
                                 ),
                                 actionLink("shortcut_reset_filters", label = span(icon("ban"), i18n$t("Reset Enrolments Filters")))
                          ),
-                         column(4,
-                                div(class = "smallcaps", class = "text_center", span(icon("vial"), i18n$t("Specimens, Isolates"))),
+                         column(3,
+                                div(class = "smallcaps", class = "text_center", span(icon("vial"), i18n$t("Specimens"))),
                                 prettyCheckboxGroup("filter_method_collection", NULL,  shape = "curve", status = "primary", inline = TRUE,
                                                     choiceNames = c("Blood Culture", "Other Specimens:"),
                                                     choiceValues = c("blood", "other_not_blood"),
@@ -84,27 +86,26 @@ ui <- page(
                                                              options = list(`actions-box` = TRUE, `deselect-all-text` = "None...",
                                                                             `select-all-text` = "Select All", `none-selected-text` = "None Selected"))
                                 ),
+                         ),
+                         column(3,
+                                div(class = "smallcaps", class = "text_center",  span(icon("bacterium"), i18n$t("Isolates"))),
                                 pickerInput("deduplication_method",
                                             choices = c("No deduplication of isolates", "Deduplication by patient-episode", "Deduplication by patient ID")
                                 )
                          )
                        )
                    )
-            ),
-            column(3,
-                   htmlOutput("nb_enrolments"),
-                   htmlOutput("nb_patients_microbiology"),
-                   br(),
-                   htmlOutput("nb_specimens"),
-                   br(),
-                   htmlOutput("nb_isolates_growth"),
-                   htmlOutput("nb_isolates_target")
             )
+          ),
+          fluidRow(
+            column(3, htmlOutput("nb_enrolments")),
+            column(3, htmlOutput("nb_patients_microbiology")),
+            column(3, htmlOutput("nb_specimens")),
+            column(3, htmlOutput("nb_isolates_growth"), htmlOutput("nb_isolates_target"))
           )
       )
     )
     ),
-    
     # Tab Welcome ----
     nav(i18n$t("Welcome"), value = "welcome",
         fluidRow(
@@ -260,6 +261,7 @@ ui <- page(
     nav(i18n$t("Overview"), value = "overview", 
         fluidRow(
           column(6,
+                 HTML("<span id='anchor_101'></span>"),
                  div(class = "box_outputs", 
                      h4_title(icon("calendar-check"), i18n$t("Date of Enrolment")),
                      div(class = "box_outputs_content",
@@ -267,6 +269,7 @@ ui <- page(
                          highchartOutput("profile_date_enrolment")
                      )
                  ),
+                 HTML("<span id='anchor_103'></span>"),
                  div(class = "box_outputs",
                      h4_title(icon("tint"), i18n$t("Enrolments with Blood Culture")),
                      div(class = "box_outputs_content",
@@ -278,6 +281,7 @@ ui <- page(
                  )
           ),
           column(6,
+                 HTML("<span id='anchor_102'></span>"),
                  div(class = "box_outputs",
                      h4_title(i18n$t("Distribution of Enrolments")),
                      div(class = "box_outputs_content",
@@ -297,6 +301,7 @@ ui <- page(
         ),
         fluidRow(
           column(6, 
+                 HTML("<span id='anchor_104'></span>"),
                  div(class = "box_outputs",
                      h4_title(i18n$t("Enrolments by (type of) Ward")),
                      div(class = "box_outputs_content",
@@ -306,6 +311,7 @@ ui <- page(
                  )
           ),
           column(6, 
+                 HTML("<span id='anchor_105'></span>"),
                  div(class = "box_outputs", h4_title(i18n$t("Patient Age Distribution")),
                      div(class = "box_outputs_content",
                          highchartOutput("profile_age")
@@ -315,6 +321,7 @@ ui <- page(
         ),
         fluidRow(
           column(6, 
+                 HTML("<span id='anchor_106'></span>"),
                  div(class = "box_outputs",
                      h4_title(i18n$t("Diagnosis at Enrolment")),
                      div(class = "box_outputs_content",
@@ -323,6 +330,7 @@ ui <- page(
                  )
           ),
           column(6, 
+                 HTML("<span id='anchor_107'></span>"),
                  div(class = "box_outputs",
                      h4_title(i18n$t("Empiric Antibiotics Prescribed")),
                      div(class = "box_outputs_content",
@@ -334,12 +342,14 @@ ui <- page(
         ),
         fluidRow(
           column(6, 
+                 HTML("<span id='anchor_108'></span>"),
                  div(class = "box_outputs",
                      h4_title(i18n$t("Updated Charlson Comorbidity Index (uCCI)")),
                      div(class = "box_outputs_content",
                          highchartOutput("profile_ucci", height = "300px")
                      )
                  ),
+                 HTML("<span id='anchor_110'></span>"),
                  div(class = "box_outputs",
                      h4_title(icon("arrows-alt-h"), i18n$t("Patients Transferred")),
                      div(class = "box_outputs_content",
@@ -348,6 +358,7 @@ ui <- page(
                  )
           ),
           column(6, 
+                 HTML("<span id='anchor_109'></span>"),
                  div(class = "box_outputs",
                      h4_title(i18n$t("Patient Comorbidities")),
                      div(class = "box_outputs_content",
@@ -359,8 +370,10 @@ ui <- page(
         ),
         fluidRow(
           column(6, 
+                 HTML("<span id='anchor_111'></span>"),
                  div(class = "box_outputs",
                      h4_title(i18n$t("Enrolments with Blood Culture")),
+                     a(id = "anchor_bcc", style = "visibility: hidden", ""),
                      div(class = "box_outputs_content",
                          pickerInput("display_unit_ebc", label = NULL, 
                                      choices = c("Use heuristic for time unit", "Display by month", "Display by year")),
@@ -369,6 +382,7 @@ ui <- page(
                  )
           ),
           column(6, 
+                 HTML("<span id='anchor_112'></span>"),
                  div(class = "box_outputs", h4_title(i18n$t("Blood culture collected within 24 hours of admission (CAI) / symptom onset (HAI)")),
                      div(class = "box_outputs_content",
                          highchartOutput("profile_blood")
@@ -381,6 +395,7 @@ ui <- page(
     nav(i18n$t("Follow-up"), value = "follow_up",
         fluidRow(
           column(6,
+                 HTML("<span id='anchor_201'></span>"),
                  div(class = "box_outputs",
                      h4_title(i18n$t("Clinical Outcome")),
                      div(class = "box_outputs_content",
@@ -394,6 +409,7 @@ ui <- page(
                  ),
           ),
           column(6,
+                 HTML("<span id='anchor_202'></span>"),
                  div(class = "box_outputs",
                      h4_title(i18n$t("Day 28")),
                      div(class = "box_outputs_content",
@@ -409,6 +425,7 @@ ui <- page(
         ),
         fluidRow(
           column(4,
+                 HTML("<span id='anchor_203'></span>"),
                  div(class = "box_outputs",
                      h4_title(i18n$t("Bloodstream Infection (BSI)")),
                      div(class = "box_outputs_content",
@@ -417,6 +434,7 @@ ui <- page(
                  )
           ),
           column(8, 
+                 HTML("<span id='anchor_204'></span>"),
                  div(class = "box_outputs",
                      h4_title(i18n$t("Initial & Final Surveillance Diagnosis")),
                      div(class = "box_outputs_content",
@@ -429,6 +447,7 @@ ui <- page(
     ),
     # Tab HAI ----
     nav("HAI", value = "hai", 
+        HTML("<span id='anchor_301'></span>"),
         div(class = "box_outputs",
             h4_title(i18n$t("Ward Occupancy Rates")),
             div(class = "box_outputs_content",
@@ -436,6 +455,7 @@ ui <- page(
                 plotOutput("bed_occupancy_ward", width = "80%")
             )
         ),
+        HTML("<span id='anchor_302'></span>"),
         div(class = "box_outputs",
             h4_title(i18n$t("HAI Prevalence")),
             div(class = "box_outputs_content",
@@ -449,6 +469,7 @@ ui <- page(
         prettySwitch("filter_rm_contaminant", label = i18n$t("Remove blood culture contaminants from the following visualizations"), status = "primary", value = FALSE, slim = TRUE),
         fluidRow(
           column(6,
+                 HTML("<span id='anchor_401'></span>"),
                  div(class = "box_outputs",
                      h4_title(i18n$t("Blood Culture Contaminants")),
                      div(class = "box_outputs_content",
@@ -458,6 +479,7 @@ ui <- page(
                          )
                      )
                  ),
+                 HTML("<span id='anchor_403'></span>"),
                  div(class = "box_outputs",
                      h4_title(i18n$t("Specimen Types")),
                      div(class = "box_outputs_content",
@@ -470,6 +492,7 @@ ui <- page(
                  )
           ),
           column(6,
+                 HTML("<span id='anchor_402'></span>"),
                  div(class = "box_outputs",
                      h4_title(i18n$t("Growth / No Growth")),
                      div(class = "box_outputs_content",
@@ -479,6 +502,7 @@ ui <- page(
                          )
                      )
                  ),
+                 HTML("<span id='anchor_404'></span>"),
                  div(class = "box_outputs",
                      h4_title(i18n$t("Isolates")),
                      div(class = "box_outputs_content",
@@ -495,16 +519,10 @@ ui <- page(
     ),
     # Tab AMR ----
     nav(span(icon("bug"), "AMR"), value = "amr", 
-        fluidRow(
-          column(3,
-                 prettySwitch("combine_SI", i18n$t("Combine Susceptible + Intermediate"), status = "primary")
-          ),
-          column(8, offset = 1, 
-                 
-          )
-        ),
-        tabsetPanel(
-          nav(
+        prettySwitch("combine_SI", i18n$t("Combine Susceptible + Intermediate"), status = "primary"),
+        HTML("<span id='anchor_amr'></span>"),
+        tabsetPanel(id = "amr_panel",
+          nav(value = "amr_aci",
             span(em("Acinetobacter"), br(), " species"),
             
             conditionalPanel(condition = "! output.test_acinetobacter_sir", 
@@ -545,7 +563,7 @@ ui <- page(
                              )
             )
           ),
-          nav(
+          nav(value = "amr_esc",
             HTML("<em>Escherichia <br/>coli</em>"),
             
             conditionalPanel(condition = "! output.test_ecoli_sir", 
@@ -591,7 +609,7 @@ ui <- page(
                              )
             )
           ),
-          nav(
+          nav(value = "amr_hae",
             HTML("<em>Haemophilus <br/>influenzae</em>"),
             
             conditionalPanel(condition = "! output.test_haemophilus_influenzae_sir", 
@@ -627,7 +645,7 @@ ui <- page(
                              )
             )
           ),
-          nav(
+          nav(value = "amr_kle",
             HTML("<em>Klebsiella <br/>pneumoniae</em>"), 
             
             conditionalPanel(condition = "! output.test_kpneumoniae_sir", 
@@ -673,7 +691,7 @@ ui <- page(
                              )
             )
           ),
-          nav(
+          nav(value = "amr_nei",
             HTML("<em>Neisseria <br/>meningitidis</em>"), 
             
             conditionalPanel(condition = "! output.test_neisseria_meningitidis_sir", 
@@ -709,7 +727,7 @@ ui <- page(
                              )
             )
           ),
-          nav(
+          nav(value = "amr_pse",
             HTML("<em>Pseudomonas <br/>aeruginosa</em>"), 
             
             conditionalPanel(condition = "! output.test_pseudomonas_aeruginosa_sir", 
@@ -750,7 +768,7 @@ ui <- page(
                              )
             )
           ),
-          nav(
+          nav(value = "amr_sal",
             HTML("<em>Salmonella</em> <br/>species"),
             br(),
             prettyRadioButtons("select_salmonella", label = NULL,  shape = "curve",
@@ -799,7 +817,7 @@ ui <- page(
                              )
             )
           ),
-          nav(
+          nav(value = "amr_sta",
             HTML("<em>Staphylococcus <br/>aureus</em>"),
             conditionalPanel(condition = "! output.test_saureus_sir", 
                              h4(i18n$t("There is no data to display for this organism."))),
@@ -839,7 +857,7 @@ ui <- page(
                              )
             )
           ),
-          nav(
+          nav(value = "amr_str",
             HTML("<em>Streptococcus <br/>pneumoniae</em>"),
             conditionalPanel(condition = "! output.test_spneumoniae_sir", 
                              h4(i18n$t("There is no data to display for this organism."))),
@@ -884,7 +902,7 @@ ui <- page(
                              )
             )
           ),
-          nav(
+          nav(value = "amr_all",
             i18n$t("All Other Organisms"),
             br(),
             fluidRow(
@@ -910,7 +928,6 @@ ui <- page(
           
         )
     ),
-    nav_spacer(),
     nav_item(
       actionLink("show_faq", label = "FAQ")
     )
@@ -919,6 +936,9 @@ ui <- page(
 
 # Definition of server ----
 server <- function(input, output, session) {
+  
+  # Quick access.
+  source("./www/R/quick_access.R", local = TRUE)
   
   # Hide tabs on app launch.
   nav_hide("tabs", target = "data_management")
