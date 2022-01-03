@@ -27,12 +27,12 @@ for (i in 1:nrow(all_cred)) {
     connection = NULL)
   
   encrypted_cred <- aes_cbc_encrypt(cred, key = openssl::sha256(charToRaw(user$pwd)))
-  saveRDS(encrypted_cred, glue("/Users/olivier/Desktop/encrypted_cred_{user$site}_{user$user}.rds"))
+  saveRDS(encrypted_cred, glue("/Users/olivier/Documents/Projets/ACORN/Data/ACORN2_creds/encrypted_cred_{user$site}_{user$user}.rds"))
 }
 
 # "shared-acornamr" bucket:
-saveRDS("HIDDEN", file = "/Users/olivier/Desktop/shared_acornamr_key.rds")
-saveRDS("HIDDEN", file = "/Users/olivier/Desktop/shared_acornamr_sec.rds")
+saveRDS("HIDDEN", file = "/Users/olivier/Documents/Projets/ACORN/Data/ACORN2_creds/shared_acornamr_key.rds")
+saveRDS("HIDDEN", file = "/Users/olivier/Documents/Projets/ACORN/Data/ACORN2_creds/shared_acornamr_sec.rds")
 
 
 rm(list = ls())

@@ -16,15 +16,48 @@ all_elements <- c(vec_double, vec_single) |> as_tibble() |> dplyr::rename(en = v
 # - [ ] dropdown duplication of isolate / 
 # - [ ] dropdown heuristic
 
-# Existing translated elemets in the app
-en_kh <- readxl::read_excel(path = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_kh.xlsx")
+# Existing translated elements in the app
+update_translation <- function(fichier_original, fichier_maj, fichier_to_update) {
+  original <- readxl::read_excel(path = fichier_original)
+  
+  update <- full_join(all_elements, original, by = "en") |> 
+    mutate(status = case_when(
+      en %in% setdiff(as.vector(original$en), all_elements$en) ~ "deleted",  # elements in original$en that are not in all_elements
+      en %in% setdiff(all_elements$en, as.vector(original$en)) ~ "new",  # elements in all_elements that are not in original$en
+      TRUE ~ ""
+    )) 
+  
+  update[which(is.na(update[, 2])), 2] <- "TBT"
+  update |> filter(status != "deleted") |> select(-status) |> mutate() |> write_xlsx(fichier_maj)
+  update |> write_xlsx(fichier_to_update)
+}
 
+update_translation(
+  fichier_original  = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_kh.xlsx",
+  fichier_maj       = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_kh_2.xlsx",
+  fichier_to_update = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_kh_elements_to_update.xlsx"
+)
 
-# Possibly required to update the font in Excel:
-full_join(all_elements, en_kh, by = "en") |> 
-  mutate(status = case_when(
-    en %in% setdiff(en_kh$en, vec) ~ "deleted",  # elements in en_kh$en that are not in vec
-    en %in% setdiff(vec, en_kh$en) ~ "new",  # elements in vec that are not in en_kh$en
-    TRUE ~ ""
-  )) |> 
-  write_xlsx("/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_kh_elements_to_update.xlsx")
+update_translation(
+  fichier_original  = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_fr.xlsx",
+  fichier_maj       = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_fr_2.xlsx",
+  fichier_to_update = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_fr_elements_to_update.xlsx"
+)
+
+update_translation(
+  fichier_original  = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_la.xlsx",
+  fichier_maj       = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_la_2.xlsx",
+  fichier_to_update = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_la_elements_to_update.xlsx"
+)
+
+update_translation(
+  fichier_original  = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_vn.xlsx",
+  fichier_maj       = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_vn_2.xlsx",
+  fichier_to_update = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_vn_elements_to_update.xlsx"
+)
+
+update_translation(
+  fichier_original  = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_ba.xlsx",
+  fichier_maj       = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_ba_2.xlsx",
+  fichier_to_update = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_ba_elements_to_update.xlsx"
+)
