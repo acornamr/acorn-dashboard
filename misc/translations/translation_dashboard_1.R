@@ -2,6 +2,8 @@
 library(readr)
 library(stringr)
 library(purrr)
+library(tidyverse)
+library(writexl)
 
 
 # All elements to translate:
@@ -34,30 +36,30 @@ update_translation <- function(fichier_original, fichier_maj, fichier_to_update)
 
 update_translation(
   fichier_original  = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_kh.xlsx",
-  fichier_maj       = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_kh_2.xlsx",
+  fichier_maj       = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_kh_maj.xlsx",
   fichier_to_update = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_kh_elements_to_update.xlsx"
 )
 
 update_translation(
   fichier_original  = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_fr.xlsx",
-  fichier_maj       = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_fr_2.xlsx",
+  fichier_maj       = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_fr_maj.xlsx",
   fichier_to_update = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_fr_elements_to_update.xlsx"
 )
 
 update_translation(
   fichier_original  = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_la.xlsx",
-  fichier_maj       = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_la_2.xlsx",
+  fichier_maj       = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_la_maj.xlsx",
   fichier_to_update = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_la_elements_to_update.xlsx"
 )
 
 update_translation(
   fichier_original  = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_vn.xlsx",
-  fichier_maj       = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_vn_2.xlsx",
+  fichier_maj       = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_vn_maj.xlsx",
   fichier_to_update = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_vn_elements_to_update.xlsx"
 )
 
 update_translation(
   fichier_original  = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_ba.xlsx",
-  fichier_maj       = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_ba_2.xlsx",
+  fichier_maj       = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_ba_maj.xlsx",
   fichier_to_update = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_ba_elements_to_update.xlsx"
 )
