@@ -137,9 +137,10 @@ ui <- page(
           column(9,
                  fluidRow(
                    column(6,
-                          conditionalPanel("input.selected_language != 'fr' & input.selected_language != 'kh'",
+                          conditionalPanel("input.selected_language != 'fr' & input.selected_language != 'kh' & input.selected_language != 'vn'",
                                            includeMarkdown("./www/markdown/about_acorn_en.md")),
                           conditionalPanel("input.selected_language == 'fr'", includeMarkdown("./www/markdown/about_acorn_fr.md")),
+                          conditionalPanel("input.selected_language == 'vn'", includeMarkdown("./www/markdown/about_acorn_vn.md")),
                           conditionalPanel("input.selected_language == 'kh'", includeMarkdown("./www/markdown/about_acorn_kh.md"))
                    ),
                    column(6,
@@ -972,6 +973,14 @@ server <- function(input, output, session) {
         easyClose = TRUE,
         includeMarkdown("./www/markdown/faq_acorn_kh.md")
       ))}
+    
+    if(input$selected_language == "vn") {
+      showModal(modalDialog(
+        title = "Frequently Asked Questions",
+        size = "l",
+        easyClose = TRUE,
+        includeMarkdown("./www/markdown/faq_acorn_vn.md")
+      ))}
   })
   
   # Download in acorn/Excel formats. ----
@@ -1061,8 +1070,9 @@ server <- function(input, output, session) {
   observeEvent(input$selected_language, {
     update_lang(session, input$selected_language)
     
-    if (isTRUE(input$selected_language != "la"))  session$setCurrentTheme(acorn_theme)
+    if (isTRUE(!input$selected_language %in% c("la", "vn")))  session$setCurrentTheme(acorn_theme)
     if (isTRUE(input$selected_language == "la"))  session$setCurrentTheme(acorn_theme_la)
+    if (isTRUE(input$selected_language == "vn"))  session$setCurrentTheme(acorn_theme_vn)
   })
   
   # Definition of reactive elements ----

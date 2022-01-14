@@ -19,8 +19,8 @@ all_elements <- c(vec_double, vec_single) |> as_tibble() |> dplyr::rename(en = v
 # - [ ] dropdown heuristic
 
 # Existing translated elements in the app
-update_translation <- function(fichier_original, fichier_maj, fichier_to_update) {
-  original <- readxl::read_excel(path = fichier_original)
+update_translation <- function(file_provided, file_updated, file_to_share) {
+  original <- readxl::read_excel(path = file_provided)
   
   update <- full_join(all_elements, original, by = "en") |> 
     mutate(status = case_when(
@@ -30,36 +30,36 @@ update_translation <- function(fichier_original, fichier_maj, fichier_to_update)
     )) 
   
   update[which(is.na(update[, 2])), 2] <- "TBT"
-  update |> filter(status != "deleted") |> select(-status) |> mutate() |> write_xlsx(fichier_maj)
-  update |> write_xlsx(fichier_to_update)
+  update |> filter(status != "deleted") |> select(-status) |> mutate() |> write_xlsx(file_updated)
+  update |> write_xlsx(file_to_share)
 }
 
 update_translation(
-  fichier_original  = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_kh.xlsx",
-  fichier_maj       = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_kh_maj.xlsx",
-  fichier_to_update = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_kh_elements_to_update.xlsx"
+  file_provided  = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_kh.xlsx",
+  file_updated       = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_kh_maj.xlsx",
+  file_to_share = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_kh_elements_to_update.xlsx"
 )
 
 update_translation(
-  fichier_original  = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_fr.xlsx",
-  fichier_maj       = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_fr_maj.xlsx",
-  fichier_to_update = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_fr_elements_to_update.xlsx"
+  file_provided  = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_fr.xlsx",
+  file_updated       = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_fr_maj.xlsx",
+  file_to_share = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_fr_elements_to_update.xlsx"
 )
 
 update_translation(
-  fichier_original  = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_la.xlsx",
-  fichier_maj       = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_la_maj.xlsx",
-  fichier_to_update = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_la_elements_to_update.xlsx"
+  file_provided  = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_la.xlsx",
+  file_updated       = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_la_maj.xlsx",
+  file_to_share = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_la_elements_to_update.xlsx"
 )
 
 update_translation(
-  fichier_original  = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_vn.xlsx",
-  fichier_maj       = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_vn_maj.xlsx",
-  fichier_to_update = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_vn_elements_to_update.xlsx"
+  file_provided  = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_vn.xlsx",
+  file_updated       = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_vn_maj.xlsx",
+  file_to_share = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_vn_elements_to_update.xlsx"
 )
 
 update_translation(
-  fichier_original  = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_ba.xlsx",
-  fichier_maj       = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_ba_maj.xlsx",
-  fichier_to_update = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_ba_elements_to_update.xlsx"
+  file_provided  = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_ba.xlsx",
+  file_updated       = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_ba_maj.xlsx",
+  file_to_share = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_ba_elements_to_update.xlsx"
 )

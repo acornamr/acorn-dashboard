@@ -1,4 +1,4 @@
-app_version <- "2.2.3"  # Make sure that the app version is identical in DESCRIPTION and build_standalone_Windows.R
+app_version <- "2.2.4"  # Make sure that the app version is identical in DESCRIPTION and build_standalone_Windows.R
 session_start_time <- format(Sys.time(), "%Y-%m-%d_%HH%M")
 
 # IMPORTANT: ensure that there is a match between the calls below and:
@@ -30,6 +30,7 @@ cols_aware <- c("Access" = "#2c3e50",
 
 acorn_theme    <- bs_theme(version = 4, bootswatch = "flatly", "border-width" = "2px")
 acorn_theme_la <- bs_theme(version = 4, bootswatch = "flatly", "border-width" = "2px", base_font = "Phetsarath OT")
+acorn_theme_vn <- bs_theme(version = 4, bootswatch = "flatly", "border-width" = "2px", base_font = font_google("Be Vietnam Pro", local = TRUE))
 
 hc_export_kind <- c("downloadJPEG", "downloadCSV")
 
