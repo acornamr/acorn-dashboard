@@ -216,9 +216,10 @@ infection <- infection %>% transmute(
                          CNS = "Central nervous system", URTI = "ENT / Upper respiratory tract",
                          EYE = "Eye", FN = "Febrile neutropenia", GI = "Gastrointestinal",
                          GU = "Genital", IA = "Intra-abdominal", LRTI = "Lower respiratory tract",
+                         MELIOD = "Melioidosis",
                          NEC = "Necrotising enterocolitis", PNEU = "Pneumonia", 
-                         SEPSIS = "Sepsis (source unclear)", SSTI = "Skin / Soft tissue", 
-                         SSI = "Surgical site", UTI = "Urinary tract", OTH = "Other (diagnosis documented)", 
+                         SSTI = "Skin / Soft tissue", 
+                         SSI = "Surgical site", TY = "Typhoid", UTI = "Urinary tract", OTH = "Other (diagnosis documented)", 
                          UND = "Undefined (infection treated but no site / source of identified)",
                          UNK = "Unknown (not documented)", REJ = "Infection rejected (alternative diagnosis made)"),
   # End F03
