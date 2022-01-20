@@ -30,7 +30,7 @@ cols_aware <- c("Access" = "#2c3e50",
 
 acorn_theme    <- bs_theme(version = 4, bootswatch = "flatly", "border-width" = "2px")
 acorn_theme_la <- bs_theme(version = 4, bootswatch = "flatly", "border-width" = "2px", base_font = "Phetsarath OT")
-acorn_theme_vn <- bs_theme(version = 4, bootswatch = "flatly", "border-width" = "2px", base_font = font_google("Be Vietnam Pro", local = TRUE))
+acorn_theme_vn <- bs_theme(version = 4, bootswatch = "flatly", "border-width" = "2px", base_font = "Arial")
 
 hc_export_kind <- c("downloadJPEG", "downloadCSV")
 
