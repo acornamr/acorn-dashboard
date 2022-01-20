@@ -4,10 +4,10 @@ ifelse(input$format_lab_data %in% c("WHONET .dBase", "WHONET .SQLite"),
        format_data_dic <- "TABULAR")
 
 file_dic <- try(aws.s3::save_object(object = glue("ACORN2_lab_data_dictionary_{acorn_cred()$site}_{format_data_dic}.xlsx"), 
-                            bucket = acorn_cred()$acorn_s3_bucket,
-                            key =  acorn_cred()$acorn_s3_key,
-                            secret = acorn_cred()$acorn_s3_secret,
-                            region = acorn_cred()$acorn_s3_region,
+                            bucket = acorn_cred()$aws_bucket,
+                            key =  acorn_cred()$aws_key,
+                            secret = acorn_cred()$aws_secret,
+                            region = acorn_cred()$aws_region,
                             file = tempfile()),
                 silent = TRUE)
 
