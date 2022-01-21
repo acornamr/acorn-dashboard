@@ -1,0 +1,55 @@
+---
+title: "ACORN_Statistics"
+output: html_document
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+library(glue)
+library(tidyverse)
+
+
+cred_file <- "/Users/olivier/Documents/Projets/ACORN/Data/ACORN2_cred.xlsx"
+cred_admin <- readxl::read_excel(cred_file) |> 
+  filter(user == "admin")
+```
+
+Report generated the `r format(Sys.time(), "%Y-%m-%d at %HH%M")`.
+
+## REDCap
+
+```{r message = FALSE}
+i <- 1
+cred <- cred_admin[i, ]
+
+redcap_dta <- REDCapR::redcap_read(
+  batch_size = 500,
+  redcap_uri = cred$redcap_uri, 
+  token = cred$redcap_f01f05_api,
+  col_types = cols(.default = col_character()))$data
+
+aws_dta <- aws.s3::get_bucket(bucket = cred$aws_bucket,
+                                 key = cred$aws_key,
+                              secret = cred$aws_secret,
+                              region = cred$aws_region) %>%
+          unlist()
+```
+
+
+```{r}
+distinct_record <- redcap_dta$recordid |> n_distinct()
+glue("{cred$site}: {distinct_record} distinct records (unique recordid).")
+```
+
+
+## Dashboard
+
+### Last generation of acorn file
+
+```{r message}
+acorn_dates <- as.vector(aws_dta[names(aws_dta) == 'Contents.LastModified'])
+last_generation <- rev(tail(as.vector(aws_dta[names(aws_dta) == 'Contents.LastModified'])[order(as.POSIXct(acorn_dates))], 1))
+
+glue("{cred$site}: last acorn file generated on {last_generation}.")
+```
