@@ -37,6 +37,9 @@ for (i in 1:nrow(all_cred)) {
   saveRDS(encrypted_cred, glue("/Users/olivier/Documents/Projets/ACORN/Data/ACORN2_creds/encrypted_cred_{user$site}_{user$user}.rds"))
 }
 
+# !!!!  WARNING  !!!!
+# cred_demo should be replaced in the www folder.
+
 # "shared-acornamr" bucket:
 saveRDS("HIDDEN", file = "/Users/olivier/Documents/Projets/ACORN/Data/ACORN2_creds/shared_acornamr_key.rds")
 saveRDS("HIDDEN", file = "/Users/olivier/Documents/Projets/ACORN/Data/ACORN2_creds/shared_acornamr_sec.rds")

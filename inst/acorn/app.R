@@ -1176,10 +1176,8 @@ server <- function(input, output, session) {
   # On login ----
   observeEvent(input$cred_login, {
     if (input$cred_site == "Upload Local .acorn") {
-      
       nav_hide("data_management_tabs", target = "generate")
       nav_hide("data_management_tabs", target = "load_cloud")
-      
       nav_show("tabs", target = "data_management", select = TRUE)
       nav_show("data_management_tabs", target = "load_local", select = TRUE)
       return()
@@ -1189,7 +1187,7 @@ server <- function(input, output, session) {
     on.exit({Sys.sleep(2); removeNotification(id)}, add = TRUE)
     
     if (input$cred_site == "Run Demo") {
-      cred <- readRDS("./www/cred/bucket_site/encrypted_cred_demo.rds")
+      cred <- readRDS("./www/cred/bucket_site/encrypted_cred_demo_demo.rds")
       key_user <- openssl::sha256(charToRaw("demo"))
       cred <- unserialize(openssl::aes_cbc_decrypt(cred, key = key_user))
       
@@ -1198,7 +1196,6 @@ server <- function(input, output, session) {
       
       nav_hide("data_management_tabs", target = "generate")
       nav_hide("data_management_tabs", target = "load_local")
-      
       nav_show("tabs", target = "data_management", select = TRUE)
       nav_show("data_management_tabs", target = "load_cloud", select = TRUE)
     }
@@ -1212,7 +1209,7 @@ server <- function(input, output, session) {
                                         region = "eu-west-3") %>% unlist(),
                      silent = TRUE)
       
-      if (inherits(connect, 'try-error')) {
+      if (inherits(connect, "try-error")) {
         showNotification(i18n$t("Couldn't connect to server. Please check internet access."), type = "error")
         return()
       }
@@ -1223,7 +1220,6 @@ server <- function(input, output, session) {
         return()
       }
       
-      # I can't find a way to pass those credentials directly in s3read_using()
       Sys.setenv("AWS_ACCESS_KEY_ID" = shared_acornamr_key,
                  "AWS_SECRET_ACCESS_KEY" = shared_acornamr_sec,
                  "AWS_DEFAULT_REGION" = "eu-west-3")
