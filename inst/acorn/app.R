@@ -1,5 +1,4 @@
 # ACORN shiny app main script
-
 source('./www/R/startup.R', local = TRUE)
 
 # Definition of UI ----
