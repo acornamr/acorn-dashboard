@@ -12,6 +12,81 @@ local.orgs <- local.orgs %>% gather(local.org.code1:ncol(local.orgs), key = loca
 local.orgs <- subset(local.orgs, subset = (!is.na(org.local))) # Remove rows with missing values
 local.orgs$org.local <- tolower(local.orgs$org.local) # Convert dictionary values to lower case to maximise matching
 amr$org.local.lower <- tolower(amr$org.local) # Convert amr data.frame org.local values to lower case to maximise matching
+
+# UPDATE TO ACCOMODATE NEPAL DATA:
+
+# Example (NOT RUN):
+# We would like to achive the following replacement with all "real" organisms such as "acinetobacter baumannii"
+# test_vec <- c("no growth acinetobacter baumannii",
+#               "no little growth acinetobacter baumannii",
+#               "hey, really no growth -I promise- acinetobacter baumannii",
+#               "light growth of acinetobacter baumannii",
+#               "grow little acinetobacter baumannii",
+#               "ecoli")
+# 
+# test_vec[grepl("acinetobacter baumannii", test_vec) & !grepl("no growth", test_vec)]
+# test_vec[grepl("acinetobacter baumannii", test_vec) & !grepl("no growth", test_vec)] <- "acinetobacter baumannii"
+# test_vec
+
+# Example 2 (NOT RUN):
+# We would like to achive the following replacement with all "real" organisms such as "klebsiella aerogenes"
+# test_vec <- c("No growth after 5 days of incubation at 37°C", 
+#               "No growth after 24 hours of incubation at 37°C", 
+#               "No growth after 72 hours of incubation at 37°C", 
+#               "Contamination.", 
+#               ".", 
+#               "No growth after 24 hours of incubation at 37°C", 
+#               "No growth after 72 hours of incubation at 37°C", 
+#               "No growth after 24 hours of incubation at 37°C", 
+#               "Preliminary report:No growth after 72 hours of incubation at 37°C,", 
+#               "No growth after 24 hours of incubation at 37°C", 
+#               "Light growth of Klebsiella aerogenes")
+# 
+# test_vec <- tolower(test_vec)
+# 
+# test_vec[grepl("klebsiella aerogenes", test_vec) & !grepl("no growth", test_vec)]
+# test_vec[grepl("klebsiella aerogenes", test_vec) & !grepl("no growth", test_vec)] <- "klebsiella aerogenes"
+# test_vec
+
+
+# Create a vector, subset of local.orgs$org.local, with "real" organisms:
+# these are the elements that don't contain "growth" or "not isolated" or "not processed", "not cultured"
+vec_real_org <- local.orgs$org.local[!grepl("growth", local.orgs$org.local) & !grepl("not isolated", local.orgs$org.local) &
+                                       !grepl("not processed", local.orgs$org.local) & !grepl("not cultured", local.orgs$org.local)]
+
+# using KH001 lab data (sahred on 2021-11-02), we would obtain:
+# c("acinetobacter baumannii", "escherichia coli", "streptococcus - beta-haemolytic group a", 
+#   "streptococcus - beta-haemolytic group b", "streptococcus - beta-haemolytic group c", 
+#   "streptococcus - beta-haemolytic group f", "streptococcus - beta-haemolytic group g", 
+#   "haemophilus influenzae", "klebsiella pneumoniae", "moraxella catarrhalis", 
+#   "neisseria gonorrhoeae", "neisseria meningitidis", "pseudomonas aeruginosa", 
+#   "salmonella ser. typhi", "salmonella ser. paratyphi a", "shigella boydii", 
+#   "shigella dysenteriae", "shigella flexneri", "shigella sonnei", 
+#   "staphylococcus aureus", "coagulase negative staphylococcus", 
+#   "streptococcus pneumoniae", "acinetobacter baumannii complex", 
+#   "streptococcus pyogenes", "streptococcus agalactiae", "klebsiella pneumoniae ssp pneumoniae", 
+#   "staphylococcus aureus (mrsa)", "staphylococcus coagulase negative"
+# )
+# with the following having been removed:
+# c("no growth", "no growth of target organisms", "no significant growth", 
+#   "mixed growth of >2 organisms", "not cultured", "no growth at 24 hours", 
+#   "no growth of anaerobes", "mixed growth of doubtful significance", 
+#   "not processed - inappropriate specimen", "no growth at 48 hours", 
+#   "no growth of fungi", "mixed growth of faecal flora", "not processed - insufficient clinical details", 
+#   "no growth at 5 days", "burkholderia pseudomallei not isolated", 
+#   "mixed growth of oral flora", "not processed - insufficient specimen received", 
+#   "no growth at 7 days", "group b streptococcus not isolated", 
+#   "mixed growth of skin flora", "not processed - lab error", "salmonella or shigella not isolated", 
+#   "mixed growth of upper respiratory flora", "not processed - leaking specimen", 
+#   "not processed - significant delay in sample delivery")
+
+# We now replace all elements that contains a "real" organism and DON'T have "no growth" with the name of the "real" organism.
+# Potential issue if there are several "real" organisms in the elements (e.g. "shigella flexneri and shigella sonnei") as the process
+# would keep only one organism.
+for (org in vec_real_org) {
+  amr$org.local.lower[grepl(org, amr$org.local.lower) & !grepl("no growth", amr$org.local.lower)] <- org
+}
+
 amr <- left_join(amr, 
                  local.orgs %>% select(org.local, acorn.org.code), 
                  by = c('org.local.lower' = 'org.local'))
