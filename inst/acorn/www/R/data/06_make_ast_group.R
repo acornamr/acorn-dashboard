@@ -64,13 +64,13 @@ for(i in amr.var$varname.ast) { # Select the variables containing raw AST data
   amr[,i] <- gsub("/.*", "", amr[,i]) # Anything with a slash MIC (e.g. co-amoxiclav 8/4), remove the "/" and the second MIC which should be the b-lac inhibitor or sulfa, for co-trimoxazole [UPDATED ACORN2]
   amr[,i] <- gsub("<[0-9]{1,3}", "0", amr[,i]) # Anything with < followed by a number (upto 3 digits) is replaced by "0" (i.e. low MIC = S)
   amr[,i] <- gsub(">[0-9]{1,3}", "512", amr[,i]) # Anything with > followed by a number (upto 3 digits) is replaced by "512" (i.e. high MIC = R)
-  amr[,i] <- gsub("S", "110011", ignore.case = T, amr[,i]) # Raw "S" - high non-random number
-  amr[,i] <- gsub("SUSCEPTIBLE", "110011", ignore.case = T, amr[,i]) # Raw "S" - high non-random number
-  amr[,i] <- gsub("SENSITIVE", "110011", ignore.case = T, amr[,i]) # Raw "S" - high non-random number
-  amr[,i] <- gsub("I", "220022", ignore.case = T, amr[,i]) # Raw "I" - high non-random number
-  amr[,i] <- gsub("INTERMEDIATE", "220022", ignore.case = T, amr[,i]) # Raw "I" - high non-random number
-  amr[,i] <- gsub("R", "330033", ignore.case = T, amr[,i]) # Raw "R" - high non-random number
-  amr[,i] <- gsub("RESISTANT", "330033", ignore.case = T, amr[,i]) # Raw "R" - high non-random number
+  amr[,i] <- gsub("^[sS]$", "110011", amr[,i]) # Raw "S" - high non-random number
+  amr[,i] <- gsub("^(?i)SUSCEPTIBLE(?-i)$", "110011", amr[,i])
+  amr[,i] <- gsub("^(?i)SENSITIVE(?-i)$", "110011", amr[,i])
+  amr[,i] <- gsub("^[iI]$", "220022", amr[,i]) # Raw "I" - high non-random number
+  amr[,i] <- gsub("^(?i)INTERMEDIATE(?-i)$", "220022", amr[,i])
+  amr[,i] <- gsub("^[rR]$", "330033", amr[,i]) # Raw "R" - high non-random number
+  amr[,i] <- gsub("^(?i)RESISTANT(?-i)$", "330033", amr[,i])
 }
 
 # Convert raw AST variables back to numeric for further manipulation
