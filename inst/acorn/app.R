@@ -159,30 +159,24 @@ ui <- page(
                  nav(title = i18n$t("Generate and load .acorn from clinical and lab data"), value = "generate",
                      br(),
                      fluidRow(
-                       column(4,    
+                       column(3,    
                               h5(i18n$t("(1/4) Download Clinical data")), p(i18n$t("and generate enrolment log.")),
                               actionButton("get_redcap_data", i18n$t("Get data from REDCap"), icon = icon('cloud-download-alt'))
                        ),
-                       column(8,
+                       column(6,
                               htmlOutput("checklist_qc_clinical")
-                       )
-                     ),
-                     br(), br(),
-                     fluidRow(
-                       column(4,    
-                              uiOutput("enrolment_log_dl")
                        ),
-                       column(8,
-                              uiOutput("enrolment_log_table")
+                       column(3,
+                              uiOutput("enrolment_log_dl")
                        )
                      ),
+                     fluidRow(column(9, offset = 3, br(), uiOutput("enrolment_log_table"))),
                      hr(),
                      fluidRow(
-                       column(4,
+                       column(3,
                               h5(i18n$t("(2/4) Provide Lab data")),
                               pickerInput("format_lab_data", 
                                           options = list(title = "Select lab data format"),
-                                          # options = list(title = i18n$t("Select lab data format:")),
                                           choices = c("WHONET .dBase", "WHONET .SQLite", "Tabular"), 
                                           multiple = FALSE,
                                           selected = NULL),
@@ -197,23 +191,26 @@ ui <- page(
                                                fileInput("file_lab_tab", NULL,  buttonLabel = "Browse for file", accept = c(".csv", ".txt", ".xls", ".xlsx"))
                               )
                        ),
-                       column(8,
+                       column(6,
                               htmlOutput("checklist_qc_lab")
+                       ),
+                       column(3,
+                              uiOutput("lab_log_dl")
                        )
                      ),
                      hr(),
                      fluidRow(
-                       column(4, 
+                       column(3, 
                               h5(i18n$t("(3/4) Combine Clinical and Lab data")),
                               actionButton("generate_acorn_data", i18n$t("Generate .acorn file"))
                        ),
-                       column(8,
+                       column(6,
                               htmlOutput("checklist_generate")
                        )
                      ),
                      hr(),
                      fluidRow(
-                       column(4, 
+                       column(3, 
                               h5(i18n$t("(4/4) Save .acorn file")),
                               tags$div(
                                 materialSwitch("save_switch", label = "Local", 
@@ -1083,6 +1080,7 @@ server <- function(input, output, session) {
   redcap_f01f05_dta <- reactiveVal()
   redcap_hai_dta <- reactiveVal()
   lab_dta <- reactiveVal()
+  lab_log <- reactiveVal()
   acorn_dta <- reactiveVal()
   tables_dictionary <-  reactiveVal(current_tables_dictionary)
   corresp_org_antibio <- reactiveVal()
@@ -1135,7 +1133,7 @@ server <- function(input, output, session) {
                                  fun_filter_enrolment(input = input) %>% 
                                  fun_filter_specimen(input = input))
   
-  # Enrolment log
+  # Enrolment log ----
   enrolment_log <- reactive({
     req(redcap_f01f05_dta())
     
@@ -1166,9 +1164,19 @@ server <- function(input, output, session) {
     req(enrolment_log())
     req(acorn_origin() == "generated")
     tagList(
-      br(), br(), br(),
+      br(), br(),
       downloadButton("download_enrolment_log", i18n$t("Download Enrolment Log (.xlsx)")),
       p(i18n$t("First sheet is the log of all enrolments retrived from REDCap (as per adjacent table). The second sheet is a listing of all flagged elements."))
+    )
+  })
+  
+  # Lab log ----
+  output$lab_log_dl <- renderUI({
+    req(lab_log())
+    tagList(
+      br(), br(),
+      downloadButton("download_lab_log", i18n$t("Download Lab Log (.xlsx)")),
+      p(i18n$t("Contains names of organisms before and after mapping."))
     )
   })
   
@@ -1461,6 +1469,15 @@ server <- function(input, output, session) {
       list(
         "Enrolment Log" = enrolment_log(),
         "Errors Log" = checklist_status$log_errors
+      ), path = file)
+  )
+  
+  # On "Download Lab Log" ----
+  output$download_lab_log <- downloadHandler(
+    filename = function()  glue("lab_log_{format(Sys.time(), '%Y-%m-%d_%H%M')}.xlsx"),
+    content = function(file)  writexl::write_xlsx(
+      list(
+        "Organisms" = lab_log()
       ), path = file)
   )
   
