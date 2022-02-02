@@ -5,7 +5,7 @@ output: html_document
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(echo = FALSE)
-
+# readxl, REDCapR, aws.s3
 library(glue)
 library(tidyverse)
 
@@ -48,8 +48,8 @@ glue("{cred$site}: {distinct_record} distinct records (unique recordid).")
 ### Last generation of acorn file
 
 ```{r message}
-acorn_dates <- as.vector(aws_dta[names(aws_dta) == 'Contents.LastModified'])
-last_generation <- rev(tail(as.vector(aws_dta[names(aws_dta) == 'Contents.LastModified'])[order(as.POSIXct(acorn_dates))], 1))
+acorn_dates <- as.vector(aws_dta[names(aws_dta) == "Contents.LastModified"])
+last_generation <- rev(tail(as.vector(aws_dta[names(aws_dta) == "Contents.LastModified"])[order(as.POSIXct(acorn_dates))], 1))
 
 glue("{cred$site}: last acorn file generated on {last_generation}.")
 ```
