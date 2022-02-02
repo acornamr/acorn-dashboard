@@ -15,8 +15,8 @@ amr$org.local.lower <- tolower(amr$org.local) # Convert amr data.frame org.local
 
 # Create a vector, subset of local.orgs$org.local, with "real" organisms:
 # these are the elements that don't contain "growth" nor "not isolated" nor "not processed" nor "not cultured".
-vec_real_org <- local.orgs$org.local[!grepl("growth", local.orgs$org.local) & !grepl("not isolated", local.orgs$org.local) &
-                                       !grepl("not processed", local.orgs$org.local) & !grepl("not cultured", local.orgs$org.local)]
+vec_real_org <- local.orgs$org.local[!grepl("(?i)growth(?-i)", local.orgs$org.local) & !grepl("(?i)not isolated(?-i)", local.orgs$org.local) &
+                                       !grepl("(?i)not processed(?-i)", local.orgs$org.local) & !grepl("(?i)not cultured(?-i)", local.orgs$org.local)]
 
 # Add organisms from WHONET organism list.
 vec_real_org <- c(vec_real_org, tolower(whonet.orgs$ORG_CLEAN)) |> unique() |> sort()
@@ -68,7 +68,6 @@ amr$orgname[is.na(amr$orgname) & !is.na(amr$org.code2)] <- amr$org.code2[is.na(a
 amr$orgname[is.na(amr$orgname) & !is.na(amr$org.code3)] <- amr$org.code3[is.na(amr$orgname) & !is.na(amr$org.code3)]
 amr$orgname[is.na(amr$orgname) & !is.na(amr$org.code4)] <- amr$org.code4[is.na(amr$orgname) & !is.na(amr$org.code4)]
 amr$orgname[is.na(amr$orgname)] <- amr$org.local[is.na(amr$orgname)] # If no orgname at this stage, use the org.local value
-
 
 # Lab log
 bind_rows(
