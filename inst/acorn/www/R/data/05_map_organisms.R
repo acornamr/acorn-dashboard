@@ -13,18 +13,14 @@ local.orgs <- subset(local.orgs, subset = (!is.na(org.local))) # Remove rows wit
 local.orgs$org.local <- tolower(local.orgs$org.local) # Convert dictionary values to lower case to maximise matching
 amr$org.local.lower <- tolower(amr$org.local) # Convert amr data.frame org.local values to lower case to maximise matching
 
-# Create a vector, subset of local.orgs$org.local, with "real" organisms:
-# these are the elements that don't contain "growth" nor "not isolated" nor "not processed" nor "not cultured".
-vec_real_org <- local.orgs$org.local[!grepl("(?i)growth(?-i)", local.orgs$org.local) & !grepl("(?i)not isolated(?-i)", local.orgs$org.local) &
-                                       !grepl("(?i)not processed(?-i)", local.orgs$org.local) & !grepl("(?i)not cultured(?-i)", local.orgs$org.local)]
+# Manage issues with organism names on a case by case basis
 
-# Add organisms from WHONET organism list.
-vec_real_org <- c(vec_real_org, tolower(whonet.orgs$ORG_CLEAN)) |> unique() |> sort()
 
-# Replace all elements that contains a "real" organism and DON'T have "no growth" with the name of the "real" organism.
-for (org in vec_real_org) {
-  amr$org.local.lower[grepl(org, amr$org.local.lower) & !grepl("no growth", amr$org.local.lower)] <- org
-}
+amr$org.local.lower <- str_replace(amr$org.local.lower, "\\s*light growth of\\s*", "")
+# Test (DO NOT RUN):
+# str_replace("  light growth of klebsiella pneumoniae", "\\s*light growth of\\s*", "")
+# str_replace("light growth ofklebsiella pneumoniae", "\\s*light growth of\\s*", "")
+# str_replace("light growth of klebsiella pneumoniae", "\\s*light growth of\\s*", "")
 
 amr <- left_join(amr, 
                  local.orgs %>% select(org.local, acorn.org.code), 
@@ -69,14 +65,6 @@ amr$orgname[is.na(amr$orgname) & !is.na(amr$org.code3)] <- amr$org.code3[is.na(a
 amr$orgname[is.na(amr$orgname) & !is.na(amr$org.code4)] <- amr$org.code4[is.na(amr$orgname) & !is.na(amr$org.code4)]
 amr$orgname[is.na(amr$orgname)] <- amr$org.local[is.na(amr$orgname)] # If no orgname at this stage, use the org.local value
 
-# Lab log
-bind_rows(
-  amr |> select(org.local, orgname) |> filter(org.local != orgname) |> distinct() |> arrange(orgname) |> mutate(Change = "changed"),
-  amr |> select(org.local, orgname) |> filter(org.local == orgname) |> distinct() |> arrange(orgname) |> mutate(Change = "identical")
-) |> 
-  rename(`Initial Organism` = org.local, `Final Organism` = orgname) |> 
-  lab_log()
-
 
 # Flag potential contaminants in blood cultures (CoNS, Micrococcus sp., GBP - diphtheroids / Bacillus sp.) [UPDATED ACORN2]
 # Make a non-contaminant species list (i.e. exclusions from "contaminant" genera)
@@ -95,3 +83,16 @@ amr$contaminant[amr$specgroup != "Blood"] <- NA
 # Remove columns that are no longer required [UPDATED ACORN2]
 amr <- amr %>% 
   select(-org.local.lower, -genus, -genus.final, -org.code1, -org.code2, -org.code3, -org.code4)
+
+# Update Lab log
+bind_rows(
+  amr |> select(org.local, orgname) |> filter(org.local != orgname) |> 
+    group_by(org.local, orgname) |> summarise(n = n(), .groups = "drop") |> 
+    mutate(Change = "changed"),
+  amr |> select(org.local, orgname) |> filter(org.local == orgname) |> 
+    group_by(org.local, orgname) |> summarise(n = n(), .groups = "drop") |> 
+    mutate(Change = "identical"),
+) |>
+  arrange(Change, orgname) |> 
+  rename(`Initial Organism` = org.local, `Final Organism` = orgname, `Number Organisms` = n) |> 
+  lab_log()
