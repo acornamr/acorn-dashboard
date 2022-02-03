@@ -22,5 +22,10 @@ data_dictionary <- list(file_path = file_dic)
 data_dictionary$variables <- readxl::read_excel(data_dictionary$file_path, sheet = "variables")
 data_dictionary$test.res <- readxl::read_excel(data_dictionary$file_path, sheet = "test.results")
 data_dictionary$local.spec <- readxl::read_excel(data_dictionary$file_path, sheet = "spec.types")
+
+if ("organisms.patterns" %in% readxl::excel_sheets(data_dictionary$file_path)) {
+  data_dictionary$organisms.patterns <- readxl::read_excel(data_dictionary$file_path, sheet = "organisms.patterns")
+}
+
 data_dictionary$local.orgs <- readxl::read_excel(data_dictionary$file_path, sheet = "organisms")
 data_dictionary$notes <- readxl::read_excel(data_dictionary$file_path, sheet = "notes")

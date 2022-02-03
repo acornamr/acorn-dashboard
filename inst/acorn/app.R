@@ -1002,6 +1002,10 @@ server <- function(input, output, session) {
   output$download_data_excel_format <- downloadHandler(
     filename = function()  glue("acorn_data_{session_start_time}.xlsx"),
     content = function(file) {
+
+      ifelse(is.null(data_dictionary()$organisms.patterns), 
+             org_patterns <- tibble(info = "No organisms.patterns sheet."),
+             org_patterns <- data_dictionary()$organisms.patterns)
       
       writexl::write_xlsx(
         ## Anonymised data ----
@@ -1017,6 +1021,7 @@ server <- function(input, output, session) {
           "data_dictionary_variables" = data_dictionary()$variables,
           "data_dictionary_test.res" = data_dictionary()$test.res,
           "data_dictionary_local.spec" = data_dictionary()$local.spec,
+          "data_dictionary_organisms.patterns" = org_patterns,
           "data_dictionary_local.orgs" = data_dictionary()$local.orgs,
           "data_dictionary_notes" = data_dictionary()$notes,
           "lab_codes_whonet.spec" = lab_code()$whonet.spec,
@@ -1516,6 +1521,7 @@ server <- function(input, output, session) {
                    list(variables = data_dictionary$variables,
                         test.res = data_dictionary$test.res,
                         local.spec = data_dictionary$local.spec,
+                        organisms.patterns = data_dictionary$organisms.patterns,
                         local.orgs = data_dictionary$local.orgs,
                         notes = data_dictionary$notes)
                  )

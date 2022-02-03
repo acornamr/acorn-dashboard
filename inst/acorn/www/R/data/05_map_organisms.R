@@ -13,14 +13,18 @@ local.orgs <- subset(local.orgs, subset = (!is.na(org.local))) # Remove rows wit
 local.orgs$org.local <- tolower(local.orgs$org.local) # Convert dictionary values to lower case to maximise matching
 amr$org.local.lower <- tolower(amr$org.local) # Convert amr data.frame org.local values to lower case to maximise matching
 
-# Manage issues with organism names on a case by case basis
-
-
-amr$org.local.lower <- str_replace(amr$org.local.lower, "\\s*light growth of\\s*", "")
-# Test (DO NOT RUN):
-# str_replace("  light growth of klebsiella pneumoniae", "\\s*light growth of\\s*", "")
-# str_replace("light growth ofklebsiella pneumoniae", "\\s*light growth of\\s*", "")
-# str_replace("light growth of klebsiella pneumoniae", "\\s*light growth of\\s*", "")
+# Sequentially perform removal/mapping of regexp patterns in organisms.patterns sheet.
+if(! is.null(data_dictionary$organisms.patterns)) {
+  for (row_nb in 1:nrow(data_dictionary$organisms.patterns)) {
+    row <- data_dictionary$organisms.patterns[row_nb, ]
+    if (row$action == "remove_pattern") {
+      amr$org.local.lower <- str_replace(amr$org.local.lower, glue("\\s*{row$pattern}\\s*"), "")
+    }
+    if (row$action == "map_pattern") {
+      amr$org.local.lower[str_detect(amr$org.local.lower, row$pattern)] <- tolower(row$map_to_acorn.org.code)
+    }
+  }
+}
 
 amr <- left_join(amr, 
                  local.orgs %>% select(org.local, acorn.org.code), 
@@ -84,15 +88,32 @@ amr$contaminant[amr$specgroup != "Blood"] <- NA
 amr <- amr %>% 
   select(-org.local.lower, -genus, -genus.final, -org.code1, -org.code2, -org.code3, -org.code4)
 
+
 # Update Lab log
+if (input$format_lab_data %in% c("WHONET .dBase", "WHONET .SQLite")) {
+  bind_rows(
+    amr |> filter(org.local != orgname) |> 
+      group_by(org.local, org.whonet, orgname) |> summarise(n = n(), .groups = "drop") |> 
+      mutate(Change = "changed"),
+    amr |> filter(org.local == orgname) |> 
+      group_by(org.local, org.whonet, orgname) |> summarise(n = n(), .groups = "drop") |> 
+      mutate(Change = "identical"),
+  ) |>
+    arrange(Change, orgname) |> 
+    rename(`Initial Organism` = org.local, `Initial organism (WHONET code)` = org.whonet, `Final Organism` = orgname, `Number Organisms` = n) |> 
+    lab_log()
+}
+
+if (input$format_lab_data %in% c("Tabular")) {
 bind_rows(
-  amr |> select(org.local, orgname) |> filter(org.local != orgname) |> 
+  amr |> filter(org.local != orgname) |> 
     group_by(org.local, orgname) |> summarise(n = n(), .groups = "drop") |> 
     mutate(Change = "changed"),
-  amr |> select(org.local, orgname) |> filter(org.local == orgname) |> 
+  amr |> filter(org.local == orgname) |> 
     group_by(org.local, orgname) |> summarise(n = n(), .groups = "drop") |> 
     mutate(Change = "identical"),
 ) |>
   arrange(Change, orgname) |> 
   rename(`Initial Organism` = org.local, `Final Organism` = orgname, `Number Organisms` = n) |> 
   lab_log()
+}
