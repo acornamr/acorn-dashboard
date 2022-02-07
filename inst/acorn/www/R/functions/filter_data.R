@@ -4,6 +4,7 @@ fun_filter_enrolment <- function(data, input) {
   data <- data %>% 
     filter(surveillance_category %in% input$filter_surveillance_cat,
            ward_type %in% input$filter_ward_type,
+           ward %in% input$filter_ward_name,
            date_episode_enrolment >= input$filter_date_enrolment[1],
            date_episode_enrolment <= input$filter_date_enrolment[2],
            age_category %in% input$filter_age_cat,

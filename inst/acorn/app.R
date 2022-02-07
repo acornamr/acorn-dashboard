@@ -26,7 +26,7 @@ ui <- page(
                          column(6,
                                 div(class = "smallcaps", class = "text_center", span(icon("hospital-user"), i18n$t("Enrolments"))),
                                 checkboxGroupButtons("filter_enrolments",
-                                                     choices = c("Surveillance Category", "Type of Ward", "Date of Enrolment/Survey", "Age Category",
+                                                     choices = c("Surveillance Category", "Type of Ward", "Ward Name", "Date of Enrolment/Survey", "Age Category",
                                                                  "Initial Diagnosis", "Final Diagnosis", "Clinical Severity", "uCCI", "Clinical/D28 Outcome",
                                                                  "Transfer"),
                                                      selected = NULL,
@@ -40,6 +40,9 @@ ui <- page(
                                 ),
                                 conditionalPanel("input.filter_enrolments.includes('Type of Ward')",
                                                  pickerInput("filter_ward_type", NULL, choices = NULL, selected = NULL, options = list(`actions-box` = TRUE), multiple = TRUE)
+                                ),
+                                conditionalPanel("input.filter_enrolments.includes('Ward Name')",
+                                                 pickerInput("filter_ward_name", NULL, choices = NULL, selected = NULL, options = list(`actions-box` = TRUE), multiple = TRUE)
                                 ),
                                 conditionalPanel("input.filter_enrolments.includes('Date of Enrolment/Survey')",
                                                  dateRangeInput("filter_date_enrolment", NULL, startview = "year")
@@ -1052,6 +1055,7 @@ server <- function(input, output, session) {
     req(acorn_dta())
     if(! "Surveillance Category" %in% input$filter_enrolments)     source("./www/R/reset_filters/reset_filter_surveillance_cat.R", local = TRUE)
     if(! "Type of Ward" %in% input$filter_enrolments)              source("./www/R/reset_filters/reset_filter_ward_type.R", local = TRUE)
+    if(! "Ward Name" %in% input$filter_enrolments)                 source("./www/R/reset_filters/reset_filter_ward_name.R", local = TRUE)
     if(! "Date of Enrolment/Survey" %in% input$filter_enrolments)  source("./www/R/reset_filters/reset_filter_date_enrolment.R", local = TRUE)
     if(! "Age Category" %in% input$filter_enrolments)              source("./www/R/reset_filters/reset_filter_age_cat.R", local = TRUE)
     if(! "Initial Diagnosis" %in% input$filter_enrolments)         source("./www/R/reset_filters/reset_filter_diagnosis_initial.R", local = TRUE)
@@ -1242,7 +1246,7 @@ server <- function(input, output, session) {
                                        bucket = "shared-acornamr"),
                   silent = TRUE)
       
-      if (inherits(cred, 'try-error')) {
+      if (inherits(cred, "try-error")) {
         showNotification(i18n$t("Wrong connection credentials."), type = "error")
         return()
       }
