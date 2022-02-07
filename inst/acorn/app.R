@@ -88,6 +88,7 @@ ui <- page(
                                                              options = list(`actions-box` = TRUE, `deselect-all-text` = "None...",
                                                                             `select-all-text` = "Select All", `none-selected-text` = "None Selected"))
                                 ),
+                                prettySwitch("filter_not_cultured", label = i18n$t("Remove 'Not Cultured' specimens"), status = "primary", value = FALSE, slim = TRUE)
                          ),
                          column(3,
                                 div(class = "smallcaps", class = "text_center",  span(icon("bacterium"), i18n$t("Isolates"))),

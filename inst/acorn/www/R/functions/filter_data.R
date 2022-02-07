@@ -39,6 +39,8 @@ fun_filter_specimen <- function(data, input) {
   if(! "other_not_blood" %in% input$filter_method_collection) data <- data %>% filter(specgroup == "Blood")
   data <- data %>% filter(specgroup %in% c("Blood", input$filter_method_other))
   
+  if(input$filter_not_cultured)  data <- data |> filter(orgname != "Not cultured")
+  
   return(data)
 }
 
