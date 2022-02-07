@@ -460,7 +460,10 @@ ui <- page(
         div(class = "box_outputs",
             h4_title(i18n$t("HAI Prevalence")),
             div(class = "box_outputs_content",
-                i18n$t("HAI point prevalence by type of ward"),
+                span(
+                  i18n$t("HAI point prevalence by "),
+                  selectInput("hai_ward_display", NULL, c("type of ward", "ward"), selected = "type of ward", multiple = FALSE, selectize = TRUE)
+                ),
                 plotOutput("hai_rate_ward", width = "80%")
             )
         )
