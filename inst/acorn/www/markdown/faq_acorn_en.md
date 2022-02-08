@@ -4,14 +4,15 @@ If you have questions about the project or the app, please <a href='mailto:acorn
 </div>
 
 - [Clinical data](#h00)
+  - [Definition of Healthcare Associated Infections (HCAI)](#h01)
+  - [Definition of Updated Charlson Comorbidity Index (uCCI)](#h02)
 - [Microbiology data](#h10)
   - [Deduplication of culture / bacterial isolate data](#h11)
   - [Filter "Not cultured" specimens](#h12)
   - [Antimicrobial resistance reporting](#h13)
   - [Blood culture contaminants](#h14)
   - [Target pathogens](#h15)
-  - [Definition of Updated Charlson Comorbidity Index (uCCI)](#h16)
-  - [AWaRe classification](#h17)
+  - [AWaRe classification](#h16)
 - [Data Processing](#h20)
   - [Enrolment/Error Log](#h21)
   - [Clinical and Lab data linkage](#h22)
@@ -22,39 +23,11 @@ If you have questions about the project or the app, please <a href='mailto:acorn
 
 ### <a name="h00"></a> Clinical data
 
+#### <a name="h01"></a> Definition of Healthcare Associated Infections (HCAI)
+
 Healthcare associated infections (HCAI) are defined as a subset of CAI, where the patient was known to have had exposure to healthcare facilities in the three months prior to admission.
 
-### <a name="h10"></a> Microbiology data
-
-#### <a name="h11"></a> ⚠️ Deduplication of culture / bacterial isolate data ⚠️
-
-<img src= "images/table_dedup_no_dedup.png" style="width: 80%"/>
-
-**By patient-episode.** This filter restricts to the first isolation of each species by specimen type and patient infection episode. For example, if E. coli was isolated from three blood cultures and one urine culture during a single CAI episode, the filter would select just the first blood culture isolate and the urine culture isolate.
-
-<img src= "images/table_dedup_patient_episode.png" style="width: 80%"/>
-
-**By patient ID.** This filter restricts to the first isolation of each species by patient, specimen type, and infection category (CAI or HAI). For example, if a patient was admitted two times during the surveillance period and had two episodes of community-acquired E. coli urosepsis (two E. coli urine cultures and one E. coli bacteraemia) and one hospital acquired E. coli bacteraemia secondary to a surgical complication, the filter would select just the earliest isolate from each specimen type and infection category (i.e. the E. coli from the first positive urine culture and the first positive blood culture [CAI] plus the E. coli from the first positive blood culture [HAI]).
-
-<img src= "images/table_dedup_patient_id.png" style="width: 80%"/>
-
-#### <a name="h12"></a> Filter "Not cultured" specimens
-
-Activation of the "Not cultured" filter will remove microbiology specimens that were received / logged into the laboratory system but did not undergo culture for some reason, for example met the local specimen rejection criteria, required microscopy only (e.g. stool for parasitology), did not meet culture criteria (e.g. urine with few/no white blood cells on microscopy).
-
-#### <a name="h13"></a> ⚠️ Antimicrobial resistance reporting ⚠️
-
-Class-level resistance to fluoroquinolones, 3rd generation cephalosporins, and carbapenems is calculated automatically for selected target organisms. Organism appropriate AST results are combined such that if any drug in the group is resistant, then the class is labelled resistant. Results of extended spectrum beta-lactamase and carbapenemase tests are included. For this calculation, the intermediate category is counted as susceptible, thus providing a conservative estimate of resistance. Where included in the laboratory testing repertoire and data file, results of beta-lactamase and inducible clindamycin testing are incorporated into reporting of beta-lactam (penicillin / ampicillin) and macrolide susceptibility results. Meningitis and non-meningitis breakpoints are reported separately for Streptococcus pneumoniae and penicillin, ceftriaxone, and cefotaxime.
-
-#### <a name="h14"></a> ⚠️ Blood culture contaminants ⚠️
-
-It is possible to remove bacterial species which have a high probability of being a skin contaminant from the microbiology organism lists and tables. The following organism groups are considered contaminants: coagulase negative staphylococci, micrococci, Gram positive bacilli / diphtheroids. Blood cultures with of growth of >= 1 contaminant organism are labelled as contaminated, irrespective of growth of pathogens.
-
-#### <a name="h15"></a> Target pathogens
-
-ACORN will capture data on cultured organisms. However, specific surveillance targets are the blood culture relevant organism on WHO GLASS pathogen list (2021 update): *Acinetobacter* species, *Escherichia coli*, *Haemophilus influenzae*, *Klebsiella pneumoniae*, *Neisseria meningitidis*, *Pseudomonas aeruginosa*, *Salmonella enterica* (non-typhoidal and typhoidal), *Staphylococcus aureus*, *Streptococcus pneumoniae*.
-
-#### <a name="h16"></a> Definition of Updated Charlson Comorbidity Index (uCCI)
+#### <a name="h02"></a> Definition of Updated Charlson Comorbidity Index (uCCI)
 
 In ACORN, the uCCI is calculated for adult patients (>= 18 y.o.) only.
 
@@ -86,7 +59,37 @@ Key reference: *Ternavasio-de la Vega HG et al (2018). The updated Charlson como
 
 Additional ACORN comorbidities, which were requested to be included by the WHO GLASS team as LMIC relevant, are not included as part of the uCCI: malaria, malnutrition, peptic ulcer\*, diabetes\*, tuberculosis, HIV on ART, HIV without ART (those marked with an \* were included in the original CCI).
 
-#### <a name="h17"></a> AWaRe classification
+### <a name="h10"></a> Microbiology data
+
+#### <a name="h11"></a> ⚠️ Deduplication of culture / bacterial isolate data ⚠️
+
+<img src= "images/table_dedup_no_dedup.png" style="width: 80%"/>
+
+**By patient-episode.** This filter restricts to the first isolation of each species by specimen type and patient infection episode. For example, if E. coli was isolated from three blood cultures and one urine culture during a single CAI episode, the filter would select just the first blood culture isolate and the urine culture isolate.
+
+<img src= "images/table_dedup_patient_episode.png" style="width: 80%"/>
+
+**By patient ID.** This filter restricts to the first isolation of each species by patient, specimen type, and infection category (CAI or HAI). For example, if a patient was admitted two times during the surveillance period and had two episodes of community-acquired E. coli urosepsis (two E. coli urine cultures and one E. coli bacteraemia) and one hospital acquired E. coli bacteraemia secondary to a surgical complication, the filter would select just the earliest isolate from each specimen type and infection category (i.e. the E. coli from the first positive urine culture and the first positive blood culture [CAI] plus the E. coli from the first positive blood culture [HAI]).
+
+<img src= "images/table_dedup_patient_id.png" style="width: 80%"/>
+
+#### <a name="h12"></a> Filter "Not cultured" specimens
+
+Activation of the "Not cultured" filter will remove microbiology specimens that were received / logged into the laboratory system but did not undergo culture for some reason, for example met the local specimen rejection criteria, required microscopy only (e.g. stool for parasitology), did not meet culture criteria (e.g. urine with few/no white blood cells on microscopy).
+
+#### <a name="h13"></a> ⚠️ Antimicrobial resistance reporting ⚠️
+
+Class-level resistance to fluoroquinolones, 3rd generation cephalosporins, and carbapenems is calculated automatically for selected target organisms. Organism appropriate AST results are combined such that if any drug in the group is resistant, then the class is labelled resistant. Results of extended spectrum beta-lactamase and carbapenemase tests are included. For this calculation, the intermediate category is counted as susceptible, thus providing a conservative estimate of resistance. Where included in the laboratory testing repertoire and data file, results of beta-lactamase and inducible clindamycin testing are incorporated into reporting of beta-lactam (penicillin / ampicillin) and macrolide susceptibility results. Meningitis and non-meningitis breakpoints are reported separately for Streptococcus pneumoniae and penicillin, ceftriaxone, and cefotaxime.
+
+#### <a name="h14"></a> ⚠️ Blood culture contaminants ⚠️
+
+It is possible to remove bacterial species which have a high probability of being a skin contaminant from the microbiology organism lists and tables. The following organism groups are considered contaminants: coagulase negative staphylococci, micrococci, Gram positive bacilli / diphtheroids. Blood cultures with of growth of >= 1 contaminant organism are labelled as contaminated, irrespective of growth of pathogens.
+
+#### <a name="h15"></a> Target pathogens
+
+ACORN will capture data on cultured organisms. However, specific surveillance targets are the blood culture relevant organism on WHO GLASS pathogen list (2021 update): *Acinetobacter* species, *Escherichia coli*, *Haemophilus influenzae*, *Klebsiella pneumoniae*, *Neisseria meningitidis*, *Pseudomonas aeruginosa*, *Salmonella enterica* (non-typhoidal and typhoidal), *Staphylococcus aureus*, *Streptococcus pneumoniae*.
+
+#### <a name="h16"></a> AWaRe classification
 
 The "Empiric Antibiotic Testing" plot of the "Overview" tab is colored based on the <a href="https://www.who.int/publications/i/item/WHOEMPIAU2019.11" target="_blank">2019 WHO AWaRe classification of antibiotics for evaluation and monitoring of use.</a> 
 
