@@ -14,7 +14,13 @@ renv::snapshot()
 
 # commit to GitHub
 
+# generate and test standalone Windows app
+
 # deploy on production URL
 rsconnect::deployApp(appDir = "./inst/acorn/", 
                      appName = "acorn2",
                      account = "moru")
+
+
+# the generated standalone app should be tested independently
+# as it's not using the same set of packages.
