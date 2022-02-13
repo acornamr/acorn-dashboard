@@ -38,7 +38,8 @@ highchart_sir <- function(data_input, organism_input, corresp, combine_SI, dedup
       filter(value != "Not Tested") %>%
       mutate(value = recode(value, I = "S")) %>%
       group_by(name) %>%
-      count(value)
+      count(value) |> 
+      ungroup()
     
     total_tested <- data %>% 
       group_by(name) %>%
@@ -103,7 +104,8 @@ highchart_sir <- function(data_input, organism_input, corresp, combine_SI, dedup
       pivot_longer(-specid) %>%
       filter(value != "Not Tested") %>%
       group_by(name) %>%
-      count(value)
+      count(value) |> 
+      ungroup()
     
     total_tested <- data %>% 
       group_by(name) %>%
