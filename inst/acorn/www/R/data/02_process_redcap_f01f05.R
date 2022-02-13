@@ -451,7 +451,10 @@ infection$clinical_severity_score <-
   )
 
 # Define Updated Charlson Comorbidity Index (uCCI). ----
-not_empty <- function(x) replace_na(x, "") != ""
+not_empty <- function(x) {
+  if (all(is.na(x)))  x <- rep("", length(x))
+  replace_na(x, "") != ""
+}
 
 infection$cci <- (infection$age_category == "Adult") * (
     2 * not_empty(infection$cmb_cog) + 
