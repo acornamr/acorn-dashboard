@@ -24,7 +24,7 @@ shinybox::shinybox(
   app_name = "ACORN",
   author = "Olivier Celhay, Paul Turner",
   description = "A Dashboard for ACORN AMR Data",
-  semantic_version = "v2.2.7",
+  semantic_version = "v2.2.8",
   # cran_like_url = "https://cran.microsoft.com/snapshot/2021-12-15",  # too old snapshots can have package issues
   cran_like_url = "https://cran.r-project.org/",
   git_host = "github",
