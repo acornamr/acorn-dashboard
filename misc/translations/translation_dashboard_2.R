@@ -1,6 +1,5 @@
 library(RJSONIO)
 library(tidyverse)
-library(plyr)  # important to load after tidyverse/dplyr
 library(readxl)
 library(writexl)
 
