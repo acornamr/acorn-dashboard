@@ -441,7 +441,7 @@ ui <- page(
               column(8, 
                      HTML("<span id='anchor_204'></span>"),
                      div(class = "box_outputs",
-                         h4_title(i18n$t("Initial & Final Surveillance Diagnosis")),
+                         h4_title(i18n$t("Initial and Final Surveillance Diagnosis")),
                          div(class = "box_outputs_content",
                              i18n$t("The 10 most common initial-final diagnosis combinations:"),
                              highchartOutput("followup_outcome_clin_diag", height = "500px")
@@ -557,7 +557,7 @@ ui <- page(
                                                         h4(i18n$t("Co-resistances")),
                                                         plotOutput("acinetobacter_co_resistance", height = "400px"),
                                                         conditionalPanel(condition = "! input.combine_SI", 
-                                                                         i18n$t("Susceptible & Intermediate are always combined in this visualisation of co-resistances.")
+                                                                         i18n$t("Susceptible and Intermediate are always combined in this visualisation of co-resistances.")
                                                         ),
                                                         i18n$t("Horizontal bars show the size of a set of SR results while vertical bars show the number of resistant isolates for the corresponding antibiotic."),
                                                         i18n$t("Only isolates that have been tested against all of the drugs are included in the upset plot.")
@@ -598,7 +598,7 @@ ui <- page(
                                                         h4(i18n$t("Co-resistances")),
                                                         plotOutput("ecoli_co_resistance", height = "400px"),
                                                         conditionalPanel(condition = "! input.combine_SI", 
-                                                                         i18n$t("Susceptible & Intermediate are always combined in this visualisation of co-resistances.")
+                                                                         i18n$t("Susceptible and Intermediate are always combined in this visualisation of co-resistances.")
                                                         ),
                                                         i18n$t("Horizontal bars show the size of a set of SR results while vertical bars show the number of resistant isolates for the corresponding antibiotic."),
                                                         i18n$t("Only isolates that have been tested against all of the drugs are included in the upset plot.")
@@ -644,7 +644,7 @@ ui <- page(
                                                         h4(i18n$t("Co-resistances")),
                                                         plotOutput("haemophilus_influenzae_co_resistance", height = "400px"),
                                                         conditionalPanel(condition = "! input.combine_SI", 
-                                                                         i18n$t("Susceptible & Intermediate are always combined in this visualisation of co-resistances.")
+                                                                         i18n$t("Susceptible and Intermediate are always combined in this visualisation of co-resistances.")
                                                         ),
                                                         i18n$t("Horizontal bars show the size of a set of SR results while vertical bars show the number of resistant isolates for the corresponding antibiotic."),
                                                         i18n$t("Only isolates that have been tested against all of the drugs are included in the upset plot.")
@@ -680,7 +680,7 @@ ui <- page(
                                                         h4(i18n$t("Co-resistances")),
                                                         plotOutput("kpneumoniae_co_resistance", height = "400px"),
                                                         conditionalPanel(condition = "! input.combine_SI", 
-                                                                         i18n$t("Susceptible & Intermediate are always combined in this visualisation of co-resistances.")
+                                                                         i18n$t("Susceptible and Intermediate are always combined in this visualisation of co-resistances.")
                                                         ),
                                                         i18n$t("Horizontal bars show the size of a set of SR results while vertical bars show the number of resistant isolates for the corresponding antibiotic."),
                                                         i18n$t("Only isolates that have been tested against all of the drugs are included in the upset plot.")
@@ -726,7 +726,7 @@ ui <- page(
                                                         h4(i18n$t("Co-resistances")),
                                                         plotOutput("neisseria_meningitidis_co_resistance", height = "400px"),
                                                         conditionalPanel(condition = "! input.combine_SI", 
-                                                                         i18n$t("Susceptible & Intermediate are always combined in this visualisation of co-resistances.")
+                                                                         i18n$t("Susceptible and Intermediate are always combined in this visualisation of co-resistances.")
                                                         ),
                                                         i18n$t("Horizontal bars show the size of a set of SR results while vertical bars show the number of resistant isolates for the corresponding antibiotic."),
                                                         i18n$t("Only isolates that have been tested against all of the drugs are included in the upset plot.")
@@ -762,7 +762,7 @@ ui <- page(
                                                         h4(i18n$t("Co-resistances")),
                                                         plotOutput("pseudomonas_aeruginosa_co_resistance", height = "400px"),
                                                         conditionalPanel(condition = "! input.combine_SI", 
-                                                                         i18n$t("Susceptible & Intermediate are always combined in this visualisation of co-resistances.")
+                                                                         i18n$t("Susceptible and Intermediate are always combined in this visualisation of co-resistances.")
                                                         ),
                                                         i18n$t("Horizontal bars show the size of a set of SR results while vertical bars show the number of resistant isolates for the corresponding antibiotic."),
                                                         i18n$t("Only isolates that have been tested against all of the drugs are included in the upset plot.")
@@ -806,7 +806,7 @@ ui <- page(
                                                         h4(i18n$t("Co-resistances")),
                                                         plotOutput("salmonella_co_resistance", height = "400px"),
                                                         conditionalPanel(condition = "! input.combine_SI", 
-                                                                         i18n$t("Susceptible & Intermediate are always combined in this visualisation of co-resistances.")
+                                                                         i18n$t("Susceptible and Intermediate are always combined in this visualisation of co-resistances.")
                                                         ),
                                                         i18n$t("Horizontal bars show the size of a set of SR results while vertical bars show the number of resistant isolates for the corresponding antibiotic."),
                                                         i18n$t("Only isolates that have been tested against all of the drugs are included in the upset plot.")
@@ -851,7 +851,7 @@ ui <- page(
                                                         h4(i18n$t("Co-resistances")),
                                                         plotOutput("saureus_co_resistance", height = "400px"),
                                                         conditionalPanel(condition = "! input.combine_SI", 
-                                                                         i18n$t("Susceptible & Intermediate are always combined in this visualisation of co-resistances.")
+                                                                         i18n$t("Susceptible and Intermediate are always combined in this visualisation of co-resistances.")
                                                         ),
                                                         i18n$t("Horizontal bars show the size of a set of SR results while vertical bars show the number of resistant isolates for the corresponding antibiotic."),
                                                         i18n$t("Only isolates that have been tested against all of the drugs are included in the upset plot.")
@@ -891,7 +891,7 @@ ui <- page(
                                                         h4(i18n$t("Co-resistances")),
                                                         plotOutput("spneumoniae_co_resistance", height = "400px"),
                                                         conditionalPanel(condition = "! input.combine_SI", 
-                                                                         i18n$t("Susceptible & Intermediate are always combined in this visualisation of co-resistances.")
+                                                                         i18n$t("Susceptible and Intermediate are always combined in this visualisation of co-resistances.")
                                                         ),
                                                         i18n$t("Horizontal bars show the size of a set of SR results while vertical bars show the number of resistant isolates for the corresponding antibiotic."),
                                                         i18n$t("Only isolates that have been tested against all of the drugs are included in the upset plot.")

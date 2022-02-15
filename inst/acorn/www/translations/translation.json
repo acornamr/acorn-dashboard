@@ -586,6 +586,14 @@
 		},
 		{
 			"en" : "Initial & Final Surveillance Diagnosis",
+			"fr" : "TBT",
+			"la" : "TBT",
+			"kh" : "TBT",
+			"vn" : "TBT",
+			"ba" : "TBT"
+		},
+		{
+			"en" : "Initial and Final Surveillance Diagnosis",
 			"fr" : "Diagnostic de surveillance initial et final",
 			"la" : "ການບົ່ງມະຕິການເຝົ້າລະວັງໃນເບື້ອງຕົ້ນແລະຂັ້ນສຸດທ້າຍ",
 			"kh" : "រោគវិនិច្ឆ័យដំបូង និងចុងក្រោយនៃការចូលរួមការអង្កេតតាមដាន",
@@ -1145,10 +1153,10 @@
 			"ba" : "TBT"
 		},
 		{
-			"en" : "Susceptible & Intermediate are always combined in this visualisation of co-resistances.",
-			"fr" : "Susceptible & Intermédiaire sont toujours combinés dans cette visualisation des co-résistances.",
+			"en" : "Susceptible and Intermediate are always combined in this visualisation of co-resistances.",
+			"fr" : "Susceptible et Intermédiaire sont toujours combinés dans cette visualisation des co-résistances.",
 			"la" : "TBT",
-			"kh" : "Susceptible & Intermediate​ គឺតែងតែរួមបញ្ជូលគ្នានៅក្នុង​គំនូសតាងនៃសហ-ភាពសុំា",
+			"kh" : "Susceptible and Intermediate​ គឺតែងតែរួមបញ្ជូលគ្នានៅក្នុង​គំនូសតាងនៃសហ-ភាពសុំា",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
