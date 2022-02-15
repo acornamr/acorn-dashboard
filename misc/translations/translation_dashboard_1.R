@@ -5,6 +5,9 @@ library(purrr)
 library(tidyverse)
 library(writexl)
 
+# (Informational) Nb of lines of code.
+vec <- sapply(files, R.utils::countLines)
+glue("Total lines of R code: {sum(vec)}")
 
 # All elements to translate:
 files <- list.files(path = "./inst/acorn/www/", pattern = "\\.R$", recursive = TRUE)
@@ -13,10 +16,6 @@ script <- map(files, read_lines, n_max = -1L) |> unlist()
 vec_double <- str_extract_all(script, '(?<=n\\$t\\(")(.*?)(?=\")') |> unlist() |> unique() |> sort()
 vec_single <- str_extract_all(script, "(?<=n\\$t\\(')(.*?)(?=\')") |> unlist() |> unique() |> sort()
 all_elements <- c(vec_double, vec_single) |> as_tibble() |> dplyr::rename(en = value)
-
-# Nice to translate at some point:
-# - [ ] dropdown duplication of isolate / 
-# - [ ] dropdown heuristic
 
 # Existing translated elements in the app
 update_translation <- function(file_provided, file_updated, file_to_share) {
