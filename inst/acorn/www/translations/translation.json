@@ -74,25 +74,9 @@
 		},
 		{
 			"en" : "(To log out, close the app.)",
-			"fr" : "TBT",
+			"fr" : "(Pour vous déconnecter, fermer l'app.)",
 			"la" : "TBT",
 			"kh" : "(ចាកចេញ, បិទកម្មវិធី)",
-			"vn" : "TBT",
-			"ba" : "TBT"
-		},
-		{
-			"en" : "ACORN data is not of the right format. Only data generated with v2.1 (or later versions) is compatible.",
-			"fr" : "TBT",
-			"la" : "TBT",
-			"kh" : "TBT",
-			"vn" : "TBT",
-			"ba" : "TBT"
-		},
-		{
-			"en" : "ACORN data is not of the right format. Only data generated with v2.1 is compatible.",
-			"fr" : "TBT",
-			"la" : "TBT",
-			"kh" : "ទិន្នន័យ ACORN មិនមែនជាទម្រង់ត្រឹមត្រូវទេ។ មានតែទិន្នន័យដែលបង្កើតឡើងដោយជំនាន់ V២.១ ប៉ុណ្ណោះដែលត្រូវគ្នា។",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -170,7 +154,7 @@
 		},
 		{
 			"en" : "All valid records have an ACORN ID.",
-			"fr" : "TBT",
+			"fr" : "Tous les enregistrements valides ont une ID ACORN.",
 			"la" : "TBT",
 			"kh" : "កំណត់ត្រាត្រឹមត្រូវទាំងអស់សុទ្ធតែមាន  ACORN ID។",
 			"vn" : "TBT",
@@ -178,7 +162,7 @@
 		},
 		{
 			"en" : "AMR",
-			"fr" : "TBT",
+			"fr" : "AMR",
 			"la" : "TBT",
 			"kh" : "TBT",
 			"vn" : "TBT",
@@ -290,7 +274,7 @@
 		},
 		{
 			"en" : "Co-resistances",
-			"fr" : "TBT",
+			"fr" : "Co-résistances",
 			"la" : "TBT",
 			"kh" : "សហ-ភាពសុំា",
 			"vn" : "TBT",
@@ -310,6 +294,14 @@
 			"la" : "ຄວນພິຈາລະນາບັນທຶກຂໍ້ມູນ.acorn ໃນ cloud ເພື່ອຄວາມປອດໄພເພີ້ມເຕີມ",
 			"kh" : "ពិចារណាក្នុងការរក្សាទុកឯកសារ .acorn ក្នុង cloud សម្រាប់ការបន្ថែមសុវត្ថិភាព",
 			"vn" : "Cân nhắc lưu tệp .acorn trên đám mây vì mục đích bảo mật.",
+			"ba" : "TBT"
+		},
+		{
+			"en" : "Contains names of organisms before and after mapping.",
+			"fr" : "Contient les noms des organismes avant et après cartorgraphie.",
+			"la" : "TBT",
+			"kh" : "TBT",
+			"vn" : "TBT",
 			"ba" : "TBT"
 		},
 		{
@@ -378,7 +370,7 @@
 		},
 		{
 			"en" : "Dismiss",
-			"fr" : "TBT",
+			"fr" : "Annuler",
 			"la" : "TBT",
 			"kh" : "ច្រានចោល",
 			"vn" : "TBT",
@@ -398,6 +390,14 @@
 			"la" : "ດຶງຂໍ້ມູນບັນທຶກການເຂົ້າຮ່ວມ (.xlsx)",
 			"kh" : "ទាញយកបញ្ជីអ្នកចូលរួមការអង្កេតតាមដាន (.xlsx)",
 			"vn" : "Tải xuống Sổ thu tuyển (.xlsx)",
+			"ba" : "TBT"
+		},
+		{
+			"en" : "Download Lab Log (.xlsx)",
+			"fr" : "Télécharger un log du traitement des donnés de lab (.xlsx)",
+			"la" : "TBT",
+			"kh" : "TBT",
+			"vn" : "TBT",
 			"ba" : "TBT"
 		},
 		{
@@ -514,7 +514,7 @@
 		},
 		{
 			"en" : "Generate and load .acorn from clinical and lab data",
-			"fr" : "TBT",
+			"fr" : "Générer un fichier .acorn depuis les données cliniques et de lab",
 			"la" : "TBT",
 			"kh" : "បង្កើត​និងប្រតិបត្តិការឯកសារ .acorn ពីទិន្នន័យគ្លីនិកនិងមន្ទីរពិសោធន៍",
 			"vn" : "TBT",
@@ -538,7 +538,7 @@
 		},
 		{
 			"en" : "Get the latest production release",
-			"fr" : "TBT",
+			"fr" : "Obtenir la dernière version stable",
 			"la" : "TBT",
 			"kh" : "ទាញយកផលិតកម្មដែលចេញចុងក្រោយបង្អស់",
 			"vn" : "TBT",
@@ -553,11 +553,11 @@
 			"ba" : "TBT"
 		},
 		{
-			"en" : "HAI point prevalence by type of ward",
-			"fr" : "Prévalence des HAI par service",
-			"la" : "ຄວາມຊຸກຊຸມ HAI ແບ່ງຕາມປະເພດຂອງພະແນກ",
-			"kh" : "HAI point prevalance តាមប្រភេទអគារ",
-			"vn" : "Tỷ lệ hiện mắc điểm HAI theo loại khoa",
+			"en" : "HAI point prevalence by",
+			"fr" : "TBT",
+			"la" : "TBT",
+			"kh" : "TBT",
+			"vn" : "TBT",
 			"ba" : "TBT"
 		},
 		{
@@ -570,7 +570,7 @@
 		},
 		{
 			"en" : "Horizontal bars show the size of a set of SR results while vertical bars show the number of resistant isolates for the corresponding antibiotic.",
-			"fr" : "TBT",
+			"fr" : "Les barres horizontales indiquent la taille d'un ensemble de résultats SR tandis que les barres verticales indiquent le nombre d'isolats résistants pour l'antibiotique correspondant.",
 			"la" : "TBT",
 			"kh" : "របារផ្តេកបង្ហាញពីទំហំសំណុំនៃលទ្ធផល SR ខណៈពេលដែលរបារបញ្ឈរបង្ហាញចំនួននៃ isolates ដែលសុំានឹងឱសថអង់ទីប៊ីយ៉ូទិកដែលឆ្លើយតប។",
 			"vn" : "TBT",
@@ -578,7 +578,7 @@
 		},
 		{
 			"en" : "Info on loaded .acorn",
-			"fr" : "TBT",
+			"fr" : "Information sur le fichier .acorn chargé.",
 			"la" : "TBT",
 			"kh" : "ព៌ត័មាននៃការប្រតិបត្តិការ .acorn",
 			"vn" : "TBT",
@@ -602,7 +602,7 @@
 		},
 		{
 			"en" : "Issue detected with REDCap data. Please report to ACORN data managers. Until resolution, only existing .acorn files can be used.",
-			"fr" : "TBT",
+			"fr" : "Problème détecté avec les données REDCap. Merci de contacter l'équipe ACORN. Jusqu'à résolution, seuls les fichiers .acorn existants peuvent être utilisés.",
 			"la" : "TBT",
 			"kh" : "បានរកឃើញបញ្ហាជាមួយនឹងទិន្នន័យ REDCap។ សូមរាយការណ៍ទៅអ្នកគ្រប់គ្រងទិន្នន័យ។ រហូតដល់មានដំណោះស្រាយ មានតែឯកសារ​ .acorn ពីរមុនដែលអាចប្រើប្រាស់បាន។​",
 			"vn" : "TBT",
@@ -666,7 +666,7 @@
 		},
 		{
 			"en" : "Load .acorn from cloud",
-			"fr" : "TBT",
+			"fr" : "Charger le fichier .acorn depuis le nuage",
 			"la" : "TBT",
 			"kh" : "ប្រតិបត្តិការ .acorn ពី​ cloud",
 			"vn" : "TBT",
@@ -674,7 +674,7 @@
 		},
 		{
 			"en" : "Load .acorn from local file",
-			"fr" : "TBT",
+			"fr" : "Charger le fichier .acorn localement",
 			"la" : "TBT",
 			"kh" : "ប្រតិបត្តិការ .acorn ពីឯកសារក្នុងកុំព្យូទ័រ",
 			"vn" : "TBT",
@@ -794,7 +794,7 @@
 		},
 		{
 			"en" : "Only isolates that have been tested against all of the drugs are included in the upset plot.",
-			"fr" : "TBT",
+			"fr" : "Seuls les isolats qui ont été testés contre tous les médicaments sont inclus dans le graphique.",
 			"la" : "TBT",
 			"kh" : "TBT",
 			"vn" : "TBT",
@@ -870,6 +870,14 @@
 			"la" : "ກຳລັງອ່ານຂໍ້ມູນຫ້ອງວິເຄາະ",
 			"kh" : "កំពុងពិនិត្យនិងផ្ទៀងផ្ទាត់ទិន្នន័យមន្ទីរពិសោធន៍។​",
 			"vn" : "Đọc dữ liệu phòng thí nghiệm.",
+			"ba" : "TBT"
+		},
+		{
+			"en" : "Remove 'Not Cultured' specimens",
+			"fr" : "Supprimer les spécimens 'Not Cultured'",
+			"la" : "TBT",
+			"kh" : "TBT",
+			"vn" : "TBT",
 			"ba" : "TBT"
 		},
 		{
@@ -985,16 +993,8 @@
 			"ba" : "TBT"
 		},
 		{
-			"en" : "Select lab data format:",
-			"fr" : "Choisir le format des données de laboratoire",
-			"la" : "ເລືອກຮູບແບບຂໍ້ມູມແລັບ",
-			"kh" : "ជ្រើសរើសទម្រង់នៃទិន្នន័យមន្ទីរពិសោធន៍៖",
-			"vn" : "Lựa chọn định dạng dữ liệu phòng thí nghiệm:",
-			"ba" : "TBT"
-		},
-		{
 			"en" : "Show antibiotics combinations",
-			"fr" : "TBT",
+			"fr" : "Montrer les combinaisons d'antibiotiques.",
 			"la" : "TBT",
 			"kh" : "បង្ហាញការរួមបញ្ជូលគ្នានៃឱសថអង់ទីប៊ីយ៉ូទិក",
 			"vn" : "TBT",
@@ -1010,7 +1010,7 @@
 		},
 		{
 			"en" : "SIR Evaluation",
-			"fr" : "TBT",
+			"fr" : "Evaluation SIR",
 			"la" : "TBT",
 			"kh" : "ការវាយតម្លៃ SIR",
 			"vn" : "TBT",
@@ -1058,7 +1058,7 @@
 		},
 		{
 			"en" : "Some records with a missing ACORN ID. These records have been removed.",
-			"fr" : "TBT",
+			"fr" : "Certains enregistrements ont un identifiant ACORN manquant. Ces enregistrements ont été supprimés.",
 			"la" : "TBT",
 			"kh" : "កំណត់ត្រាមួយចំនួនមិនមាន ACORN ID។ កំណត់ត្រាទាំងនេះបានត្រូវលុបចោល។",
 			"vn" : "TBT",
@@ -1074,7 +1074,7 @@
 		},
 		{
 			"en" : "Specimens",
-			"fr" : "TBT",
+			"fr" : "Spécimens",
 			"la" : "TBT",
 			"kh" : "TBT",
 			"vn" : "TBT",
@@ -1146,7 +1146,7 @@
 		},
 		{
 			"en" : "Susceptible & Intermediate are always combined in this visualisation of co-resistances.",
-			"fr" : "TBT",
+			"fr" : "Susceptible & Intermédiaire sont toujours combinés dans cette visualisation des co-résistances.",
 			"la" : "TBT",
 			"kh" : "Susceptible & Intermediate​ គឺតែងតែរួមបញ្ជូលគ្នានៅក្នុង​គំនូសតាងនៃសហ-ភាពសុំា",
 			"vn" : "TBT",
@@ -1162,7 +1162,7 @@
 		},
 		{
 			"en" : "The following 'patient id' are atypical cases (one HCAI/CAI with early HAI but no overlap):",
-			"fr" : "TBT",
+			"fr" : "Les « identifiants de patient » suivants sont des cas atypiques (un HCAI/CAI avec HAI précoce mais sans chevauchement) :",
 			"la" : "TBT",
 			"kh" : "patient id' ខាងក្រោមគឺជាករណីមិនប្រក្រតី (HCAI/CAI មួយ ជាមួយ HAI ដំបូងប៉ុន្តែមិនមានការជាន់គ្នា)៖",
 			"vn" : "TBT",
@@ -1178,7 +1178,7 @@
 		},
 		{
 			"en" : "The REDCap dataset is empty/in wrong format. Please contact ACORN support.",
-			"fr" : "TBT",
+			"fr" : "Le jeu de données REDCap est vide/au mauvais format. Veuillez contacter l'assistance ACORN.",
 			"la" : "TBT",
 			"kh" : "សំណុំទិន្នន័យ REDCap គឺមិនមានទិន្នន័យ / ខុសទម្រង់។ សូមទាក់ទងទៅកាន់ផ្នែកគ្រាំទ្រ ACORN។",
 			"vn" : "TBT",
@@ -1186,7 +1186,7 @@
 		},
 		{
 			"en" : "The REDCap dataset is in the right format.",
-			"fr" : "TBT",
+			"fr" : "Le jeu de données REDCap est au bon format.",
 			"la" : "TBT",
 			"kh" : "សំណុំទិន្នន័យ REDCap គឺត្រឹមត្រូវតាមទម្រង់។",
 			"vn" : "TBT",
@@ -1194,7 +1194,7 @@
 		},
 		{
 			"en" : "There are D28 follow-up done before the expected D28 date.",
-			"fr" : "TBT",
+			"fr" : "Il y a des suivis à J28 effectués avant la date prévue à J28.",
 			"la" : "TBT",
 			"kh" : "មានការតាមដានបន្ត D28 បំពេញមុនថ្ងៃ D28 ដែលរំពឹងទុក។",
 			"vn" : "TBT",
@@ -1202,7 +1202,7 @@
 		},
 		{
 			"en" : "There are multiple F02 with identical ACORN ID, admission date, and episode enrolment date.",
-			"fr" : "TBT",
+			"fr" : "Il existe plusieurs F02 avec un ID ACORN, une date d'admission et une date d'enrôlement identiques.",
 			"la" : "TBT",
 			"kh" : "មាន F02 ច្រើនដែលមាន ACORN ID កាលបរិច្ឆេទចូលសម្រាកពេទ្យ និងកាលបរិច្ឆេទចូលរួមវគ្គអង្កេតតាមដានដូចគ្នា។",
 			"vn" : "TBT",
@@ -1210,7 +1210,7 @@
 		},
 		{
 			"en" : "There are no atypical case (one HCAI/CAI with early HAI but no overlap).",
-			"fr" : "TBT",
+			"fr" : "Il n'y a pas de cas atypique (un HCAI/CAI avec HAI précoce mais pas de chevauchement).",
 			"la" : "TBT",
 			"kh" : "មិនមានករណីមិនធម្មតាទេ (HCAI/CAI មួយ ជាមួយ HAI ដំបូងប៉ុន្តែមិនមានការជាន់គ្នា)",
 			"vn" : "TBT",
@@ -1218,7 +1218,7 @@
 		},
 		{
 			"en" : "There are no D28 follow-up done before the expected D28 date.",
-			"fr" : "TBT",
+			"fr" : "Il n'y a pas de suivi à J28 effectué avant la date prévue à J28.",
 			"la" : "TBT",
 			"kh" : "គ្មានការតាមដានបន្ត D28 បំពេញមុនថ្ងៃ D28 ដែលរំពឹងទុកនោះទេ។",
 			"vn" : "TBT",
@@ -1234,7 +1234,7 @@
 		},
 		{
 			"en" : "There are no multiple F02 with identical ACORN ID, admission date, and episode enrolment date.",
-			"fr" : "TBT",
+			"fr" : "Il n'existe pas de F02 avec un ID ACORN, une date d'admission et une date d'enrôlement identiques.",
 			"la" : "TBT",
 			"kh" : "គ្មាន F02 ដែលមាន ACORN ID កាលបរិច្ឆេទចូលសម្រាកពេទ្យ និងកាលបរិច្ឆេទចូលរួមវគ្គអង្កេតតាមដានដូចគ្នានោះទេ។",
 			"vn" : "TBT",
@@ -1330,7 +1330,7 @@
 		},
 		{
 			"en" : "Updated Charlson Comorbidity Index (uCCI)",
-			"fr" : "TBT",
+			"fr" : "Updated Charlson Comorbidity Index (uCCI)",
 			"la" : "TBT",
 			"kh" : "បច្ចុប្បន្នភាព Charlson Comorbidity Index (uCCI)",
 			"vn" : "TBT",
@@ -1370,7 +1370,7 @@
 		},
 		{
 			"en" : "We couldn't download the lab data dictionary. Please contact ACORN support",
-			"fr" : "TBT",
+			"fr" : "Le dictionnaire des données de lab ne peut pas être téléchargé. Merci de contacter l'équipe ACORN.",
 			"la" : "TBT",
 			"kh" : "យើងមិនអាចទាញយកវចនានុក្រមទិន្នន័យមន្ទីរពិសោធន៍បាននោះទេ។ សូមទាក់ទងទៅកាន់ផ្នែកគាំទ្រ ACORN",
 			"vn" : "TBT",
@@ -1410,7 +1410,7 @@
 		},
 		{
 			"en" : "You are running ACORN dashboard",
-			"fr" : "TBT",
+			"fr" : "Vous utilisez le tableau de bord ACORN",
 			"la" : "TBT",
 			"kh" : "អ្នកកំពុងដំណើរការផ្ទាំងគ្រប់គ្រង ACORN",
 			"vn" : "TBT",
@@ -1418,7 +1418,7 @@
 		},
 		{
 			"en" : "You can check here if it's the latest production release.",
-			"fr" : "TBT",
+			"fr" : "Vous pouvez vérifier ici s'il s'agit de la dernière version de production.",
 			"la" : "TBT",
 			"kh" : "អ្នកអាចពិនិត្យមើលនៅទីនេះ ថាតើផលិតកម្មជាជំនាន់ចុងក្រោយបង្អស់ឬទេ",
 			"vn" : "TBT",
@@ -1426,7 +1426,7 @@
 		},
 		{
 			"en" : "Your ACORN dashboard is up to date",
-			"fr" : "TBT",
+			"fr" : "Votre tableau de bord ACORN est à jour",
 			"la" : "TBT",
 			"kh" : "ផ្ទាំងគ្រប់គ្រង ACORN របស់អ្នកគឺជាជំនាន់ចុងក្រោយបង្អស់",
 			"vn" : "TBT",
