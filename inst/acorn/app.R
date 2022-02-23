@@ -163,7 +163,7 @@ ui <- page(
         nav(span(icon("database"), i18n$t("Data Management")), value = "data_management",
             p(i18n$t("What do you want to do?")),
             
-            navs_tab(id = "data_management_tabs",
+            navs_pill_card(id = "data_management_tabs",
                      nav(title = i18n$t("Generate and load .acorn from clinical and lab data"), value = "generate",
                          br(),
                          fluidRow(
@@ -529,7 +529,7 @@ ui <- page(
         nav(span(icon("bug"), "AMR"), value = "amr", 
             prettySwitch("combine_SI", i18n$t("Combine Susceptible + Intermediate"), status = "primary"),
             HTML("<span id='anchor_amr'></span>"),
-            tabsetPanel(id = "amr_panel",
+            navs_pill_card(id = "amr_panel",
                         nav(value = "amr_aci",
                             span(em("Acinetobacter"), br(), " species"),
                             
