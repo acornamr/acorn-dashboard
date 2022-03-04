@@ -1,20 +1,12 @@
-# work on 2021-09-10
-# Perform (once per machine) a manual installation of nodejs (https://nodejs.org/en/).
-
-# Install latest version of shinybox.
-if(FALSE) {
-  rm(list = ls())
-  remove.packages("shinybox")
-  # v0.2 working as of 2021-10-11
-  remotes::install_github("ocelhay/shinybox", ref = "v0.2")
-  # remotes::install_github("ocelhay/shinybox", ref = "master")
-}
+# Install and load the latest version of shinybox
+remove.packages("shinybox")
+detach("package:shinybox", unload = TRUE)
+remotes::install_github("ocelhay/shinybox", ref = "master", upgrade = "never")
 library(shinybox)
 
 # Check that the package is working.
-remotes::install_github("acornamr/acorn-dashboard", ref = "master")
-acorn::run_app()
-# if needed rebuild NAMSEPACE (somehow macOS is less stringent about this)
+# remotes::install_github("acornamr/acorn-dashboard", ref = "master")
+# acorn::run_app()
 
 # Create a directory for the app.
 build_path <- paste0("C:/Users/olivi/Desktop/", format(Sys.time(), "%Y-%m-%d_%H%M%S"))
@@ -25,7 +17,6 @@ shinybox::shinybox(
   author = "Olivier Celhay, Paul Turner",
   description = "A Dashboard for ACORN AMR Data",
   semantic_version = "v2.2.8",
-  # cran_like_url = "https://cran.microsoft.com/snapshot/2021-12-15",  # too old snapshots can have package issues
   cran_like_url = "https://cran.r-project.org/",
   git_host = "github",
   git_repo = "acornamr/acorn-dashboard",
