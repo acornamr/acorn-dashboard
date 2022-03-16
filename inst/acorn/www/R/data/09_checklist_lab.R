@@ -36,7 +36,7 @@ if(all(!is.na(amr$specdate))) {
   checklist_status$lab_data_qc_4 <- list(status = "warning", msg = i18n$t("There are rows with missing 'specdate'."))
 }
 
-if(all(amr$specdate <= Sys.Date())) {
+if(all(amr$specdate <= Sys.Date(), na.rm = TRUE)) {
   checklist_status$lab_data_qc_5 <- list(status = "okay", msg = i18n$t("All 'specdate' are today or before today."))
 } else {
   checklist_status$lab_data_qc_5 <- list(status = "warning", msg = i18n$t("There are rows for which 'specdate' are after today."))
