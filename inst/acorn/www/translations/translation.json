@@ -164,7 +164,7 @@
 			"en" : "AMR",
 			"fr" : "AMR",
 			"la" : "ການຕ້ານຕໍ່ຢາຕ້ານເຊື້ອ",
-			"kh" : "TBT",
+			"kh" : "ភាពស៊ាំជាមួយនឹងថ្នាំអង់ទីប៊ីយ៉ូទិក",
 			"vn" : "KKS",
 			"ba" : "TBT"
 		},
@@ -257,6 +257,14 @@
 			"ba" : "TBT"
 		},
 		{
+			"en" : "Clinical data not provided",
+			"fr" : "TBT",
+			"la" : "TBT",
+			"kh" : "ទិន្ន័យគ្លីនិកមិនត្រូវបានផ្តល់ជូន",
+			"vn" : "TBT",
+			"ba" : "TBT"
+		},
+		{
 			"en" : "Clinical Outcome",
 			"fr" : "Résultat Clinique",
 			"la" : "ອາການຫຼັງຕິດຕາມ",
@@ -300,7 +308,7 @@
 			"en" : "Contains names of organisms before and after mapping.",
 			"fr" : "Contient les noms des organismes avant et après cartorgraphie.",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "ឈ្មោះរបស់មេរោគ មុន និង ក្រោយធ្វើការកំណត់",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -396,7 +404,7 @@
 			"en" : "Download Lab Log (.xlsx)",
 			"fr" : "Télécharger un log du traitement des donnés de lab (.xlsx)",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "ទាញយកបញ្ជីនៃមន្ទីរពិសោធន៍ (.xlsx)",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -588,7 +596,7 @@
 			"en" : "Initial & Final Surveillance Diagnosis",
 			"fr" : "TBT",
 			"la" : "ການບົ່ງມະຕິການເຝົ້າລະວັງໃນເບື້ອງຕົ້ນແລະຂັ້ນສຸດທ້າຍ",
-			"kh" : "TBT",
+			"kh" : "រោគវិនិច្ឆ័យដំបូង & ចុងក្រោយនៃការចូលរួមការអង្កេតតាមដាន",
 			"vn" : "Chẩn đoán giám sát ban đầu và cuối cùng",
 			"ba" : "TBT"
 		},
@@ -622,6 +630,14 @@
 			"la" : "ອາດໃຊ້ເວລາເລັກນ້ອຍ, ໜ້າຕ່າງນີ້ຈະປິດລົງເມື່ອສຳເລັດ",
 			"kh" : "វាប្រហែលចំណាយពេលពីរបីនាទី។  ផ្ទាំងនេះនឹងបិទពេលដំណើរការចប់។",
 			"vn" : "Thao tác có thể mất vài phút. Cửa sổ này sẽ đóng lại sau khi hoàn thành.",
+			"ba" : "TBT"
+		},
+		{
+			"en" : "Lab data not provided",
+			"fr" : "TBT",
+			"la" : "TBT",
+			"kh" : "ទិន្នន័យមន្ទីរពិសោធន៍មិនត្រូវបានផ្ដល់ជូន",
+			"vn" : "TBT",
 			"ba" : "TBT"
 		},
 		{
@@ -737,6 +753,22 @@
 			"ba" : "TBT"
 		},
 		{
+			"en" : "No .acorn has been generated",
+			"fr" : "TBT",
+			"la" : "TBT",
+			"kh" : "គ្មាន .acorn ត្រូវបានបង្កើត",
+			"vn" : "TBT",
+			"ba" : "TBT"
+		},
+		{
+			"en" : "No .acorn has been saved",
+			"fr" : "TBT",
+			"la" : "TBT",
+			"kh" : "គ្មាន .acorn ត្រូវបានរក្សាទុក",
+			"vn" : "TBT",
+			"ba" : "TBT"
+		},
+		{
 			"en" : "No Blood Culture",
 			"fr" : "Pas d'Hématoculture",
 			"la" : "ບໍ່ມີການເລືອດປູກ",
@@ -804,7 +836,7 @@
 			"en" : "Only isolates that have been tested against all of the drugs are included in the upset plot.",
 			"fr" : "Seuls les isolats qui ont été testés contre tous les médicaments sont inclus dans le graphique.",
 			"la" : "ສະເພາະເຊື້ອພະຍາດທີ່ຖືກທົດສອບໃສ່ກັບຢາທັງໝົດ ທີ່ຖືກນຳສະເໜີໃນຮູບພາບນີ້",
-			"kh" : "TBT",
+			"kh" : "មានតែ Isolates ដែលបានធ្វើតេស្តប្រឆាំងឱសថគ្រប់យ៉ាងតែបុណ្ណោះ ត្រូវបានបញ្ចូលក្នុងតារាង upset plot",
 			"vn" : "Chỉ những chủng vi khuẩn phân lập đã được thử nghiệm kháng lại tất cả các loại thuốc mới được đưa vào sơ đồ",
 			"ba" : "TBT"
 		},
@@ -884,7 +916,7 @@
 			"en" : "Remove 'Not Cultured' specimens",
 			"fr" : "Supprimer les spécimens 'Not Cultured'",
 			"la" : "TBT",
-			"kh" : "TBT",
+			"kh" : "លុបចោលនូវវត្ថុវិភាគដែលមិនមានការបណ្តុះមេរោគ",
 			"vn" : "TBT",
 			"ba" : "TBT"
 		},
@@ -1084,7 +1116,7 @@
 			"en" : "Specimens",
 			"fr" : "Spécimens",
 			"la" : "ຕົວຢ່າງ",
-			"kh" : "TBT",
+			"kh" : "វត្ថុវិភាគ",
 			"vn" : "Mẫu bệnh phẩm",
 			"ba" : "TBT"
 		},
