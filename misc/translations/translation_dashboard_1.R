@@ -5,10 +5,6 @@ library(purrr)
 library(tidyverse)
 library(writexl)
 
-# (Informational) Nb of lines of code.
-vec <- sapply(files, R.utils::countLines)
-glue("Total lines of R code: {sum(vec)}")
-
 # All elements to translate:
 files <- list.files(path = "./inst/acorn/www/", pattern = "\\.R$", recursive = TRUE)
 files <- c("./inst/acorn/app.R", paste0("./inst/acorn/www/", files))
@@ -16,6 +12,10 @@ script <- map(files, read_lines, n_max = -1L) |> unlist()
 vec_double <- str_extract_all(script, '(?<=n\\$t\\(")(.*?)(?=\")') |> unlist() |> unique() |> sort()
 vec_single <- str_extract_all(script, "(?<=n\\$t\\(')(.*?)(?=\')") |> unlist() |> unique() |> sort()
 all_elements <- c(vec_double, vec_single) |> as_tibble() |> dplyr::rename(en = value)
+
+# (Informational) Nb of lines of code.
+vec <- sapply(files, R.utils::countLines)
+glue::glue("Total lines of R code: {sum(vec)}")
 
 # Existing translated elements in the app
 update_translation <- function(file_provided, file_updated, file_to_share) {
@@ -35,30 +35,30 @@ update_translation <- function(file_provided, file_updated, file_to_share) {
 
 update_translation(
   file_provided  = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_kh.xlsx",
-  file_updated       = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_kh_maj.xlsx",
-  file_to_share = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_kh_elements_to_update.xlsx"
+  file_updated   = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_kh_maj.xlsx",
+  file_to_share  = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_kh_elements_to_update.xlsx"
 )
 
 update_translation(
   file_provided  = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_fr.xlsx",
-  file_updated       = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_fr_maj.xlsx",
-  file_to_share = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_fr_elements_to_update.xlsx"
+  file_updated   = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_fr_maj.xlsx",
+  file_to_share  = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_fr_elements_to_update.xlsx"
 )
 
 update_translation(
   file_provided  = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_la.xlsx",
-  file_updated       = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_la_maj.xlsx",
-  file_to_share = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_la_elements_to_update.xlsx"
+  file_updated   = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_la_maj.xlsx",
+  file_to_share  = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_la_elements_to_update.xlsx"
 )
 
 update_translation(
   file_provided  = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_vn.xlsx",
-  file_updated       = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_vn_maj.xlsx",
-  file_to_share = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_vn_elements_to_update.xlsx"
+  file_updated   = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_vn_maj.xlsx",
+  file_to_share  = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_vn_elements_to_update.xlsx"
 )
 
 update_translation(
   file_provided  = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_ba.xlsx",
-  file_updated       = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_ba_maj.xlsx",
-  file_to_share = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_ba_elements_to_update.xlsx"
+  file_updated   = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_ba_maj.xlsx",
+  file_to_share  = "/Users/olivier/Documents/Projets/ACORN/acorn-dashboard/misc/translations/en_ba_elements_to_update.xlsx"
 )

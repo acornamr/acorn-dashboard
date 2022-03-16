@@ -1,26 +1,25 @@
 # run once:
 # renv::init()
 
-# deploy on dev URL
+# (1) deploy on dev URL
 rsconnect::deployApp(appDir = "./inst/acorn/", 
                      appName = "acorn2-dev", 
                      account = "moru",
                      forceUpdate = TRUE)
 
+# visit: https://moru.shinyapps.io/acorn2-dev/
 
-# if the deployment on the dev URL works:
+
+# (2) if the deployment on the dev URL works:
 # take a snapshot of installed packages
 renv::snapshot()
 
-# commit to GitHub
+# (3) commit to GitHub
 
-# generate and test standalone Windows app
+# (4) generate and test standalone apps
+# the generated standalone app should be tested independently as there might not be using the same set of packages.
 
-# deploy on production URL
+# (5) deploy on production URL
 rsconnect::deployApp(appDir = "./inst/acorn/", 
                      appName = "acorn2",
                      account = "moru")
-
-
-# the generated standalone app should be tested independently
-# as it's not using the same set of packages.

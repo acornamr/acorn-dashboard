@@ -117,7 +117,7 @@ ui <- page(
         nav(i18n$t("Welcome"), value = "welcome",
             fluidRow(
               column(3,
-                     uiOutput('site_logo'),
+                     uiOutput("site_logo"),
                      htmlOutput("app_github_versions"), br(),
                      pickerInput(
                        "selected_language", label = span(icon("language"), i18n$t("Language")),
@@ -971,7 +971,6 @@ server <- function(input, output, session) {
   })
   
   observeEvent(input$show_faq, {
-    
     if(input$selected_language != "kh") {
       showModal(modalDialog(
         title = "Frequently Asked Questions",
@@ -1139,13 +1138,13 @@ server <- function(input, output, session) {
     
     linkage_caseB  = list(status = "hidden", msg = ""),
     linkage_caseC  = list(status = "hidden", msg = ""),
-    linkage_result = list(status = "info", msg = "No .acorn has been generated"),
+    linkage_result = list(status = "info", msg = ""),
     
-    redcap_f01f05_dta = list(status = "info", msg = "Clinical data not provided"),
-    lab_dta           = list(status = "info", msg = "Lab data not provided"),
+    redcap_f01f05_dta = list(status = "info", msg = ""),
+    lab_dta           = list(status = "info", msg = ""),
     
     acorn_dta_saved_local = list(status = "hidden", msg = ""),
-    acorn_dta_saved_server = list(status = "info", msg = "No .acorn has been saved")
+    acorn_dta_saved_server = list(status = "info", msg = "")
   )
   
   # Secondary datasets (derived from primary datasets)
@@ -1289,6 +1288,12 @@ server <- function(input, output, session) {
     corresp_org_antibio(NULL)
     data_dictionary(NULL)
     lab_code(NULL)
+    
+    # Reset status messages.
+    checklist_status$linkage_result$msg <- i18n$t("No .acorn has been generated")
+    checklist_status$redcap_f01f05_dta$msg = i18n$t("Clinical data not provided")
+    checklist_status$lab_dta$msg <- i18n$t("Lab data not provided")
+    checklist_status$acorn_dta_saved_server$msg <-  i18n$t("No .acorn has been saved")
     
     nav_hide("tabs", target = "overview")
     nav_hide("tabs", target = "follow_up")
