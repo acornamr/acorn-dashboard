@@ -4,8 +4,9 @@ library(readxl)
 library(tidyverse)
 rm(list = ls())
 
-all_cred <- readxl::read_excel("/Users/olivier/Documents/Projets/ACORN/Data/ACORN2_cred.xlsx", sheet = "cred") %>%
-  filter(!is.na(site))
+all_cred <- readxl::read_excel("/Users/olivier/Documents/Projets/ACORN/Data/ACORN2_cred.xlsx", sheet = "cred") |>  
+  filter(!is.na(site)) |> 
+  filter(user != "demo")
 
 
 for (i in 1:nrow(all_cred)) {
@@ -21,15 +22,10 @@ for (i in 1:nrow(all_cred)) {
                   redcap_hai_api = user$redcap_hai_api,
                   # AWS S3
                   aws_access = user$aws_access,
-                  acorn_s3 = user$aws_access,  # TODO: can be removed once everyone is using 2.2.5 or later
                   aws_bucket = user$aws_bucket,
-                  acorn_s3_bucket = user$aws_bucket,  # TODO: can be removed once everyone is using 2.2.5 or later
                   aws_region = user$aws_region,  
-                  acorn_s3_region = user$aws_region,  # TODO: can be removed once everyone is using 2.2.5 or later
                   aws_key = user$aws_key,
-                  acorn_s3_key = user$aws_key,  # TODO: can be removed once everyone is using 2.2.5 or later
-                  aws_secret = user$aws_secret,
-                  acorn_s3_secret = user$aws_secret   # TODO: can be removed once everyone is using 2.2.5 or later
+                  aws_secret = user$aws_secret
     ),
     connection = NULL)
   
@@ -37,12 +33,12 @@ for (i in 1:nrow(all_cred)) {
   saveRDS(encrypted_cred, glue("/Users/olivier/Documents/Projets/ACORN/Data/ACORN2_creds/encrypted_cred_{user$site}_{user$user}.rds"))
 }
 
-# !!!!  WARNING  !!!!
-# cred_demo should be replaced in the www folder.
-
-# "shared-acornamr" bucket:
-saveRDS("HIDDEN", file = "/Users/olivier/Documents/Projets/ACORN/Data/ACORN2_creds/shared_acornamr_key.rds")
-saveRDS("HIDDEN", file = "/Users/olivier/Documents/Projets/ACORN/Data/ACORN2_creds/shared_acornamr_sec.rds")
-
-
 rm(list = ls())
+
+# Instructions:
+# encrypted_cred_XXX_YYY.rds files should be added to the "shared-acornamr" folder
+# "encrypted_cred_demo.rds" should be added to the "www/cred" folder.
+# "shared_acornamr_key.rds" and "share-acornamr_sec.rds" should be added to the "www/cred" folder. 
+# They can be generated with the commands:
+# saveRDS("COPY_KEY_HERE", file = "/Users/olivier/Documents/Projets/ACORN/Data/ACORN2_creds/shared_acornamr_key.rds")
+# saveRDS("COPY_SECRET_HERE", file = "/Users/olivier/Documents/Projets/ACORN/Data/ACORN2_creds/shared_acornamr_sec.rds")

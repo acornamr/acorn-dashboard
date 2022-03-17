@@ -1217,7 +1217,7 @@ server <- function(input, output, session) {
     on.exit({Sys.sleep(2); removeNotification(id)}, add = TRUE)
     
     if (input$cred_site == "Run Demo") {
-      cred <- readRDS("./www/cred/bucket_site/encrypted_cred_demo_demo.rds")
+      cred <- readRDS("./www/cred/encrypted_cred_demo.rds")
       key_user <- openssl::sha256(charToRaw("demo"))
       cred <- unserialize(openssl::aes_cbc_decrypt(cred, key = key_user))
       

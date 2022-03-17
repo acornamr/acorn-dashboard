@@ -126,8 +126,8 @@ columns_redcap <- c("recordid", "redcap_repeat_instrument", "redcap_repeat_insta
                     "bsi_is_com_2days", "bsi_is_com_fever", "f05_deleted", "f05_bsi_complete")
 
 # safe to expose since the shared_acornamr bucket can only be listed/read
-shared_acornamr_key <- readRDS("./www/cred/bucket_cred/shared_acornamr_key.rds")
-shared_acornamr_sec <- readRDS("./www/cred/bucket_cred/shared_acornamr_sec.rds")
+shared_acornamr_key <- readRDS("./www/cred/shared_acornamr_key.rds")
+shared_acornamr_sec <- readRDS("./www/cred/shared_acornamr_sec.rds")
 
 # contains all require i18n elements
 i18n <- Translator$new(translation_json_path = "./www/translations/translation.json")
