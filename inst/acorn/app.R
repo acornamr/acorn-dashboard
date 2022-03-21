@@ -164,102 +164,107 @@ ui <- page(
             p(i18n$t("What do you want to do?")),
             
             navs_pill_card(id = "data_management_tabs",
-                     nav(title = i18n$t("Generate and load .acorn from clinical and lab data"), value = "generate",
-                         br(),
-                         fluidRow(
-                           column(3,    
-                                  h5(i18n$t("(1/4) Download Clinical data")), p(i18n$t("and generate enrolment log.")),
-                                  actionButton("get_redcap_data", i18n$t("Get data from REDCap"), icon = icon('cloud-download-alt'))
+                           nav(title = i18n$t("Generate and load .acorn from clinical and lab data"), value = "generate",
+                               br(),
+                               fluidRow(
+                                 column(3,    
+                                        h5(i18n$t("(1/4) Download Clinical data")), p(i18n$t("and generate enrolment log.")),
+                                        actionButton("get_redcap_data", i18n$t("Get data from REDCap"), icon = icon('cloud-download-alt'))
+                                 ),
+                                 column(6,
+                                        htmlOutput("checklist_qc_clinical")
+                                 ),
+                                 column(3,
+                                        uiOutput("enrolment_log_dl")
+                                 )
+                               ),
+                               fluidRow(column(9, offset = 3, br(), uiOutput("enrolment_log_table"))),
+                               hr(),
+                               fluidRow(
+                                 column(3,
+                                        h5(i18n$t("(2/4) Provide Lab data")),
+                                        pickerInput("format_lab_data", 
+                                                    options = list(title = "Select lab data format"),
+                                                    choices = c("WHONET .dBase", "WHONET .SQLite", "Tabular"), 
+                                                    multiple = FALSE,
+                                                    selected = NULL),
+                                        
+                                        conditionalPanel("input.format_lab_data == 'WHONET .dBase'",
+                                                         fileInput("file_lab_dba", NULL,  buttonLabel = "Browse for dBase file")
+                                        ),
+                                        conditionalPanel("input.format_lab_data == 'WHONET .SQLite'",
+                                                         fileInput("file_lab_sql", NULL,  buttonLabel = "Browse for sqlite file", accept = c(".sqlite3", ".sqlite", ".db"))
+                                        ),
+                                        conditionalPanel("input.format_lab_data == 'Tabular'",
+                                                         fileInput("file_lab_tab", NULL,  buttonLabel = "Browse for file", accept = c(".csv", ".txt", ".xls", ".xlsx"))
+                                        ),
+                                        conditionalPanel("output.lab_file_uploaded",
+                                                         downloadLink("overview_lab_data", span(icon("file"), "Lab file overview (optional)")),
+                                                         br(),
+                                                         actionButton("process_lab_data", "Process Lab File")
+                                        ),
+                                 ),
+                                 column(6,
+                                        htmlOutput("checklist_qc_lab")
+                                 ),
+                                 column(3,
+                                        uiOutput("lab_log_dl")
+                                 )
+                               ),
+                               hr(),
+                               fluidRow(
+                                 column(3, 
+                                        h5(i18n$t("(3/4) Combine Clinical and Lab data")),
+                                        actionButton("generate_acorn_data", i18n$t("Generate .acorn file"))
+                                 ),
+                                 column(6,
+                                        htmlOutput("checklist_generate")
+                                 )
+                               ),
+                               hr(),
+                               fluidRow(
+                                 column(3, 
+                                        h5(i18n$t("(4/4) Save .acorn file")),
+                                        tags$div(
+                                          materialSwitch("save_switch", label = "Local", 
+                                                         inline = TRUE, status = "primary", value = TRUE),
+                                          tags$span(icon("cloud"), "Server"),
+                                          conditionalPanel("! input.save_switch",
+                                                           actionButton("save_acorn_local", i18n$t("Save .acorn file"))
+                                          ),
+                                          conditionalPanel("input.save_switch",
+                                                           actionButton("save_acorn_server", span(icon('cloud-upload-alt'), i18n$t("Save .acorn file")))
+                                          )
+                                        )
+                                 ),
+                                 column(8,
+                                        htmlOutput("checklist_save")
+                                 )
+                               )
                            ),
-                           column(6,
-                                  htmlOutput("checklist_qc_clinical")
+                           nav(title = i18n$t("Load .acorn from cloud"), value = "load_cloud",
+                               br(),
+                               fluidRow(
+                                 column(3,
+                                        pickerInput("acorn_files_server", choices = NULL, label = NULL,
+                                                    options = pickerOptions(actionsBox = TRUE, noneSelectedText = "No file selected", liveSearch = FALSE,
+                                                                            showTick = TRUE, header = "10 most recent files:"))
+                                 ),
+                                 column(9,
+                                        conditionalPanel(condition = "input.acorn_files_server",
+                                                         actionButton("load_acorn_server", span(icon("cloud-download-alt"), i18n$t("Load selected .acorn")))
+                                        )
+                                 )
+                               )
                            ),
-                           column(3,
-                                  uiOutput("enrolment_log_dl")
+                           nav(title = i18n$t("Load .acorn from local file"), value = "load_local",
+                               br(),
+                               fileInput("load_acorn_local", label = NULL, buttonLabel =  i18n$t("Load .acorn"), accept = '.acorn')
+                           ),
+                           nav(title = i18n$t("Info on loaded .acorn"),  value = "info",
+                               br(),
+                               htmlOutput("info_data")
                            )
-                         ),
-                         fluidRow(column(9, offset = 3, br(), uiOutput("enrolment_log_table"))),
-                         hr(),
-                         fluidRow(
-                           column(3,
-                                  h5(i18n$t("(2/4) Provide Lab data")),
-                                  pickerInput("format_lab_data", 
-                                              options = list(title = "Select lab data format"),
-                                              choices = c("WHONET .dBase", "WHONET .SQLite", "Tabular"), 
-                                              multiple = FALSE,
-                                              selected = NULL),
-                                  
-                                  conditionalPanel("input.format_lab_data == 'WHONET .dBase'",
-                                                   fileInput("file_lab_dba", NULL,  buttonLabel = "Browse for dBase file")
-                                  ),
-                                  conditionalPanel("input.format_lab_data == 'WHONET .SQLite'",
-                                                   fileInput("file_lab_sql", NULL,  buttonLabel = "Browse for sqlite file", accept = c(".sqlite3", ".sqlite", ".db"))
-                                  ),
-                                  conditionalPanel("input.format_lab_data == 'Tabular'",
-                                                   fileInput("file_lab_tab", NULL,  buttonLabel = "Browse for file", accept = c(".csv", ".txt", ".xls", ".xlsx"))
-                                  )
-                           ),
-                           column(6,
-                                  htmlOutput("checklist_qc_lab")
-                           ),
-                           column(3,
-                                  uiOutput("lab_log_dl")
-                           )
-                         ),
-                         hr(),
-                         fluidRow(
-                           column(3, 
-                                  h5(i18n$t("(3/4) Combine Clinical and Lab data")),
-                                  actionButton("generate_acorn_data", i18n$t("Generate .acorn file"))
-                           ),
-                           column(6,
-                                  htmlOutput("checklist_generate")
-                           )
-                         ),
-                         hr(),
-                         fluidRow(
-                           column(3, 
-                                  h5(i18n$t("(4/4) Save .acorn file")),
-                                  tags$div(
-                                    materialSwitch("save_switch", label = "Local", 
-                                                   inline = TRUE, status = "primary", value = TRUE),
-                                    tags$span(icon("cloud"), "Server"),
-                                    conditionalPanel("! input.save_switch",
-                                                     actionButton("save_acorn_local", i18n$t("Save .acorn file"))
-                                    ),
-                                    conditionalPanel("input.save_switch",
-                                                     actionButton("save_acorn_server", span(icon('cloud-upload-alt'), i18n$t("Save .acorn file")))
-                                    )
-                                  )
-                           ),
-                           column(8,
-                                  htmlOutput("checklist_save")
-                           )
-                         )
-                     ),
-                     nav(title = i18n$t("Load .acorn from cloud"), value = "load_cloud",
-                         br(),
-                         fluidRow(
-                           column(3,
-                                  pickerInput('acorn_files_server', choices = NULL, label = NULL,
-                                              options = pickerOptions(actionsBox = TRUE, noneSelectedText = "No file selected", liveSearch = FALSE,
-                                                                      showTick = TRUE, header = "10 most recent files:"))
-                           ),
-                           column(9,
-                                  conditionalPanel(condition = "input.acorn_files_server",
-                                                   actionButton("load_acorn_server", span(icon("cloud-download-alt"), i18n$t("Load selected .acorn")))
-                                  )
-                           )
-                         )
-                     ),
-                     nav(title = i18n$t("Load .acorn from local file"), value = "load_local",
-                         br(),
-                         fileInput("load_acorn_local", label = NULL, buttonLabel =  i18n$t("Load .acorn"), accept = '.acorn')
-                     ),
-                     nav(title = i18n$t("Info on loaded .acorn"),  value = "info",
-                         br(),
-                         htmlOutput("info_data")
-                     )
             )
         ),
         # Tab Overview ----
@@ -530,410 +535,410 @@ ui <- page(
             prettySwitch("combine_SI", i18n$t("Combine Susceptible + Intermediate"), status = "primary"),
             HTML("<span id='anchor_amr'></span>"),
             navs_pill_card(id = "amr_panel",
-                        nav(value = "amr_aci",
-                            span(em("Acinetobacter"), br(), " species"),
-                            
-                            conditionalPanel(condition = "! output.test_acinetobacter_sir", 
-                                             h4(i18n$t("There is no data to display for this organism."))),
-                            conditionalPanel(condition = "output.test_acinetobacter_sir", 
-                                             div(
-                                               fluidRow(
-                                                 column(6,
-                                                        htmlOutput("nb_isolates_acinetobacter")
-                                                 ),
-                                                 column(6,
-                                                        div(class = "text-warning", 
-                                                            span(icon("exclamation-triangle"),
-                                                                 i18n$t("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable.")))
-                                                 )
-                                               ),
-                                               br(),
-                                               fluidRow(
-                                                 column(6,
-                                                        h4(i18n$t("SIR Evaluation")),
-                                                        highchartOutput("acinetobacter_sir", height = "400px")
-                                                 ),
-                                                 column(6,
-                                                        h4(i18n$t("Co-resistances")),
-                                                        plotOutput("acinetobacter_co_resistance", height = "400px"),
-                                                        conditionalPanel(condition = "! input.combine_SI", 
-                                                                         i18n$t("Susceptible and Intermediate are always combined in this visualisation of co-resistances.")
-                                                        ),
-                                                        i18n$t("Horizontal bars show the size of a set of SR results while vertical bars show the number of resistant isolates for the corresponding antibiotic."),
-                                                        i18n$t("Only isolates that have been tested against all of the drugs are included in the upset plot.")
-                                                 )
-                                               ),
-                                               fluidRow(
-                                                 column(12,
-                                                        h4(i18n$t("Resistance to Carbapenems Over Time")),
-                                                        highchartOutput("acinetobacter_sir_evolution", height = "400px")
-                                                 ))
-                                             )
-                            )
-                        ),
-                        nav(value = "amr_esc",
-                            HTML("<em>Escherichia <br/>coli</em>"),
-                            
-                            conditionalPanel(condition = "! output.test_ecoli_sir", 
-                                             h4(i18n$t("There is no data to display for this organism."))),
-                            conditionalPanel(condition = "output.test_ecoli_sir", 
-                                             div(
-                                               fluidRow(
-                                                 column(6,
-                                                        htmlOutput("nb_isolates_ecoli")
-                                                 ),
-                                                 column(6,
-                                                        div(class = "text-warning", 
-                                                            span(icon("exclamation-triangle"),
-                                                                 i18n$t("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable.")))
-                                                 )
-                                               ),
-                                               br(),
-                                               fluidRow(
-                                                 column(6,
-                                                        h4(i18n$t("SIR Evaluation")),
-                                                        highchartOutput("ecoli_sir", height = "400px")
-                                                 ),
-                                                 column(6,
-                                                        h4(i18n$t("Co-resistances")),
-                                                        plotOutput("ecoli_co_resistance", height = "400px"),
-                                                        conditionalPanel(condition = "! input.combine_SI", 
-                                                                         i18n$t("Susceptible and Intermediate are always combined in this visualisation of co-resistances.")
-                                                        ),
-                                                        i18n$t("Horizontal bars show the size of a set of SR results while vertical bars show the number of resistant isolates for the corresponding antibiotic."),
-                                                        i18n$t("Only isolates that have been tested against all of the drugs are included in the upset plot.")
-                                                 )
-                                               ),
-                                               fluidRow(
-                                                 column(12,
-                                                        h4(i18n$t("Resistance to Carbapenems Over Time")),
-                                                        highchartOutput("ecoli_sir_evolution", height = "400px")
-                                                 )),
-                                               fluidRow(
-                                                 column(12,
-                                                        h4(i18n$t("Resistance to 3rd gen. Cephalosporins Over Time")),
-                                                        highchartOutput("ecoli_sir_evolution_ceph", height = "400px")
-                                                 ))
-                                             )
-                            )
-                        ),
-                        nav(value = "amr_hae",
-                            HTML("<em>Haemophilus <br/>influenzae</em>"),
-                            
-                            conditionalPanel(condition = "! output.test_haemophilus_influenzae_sir", 
-                                             h4(i18n$t("There is no data to display for this organism."))),
-                            conditionalPanel(condition = "output.test_haemophilus_influenzae_sir", 
-                                             div(
-                                               fluidRow(
-                                                 column(6,
-                                                        htmlOutput("nb_isolates_haemophilus_influenzae")
-                                                 ),
-                                                 column(6,
-                                                        div(class = "text-warning", 
-                                                            span(icon("exclamation-triangle"),
-                                                                 i18n$t("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable.")))
-                                                 )
-                                               ),
-                                               br(),
-                                               fluidRow(
-                                                 column(6,
-                                                        h4(i18n$t("SIR Evaluation")),
-                                                        highchartOutput("haemophilus_influenzae_sir", height = "400px")
-                                                 ),
-                                                 column(6,
-                                                        h4(i18n$t("Co-resistances")),
-                                                        plotOutput("haemophilus_influenzae_co_resistance", height = "400px"),
-                                                        conditionalPanel(condition = "! input.combine_SI", 
-                                                                         i18n$t("Susceptible and Intermediate are always combined in this visualisation of co-resistances.")
-                                                        ),
-                                                        i18n$t("Horizontal bars show the size of a set of SR results while vertical bars show the number of resistant isolates for the corresponding antibiotic."),
-                                                        i18n$t("Only isolates that have been tested against all of the drugs are included in the upset plot.")
-                                                 )
-                                               )
-                                             )
-                            )
-                        ),
-                        nav(value = "amr_kle",
-                            HTML("<em>Klebsiella <br/>pneumoniae</em>"), 
-                            
-                            conditionalPanel(condition = "! output.test_kpneumoniae_sir", 
-                                             h4(i18n$t("There is no data to display for this organism."))),
-                            conditionalPanel(condition = "output.test_kpneumoniae_sir", 
-                                             div(
-                                               fluidRow(
-                                                 column(6,
-                                                        htmlOutput("nb_isolates_kpneumoniae")
-                                                 ),
-                                                 column(6,
-                                                        div(class = "text-warning", 
-                                                            span(icon("exclamation-triangle"),
-                                                                 i18n$t("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable.")))
-                                                 )
-                                               ),
-                                               br(),
-                                               fluidRow(
-                                                 column(6,
-                                                        h4(i18n$t("SIR Evaluation")),
-                                                        highchartOutput("kpneumoniae_sir", height = "400px")
-                                                 ),
-                                                 column(6,
-                                                        h4(i18n$t("Co-resistances")),
-                                                        plotOutput("kpneumoniae_co_resistance", height = "400px"),
-                                                        conditionalPanel(condition = "! input.combine_SI", 
-                                                                         i18n$t("Susceptible and Intermediate are always combined in this visualisation of co-resistances.")
-                                                        ),
-                                                        i18n$t("Horizontal bars show the size of a set of SR results while vertical bars show the number of resistant isolates for the corresponding antibiotic."),
-                                                        i18n$t("Only isolates that have been tested against all of the drugs are included in the upset plot.")
-                                                 )
-                                               ),
-                                               fluidRow(
-                                                 column(12,
-                                                        h4(i18n$t("Resistance to Carbapenems Over Time")),
-                                                        highchartOutput("kpneumoniae_sir_evolution", height = "400px")
-                                                 )),
-                                               fluidRow(
-                                                 column(12,
-                                                        h4(i18n$t("Resistance to 3rd gen. Cephalosporins Over Time")),
-                                                        highchartOutput("kpneumoniae_sir_evolution_ceph", height = "400px")
-                                                 ))
-                                             )
-                            )
-                        ),
-                        nav(value = "amr_nei",
-                            HTML("<em>Neisseria <br/>meningitidis</em>"), 
-                            
-                            conditionalPanel(condition = "! output.test_neisseria_meningitidis_sir", 
-                                             h4(i18n$t("There is no data to display for this organism."))),
-                            conditionalPanel(condition = "output.test_neisseria_meningitidis_sir", 
-                                             div(
-                                               fluidRow(
-                                                 column(6,
-                                                        htmlOutput("nb_isolates_neisseria_meningitidis")
-                                                 ),
-                                                 column(6,
-                                                        div(class = "text-warning", 
-                                                            span(icon("exclamation-triangle"),
-                                                                 i18n$t("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable.")))
-                                                 )
-                                               ),
-                                               br(),
-                                               fluidRow(
-                                                 column(6,
-                                                        h4(i18n$t("SIR Evaluation")),
-                                                        highchartOutput("neisseria_meningitidis_sir", height = "400px")
-                                                 ),
-                                                 column(6,
-                                                        h4(i18n$t("Co-resistances")),
-                                                        plotOutput("neisseria_meningitidis_co_resistance", height = "400px"),
-                                                        conditionalPanel(condition = "! input.combine_SI", 
-                                                                         i18n$t("Susceptible and Intermediate are always combined in this visualisation of co-resistances.")
-                                                        ),
-                                                        i18n$t("Horizontal bars show the size of a set of SR results while vertical bars show the number of resistant isolates for the corresponding antibiotic."),
-                                                        i18n$t("Only isolates that have been tested against all of the drugs are included in the upset plot.")
-                                                 )
-                                               )
-                                             )
-                            )
-                        ),
-                        nav(value = "amr_pse",
-                            HTML("<em>Pseudomonas <br/>aeruginosa</em>"), 
-                            
-                            conditionalPanel(condition = "! output.test_pseudomonas_aeruginosa_sir", 
-                                             h4(i18n$t("There is no data to display for this organism."))),
-                            conditionalPanel(condition = "output.test_pseudomonas_aeruginosa_sir", 
-                                             div(
-                                               fluidRow(
-                                                 column(6,
-                                                        htmlOutput("nb_isolates_pseudomonas_aeruginosa")
-                                                 ),
-                                                 column(6,
-                                                        div(class = "text-warning", 
-                                                            span(icon("exclamation-triangle"),
-                                                                 i18n$t("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable.")))
-                                                 )
-                                               ),
-                                               br(),
-                                               fluidRow(
-                                                 column(6,
-                                                        h4(i18n$t("SIR Evaluation")),
-                                                        highchartOutput("pseudomonas_aeruginosa_sir", height = "400px")
-                                                 ),
-                                                 column(6,
-                                                        h4(i18n$t("Co-resistances")),
-                                                        plotOutput("pseudomonas_aeruginosa_co_resistance", height = "400px"),
-                                                        conditionalPanel(condition = "! input.combine_SI", 
-                                                                         i18n$t("Susceptible and Intermediate are always combined in this visualisation of co-resistances.")
-                                                        ),
-                                                        i18n$t("Horizontal bars show the size of a set of SR results while vertical bars show the number of resistant isolates for the corresponding antibiotic."),
-                                                        i18n$t("Only isolates that have been tested against all of the drugs are included in the upset plot.")
-                                                 )
-                                               ),
-                                               fluidRow(
-                                                 column(12,
-                                                        h4(i18n$t("Resistance to Carbapenems Over Time")),
-                                                        highchartOutput("pseudomonas_aeruginosa_sir_evolution", height = "400px")
-                                                 ))
-                                             )
-                            )
-                        ),
-                        nav(value = "amr_sal",
-                            HTML("<em>Salmonella</em> <br/>species"),
-                            br(),
-                            prettyRadioButtons("select_salmonella", label = NULL,  shape = "curve",
-                                               choices = c("Salmonella Typhi", "Salmonella Paratyphi", "Salmonella sp (not S. Typhi or S. Paratyphi)"), 
-                                               selected = "Salmonella Typhi", inline = TRUE),
-                            conditionalPanel(condition = "! output.test_salmonella_sir", 
-                                             h4(i18n$t("There is no data to display for this organism."))),
-                            conditionalPanel(condition = "output.test_salmonella_sir", 
-                                             div(
-                                               fluidRow(
-                                                 column(6,
-                                                        htmlOutput("nb_isolates_salmonella")
-                                                 ),
-                                                 column(6,
-                                                        div(class = "text-warning", 
-                                                            span(icon("exclamation-triangle"),
-                                                                 i18n$t("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable.")))
-                                                 )
-                                               ),
-                                               br(),
-                                               fluidRow(
-                                                 column(6,
-                                                        h4(i18n$t("SIR Evaluation")),
-                                                        highchartOutput("salmonella_sir", height = "500px"),
-                                                 ),
-                                                 column(6,
-                                                        h4(i18n$t("Co-resistances")),
-                                                        plotOutput("salmonella_co_resistance", height = "400px"),
-                                                        conditionalPanel(condition = "! input.combine_SI", 
-                                                                         i18n$t("Susceptible and Intermediate are always combined in this visualisation of co-resistances.")
-                                                        ),
-                                                        i18n$t("Horizontal bars show the size of a set of SR results while vertical bars show the number of resistant isolates for the corresponding antibiotic."),
-                                                        i18n$t("Only isolates that have been tested against all of the drugs are included in the upset plot.")
-                                                 )
-                                               ),
-                                               fluidRow(
-                                                 column(12,
-                                                        h4(i18n$t("Resistance to 3rd gen. Cephalosporins Over Time")),
-                                                        highchartOutput("salmonella_sir_evolution_ceph", height = "400px"),
-                                                 )),
-                                               fluidRow(
-                                                 column(12,
-                                                        h4(i18n$t("Resistance to Fluoroquinolones Over Time")),
-                                                        highchartOutput("salmonella_sir_evolution_fluo", height = "400px")
-                                                 ))
-                                             )
-                            )
-                        ),
-                        nav(value = "amr_sta",
-                            HTML("<em>Staphylococcus <br/>aureus</em>"),
-                            conditionalPanel(condition = "! output.test_saureus_sir", 
-                                             h4(i18n$t("There is no data to display for this organism."))),
-                            conditionalPanel(condition = "output.test_saureus_sir", 
-                                             div(
-                                               fluidRow(
-                                                 column(6,
-                                                        htmlOutput("nb_isolates_saureus")
-                                                 ),
-                                                 column(6,
-                                                        div(class = "text-warning", 
-                                                            span(icon("exclamation-triangle"),
-                                                                 i18n$t("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable.")))
-                                                 )
-                                               ),
-                                               br(),
-                                               fluidRow(
-                                                 column(6,
-                                                        h4(i18n$t("SIR Evaluation")),
-                                                        highchartOutput("saureus_sir", height = "400px")
-                                                 ),
-                                                 column(6,
-                                                        h4(i18n$t("Co-resistances")),
-                                                        plotOutput("saureus_co_resistance", height = "400px"),
-                                                        conditionalPanel(condition = "! input.combine_SI", 
-                                                                         i18n$t("Susceptible and Intermediate are always combined in this visualisation of co-resistances.")
-                                                        ),
-                                                        i18n$t("Horizontal bars show the size of a set of SR results while vertical bars show the number of resistant isolates for the corresponding antibiotic."),
-                                                        i18n$t("Only isolates that have been tested against all of the drugs are included in the upset plot.")
-                                                 )
-                                               ),
-                                               fluidRow(
-                                                 column(12,
-                                                        h4(i18n$t("Resistance to Oxacillin Over Time")),
-                                                        highchartOutput("saureus_sir_evolution", height = "400px")
-                                                 ))
-                                             )
-                            )
-                        ),
-                        nav(value = "amr_str",
-                            HTML("<em>Streptococcus <br/>pneumoniae</em>"),
-                            conditionalPanel(condition = "! output.test_spneumoniae_sir", 
-                                             h4(i18n$t("There is no data to display for this organism."))),
-                            conditionalPanel(condition = "output.test_spneumoniae_sir", 
-                                             div(
-                                               fluidRow(
-                                                 column(6,
-                                                        htmlOutput("nb_isolates_spneumoniae")
-                                                 ),
-                                                 column(6,
-                                                        div(class = "text-warning", 
-                                                            span(icon("exclamation-triangle"),
-                                                                 i18n$t("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable.")))
-                                                 )
-                                               ),
-                                               br(),
-                                               fluidRow(
-                                                 column(6,
-                                                        h4(i18n$t("SIR Evaluation")),
-                                                        highchartOutput("spneumoniae_sir", height = "400px")
-                                                 ),
-                                                 column(6,
-                                                        h4(i18n$t("Co-resistances")),
-                                                        plotOutput("spneumoniae_co_resistance", height = "400px"),
-                                                        conditionalPanel(condition = "! input.combine_SI", 
-                                                                         i18n$t("Susceptible and Intermediate are always combined in this visualisation of co-resistances.")
-                                                        ),
-                                                        i18n$t("Horizontal bars show the size of a set of SR results while vertical bars show the number of resistant isolates for the corresponding antibiotic."),
-                                                        i18n$t("Only isolates that have been tested against all of the drugs are included in the upset plot.")
-                                                 )
-                                               ),
-                                               fluidRow(
-                                                 column(12,
-                                                        h4(i18n$t("Resistance to Penicillin G Over Time")),
-                                                        highchartOutput("spneumoniae_sir_evolution_pen", height = "400px")
-                                                 )),
-                                               fluidRow(
-                                                 column(12,
-                                                        h4(i18n$t("Resistance to Penicillin G - meningitis Over Time")),
-                                                        highchartOutput("spneumoniae_sir_evolution_pen_men", height = "400px")
-                                                 ))
-                                             )
-                            )
-                        ),
-                        nav(value = "amr_all",
-                            i18n$t("All Other Organisms"),
-                            br(),
-                            fluidRow(
-                              column(4,
-                                     div(id = "other_organism_div", selectInput("other_organism", label = NULL, multiple = FALSE, choices = NULL, selected = NULL))
-                              ),
-                              column(8,
-                                     conditionalPanel(condition = "! output.test_other_sir", 
-                                                      h4(i18n$t("There is no data to display for this organism."))),
-                                     conditionalPanel(condition = "output.test_other_sir", 
-                                                      div(
-                                                        htmlOutput("nb_isolates_other"),
-                                                        div(class = "text-warning", 
-                                                            span(icon("exclamation-triangle"),
-                                                                 i18n$t("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable."))),
-                                                        h4(i18n$t("SIR Evaluation")),
-                                                        highchartOutput("other_organism_sir", height = "500px"),
-                                                      )
-                                     )
-                              )
-                            )
-                        )
-                        
+                           nav(value = "amr_aci",
+                               span(em("Acinetobacter"), br(), " species"),
+                               
+                               conditionalPanel(condition = "! output.test_acinetobacter_sir", 
+                                                h4(i18n$t("There is no data to display for this organism."))),
+                               conditionalPanel(condition = "output.test_acinetobacter_sir", 
+                                                div(
+                                                  fluidRow(
+                                                    column(6,
+                                                           htmlOutput("nb_isolates_acinetobacter")
+                                                    ),
+                                                    column(6,
+                                                           div(class = "text-warning", 
+                                                               span(icon("exclamation-triangle"),
+                                                                    i18n$t("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable.")))
+                                                    )
+                                                  ),
+                                                  br(),
+                                                  fluidRow(
+                                                    column(6,
+                                                           h4(i18n$t("SIR Evaluation")),
+                                                           highchartOutput("acinetobacter_sir", height = "400px")
+                                                    ),
+                                                    column(6,
+                                                           h4(i18n$t("Co-resistances")),
+                                                           plotOutput("acinetobacter_co_resistance", height = "400px"),
+                                                           conditionalPanel(condition = "! input.combine_SI", 
+                                                                            i18n$t("Susceptible and Intermediate are always combined in this visualisation of co-resistances.")
+                                                           ),
+                                                           i18n$t("Horizontal bars show the size of a set of SR results while vertical bars show the number of resistant isolates for the corresponding antibiotic."),
+                                                           i18n$t("Only isolates that have been tested against all of the drugs are included in the upset plot.")
+                                                    )
+                                                  ),
+                                                  fluidRow(
+                                                    column(12,
+                                                           h4(i18n$t("Resistance to Carbapenems Over Time")),
+                                                           highchartOutput("acinetobacter_sir_evolution", height = "400px")
+                                                    ))
+                                                )
+                               )
+                           ),
+                           nav(value = "amr_esc",
+                               HTML("<em>Escherichia <br/>coli</em>"),
+                               
+                               conditionalPanel(condition = "! output.test_ecoli_sir", 
+                                                h4(i18n$t("There is no data to display for this organism."))),
+                               conditionalPanel(condition = "output.test_ecoli_sir", 
+                                                div(
+                                                  fluidRow(
+                                                    column(6,
+                                                           htmlOutput("nb_isolates_ecoli")
+                                                    ),
+                                                    column(6,
+                                                           div(class = "text-warning", 
+                                                               span(icon("exclamation-triangle"),
+                                                                    i18n$t("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable.")))
+                                                    )
+                                                  ),
+                                                  br(),
+                                                  fluidRow(
+                                                    column(6,
+                                                           h4(i18n$t("SIR Evaluation")),
+                                                           highchartOutput("ecoli_sir", height = "400px")
+                                                    ),
+                                                    column(6,
+                                                           h4(i18n$t("Co-resistances")),
+                                                           plotOutput("ecoli_co_resistance", height = "400px"),
+                                                           conditionalPanel(condition = "! input.combine_SI", 
+                                                                            i18n$t("Susceptible and Intermediate are always combined in this visualisation of co-resistances.")
+                                                           ),
+                                                           i18n$t("Horizontal bars show the size of a set of SR results while vertical bars show the number of resistant isolates for the corresponding antibiotic."),
+                                                           i18n$t("Only isolates that have been tested against all of the drugs are included in the upset plot.")
+                                                    )
+                                                  ),
+                                                  fluidRow(
+                                                    column(12,
+                                                           h4(i18n$t("Resistance to Carbapenems Over Time")),
+                                                           highchartOutput("ecoli_sir_evolution", height = "400px")
+                                                    )),
+                                                  fluidRow(
+                                                    column(12,
+                                                           h4(i18n$t("Resistance to 3rd gen. Cephalosporins Over Time")),
+                                                           highchartOutput("ecoli_sir_evolution_ceph", height = "400px")
+                                                    ))
+                                                )
+                               )
+                           ),
+                           nav(value = "amr_hae",
+                               HTML("<em>Haemophilus <br/>influenzae</em>"),
+                               
+                               conditionalPanel(condition = "! output.test_haemophilus_influenzae_sir", 
+                                                h4(i18n$t("There is no data to display for this organism."))),
+                               conditionalPanel(condition = "output.test_haemophilus_influenzae_sir", 
+                                                div(
+                                                  fluidRow(
+                                                    column(6,
+                                                           htmlOutput("nb_isolates_haemophilus_influenzae")
+                                                    ),
+                                                    column(6,
+                                                           div(class = "text-warning", 
+                                                               span(icon("exclamation-triangle"),
+                                                                    i18n$t("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable.")))
+                                                    )
+                                                  ),
+                                                  br(),
+                                                  fluidRow(
+                                                    column(6,
+                                                           h4(i18n$t("SIR Evaluation")),
+                                                           highchartOutput("haemophilus_influenzae_sir", height = "400px")
+                                                    ),
+                                                    column(6,
+                                                           h4(i18n$t("Co-resistances")),
+                                                           plotOutput("haemophilus_influenzae_co_resistance", height = "400px"),
+                                                           conditionalPanel(condition = "! input.combine_SI", 
+                                                                            i18n$t("Susceptible and Intermediate are always combined in this visualisation of co-resistances.")
+                                                           ),
+                                                           i18n$t("Horizontal bars show the size of a set of SR results while vertical bars show the number of resistant isolates for the corresponding antibiotic."),
+                                                           i18n$t("Only isolates that have been tested against all of the drugs are included in the upset plot.")
+                                                    )
+                                                  )
+                                                )
+                               )
+                           ),
+                           nav(value = "amr_kle",
+                               HTML("<em>Klebsiella <br/>pneumoniae</em>"), 
+                               
+                               conditionalPanel(condition = "! output.test_kpneumoniae_sir", 
+                                                h4(i18n$t("There is no data to display for this organism."))),
+                               conditionalPanel(condition = "output.test_kpneumoniae_sir", 
+                                                div(
+                                                  fluidRow(
+                                                    column(6,
+                                                           htmlOutput("nb_isolates_kpneumoniae")
+                                                    ),
+                                                    column(6,
+                                                           div(class = "text-warning", 
+                                                               span(icon("exclamation-triangle"),
+                                                                    i18n$t("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable.")))
+                                                    )
+                                                  ),
+                                                  br(),
+                                                  fluidRow(
+                                                    column(6,
+                                                           h4(i18n$t("SIR Evaluation")),
+                                                           highchartOutput("kpneumoniae_sir", height = "400px")
+                                                    ),
+                                                    column(6,
+                                                           h4(i18n$t("Co-resistances")),
+                                                           plotOutput("kpneumoniae_co_resistance", height = "400px"),
+                                                           conditionalPanel(condition = "! input.combine_SI", 
+                                                                            i18n$t("Susceptible and Intermediate are always combined in this visualisation of co-resistances.")
+                                                           ),
+                                                           i18n$t("Horizontal bars show the size of a set of SR results while vertical bars show the number of resistant isolates for the corresponding antibiotic."),
+                                                           i18n$t("Only isolates that have been tested against all of the drugs are included in the upset plot.")
+                                                    )
+                                                  ),
+                                                  fluidRow(
+                                                    column(12,
+                                                           h4(i18n$t("Resistance to Carbapenems Over Time")),
+                                                           highchartOutput("kpneumoniae_sir_evolution", height = "400px")
+                                                    )),
+                                                  fluidRow(
+                                                    column(12,
+                                                           h4(i18n$t("Resistance to 3rd gen. Cephalosporins Over Time")),
+                                                           highchartOutput("kpneumoniae_sir_evolution_ceph", height = "400px")
+                                                    ))
+                                                )
+                               )
+                           ),
+                           nav(value = "amr_nei",
+                               HTML("<em>Neisseria <br/>meningitidis</em>"), 
+                               
+                               conditionalPanel(condition = "! output.test_neisseria_meningitidis_sir", 
+                                                h4(i18n$t("There is no data to display for this organism."))),
+                               conditionalPanel(condition = "output.test_neisseria_meningitidis_sir", 
+                                                div(
+                                                  fluidRow(
+                                                    column(6,
+                                                           htmlOutput("nb_isolates_neisseria_meningitidis")
+                                                    ),
+                                                    column(6,
+                                                           div(class = "text-warning", 
+                                                               span(icon("exclamation-triangle"),
+                                                                    i18n$t("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable.")))
+                                                    )
+                                                  ),
+                                                  br(),
+                                                  fluidRow(
+                                                    column(6,
+                                                           h4(i18n$t("SIR Evaluation")),
+                                                           highchartOutput("neisseria_meningitidis_sir", height = "400px")
+                                                    ),
+                                                    column(6,
+                                                           h4(i18n$t("Co-resistances")),
+                                                           plotOutput("neisseria_meningitidis_co_resistance", height = "400px"),
+                                                           conditionalPanel(condition = "! input.combine_SI", 
+                                                                            i18n$t("Susceptible and Intermediate are always combined in this visualisation of co-resistances.")
+                                                           ),
+                                                           i18n$t("Horizontal bars show the size of a set of SR results while vertical bars show the number of resistant isolates for the corresponding antibiotic."),
+                                                           i18n$t("Only isolates that have been tested against all of the drugs are included in the upset plot.")
+                                                    )
+                                                  )
+                                                )
+                               )
+                           ),
+                           nav(value = "amr_pse",
+                               HTML("<em>Pseudomonas <br/>aeruginosa</em>"), 
+                               
+                               conditionalPanel(condition = "! output.test_pseudomonas_aeruginosa_sir", 
+                                                h4(i18n$t("There is no data to display for this organism."))),
+                               conditionalPanel(condition = "output.test_pseudomonas_aeruginosa_sir", 
+                                                div(
+                                                  fluidRow(
+                                                    column(6,
+                                                           htmlOutput("nb_isolates_pseudomonas_aeruginosa")
+                                                    ),
+                                                    column(6,
+                                                           div(class = "text-warning", 
+                                                               span(icon("exclamation-triangle"),
+                                                                    i18n$t("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable.")))
+                                                    )
+                                                  ),
+                                                  br(),
+                                                  fluidRow(
+                                                    column(6,
+                                                           h4(i18n$t("SIR Evaluation")),
+                                                           highchartOutput("pseudomonas_aeruginosa_sir", height = "400px")
+                                                    ),
+                                                    column(6,
+                                                           h4(i18n$t("Co-resistances")),
+                                                           plotOutput("pseudomonas_aeruginosa_co_resistance", height = "400px"),
+                                                           conditionalPanel(condition = "! input.combine_SI", 
+                                                                            i18n$t("Susceptible and Intermediate are always combined in this visualisation of co-resistances.")
+                                                           ),
+                                                           i18n$t("Horizontal bars show the size of a set of SR results while vertical bars show the number of resistant isolates for the corresponding antibiotic."),
+                                                           i18n$t("Only isolates that have been tested against all of the drugs are included in the upset plot.")
+                                                    )
+                                                  ),
+                                                  fluidRow(
+                                                    column(12,
+                                                           h4(i18n$t("Resistance to Carbapenems Over Time")),
+                                                           highchartOutput("pseudomonas_aeruginosa_sir_evolution", height = "400px")
+                                                    ))
+                                                )
+                               )
+                           ),
+                           nav(value = "amr_sal",
+                               HTML("<em>Salmonella</em> <br/>species"),
+                               br(),
+                               prettyRadioButtons("select_salmonella", label = NULL,  shape = "curve",
+                                                  choices = c("Salmonella Typhi", "Salmonella Paratyphi", "Salmonella sp (not S. Typhi or S. Paratyphi)"), 
+                                                  selected = "Salmonella Typhi", inline = TRUE),
+                               conditionalPanel(condition = "! output.test_salmonella_sir", 
+                                                h4(i18n$t("There is no data to display for this organism."))),
+                               conditionalPanel(condition = "output.test_salmonella_sir", 
+                                                div(
+                                                  fluidRow(
+                                                    column(6,
+                                                           htmlOutput("nb_isolates_salmonella")
+                                                    ),
+                                                    column(6,
+                                                           div(class = "text-warning", 
+                                                               span(icon("exclamation-triangle"),
+                                                                    i18n$t("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable.")))
+                                                    )
+                                                  ),
+                                                  br(),
+                                                  fluidRow(
+                                                    column(6,
+                                                           h4(i18n$t("SIR Evaluation")),
+                                                           highchartOutput("salmonella_sir", height = "500px"),
+                                                    ),
+                                                    column(6,
+                                                           h4(i18n$t("Co-resistances")),
+                                                           plotOutput("salmonella_co_resistance", height = "400px"),
+                                                           conditionalPanel(condition = "! input.combine_SI", 
+                                                                            i18n$t("Susceptible and Intermediate are always combined in this visualisation of co-resistances.")
+                                                           ),
+                                                           i18n$t("Horizontal bars show the size of a set of SR results while vertical bars show the number of resistant isolates for the corresponding antibiotic."),
+                                                           i18n$t("Only isolates that have been tested against all of the drugs are included in the upset plot.")
+                                                    )
+                                                  ),
+                                                  fluidRow(
+                                                    column(12,
+                                                           h4(i18n$t("Resistance to 3rd gen. Cephalosporins Over Time")),
+                                                           highchartOutput("salmonella_sir_evolution_ceph", height = "400px"),
+                                                    )),
+                                                  fluidRow(
+                                                    column(12,
+                                                           h4(i18n$t("Resistance to Fluoroquinolones Over Time")),
+                                                           highchartOutput("salmonella_sir_evolution_fluo", height = "400px")
+                                                    ))
+                                                )
+                               )
+                           ),
+                           nav(value = "amr_sta",
+                               HTML("<em>Staphylococcus <br/>aureus</em>"),
+                               conditionalPanel(condition = "! output.test_saureus_sir", 
+                                                h4(i18n$t("There is no data to display for this organism."))),
+                               conditionalPanel(condition = "output.test_saureus_sir", 
+                                                div(
+                                                  fluidRow(
+                                                    column(6,
+                                                           htmlOutput("nb_isolates_saureus")
+                                                    ),
+                                                    column(6,
+                                                           div(class = "text-warning", 
+                                                               span(icon("exclamation-triangle"),
+                                                                    i18n$t("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable.")))
+                                                    )
+                                                  ),
+                                                  br(),
+                                                  fluidRow(
+                                                    column(6,
+                                                           h4(i18n$t("SIR Evaluation")),
+                                                           highchartOutput("saureus_sir", height = "400px")
+                                                    ),
+                                                    column(6,
+                                                           h4(i18n$t("Co-resistances")),
+                                                           plotOutput("saureus_co_resistance", height = "400px"),
+                                                           conditionalPanel(condition = "! input.combine_SI", 
+                                                                            i18n$t("Susceptible and Intermediate are always combined in this visualisation of co-resistances.")
+                                                           ),
+                                                           i18n$t("Horizontal bars show the size of a set of SR results while vertical bars show the number of resistant isolates for the corresponding antibiotic."),
+                                                           i18n$t("Only isolates that have been tested against all of the drugs are included in the upset plot.")
+                                                    )
+                                                  ),
+                                                  fluidRow(
+                                                    column(12,
+                                                           h4(i18n$t("Resistance to Oxacillin Over Time")),
+                                                           highchartOutput("saureus_sir_evolution", height = "400px")
+                                                    ))
+                                                )
+                               )
+                           ),
+                           nav(value = "amr_str",
+                               HTML("<em>Streptococcus <br/>pneumoniae</em>"),
+                               conditionalPanel(condition = "! output.test_spneumoniae_sir", 
+                                                h4(i18n$t("There is no data to display for this organism."))),
+                               conditionalPanel(condition = "output.test_spneumoniae_sir", 
+                                                div(
+                                                  fluidRow(
+                                                    column(6,
+                                                           htmlOutput("nb_isolates_spneumoniae")
+                                                    ),
+                                                    column(6,
+                                                           div(class = "text-warning", 
+                                                               span(icon("exclamation-triangle"),
+                                                                    i18n$t("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable.")))
+                                                    )
+                                                  ),
+                                                  br(),
+                                                  fluidRow(
+                                                    column(6,
+                                                           h4(i18n$t("SIR Evaluation")),
+                                                           highchartOutput("spneumoniae_sir", height = "400px")
+                                                    ),
+                                                    column(6,
+                                                           h4(i18n$t("Co-resistances")),
+                                                           plotOutput("spneumoniae_co_resistance", height = "400px"),
+                                                           conditionalPanel(condition = "! input.combine_SI", 
+                                                                            i18n$t("Susceptible and Intermediate are always combined in this visualisation of co-resistances.")
+                                                           ),
+                                                           i18n$t("Horizontal bars show the size of a set of SR results while vertical bars show the number of resistant isolates for the corresponding antibiotic."),
+                                                           i18n$t("Only isolates that have been tested against all of the drugs are included in the upset plot.")
+                                                    )
+                                                  ),
+                                                  fluidRow(
+                                                    column(12,
+                                                           h4(i18n$t("Resistance to Penicillin G Over Time")),
+                                                           highchartOutput("spneumoniae_sir_evolution_pen", height = "400px")
+                                                    )),
+                                                  fluidRow(
+                                                    column(12,
+                                                           h4(i18n$t("Resistance to Penicillin G - meningitis Over Time")),
+                                                           highchartOutput("spneumoniae_sir_evolution_pen_men", height = "400px")
+                                                    ))
+                                                )
+                               )
+                           ),
+                           nav(value = "amr_all",
+                               i18n$t("All Other Organisms"),
+                               br(),
+                               fluidRow(
+                                 column(4,
+                                        div(id = "other_organism_div", selectInput("other_organism", label = NULL, multiple = FALSE, choices = NULL, selected = NULL))
+                                 ),
+                                 column(8,
+                                        conditionalPanel(condition = "! output.test_other_sir", 
+                                                         h4(i18n$t("There is no data to display for this organism."))),
+                                        conditionalPanel(condition = "output.test_other_sir", 
+                                                         div(
+                                                           htmlOutput("nb_isolates_other"),
+                                                           div(class = "text-warning", 
+                                                               span(icon("exclamation-triangle"),
+                                                                    i18n$t("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable."))),
+                                                           h4(i18n$t("SIR Evaluation")),
+                                                           highchartOutput("other_organism_sir", height = "500px"),
+                                                         )
+                                        )
+                                 )
+                               )
+                           )
+                           
             )
         ),
         nav_item(
@@ -959,8 +964,8 @@ server <- function(input, output, session) {
   
   # Create a blank page while the app is loading.
   shinyjs::delay(100, {
-                 shinyjs::hide("loading_page")
-                 shinyjs::show("content")
+    shinyjs::hide("loading_page")
+    shinyjs::show("content")
   })
   
   output$twitter_feed <- renderText({
@@ -1062,7 +1067,7 @@ server <- function(input, output, session) {
     }
   )
   
-  # Management of filters. ----
+  # Management of filters ----
   observeEvent(input$shortcut_reset_filters, source("./www/R/reset_filters/reset_filter_enrolments.R", local = TRUE))
   
   observe({
@@ -1492,57 +1497,77 @@ server <- function(input, output, session) {
   )
   
   
-  # On "Provide Lab data" ----
-  observeEvent(c(input$file_lab_tab, input$file_lab_dba, input$file_lab_sql), 
-               {
-                 id <- notify(i18n$t("Reading lab data."))
-                 on.exit({Sys.sleep(2); removeNotification(id)}, add = TRUE)
-                 source("./www/R/data/01_read_lab_data.R", local = TRUE)
-                 
-                 source("./www/R/data/01_read_lab_codes.R", local = TRUE)
-                 corresp_org_antibio(lab_code$orgs.antibio)
-                 lab_code(
-                   list(whonet.spec = lab_code$whonet.spec,
-                        orgs.antibio = lab_code$orgs.antibio,
-                        orgs.whonet = lab_code$orgs.whonet,
-                        acorn.bccontaminants = lab_code$acorn.bccontaminants,
-                        acorn.ast.groups = lab_code$acorn.ast.groups,
-                        ast.aci =lab_code$ast.aci,
-                        ast.col =lab_code$ast.col,
-                        ast.hin = lab_code$ast.hin,
-                        ast.ngo = lab_code$ast.ngo,
-                        ast.nmen = lab_code$ast.nmen,
-                        ast.pae = lab_code$ast.pae,
-                        ast.sal = lab_code$ast.sal,
-                        ast.shi = lab_code$ast.shi,
-                        ast.ent = lab_code$ast.ent,
-                        ast.sau = lab_code$ast.sau,
-                        ast.spn = lab_code$ast.spn,
-                        notes = lab_code$notes)
-                 )
-                 
-                 source("./www/R/data/01_read_data_dic.R", local = TRUE)
-                 data_dictionary(
-                   list(variables = data_dictionary$variables,
-                        test.res = data_dictionary$test.res,
-                        local.spec = data_dictionary$local.spec,
-                        organisms.patterns = data_dictionary$organisms.patterns,
-                        local.orgs = data_dictionary$local.orgs,
-                        notes = data_dictionary$notes)
-                 )
-                 
-                 notify(i18n$t("Processing lab data."), id = id)
-                 source("./www/R/data/03_map_variables.R", local = TRUE)
-                 source("./www/R/data/04_map_specimens.R", local = TRUE)
-                 source("./www/R/data/05_map_organisms.R", local = TRUE)
-                 source("./www/R/data/06_make_ast_group.R", local = TRUE)
-                 source("./www/R/data/07_ast_interpretation.R", local = TRUE)
-                 source("./www/R/data/08_ast_interpretation_nonstandard.R", local = TRUE)
-                 source("./www/R/data/09_checklist_lab.R", local = TRUE)
-                 
-                 lab_dta(amr)
-                 notify(i18n$t("Lab data successfully processed!"), id = id)
-               })
+  # On "Process Lab data" ---- 
+  observe( {
+    id <- notify(i18n$t("Reading lab data."))
+    on.exit({Sys.sleep(2); removeNotification(id)}, add = TRUE)
+    
+    source("./www/R/data/01_read_lab_data.R", local = TRUE)
+    source("./www/R/data/01_read_lab_codes.R", local = TRUE)
+    corresp_org_antibio(lab_code$orgs.antibio)
+    lab_code(
+      list(whonet.spec = lab_code$whonet.spec,
+           orgs.antibio = lab_code$orgs.antibio,
+           orgs.whonet = lab_code$orgs.whonet,
+           acorn.bccontaminants = lab_code$acorn.bccontaminants,
+           acorn.ast.groups = lab_code$acorn.ast.groups,
+           ast.aci =lab_code$ast.aci,
+           ast.col =lab_code$ast.col,
+           ast.hin = lab_code$ast.hin,
+           ast.ngo = lab_code$ast.ngo,
+           ast.nmen = lab_code$ast.nmen,
+           ast.pae = lab_code$ast.pae,
+           ast.sal = lab_code$ast.sal,
+           ast.shi = lab_code$ast.shi,
+           ast.ent = lab_code$ast.ent,
+           ast.sau = lab_code$ast.sau,
+           ast.spn = lab_code$ast.spn,
+           notes = lab_code$notes)
+    )
+    
+    source("./www/R/data/01_read_data_dic.R", local = TRUE)
+    data_dictionary(
+      list(variables = data_dictionary$variables,
+           test.res = data_dictionary$test.res,
+           local.spec = data_dictionary$local.spec,
+           organisms.patterns = data_dictionary$organisms.patterns,
+           local.orgs = data_dictionary$local.orgs,
+           notes = data_dictionary$notes)
+    )
+    
+    notify(i18n$t("Processing lab data."), id = id)
+    source("./www/R/data/03_map_variables.R", local = TRUE)
+    source("./www/R/data/04_map_specimens.R", local = TRUE)
+    source("./www/R/data/05_map_organisms.R", local = TRUE)
+    source("./www/R/data/06_make_ast_group.R", local = TRUE)
+    source("./www/R/data/07_ast_interpretation.R", local = TRUE)
+    source("./www/R/data/08_ast_interpretation_nonstandard.R", local = TRUE)
+    source("./www/R/data/09_checklist_lab.R", local = TRUE)
+    
+    lab_dta(amr)
+    notify(i18n$t("Lab data successfully processed!"), id = id)
+  } ) |> bindEvent(input$process_lab_data, ignoreInit = TRUE)
+  
+  # Logic to show elements only when a lab file is provided; lab file overview ----
+  output$lab_file_uploaded <- reactive({
+    val <- !(is.null(input$file_lab_tab) & is.null(input$file_lab_dba) & is.null(input$file_lab_sql))
+  })
+  outputOptions(output, "lab_file_uploaded", suspendWhenHidden = FALSE)
+  
+  
+  output$overview_lab_data <- downloadHandler(
+    filename = "acorn_overview_lab_file.html",
+    content = function(file) {
+      showNotification(i18n$t("Generating lab file overview."), id = "overview_lab")
+      
+      temp_file <- file.path(tempdir(), "report_lab_file.Rmd")
+      file.copy("./www/report_lab_file.Rmd", temp_file, overwrite = TRUE)
+      
+      rmarkdown::render(temp_file, output_file = file)
+      showNotification(i18n$t("Overview of lab file successfully generated!"), id = "overview_lab")
+    }
+  )
+  
   
   # On "Generate ACORN" ----
   observeEvent(input$generate_acorn_data, {
