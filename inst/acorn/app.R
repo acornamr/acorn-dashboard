@@ -199,9 +199,9 @@ ui <- page(
                                                          fileInput("file_lab_tab", NULL,  buttonLabel = "Browse for file", accept = c(".csv", ".txt", ".xls", ".xlsx"))
                                         ),
                                         conditionalPanel("output.lab_file_uploaded",
-                                                         downloadLink("overview_lab_data", span(icon("file"), "Lab file overview (optional)")),
+                                                         downloadLink("overview_lab_data", span(icon("file"), i18n$t("Lab file overview (optional)"))),
                                                          br(),
-                                                         actionButton("process_lab_data", "Process Lab File")
+                                                         actionButton("process_lab_data", i18n$t("Process Lab File"))
                                         ),
                                  ),
                                  column(6,

@@ -59,7 +59,7 @@
 		{
 			"en" : "(4/4) Save .acorn file",
 			"fr" : "(4/4) Sauvegarder un ficher .acorn",
-			"la" : "(4/4)ບັນທຶກເອກະສານຂອງ.acorn",
+			"la" : "(4/4) ບັນທຶກເອກະສານຂອງ.acorn",
 			"kh" : "(៤/៤)​ រក្សាទុកឯកសារ .acorn",
 			"vn" : "(4/4) Lưu tệp .acorn",
 			"ba" : "TBT"
@@ -123,7 +123,7 @@
 		{
 			"en" : "All 'specgroup' are provided.",
 			"fr" : "Tous les 'specgroup' sont fournis.",
-			"la" : "ທັງໝົດຂອງ'specgroup' ແມ່ນຖືກກຳນົດໄວ້ແລ້ວ",
+			"la" : "ທັງໝົດຂອງ 'specgroup' ແມ່ນຖືກກຳນົດໄວ້ແລ້ວ",
 			"kh" : "‘specgroup' ទាំងអស់ត្រូវបានផ្តល់ជូន។",
 			"vn" : "Tất cả \"specgroup\" được cung cấp",
 			"ba" : "TBT"
@@ -139,7 +139,7 @@
 		{
 			"en" : "All dates of enrolment for HAI patients have a matching date in the HAI survey dataset",
 			"fr" : "Toutes les dates d'enrôlements de patients avec une HAI se trouvent dans le jeu de données d'études de HAI.",
-			"la" : "ທຸກວັນທີເຂົ້າການສຶກສາສຳລັບຄົນເຈັບHAI ຈັບຄູ່ເຂົ້າກັບວັນທີເຮັດການສຳຫຼວດ HAI",
+			"la" : "ທຸກວັນທີເຂົ້າການສຶກສາສຳລັບຄົນເຈັບ HAI ຈັບຄູ່ເຂົ້າກັບວັນທີເຮັດການສຳຫຼວດ HAI",
 			"kh" : "កាលបរិច្ឆេទទាំងអស់នៃអ្នកជំងឺដែលចូលរួមការអង្កេតតាមដាន HAI មានកាលបរិច្ឆេទត្រូវគ្នាទៅនឹងសំណុំទិន្នន័យអង្កេតតាមដាន HAI",
 			"vn" : "Tất cả các ngày thu tuyển của bệnh nhân HAI phải tương ứng với ngày thực hiện giám sát điểm đã được định sẵn",
 			"ba" : "TBT"
@@ -213,7 +213,7 @@
 			"fr" : "L'âge calculé est cohérent avec la catégorie d'âge.",
 			"la" : "ການຄິດໄລ່ອາຍຸແມ່ນເໝາະສົມກັບ 'Age Category'",
 			"kh" : "អាយុដែលបានគណនាគឺស្របទៅនឹង 'ប្រភេទអាយុ'",
-			"vn" : "Tuổi được tính toán nhất quán với \"Phân loại tuổi\"",
+			"vn" : "Tuổi được tính ra nhất quán với \"Nhóm tuổi\"",
 			"ba" : "TBT"
 		},
 		{
@@ -221,7 +221,7 @@
 			"fr" : "L'âge calculé n'est pas toujours cohérent avec la catégorie d'âge.",
 			"la" : "ການຄິດໄລ່ອາຍຸອາດບໍ່ເໝາະສົມກັບ 'Age Category' ສະເໝີໄປ",
 			"kh" : "អាយុដែលបានគណនាគឺមិនស្របទៅនឹង 'ប្រភេទអាយុ'",
-			"vn" : "Tuổi được tính toán không nhất quán với \"Phân loại tuổi\"",
+			"vn" : "Tuổi được tính ra không nhất quán với \"Nhóm tuổi\"",
 			"ba" : "TBT"
 		},
 		{
@@ -259,9 +259,9 @@
 		{
 			"en" : "Clinical data not provided",
 			"fr" : "TBT",
-			"la" : "TBT",
+			"la" : "ຂໍ້ມູນອາການທາງຄຣີນິກບໍ່ຖືກຕອບສະໜອງ",
 			"kh" : "ទិន្ន័យគ្លីនិកមិនត្រូវបានផ្តល់ជូន",
-			"vn" : "TBT",
+			"vn" : "Dữ liệu lâm sàng không được cung cấp",
 			"ba" : "TBT"
 		},
 		{
@@ -307,9 +307,9 @@
 		{
 			"en" : "Contains names of organisms before and after mapping.",
 			"fr" : "Contient les noms des organismes avant et après cartorgraphie.",
-			"la" : "TBT",
+			"la" : "ມີຊື່ຂອງເຊື້ອພະຍາດທັງກ່ອນ ແລະ ຫຼັງການສ້າງແຜນພາບ",
 			"kh" : "ឈ្មោះរបស់មេរោគ មុន និង ក្រោយធ្វើការកំណត់",
-			"vn" : "TBT",
+			"vn" : "Bao gồm tên của các vi sinh vật trước và sau khi kết nối dữ liệu.",
 			"ba" : "TBT"
 		},
 		{
@@ -397,15 +397,15 @@
 			"fr" : "Télécharger un fichier de suivi des recrutements (.xlsx)",
 			"la" : "ດຶງຂໍ້ມູນບັນທຶກການເຂົ້າຮ່ວມ (.xlsx)",
 			"kh" : "ទាញយកបញ្ជីអ្នកចូលរួមការអង្កេតតាមដាន (.xlsx)",
-			"vn" : "Tải xuống Sổ thu tuyển (.xlsx)",
+			"vn" : "Tải xuống những lỗi dữ liệu của file thu tuyển (.xlsx)",
 			"ba" : "TBT"
 		},
 		{
 			"en" : "Download Lab Log (.xlsx)",
 			"fr" : "Télécharger un log du traitement des donnés de lab (.xlsx)",
-			"la" : "TBT",
+			"la" : "ດຶງຂໍ້ມູນບັນທຶກທາງຫ້ອງວິເຄາະ (.xlsx)",
 			"kh" : "ទាញយកបញ្ជីនៃមន្ទីរពិសោធន៍ (.xlsx)",
-			"vn" : "TBT",
+			"vn" : "Tải xuống những lỗi dữ liệu của phòng xét nghiệm (.xlsx)",
 			"ba" : "TBT"
 		},
 		{
@@ -427,7 +427,7 @@
 		{
 			"en" : "Enrolments by (type of) Ward",
 			"fr" : "Enrôlements par (type de) service",
-			"la" : "ເຂົ້າຮ່ວມການສຶກສາໂດຍ(ປະເພດຂອງ)ພະແນກ",
+			"la" : "ເຂົ້າຮ່ວມການສຶກສາໂດຍ (ປະເພດຂອງ) ພະແນກ",
 			"kh" : "ការចូលរួមការអង្កេតតាមដានតាម​ (ប្រភេទ) អគារ",
 			"vn" : "Thu tuyển theo (loại) Khoa",
 			"ba" : "TBT"
@@ -491,7 +491,7 @@
 		{
 			"en" : "First sheet is the log of all enrolments retrived from REDCap (as per adjacent table). The second sheet is a listing of all flagged elements.",
 			"fr" : "Le premier onglet comprend tous les recrutements téléchargés depuis REDCap (voir table ci-contre). Le second onglet liste tous les éléments potentiellement à corriger.",
-			"la" : "ໜ້າທຳອິດເປັນບັນທຶກການລົງທະບຽນເຂົ້າຮ່ວມທັງໝົດທີ່ດຶງມາຈາກREDCap (ຕາມຕາຕະລາງທີ່ຢູ່ໃກ້ກັນ) ໜ້າທີສອງແມ່ນການສະແດງລາຍການອົງປະກອບທີ່ຖືກຕັ້ງຄ່າແລ້ວ",
+			"la" : "ໜ້າທຳອິດເປັນບັນທຶກການລົງທະບຽນເຂົ້າຮ່ວມທັງໝົດທີ່ດຶງມາຈາກ REDCap (ຕາມຕາຕະລາງທີ່ຢູ່ໃກ້ກັນ) ໜ້າທີສອງແມ່ນການສະແດງລາຍການອົງປະກອບທີ່ຖືກຕັ້ງຄ່າແລ້ວ",
 			"kh" : "សន្លឹកទីមួយគឺជាបញ្ជីអ្នកចូលរួមការអង្កេតតាមដានទាំងអស់ដែលបានទាញយកពី REDCap (ដូចទៅនឹងតារាងក្បែរគ្នា)។ សន្លឹកទីពីរគឺជាបញ្ជីនៃកំហុសឆ្គងទាំងអស់។",
 			"vn" : "Trang đầu tiên là nhật ký thu tuyển được truy xuất từ REDCap (theo bảng liền kề). Trang thứ hai là danh sách tất cả các yếu tố được gắn cờ cảnh báo.",
 			"ba" : "TBT"
@@ -537,6 +537,14 @@
 			"ba" : "TBT"
 		},
 		{
+			"en" : "Generating lab file overview.",
+			"fr" : "TBT",
+			"la" : "TBT",
+			"kh" : "TBT",
+			"vn" : "TBT",
+			"ba" : "TBT"
+		},
+		{
 			"en" : "Get data from REDCap",
 			"fr" : "Obtenir des données depuis REDCap",
 			"la" : "ເອົາຂໍ້ມູນຈາກ REDCap",
@@ -555,7 +563,7 @@
 		{
 			"en" : "Growth / No Growth",
 			"fr" : "Croissance / Pas de croissance",
-			"la" : "ເກີດເຊື້ອ/ບໍ່ເກີດເຊື້ອ",
+			"la" : "ເກີດເຊື້ອ / ບໍ່ເກີດເຊື້ອ",
 			"kh" : "ដុះ / មិនដុះ",
 			"vn" : "Vi khuẩn mọc/Vi khuẩn không mọc",
 			"ba" : "TBT"
@@ -595,7 +603,7 @@
 		{
 			"en" : "Initial & Final Surveillance Diagnosis",
 			"fr" : "TBT",
-			"la" : "ການບົ່ງມະຕິການເຝົ້າລະວັງໃນເບື້ອງຕົ້ນແລະຂັ້ນສຸດທ້າຍ",
+			"la" : "ການບົ່ງມະຕິການເຝົ້າລະວັງໃນເບື້ອງຕົ້ນ & ຂັ້ນສຸດທ້າຍ",
 			"kh" : "រោគវិនិច្ឆ័យដំបូង & ចុងក្រោយនៃការចូលរួមការអង្កេតតាមដាន",
 			"vn" : "Chẩn đoán giám sát ban đầu và cuối cùng",
 			"ba" : "TBT"
@@ -603,9 +611,9 @@
 		{
 			"en" : "Initial and Final Surveillance Diagnosis",
 			"fr" : "Diagnostic de surveillance initial et final",
-			"la" : "TBT",
+			"la" : "ການເຝົ້າລະວັງການບົ່ງມະຕິໃນເບື້ອງຕົ້ນ ແລະ ຂັ້ນສຸດທ້າຍ",
 			"kh" : "រោគវិនិច្ឆ័យដំបូង និងចុងក្រោយនៃការចូលរួមការអង្កេតតាមដាន",
-			"vn" : "TBT",
+			"vn" : "Chẩn đoán giám sát ban đầu và cuối cùng",
 			"ba" : "TBT"
 		},
 		{
@@ -621,7 +629,7 @@
 			"fr" : "Problème détecté avec les données REDCap. Merci de contacter l'équipe ACORN. Jusqu'à résolution, seuls les fichiers .acorn existants peuvent être utilisés.",
 			"la" : "ກວດພົບບັນຫາກ່ຽວກັບຂໍ້ມູນໃນ REDCap. ກະລຸນາແຈ້ງຕໍ່ຜູ້ຈັດການຂໍ້ມູນ ACORN, ຈົນກວ່າຈະໄດ້ຂໍ້ສະຫຼຸບ. ທ່ານສາມາດນຳໃຊ້ຂໍ້ມູນຂອງ .acorn ທີ່ມີຢູ່ໄດ້ເທົ່ານັ້ນ",
 			"kh" : "បានរកឃើញបញ្ហាជាមួយនឹងទិន្នន័យ REDCap។ សូមរាយការណ៍ទៅអ្នកគ្រប់គ្រងទិន្នន័យ។ រហូតដល់មានដំណោះស្រាយ មានតែឯកសារ​ .acorn ពីរមុនដែលអាចប្រើប្រាស់បាន។​",
-			"vn" : "Đã phát hiện sự cố với dữ liệu REDCap. Vui lòng báo cáo cho người quản lý dữ liệu ACORN. Chỉ các tệp .acorn hiện có mới có thể được sử dụng cho đến khi xử lý.",
+			"vn" : "Đã phát hiện sự cố với dữ liệu REDCap. Vui lòng báo cáo cho người quản lý dữ liệu ACORN. Chỉ các tệp .acorn hiện có mới có thể được sử dụng cho đến khi sự cố được xử lý xong.",
 			"ba" : "TBT"
 		},
 		{
@@ -635,9 +643,9 @@
 		{
 			"en" : "Lab data not provided",
 			"fr" : "TBT",
-			"la" : "TBT",
+			"la" : "ຂໍ້ມູນທາງຫ້ອງວິເຄາະບໍ່ຖືກຕອບສະໜອງ",
 			"kh" : "ទិន្នន័យមន្ទីរពិសោធន៍មិនត្រូវបានផ្ដល់ជូន",
-			"vn" : "TBT",
+			"vn" : "Dữ liệu phòng xét nghiệm không được cung cấp",
 			"ba" : "TBT"
 		},
 		{
@@ -670,6 +678,14 @@
 			"la" : "ໃນຊຸດຂໍ້ມູນຂອງແລັບບໍ່ມີຖັນຈຳກັດຈຳນວນໜ້ອຍ",
 			"kh" : "សំណុំទិន្នន័យមន្ទីរពិសោធន៍មិនមានជួរឈរតិចទេ។",
 			"vn" : "Tập dữ liệu phòng xét nghiệm không chứa các cột tối thiểu.",
+			"ba" : "TBT"
+		},
+		{
+			"en" : "Lab file overview (optional)",
+			"fr" : "TBT",
+			"la" : "TBT",
+			"kh" : "TBT",
+			"vn" : "TBT",
 			"ba" : "TBT"
 		},
 		{
@@ -755,17 +771,17 @@
 		{
 			"en" : "No .acorn has been generated",
 			"fr" : "TBT",
-			"la" : "TBT",
+			"la" : "ບໍ່ມີ .acorn ຖືກສ້າງຂື້ນ",
 			"kh" : "គ្មាន .acorn ត្រូវបានបង្កើត",
-			"vn" : "TBT",
+			"vn" : "Không có file .acorn nào được tạo ra",
 			"ba" : "TBT"
 		},
 		{
 			"en" : "No .acorn has been saved",
 			"fr" : "TBT",
-			"la" : "TBT",
+			"la" : "ບໍ່ມີ .acorn ຖືກບັນທຶກ",
 			"kh" : "គ្មាន .acorn ត្រូវបានរក្សាទុក",
-			"vn" : "TBT",
+			"vn" : "Không có file .acorn nào được lưu lại",
 			"ba" : "TBT"
 		},
 		{
@@ -797,7 +813,7 @@
 			"fr" : "Taux d'occupation par type de service et par mois",
 			"la" : "ອັດຕາການເຂົ້ານອນຕໍ່ປະເພດຂອງພະແນກຕໍ່ເດືອນ",
 			"kh" : "អត្រាសម្រាកព្យាបាលទៅតាមប្រភេទនីមួយៗនៃអគារក្នុងមួយខែ",
-			"vn" : "Tỷ lệ chiếm chỗ của loại khoa mỗi tháng",
+			"vn" : "Tỷ lệ sử dụng giường của loại khoa mỗi tháng",
 			"ba" : "TBT"
 		},
 		{
@@ -805,7 +821,7 @@
 			"fr" : "des hémocultures ont générées un contaminant potentiel.",
 			"la" : "ຂອງການປູກເລືອດເປັນໄປໄດ້ອາດເກີດເຊື້ອປົນເປື້ອນ",
 			"kh" : "នៃការបណ្តុះមេរោគក្នុងឈាមដែលដុះ potential contaminant",
-			"vn" : "Cấy máu phát triển một tạp nhiễm tiềm năng",
+			"vn" : "của các mẫu cấy máu có khả năng bị tạp nhiễm",
 			"ba" : "TBT"
 		},
 		{
@@ -813,7 +829,7 @@
 			"fr" : "des cultures avec croissance.",
 			"la" : "ຂອງການປູກມີເກີດເຊື້ອ",
 			"kh" : "នៃការបណ្តុះមេរោគដែលដុះមេរោគ",
-			"vn" : "Các mẫu cấy ra vi khuẩn",
+			"vn" : "của các mẫu cấy dương",
 			"ba" : "TBT"
 		},
 		{
@@ -821,7 +837,7 @@
 			"fr" : "des enrôlements avec hémoculture.",
 			"la" : "ຂອງການເຂົ້າການສຶກສາກັບການປູກເລືອດ",
 			"kh" : "នៃការចូលរួមអង្កេតតាមដាន ជាមួយការបណ្តុះមេរោគក្នុងឈាម។",
-			"vn" : "thu tuyển với cấy máu",
+			"vn" : "của các trường hợp thu tuyển có cấy máu",
 			"ba" : "TBT"
 		},
 		{
@@ -829,7 +845,7 @@
 			"fr" : "des Pathogènes Cibles",
 			"la" : "ຂອງເຊື້ອເປົ້າໝາຍ",
 			"kh" : "នៃមេរោគគោលដៅ",
-			"vn" : "tác nhân gây bệnh mục tiêu",
+			"vn" : "của các tác nhân gây bệnh mục tiêu",
 			"ba" : "TBT"
 		},
 		{
@@ -846,6 +862,14 @@
 			"la" : "ພາບລວມ",
 			"kh" : "ទិដ្ឋភាពទូទៅ",
 			"vn" : "Tổng quan",
+			"ba" : "TBT"
+		},
+		{
+			"en" : "Overview of lab file successfully generated!",
+			"fr" : "TBT",
+			"la" : "TBT",
+			"kh" : "TBT",
+			"vn" : "TBT",
 			"ba" : "TBT"
 		},
 		{
@@ -897,6 +921,14 @@
 			"ba" : "TBT"
 		},
 		{
+			"en" : "Process Lab File",
+			"fr" : "TBT",
+			"la" : "TBT",
+			"kh" : "TBT",
+			"vn" : "TBT",
+			"ba" : "TBT"
+		},
+		{
 			"en" : "Processing lab data.",
 			"fr" : "Traitement des données de lab.",
 			"la" : "ກຳລັງປະມວນຜົນຂໍ້ມູນຫ້ອງວິເຄາະ",
@@ -915,9 +947,9 @@
 		{
 			"en" : "Remove 'Not Cultured' specimens",
 			"fr" : "Supprimer les spécimens 'Not Cultured'",
-			"la" : "TBT",
+			"la" : "ລຶບຕົວຢ່າງທີ່ບໍ່ໄດ້ຖືກປູກອອກ",
 			"kh" : "លុបចោលនូវវត្ថុវិភាគដែលមិនមានការបណ្តុះមេរោគ",
-			"vn" : "TBT",
+			"vn" : "Loại bỏ những mẫu không được nuôi cấy",
 			"ba" : "TBT"
 		},
 		{
@@ -1133,7 +1165,7 @@
 			"fr" : "spécimens par enrôlement",
 			"la" : "ຕົວຢ່າງຕໍ່ການເຂົ້າຮ່ວມການສຶກສາ",
 			"kh" : "វត្ថុវិភាគនៃអ្នកចូលរួមអង្កេតតាមដានម្នាក់",
-			"vn" : "Số mẫu bệnh phẩm/ số thu tuyển",
+			"vn" : "Số mẫu bệnh phẩm của mỗi thu tuyển",
 			"ba" : "TBT"
 		},
 		{
@@ -1187,9 +1219,9 @@
 		{
 			"en" : "Susceptible and Intermediate are always combined in this visualisation of co-resistances.",
 			"fr" : "Susceptible et Intermédiaire sont toujours combinés dans cette visualisation des co-résistances.",
-			"la" : "TBT",
+			"la" : "Susceptible ແລະ Intermediate ແມ່ນຖືກລວມເຂົ້າກັນທຸກໆຄັ້ງໃນການນຳສະເໜີຂໍ້ມູນຂອງ co-resistances.",
 			"kh" : "Susceptible and Intermediate​ គឺតែងតែរួមបញ្ជូលគ្នានៅក្នុង​គំនូសតាងនៃសហ-ភាពសុំា",
-			"vn" : "TBT",
+			"vn" : "Nhạy và trung gian luôn được gộp lại làm một trong các đồ thị thể hiện sự đồng kháng",
 			"ba" : "TBT"
 		},
 		{
@@ -1205,7 +1237,7 @@
 			"fr" : "Les « identifiants de patient » suivants sont des cas atypiques (un HCAI/CAI avec HAI précoce mais sans chevauchement) :",
 			"la" : "ລະຫັດຄົນເຈັບຕໍ່ໄປນີ້ເປັນກໍລະນີທີ່ຜິດປົກກະຕິ (HCAI/CAI ໜຶ່ງລາຍການນີ້ທີ່ມີກ່ອນ HAI ແຕ່ຂໍ້ມູນບໍ່ທັບຊ້ອນກັນ)",
 			"kh" : "patient id' ខាងក្រោមគឺជាករណីមិនប្រក្រតី (HCAI/CAI មួយ ជាមួយ HAI ដំបូងប៉ុន្តែមិនមានការជាន់គ្នា)៖",
-			"vn" : "Mã bệnh nhân' sau đây là các trường hợp không điển hình (một HCAI / CAI có HAI sớm nhưng không trùng lặp):",
+			"vn" : "Mã bệnh nhân sau đây là các trường hợp không điển hình (một HCAI / CAI có HAI sớm nhưng không trùng lặp):",
 			"ba" : "TBT"
 		},
 		{
@@ -1213,7 +1245,7 @@
 			"fr" : "Les 'patient id' suivant sont des cas problématiques (fenêtre de collection de spécimens qui se chevauchent)",
 			"la" : "ການເຊື່ອມຕໍ່ລະຫັດຂໍ້ມູນຄົນເຈັບເກີດຂໍ້ຜິດພາດ (ເກີດການທັບຊ້ອນຂໍ້ມູນຕົວຢ່າງທີ່ເກັບລວບລວມ):",
 			"kh" : "'patient id' ខាងក្រោមគឺមានបញ្ហា​(មានការជាន់គ្នាក្នុងផ្ទាំងនៃការយកវត្ថុវិភាគ)៖",
-			"vn" : "Mã bệnh nhân' sau là vấn đề (các cửa sổ thu thập mẫu bệnh phẩm chồng chéo):",
+			"vn" : "Mã bệnh nhân sau là vấn đề (các cửa sổ thu thập mẫu bệnh phẩm chồng chéo):",
 			"ba" : "TBT"
 		},
 		{
@@ -1291,7 +1323,7 @@
 		{
 			"en" : "There are rows for which 'specdate' are after today.",
 			"fr" : "Il se trouve des enregistrements avec des 'sepcdate' dans le futur.",
-			"la" : "ມີແຖວຂອງ'specdate' ເເມ່ນມື້ຫຼັງຈາກນີ້",
+			"la" : "ມີແຖວຂອງ 'specdate' ເເມ່ນມື້ຫຼັງຈາກນີ້",
 			"kh" : "មានជួរដេកដែល 'specdate' គឺបន្ទាប់ពីថ្ងៃនេះ។",
 			"vn" : "Có dòng mà \"specdate\" sau ngày hôm nay",
 			"ba" : "TBT"
@@ -1373,7 +1405,7 @@
 			"fr" : "Updated Charlson Comorbidity Index (uCCI)",
 			"la" : "Updated Charlson Comorbidity Index (uCCI)",
 			"kh" : "បច្ចុប្បន្នភាព Charlson Comorbidity Index (uCCI)",
-			"vn" : "Đã cập nhật Chỉ số bệnh mắc Charlson (uCCI)",
+			"vn" : "Chỉ số bệnh mắc Charlson cập nhật (uCCI)",
 			"ba" : "TBT"
 		},
 		{
@@ -1405,7 +1437,7 @@
 			"fr" : "Le fichier des codes de lab ne peut pas être téléchargé. Merci de contacter l'équipe ACORN.",
 			"la" : "ພວກເຮົາບໍ່ສາມາດດາວໂລດເອກະສານລະຫັດແລັບ. ກະລຸນາຕິດຕໍ່ຜູ້ສະໜັບສະໜຸນ ACORN",
 			"kh" : "យើងមិនអាចទាញយក ឯកសារកូដមន្ទីរពិសោធន៍បានទេ ។​សូមទំនាក់ទំនងទៅកាន់ ACORN support។",
-			"vn" : "Chúng tôi không thể tải xuống tệp code phòng xét nghiệm. Vui lòng liên hệ bộ phận hỗ trợ của ACORN",
+			"vn" : "Chúng tôi không thể tải xuống tệp mã phòng xét nghiệm. Vui lòng liên hệ bộ phận hỗ trợ của ACORN",
 			"ba" : "TBT"
 		},
 		{
@@ -1453,7 +1485,7 @@
 			"fr" : "Vous utilisez le tableau de bord ACORN",
 			"la" : "ທ່ານກຳລັງໃຊ້ງານ ACORN dashboard",
 			"kh" : "អ្នកកំពុងដំណើរការផ្ទាំងគ្រប់គ្រង ACORN",
-			"vn" : "Bạn đang chạy sai bảng ACORN",
+			"vn" : "Bạn đang chạy bảng tổng hợp của ACORN",
 			"ba" : "TBT"
 		},
 		{
@@ -1469,7 +1501,7 @@
 			"fr" : "Votre tableau de bord ACORN est à jour",
 			"la" : "ACORN dashboard ໄດ້ຮັບການ update ແລ້ວ",
 			"kh" : "ផ្ទាំងគ្រប់គ្រង ACORN របស់អ្នកគឺជាជំនាន់ចុងក្រោយបង្អស់",
-			"vn" : "Bảng ACORN đã được cập nhật",
+			"vn" : "Bảng tổng hợp của ACORN đã được cập nhật",
 			"ba" : "TBT"
 		},
 		{
