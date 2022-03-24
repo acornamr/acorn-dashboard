@@ -216,7 +216,7 @@ infection <- infection %>% transmute(
                          CNS = "Central nervous system", URTI = "ENT / Upper respiratory tract",
                          EYE = "Eye", FN = "Febrile neutropenia", GI = "Gastrointestinal",
                          GU = "Genital", IA = "Intra-abdominal", LRTI = "Lower respiratory tract",
-                         MELIOD = "Melioidosis",
+                         MELIOID = "Melioidosis",
                          NEC = "Necrotising enterocolitis", PNEU = "Pneumonia", 
                          SSTI = "Skin / Soft tissue", 
                          SSI = "Surgical site", TY = "Typhoid", UTI = "Urinary tract", OTH = "Other (diagnosis documented)", 
