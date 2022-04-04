@@ -87,6 +87,7 @@ dl_redcap_f03 <- dl_redcap_f03 %>%
   filter(!is.na(ho_dmdtc)) %>%
   mutate(id_dmdtc = glue("{recordid}-{ho_dmdtc}"))
 
+
 # Test that "Every hospital outcome record (F03) has a matching infection episode record (F02)". ----
 test <- dl_redcap_f03$recordid[! dl_redcap_f03$id_dmdtc %in% dl_redcap_f02$id_dmdtc]
 ifelse(is_empty(test),
@@ -102,6 +103,27 @@ infection_episode <- full_join(dl_redcap_f02,
                                dl_redcap_f03 %>% select(!recordid:redcap_repeat_instance),
                                by = "id_dmdtc") %>%
   select(!redcap_repeat_instrument)
+
+# Test that "outcomes to all the F02s for that admission are recorded in the single F03" ----
+# The number entered in Q7 of F03 should be the same as the number of F02.
+test <- left_join(
+  dl_redcap_f03 |> transmute(recordid, nb_episode_f03 = as.numeric(no_num_episode)),
+  dl_redcap_f02 |> group_by(recordid) |> summarise(nb_episode_f02 = n()),
+  by = "recordid") |> 
+  filter(nb_episode_f02 != nb_episode_f03)
+
+test <- left_join(
+  test, 
+  patient_enrolment |> select(acornid, recordid),
+  by = "recordid")
+
+ifelse(is_empty(test),
+       { checklist_status$redcap_F03F02_nb <- list(status = "okay", msg = i18n$t("All patients with multiple infection episodes (F02) per admission (F01) have the correct number of infection episode outcomes recorded in the hospital outcome record (F03)."))},
+       { 
+         checklist_status$redcap_F03F02_nb <- list(status = "warning", msg = i18n$t("One or more patients with multiple infection episodes (F02) per admission (F01) have an incorrect number of infection episode outcomes recorded in the hospital outcome record (F03)."))
+         checklist_status$log_errors <- bind_rows(checklist_status$log_errors, 
+                                                  tibble(issue = "Wrong number of F02 outcomes recorded in the F03 Q7.", redcap_id = test$recordid, acorn_id = test$acornid))
+       })
 
 # Test that "Every infection episode (F02) has a matching patient enrolment (F01)". ----
 test <- patient_enrolment[! dl_redcap_f02$recordid %in% patient_enrolment$recordid, c("recordid", "acornid")]

@@ -1129,11 +1129,12 @@ server <- function(input, output, session) {
     lab_data_qc_8 = list(status = "hidden", msg = ""),
     
     redcap_acorn_id            = list(status = "hidden", msg = ""),
-    redcap_f01f05_status       = list(status = "hidden", msg = ""),
+    redcap_F01F05_status       = list(status = "hidden", msg = ""),
     redcap_columns             = list(status = "hidden", msg = ""),
     redcap_F04F01              = list(status = "hidden", msg = ""),
     redcap_D28_date            = list(status = "hidden", msg = ""),
     redcap_F03F02              = list(status = "hidden", msg = ""),
+    redcap_F03F02_nb           = list(status = "hidden", msg = ""),
     redcap_F02F01              = list(status = "hidden", msg = ""),
     redcap_F03F01              = list(status = "hidden", msg = ""),
     redcap_multiple_F02        = list(status = "hidden", msg = ""),
@@ -1415,7 +1416,7 @@ server <- function(input, output, session) {
       
       if(fail_read_redcap) {
         shinyjs::html(id = "text_redcap_f01f05_log", i18n$t("Issue detected with REDCap data. Please report to ACORN data managers. Until resolution, only existing .acorn files can be used."), add = TRUE)
-        checklist_status$redcap_f01f05_status <- list(status = "ko", msg = i18n$t("The REDCap dataset is empty/in wrong format. Please contact ACORN support."))
+        checklist_status$redcap_F01F05_status <- list(status = "ko", msg = i18n$t("The REDCap dataset is empty/in wrong format. Please contact ACORN support."))
         continue <<- FALSE
       }
     }
@@ -1424,7 +1425,7 @@ server <- function(input, output, session) {
       if (!fail_read_redcap) {
         if(nrow(dl_redcap_f01f05_dta) == 0 | ncol(dl_redcap_f01f05_dta) != 211 & ! all(names(dl_redcap_f01f05_dta) == columns_redcap)) {
           shinyjs::html(id = "text_redcap_f01f05_log", i18n$t("Issue detected with REDCap data. Please report to ACORN data managers. Until resolution, only existing .acorn files can be used."), add = TRUE)
-          checklist_status$redcap_f01f05_status <- list(status = "ko", msg = i18n$t("The REDCap dataset is empty/in wrong format. Please contact ACORN support."))
+          checklist_status$redcap_F01F05_status <- list(status = "ko", msg = i18n$t("The REDCap dataset is empty/in wrong format. Please contact ACORN support."))
           continue <<- FALSE
         }
       }
@@ -1432,7 +1433,7 @@ server <- function(input, output, session) {
     
     if(continue) { 
       shinyjs::html(id = "text_redcap_f01f05_log", "<hr/>", add = TRUE)
-      checklist_status$redcap_f01f05_status <- list(status = "okay", msg = i18n$t("The REDCap dataset is in the right format."))
+      checklist_status$redcap_F01F05_status <- list(status = "okay", msg = i18n$t("The REDCap dataset is in the right format."))
       source("./www/R/data/02_process_redcap_f01f05.R", local = TRUE)
     }
     
