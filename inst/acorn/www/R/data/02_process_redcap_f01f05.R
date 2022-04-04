@@ -28,6 +28,25 @@ patient_enrolment <- dl_redcap_f01f05_dta %>%
          f05odkreckey:f05_bsi_complete) %>%
   filter(is.na(redcap_repeat_instrument))
 
+# Test that "Every ACORN ID matches no more than one local ID". ----
+test <- left_join(
+  patient_enrolment |> 
+    group_by(acornid) |> 
+    summarise(match_local_id = n_distinct(usubjid)) |> 
+    filter(match_local_id >= 2),
+  patient_enrolment |> select(recordid, acornid),
+  join_by = "acornid"
+)
+
+ifelse(nrow(test) == 0, 
+       { checklist_status$redcap_acorn_id <- list(status = "okay", msg = i18n$t("Every ACORN ID matches no more than one local patient ID.")) },
+       { 
+         checklist_status$redcap_acorn_id <- list(status = "warning", msg = i18n$t("Some ACORN ID match several local patient IDs.")) 
+         checklist_status$log_errors <- bind_rows(checklist_status$log_errors, 
+                                                  tibble(issue = "ACORN ID with several local patient IDs.", redcap_id = test$recordid, acorn_id = test$acornid))
+       })
+
+
 # Test that "Every D28 form (F04) matches exactly one patient enrolment (F01)". ----
 # For every recordid, when d28_date is filled (mandatory field in F04), siteid should be filled (mandatory field in F01).
 test <- patient_enrolment |> 
@@ -357,7 +376,7 @@ test <- infection |>
   ungroup() |> 
   filter(duplicated_f02) |> 
   distinct(redcap_id, acorn_id)
-  
+
 
 ifelse(nrow(test) == 0, 
        { checklist_status$redcap_multiple_F02 <- list(status = "okay", msg = i18n$t("There are no multiple F02 with identical ACORN ID, admission date, and episode enrolment date.")) },
@@ -457,7 +476,7 @@ not_empty <- function(x) {
 }
 
 infection$cci <- (infection$age_category == "Adult") * (
-    2 * not_empty(infection$cmb_cog) + 
+  2 * not_empty(infection$cmb_cog) + 
     2 * not_empty(infection$cmb_dem) +
     not_empty(infection$cmb_cpd) +
     not_empty(infection$cmb_rheu) +

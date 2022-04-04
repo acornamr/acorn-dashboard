@@ -1128,6 +1128,7 @@ server <- function(input, output, session) {
     lab_data_qc_7 = list(status = "hidden", msg = ""),
     lab_data_qc_8 = list(status = "hidden", msg = ""),
     
+    redcap_acorn_id            = list(status = "hidden", msg = ""),
     redcap_f01f05_status       = list(status = "hidden", msg = ""),
     redcap_columns             = list(status = "hidden", msg = ""),
     redcap_F04F01              = list(status = "hidden", msg = ""),
