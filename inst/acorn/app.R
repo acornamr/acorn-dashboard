@@ -1108,7 +1108,13 @@ server <- function(input, output, session) {
   redcap_f01f05_dta <- reactiveVal()
   redcap_hai_dta <- reactiveVal()
   lab_dta <- reactiveVal()
-  lab_log <- reactiveVal()
+  lab_log <- reactiveValues(
+    organism_name_compare = NULL,
+    specimen_type_compare = NULL,
+    missing_ast           = NULL,
+    intrinsic_resistance  = NULL,
+    unusual_ast           = NULL
+  )
   acorn_dta <- reactiveVal()
   tables_dictionary <-  reactiveVal(current_tables_dictionary)
   corresp_org_antibio <- reactiveVal()
@@ -1203,11 +1209,10 @@ server <- function(input, output, session) {
   
   # Lab log ----
   output$lab_log_dl <- renderUI({
-    req(lab_log())
+    req(lab_log$organism_name_compare)
     tagList(
       br(), br(),
-      downloadButton("download_lab_log", i18n$t("Download Lab Log (.xlsx)")),
-      p(i18n$t("Contains names of organisms before and after mapping."))
+      downloadButton("download_lab_log", i18n$t("Download Lab Log (.xlsx)"))
     )
   })
   
@@ -1495,7 +1500,11 @@ server <- function(input, output, session) {
     filename = function()  glue("lab_log_{format(Sys.time(), '%Y-%m-%d_%H%M')}.xlsx"),
     content = function(file)  writexl::write_xlsx(
       list(
-        "Organisms" = lab_log()
+        "Organisms"            = lab_log$organism_name_compare,
+        "Specimens"            = lab_log$specimen_type_compare,
+        "Missing AST"          = lab_log$missing_ast,
+        "Intrinsic Resistance" = lab_log$intrinsic_resistance,
+        "Unusual AST"          = lab_log$unusual_ast
       ), path = file)
   )
   
@@ -1546,6 +1555,7 @@ server <- function(input, output, session) {
     source("./www/R/data/07_ast_interpretation.R", local = TRUE)
     source("./www/R/data/08_ast_interpretation_nonstandard.R", local = TRUE)
     source("./www/R/data/09_checklist_lab.R", local = TRUE)
+    source("./www/R/data/10_generate_lab_log.R", local = TRUE)
     
     lab_dta(amr)
     notify(i18n$t("Lab data successfully processed!"), id = id)
@@ -1582,7 +1592,7 @@ server <- function(input, output, session) {
       return()
     }
     
-    source("./www/R/data/10_link_clinical_assembly.R", local = TRUE)
+    source("./www/R/data/11_link_clinical_assembly.R", local = TRUE)
     
     acorn_dta(acorn_dta)
     source('./www/R/update_input_widgets.R', local = TRUE)
