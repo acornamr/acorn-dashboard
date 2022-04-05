@@ -1,5 +1,6 @@
 output$checklist_qc_clinical <- renderText({
   text_checklist(checklist_status, vec = c("redcap_acorn_id",
+                                           "redcap_local_id",
                                            "redcap_F01F05_status",
                                            "redcap_F04F01",
                                            "redcap_D28_date",

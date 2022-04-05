@@ -1129,6 +1129,7 @@ server <- function(input, output, session) {
     lab_data_qc_8 = list(status = "hidden", msg = ""),
     
     redcap_acorn_id            = list(status = "hidden", msg = ""),
+    redcap_local_id            = list(status = "hidden", msg = ""),
     redcap_F01F05_status       = list(status = "hidden", msg = ""),
     redcap_columns             = list(status = "hidden", msg = ""),
     redcap_F04F01              = list(status = "hidden", msg = ""),
@@ -1485,7 +1486,7 @@ server <- function(input, output, session) {
     content = function(file)  writexl::write_xlsx(
       list(
         "Enrolment Log" = enrolment_log(),
-        "Errors Log" = checklist_status$log_errors
+        "Errors Log"    = checklist_status$log_errors
       ), path = file)
   )
   
