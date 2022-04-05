@@ -23,7 +23,7 @@ amr$carbapenem[amr$ast.group == "col" & (amr$DOR == "S" | amr$ETP == "S" | amr$I
 amr$carbapenem[amr$ast.group == "col" & (amr$DOR == "R" | amr$ETP == "R" | amr$IPM == "R" | amr$MEM == "R" | amr$cpm == "POSITIVE")] <- "R"
 
 # ent - Enterococcus sp
-amr$VAN[amr$ast.group == "ent" & amr$vre == "POSITIVE"] <- "R" # Codes VAN == R if vre category is positive
+#amr$VAN[amr$ast.group == "ent" & amr$vre == "POSITIVE"] <- "R" # Codes VAN == R if vre category is positive # [Disabled in V2.2.10 as uncertain as to consistency of application by WHONET users]
 
 # hin - Haemophilus influenzae [UPDATED ACORN2]
 amr$AMP[amr$ast.group == "hin" & amr$blac == "POSITIVE"] <- "R" # Codes AMP == R if b-lactamase category is positive
@@ -56,7 +56,7 @@ amr$carbapenem[amr$ast.group == "sal" & (amr$DOR == "R" | amr$ETP == "R" | amr$I
 amr$CLI[amr$ast.group == "sau" & amr$ind.cli == "POSITIVE"] <- "R" # Codes CLI == R if inducible clindamycin category is positive
 amr$PEN[amr$ast.group == "sau" & amr$blac == "POSITIVE"] <- "R" # Codes PEN == R if b-lactamase category is positive
 amr$OXA[amr$ast.group == "sau" & is.na(amr$OXA) & !is.na(amr$FOX)] <- amr$FOX[amr$ast.group == "sau" & is.na(amr$OXA) & !is.na(amr$FOX)] # Codes OXA result based on FOX testing
-amr$OXA[amr$ast.group == "sau" & amr$mrsa == "POSITIVE"] <- "R" # Codes OXA == R if mrsa category is positive
+#amr$OXA[amr$ast.group == "sau" & amr$mrsa == "POSITIVE"] <- "R" # Codes OXA == R if mrsa category is positive # [Disabled in V2.2.10 as uncertain as to consistency of application by WHONET users]
 
 # shi - Shigella sp
 amr$fluoroquinolone[amr$ast.group == "shi" & (amr$CIP == "S" | amr$LVX == "S" | amr$OFX == "S" | amr$CIP == "I" | amr$LVX == "I"| amr$OFX == "I")] <- "S" # Group variable for FQ-R
