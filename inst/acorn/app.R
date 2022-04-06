@@ -1062,6 +1062,9 @@ server <- function(input, output, session) {
           "lab_codes_ast.ent" = lab_code()$ast.ent,
           "lab_codes_ast.sau" = lab_code()$ast.sau,
           "lab_codes_ast.spn" = lab_code()$ast.spn,
+          "lab_code_key.bug" = lab_code()$key.bug.drug.combos,
+          "lab_code_intrinsic.res" = lab_code()$intrinsic.resistance,
+          "lab_code_qc.checks" = lab_code()$qc.checks,
           "lab_codes_notes" = lab_code()$notes
         ), path = file)
     }

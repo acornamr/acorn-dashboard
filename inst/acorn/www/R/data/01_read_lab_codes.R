@@ -1,11 +1,11 @@
-file_lab_code <- try(aws.s3::save_object(object = "ACORN2_lab_codes_v2.3.xlsx",
+file_lab_code <- try(aws.s3::save_object(object = "ACORN2_lab_codes_v2.4.2.xlsx",
                                  bucket = "shared-acornamr", 
                                  key    = shared_acornamr_key,
                                  secret = shared_acornamr_sec,
                                  region = "eu-west-3",
                                  file = tempfile()), silent = TRUE)
 
-if (inherits(file_lab_code, 'try-error')) {
+if (inherits(file_lab_code, "try-error")) {
   showNotification(i18n$t("We couldn't download the lab codes file. Please contact ACORN support."), type = "error", duration = NULL)
   return()
 }
@@ -31,5 +31,8 @@ lab_code <- list(
   ast.ent = read_lab_code(sheet = "ent"),  # Gram positives - Enterococcus sp (all)
   ast.sau = read_lab_code(sheet = "sau"),  # Staphylococcus aureus
   ast.spn = read_lab_code(sheet = "spn"),  # Streptococcus pneumoniae
+  key.bug.drug.combos = readxl::read_excel(file_lab_code, sheet = "key.bug.drug.combos"),
+  intrinsic.resistance = readxl::read_excel(file_lab_code, sheet = "intrinsic.resistance"),
+  qc.checks = readxl::read_excel(file_lab_code, sheet = "qc.checks"),
   notes = readxl::read_excel(file_lab_code, sheet = "notes", skip = 1, col_names = paste("Notes", 1:3), col_types = "text")
 )
