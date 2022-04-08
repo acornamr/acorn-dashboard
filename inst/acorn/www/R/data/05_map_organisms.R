@@ -87,33 +87,3 @@ amr$contaminant[amr$specgroup != "Blood"] <- NA
 # Remove columns that are no longer required [UPDATED ACORN2]
 amr <- amr %>% 
   select(-org.local.lower, -genus, -genus.final, -org.code1, -org.code2, -org.code3, -org.code4)
-
-
-# Update Lab log
-if (input$format_lab_data %in% c("WHONET .dBase", "WHONET .SQLite")) {
-  bind_rows(
-    amr |> filter(org.local != orgname) |> 
-      group_by(org.local, org.whonet, orgname) |> summarise(n = n(), .groups = "drop") |> 
-      mutate(Change = "changed"),
-    amr |> filter(org.local == orgname) |> 
-      group_by(org.local, org.whonet, orgname) |> summarise(n = n(), .groups = "drop") |> 
-      mutate(Change = "identical"),
-  ) |>
-    arrange(Change, orgname) |> 
-    rename(`Initial Organism` = org.local, `Initial organism (WHONET code)` = org.whonet, `Final Organism` = orgname, `Number Organisms` = n) |> 
-    lab_log()
-}
-
-if (input$format_lab_data %in% c("Tabular")) {
-bind_rows(
-  amr |> filter(org.local != orgname) |> 
-    group_by(org.local, orgname) |> summarise(n = n(), .groups = "drop") |> 
-    mutate(Change = "changed"),
-  amr |> filter(org.local == orgname) |> 
-    group_by(org.local, orgname) |> summarise(n = n(), .groups = "drop") |> 
-    mutate(Change = "identical"),
-) |>
-  arrange(Change, orgname) |> 
-  rename(`Initial Organism` = org.local, `Final Organism` = orgname, `Number Organisms` = n) |> 
-  lab_log()
-}

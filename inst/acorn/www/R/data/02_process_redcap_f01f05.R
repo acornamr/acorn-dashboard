@@ -28,18 +28,54 @@ patient_enrolment <- dl_redcap_f01f05_dta %>%
          f05odkreckey:f05_bsi_complete) %>%
   filter(is.na(redcap_repeat_instrument))
 
+# Test that "Every ACORN ID matches no more than one local ID". ----
+test <- left_join(
+  patient_enrolment |> 
+    group_by(acornid) |> 
+    summarise(match_local_id = n_distinct(usubjid)) |> 
+    filter(match_local_id >= 2),
+  patient_enrolment |> select(usubjid, recordid, acornid),
+  join_by = "acornid"
+)
+
+ifelse(nrow(test) == 0, 
+       { checklist_status$redcap_acorn_id <- list(status = "okay", msg = i18n$t("Every ACORN ID matches no more than one local patient ID.")) },
+       { 
+         checklist_status$redcap_acorn_id <- list(status = "warning", msg = i18n$t("Some ACORN ID match several local patient IDs.")) 
+         checklist_status$log_errors <- bind_rows(checklist_status$log_errors, 
+                                                  tibble(issue = "ACORN ID with several local patient IDs.", local_id = test$usubjid, redcap_id = test$recordid, acorn_id = test$acornid))
+       })
+
+# Test that "Every local ID matches no more than one ACORN ID". ----
+test <- left_join(
+  patient_enrolment |> 
+    group_by(usubjid) |> 
+    summarise(match_acorn_id = n_distinct(acornid)) |> 
+    filter(match_acorn_id >= 2),
+  patient_enrolment |> select(usubjid, recordid, acornid),
+  join_by = "usubjid"
+)
+
+ifelse(nrow(test) == 0, 
+       { checklist_status$redcap_local_id <- list(status = "okay", msg = i18n$t("Every local patients ID matches no more than one ACORN ID.")) },
+       { 
+         checklist_status$redcap_local_id <- list(status = "warning", msg = i18n$t("Some local patient ID match several ACORN IDs.")) 
+         checklist_status$log_errors <- bind_rows(checklist_status$log_errors, 
+                                                  tibble(issue = "Local patient ID with several ACORN IDs.", local_id = test$usubjid, redcap_id = test$recordid, acorn_id = test$acornid))
+       })
+
 # Test that "Every D28 form (F04) matches exactly one patient enrolment (F01)". ----
 # For every recordid, when d28_date is filled (mandatory field in F04), siteid should be filled (mandatory field in F01).
 test <- patient_enrolment |> 
   filter(!is.na(d28_date), is.na(siteid)) |> 
-  select("recordid", "acornid")
+  select(usubjid, recordid, acornid)
 
 ifelse(nrow(test) == 0, 
        { checklist_status$redcap_F04F01 <- list(status = "okay", msg = i18n$t("Every D28 record (F04) matches exactly one patient enrolment (F01).")) },
        { 
          checklist_status$redcap_F04F01 <- list(status = "warning", msg = i18n$t("Some D28 records (F04) don't have a matching patient enrolment (F01).")) 
          checklist_status$log_errors <- bind_rows(checklist_status$log_errors, 
-                                                  tibble(issue = "F04 record without matching F01", redcap_id = test$recordid, acorn_id = test$acornid))
+                                                  tibble(issue = "F04 record without matching F01", local_id = test$usubjid, redcap_id = test$recordid, acorn_id = test$acornid))
        })
 
 # Create infection_episode dataframe with one row per infection episode by combining F02 and F03. ----
@@ -50,7 +86,7 @@ dl_redcap_f02 <- dl_redcap_f01f05_dta %>%
   mutate(id_dmdtc = glue("{recordid}-{hpd_dmdtc}"))
 
 dl_redcap_f03 <- dl_redcap_f01f05_dta %>% 
-  select(c(recordid:redcap_repeat_instance, 
+  select(c(recordid:redcap_repeat_instance, usubjid,
            odkreckey:f03_infection_hospital_outcome_complete)) %>%
   filter(is.na(redcap_repeat_instrument))
 
@@ -68,6 +104,7 @@ dl_redcap_f03 <- dl_redcap_f03 %>%
   filter(!is.na(ho_dmdtc)) %>%
   mutate(id_dmdtc = glue("{recordid}-{ho_dmdtc}"))
 
+
 # Test that "Every hospital outcome record (F03) has a matching infection episode record (F02)". ----
 test <- dl_redcap_f03$recordid[! dl_redcap_f03$id_dmdtc %in% dl_redcap_f02$id_dmdtc]
 ifelse(is_empty(test),
@@ -75,23 +112,44 @@ ifelse(is_empty(test),
        { 
          checklist_status$redcap_F03F02 <- list(status = "warning", msg = i18n$t("Some hospital outcome records (F03) don't have a matching infection episode (F02). These records have been removed."))
          checklist_status$log_errors <- bind_rows(checklist_status$log_errors, 
-                                                  tibble(issue = "F03 record without matching F02", redcap_id = test, acorn_id = NA))
+                                                  tibble(issue = "F03 record without matching F02", local_id = test$usubjid, redcap_id = test, acorn_id = NA))
          dl_redcap_f03 <- dl_redcap_f03 %>% filter(id_dmdtc %in% dl_redcap_f02$id_dmdtc)
        })
 
 infection_episode <- full_join(dl_redcap_f02, 
-                               dl_redcap_f03 %>% select(!recordid:redcap_repeat_instance),
+                               dl_redcap_f03 %>% select(!recordid:usubjid),
                                by = "id_dmdtc") %>%
   select(!redcap_repeat_instrument)
 
+# Test that "outcomes to all the F02s for that admission are recorded in the single F03" ----
+# The number entered in Q7 of F03 should be the same as the number of F02.
+test <- left_join(
+  dl_redcap_f03 |> transmute(recordid, nb_episode_f03 = as.numeric(no_num_episode)),
+  dl_redcap_f02 |> group_by(recordid) |> summarise(nb_episode_f02 = n()),
+  by = "recordid") |> 
+  filter(nb_episode_f02 != nb_episode_f03)
+
+test <- left_join(
+  test, 
+  patient_enrolment |> select(usubjid, acornid, recordid),
+  by = "recordid")
+
+ifelse(nrow(test) == 0, 
+       { checklist_status$redcap_F03F02_nb <- list(status = "okay", msg = i18n$t("All patients with multiple infection episodes (F02) per admission (F01) have the correct number of infection episode outcomes recorded in the hospital outcome record (F03)."))},
+       { 
+         checklist_status$redcap_F03F02_nb <- list(status = "warning", msg = i18n$t("One or more patients with multiple infection episodes (F02) per admission (F01) have an incorrect number of infection episode outcomes recorded in the hospital outcome record (F03)."))
+         checklist_status$log_errors <- bind_rows(checklist_status$log_errors, 
+                                                  tibble(issue = "Wrong number of F02 outcomes recorded in the F03 Q7.", local_id = test$usubjid, redcap_id = test$recordid, acorn_id = test$acornid))
+       })
+
 # Test that "Every infection episode (F02) has a matching patient enrolment (F01)". ----
-test <- patient_enrolment[! dl_redcap_f02$recordid %in% patient_enrolment$recordid, c("recordid", "acornid")]
+test <- patient_enrolment[! dl_redcap_f02$recordid %in% patient_enrolment$recordid, c("usubjid", "recordid", "acornid")]
 ifelse(nrow(test) == 0, 
        { checklist_status$redcap_F02F01 <- list(status = "okay", msg = i18n$t("Every infection episode record (F02) has a matching patient enrolment (F01).")) }, 
        { 
          checklist_status$redcap_F02F01 <- list(status = "warning", msg = i18n$t("Some infection episode records (F02) don't have a matching patient enrolment (F01). These records have been removed."))
          checklist_status$log_errors <- bind_rows(checklist_status$log_errors, 
-                                                  tibble(issue = "F02 record without matching F01", redcap_id = test$recordid, acorn_id = test$acornid))
+                                                  tibble(issue = "F02 record without matching F01", local_id = test$usubjid, redcap_id = test$recordid, acorn_id = test$acornid))
          patient_enrolment <- patient_enrolment %>% filter(!recordid %in% test)
        })
 
@@ -103,7 +161,7 @@ ifelse(is_empty(test),
        { 
          checklist_status$redcap_F03F01 <- list(status = "warning", msg = i18n$t("Some hospital outcome records (F03) don't have a matching patient enrolment (F01).")) 
          checklist_status$log_errors <- bind_rows(checklist_status$log_errors, 
-                                                  tibble(issue = "F03 record without matching F01", redcap_id = test, acorn_id = NA))
+                                                  tibble(issue = "F03 record without matching F01", local_id = test$usubjid, redcap_id = test, acorn_id = NA))
        })
 
 
@@ -216,7 +274,7 @@ infection <- infection %>% transmute(
                          CNS = "Central nervous system", URTI = "ENT / Upper respiratory tract",
                          EYE = "Eye", FN = "Febrile neutropenia", GI = "Gastrointestinal",
                          GU = "Genital", IA = "Intra-abdominal", LRTI = "Lower respiratory tract",
-                         MELIOD = "Melioidosis",
+                         MELIOID = "Melioidosis",
                          NEC = "Necrotising enterocolitis", PNEU = "Pneumonia", 
                          SSTI = "Skin / Soft tissue", 
                          SSI = "Surgical site", TY = "Typhoid", UTI = "Urinary tract", OTH = "Other (diagnosis documented)", 
@@ -339,14 +397,14 @@ infection <- infection |> mutate(
 # Test if there are D28 follow-up done before the expected D28 date. ----
 test <- infection |> 
   filter(d28_date < (date_episode_enrolment + 28)) |> 
-  select(redcap_id, acorn_id)
+  select(patient_id, redcap_id, acorn_id)
 
 ifelse(nrow(test) == 0, 
        { checklist_status$redcap_D28_date <- list(status = "okay", msg = i18n$t("There are no D28 follow-up done before the expected D28 date.")) },
        {
          checklist_status$redcap_D28_date <- list(status = "warning", msg = i18n$t("There are D28 follow-up done before the expected D28 date."))
          checklist_status$log_errors <- bind_rows(checklist_status$log_errors, 
-                                                  tibble(issue = "D28 follow-up done before the expected D28 date.", redcap_id = test$redcap_id, acorn_id = test$acorn_id))
+                                                  tibble(issue = "D28 follow-up done before the expected D28 date.", local_id = test$patient_id, redcap_id = test$redcap_id, acorn_id = test$acorn_id))
        })
 
 
@@ -356,15 +414,15 @@ test <- infection |>
   mutate(duplicated_f02 = n() > 1) |> 
   ungroup() |> 
   filter(duplicated_f02) |> 
-  distinct(redcap_id, acorn_id)
-  
+  distinct(patient_id, redcap_id, acorn_id)
+
 
 ifelse(nrow(test) == 0, 
        { checklist_status$redcap_multiple_F02 <- list(status = "okay", msg = i18n$t("There are no multiple F02 with identical ACORN ID, admission date, and episode enrolment date.")) },
        {
          checklist_status$redcap_multiple_F02 <- list(status = "warning", msg = i18n$t("There are multiple F02 with identical ACORN ID, admission date, and episode enrolment date."))
          checklist_status$log_errors <- bind_rows(checklist_status$log_errors, 
-                                                  tibble(issue = "Multiple F02 with identical ACORN ID, admission date, and episode enrolment date.", redcap_id = test$redcap_id, acorn_id = test$acorn_id))
+                                                  tibble(issue = "Multiple F02 with identical ACORN ID, admission date, and episode enrolment date.", local_id = test$patient_id, redcap_id = test$redcap_id, acorn_id = test$acorn_id))
        })
 
 
@@ -372,13 +430,13 @@ ifelse(nrow(test) == 0,
 infection <- infection |> group_by(episode_id) |> mutate(episode_count = row_number()) |> ungroup()
 
 # Flag if Day28 is not "Dead" and clinical outcome is "Dead". ----
-test <- infection %>% filter(ho_discharge_status == "Dead", d28_status != "Dead") %>% select(redcap_id, acorn_id)
+test <- infection %>% filter(ho_discharge_status == "Dead", d28_status != "Dead") %>% select(patient_id, redcap_id, acorn_id)
 ifelse(nrow(test) == 0, 
        { checklist_status$redcap_consistent_outcomes <- list(status = "okay", msg = i18n$t("Clinical and day-28 outcomes are consistent.")) },
        {
          checklist_status$redcap_consistent_outcomes <- list(status = "warning", msg = i18n$t("Clinical and day-28 outcomes aren't consistent for some dead patients."))
          checklist_status$log_errors <- bind_rows(checklist_status$log_errors, 
-                                                  tibble(issue = "Clinical and day-28 outcomes not consistent", redcap_id = test$redcap_id, acorn_id = test$acorn_id))
+                                                  tibble(issue = "Clinical and day-28 outcomes not consistent", local_id = test$patient_id, redcap_id = test$redcap_id, acorn_id = test$acorn_id))
        })
 
 # Delete records that have a missing acornid. ----
@@ -388,7 +446,7 @@ ifelse(nrow(test) == 0,
        {
          checklist_status$redcap_missing_acorn_id <- list(status = "warning", msg = i18n$t("Some records with a missing ACORN ID. These records have been removed."))
          checklist_status$log_errors <- bind_rows(checklist_status$log_errors, 
-                                                  tibble(issue = "Missing ACORN ID", redcap_id = test$redcap_id, acorn_id = "Missing"))
+                                                  tibble(issue = "Missing ACORN ID", local_id = test$patient_id, redcap_id = test$redcap_id, acorn_id = "Missing"))
        })
 infection <- infection |> filter(! is.na(acorn_id))
 
@@ -415,14 +473,14 @@ infection$age_category[is.na(infection$age_category)] <- infection$age_category_
 test <- bind_rows(infection %>% filter(age_category == "Adult", age_year < 18),
                   infection %>% filter(age_category == "Child", age_year > 17 | age_day <= 28),
                   infection %>% filter(age_category == "Neonate", age_day > 28)) %>% 
-  select(redcap_id, acorn_id)
+  select(patient_id, redcap_id, acorn_id)
 
 ifelse(nrow(test) == 0, 
        { checklist_status$redcap_age_category <- list(status = "okay", msg = i18n$t("Calculated age is consistent with 'Age Category'")) },
        { 
          checklist_status$redcap_age_category <- list(status = "warning", msg = i18n$t("Calculated age isn't always consistent with 'Age Category'"))
          checklist_status$log_errors <- bind_rows(checklist_status$log_errors, 
-                                                  tibble(issue = "Calculated age not consistent with 'Age Category'", redcap_id = test$redcap_id, acorn_id = test$acorn_id))
+                                                  tibble(issue = "Calculated age not consistent with 'Age Category'", local_id = test$patient_id, redcap_id = test$redcap_id, acorn_id = test$acorn_id))
        })
 
 
@@ -457,7 +515,7 @@ not_empty <- function(x) {
 }
 
 infection$cci <- (infection$age_category == "Adult") * (
-    2 * not_empty(infection$cmb_cog) + 
+  2 * not_empty(infection$cmb_cog) + 
     2 * not_empty(infection$cmb_dem) +
     not_empty(infection$cmb_cpd) +
     not_empty(infection$cmb_rheu) +
@@ -527,14 +585,19 @@ infection <- infection %>%
          "bsi_score_resprate", "bsi_score_resprate_unknown___unk", "bsi_score_hrate", 
          "bsi_score_hrate_unknown___unk", "bsi_score_sys", "bsi_score_sys_unknown___unk", 
          "bsi_mentalstatus", "bsi_acute_hypo", "bsi_48h_intvas", "bsi_48h_mv", 
-         "bsi_48h_ca", "bsi_antibiotic_count", "bsi_antibiotic1_name", 
-         "bsi_antibiotic1_name_other", "bsi_antibiotic1_startdate", "bsi_antibiotic1_enddate", 
-         "bsi_antibiotic1_route", "bsi_antibiotic2_name", "bsi_antibiotic2_name_other", 
-         "bsi_antibiotic2_startdate", "bsi_antibiotic2_enddate", "bsi_antibiotic2_route", 
-         "bsi_antibiotic3_name", "bsi_antibiotic3_name_other", "bsi_antibiotic3_startdate", 
-         "bsi_antibiotic3_enddate", "bsi_antibiotic3_route", "bsi_antibiotic4_name", 
-         "bsi_antibiotic4_name_other", "bsi_antibiotic4_startdate", "bsi_antibiotic4_enddate", 
-         "bsi_antibiotic4_route", "bsi_antibiotic5_name", "bsi_antibiotic5_name_oth", 
-         "bsi_antibiotic5_startdate", "bsi_antibiotic5_enddate", "bsi_antibiotic5_route", 
+         "bsi_48h_ca", "bsi_antibiotic_count", 
+         "bsi_antibiotic1_name", "bsi_antibiotic1_name_other", "bsi_antibiotic1_startdate", "bsi_antibiotic1_enddate", "bsi_antibiotic1_route", 
+         "bsi_antibiotic2_name", "bsi_antibiotic2_name_other", "bsi_antibiotic2_startdate", "bsi_antibiotic2_enddate", "bsi_antibiotic2_route", 
+         "bsi_antibiotic3_name", "bsi_antibiotic3_name_other", "bsi_antibiotic3_startdate", "bsi_antibiotic3_enddate", "bsi_antibiotic3_route", 
+         "bsi_antibiotic4_name", "bsi_antibiotic4_name_other", "bsi_antibiotic4_startdate", "bsi_antibiotic4_enddate", "bsi_antibiotic4_route", 
+         "bsi_antibiotic5_name", "bsi_antibiotic5_name_oth", "bsi_antibiotic5_startdate", "bsi_antibiotic5_enddate", "bsi_antibiotic5_route", 
+         # UNCOMMENT ONCE THE F05 CHANGES ARE DEPLOYED:
+         # "bsi_antibiotic6_name", "bsi_antibiotic6_name_oth", "bsi_antibiotic6_startdate", "bsi_antibiotic6_enddate", "bsi_antibiotic6_route", 
+         # "bsi_antibiotic7_name", "bsi_antibiotic7_name_oth", "bsi_antibiotic7_startdate", "bsi_antibiotic7_enddate", "bsi_antibiotic7_route", 
+         # "bsi_antibiotic8_name", "bsi_antibiotic8_name_oth", "bsi_antibiotic8_startdate", "bsi_antibiotic8_enddate", "bsi_antibiotic8_route", 
+         # "bsi_antibiotic9_name", "bsi_antibiotic9_name_oth", "bsi_antibiotic9_startdate", "bsi_antibiotic9_enddate", "bsi_antibiotic9_route", 
+         # "bsi_antibiotic10_name", "bsi_antibiotic10_name_oth", "bsi_antibiotic10_startdate", "bsi_antibiotic10_enddate", "bsi_antibiotic10_route", 
+         # "bsi_antibiotic_oth_note",
+         
          "bsi_is_primary", "bsi_sec_source", "bsi_sec_source_oth", "bsi_is_com_implant", 
          "bsi_is_com_2days", "bsi_is_com_fever")

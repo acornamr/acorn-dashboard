@@ -14,8 +14,8 @@ vec_single <- str_extract_all(script, "(?<=n\\$t\\(')(.*?)(?=\')") |> unlist() |
 all_elements <- c(vec_double, vec_single) |> as_tibble() |> dplyr::rename(en = value)
 
 # (Informational) Nb of lines of code.
-vec <- sapply(files, R.utils::countLines)
-glue::glue("Total lines of R code: {sum(vec)}")
+# vec <- sapply(files, R.utils::countLines)
+# glue::glue("Total lines of R code: {sum(vec)}")
 
 # Existing translated elements in the app
 update_translation <- function(file_provided, file_updated, file_to_share) {

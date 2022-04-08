@@ -19,7 +19,9 @@ renv::snapshot()
 # (4) generate and test standalone apps
 # the generated standalone app should be tested independently as there might not be using the same set of packages.
 
-# (5) deploy on production URL
+# (5) merge development branch into master using "Create a merge commit" (no git rebase)
+
+# (6) deploy on production URL
 rsconnect::deployApp(appDir = "./inst/acorn/", 
                      appName = "acorn2",
                      account = "moru")
