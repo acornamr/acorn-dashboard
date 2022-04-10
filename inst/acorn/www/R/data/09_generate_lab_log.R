@@ -1,4 +1,4 @@
-message("10_generate_lab_log.R")
+message("09_generate_lab_log.R")
 # Comparison of organisms -----------------------------------------------------
 
 if (input$format_lab_data %in% c("WHONET .dBase", "WHONET .SQLite")) {

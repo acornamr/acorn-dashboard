@@ -17,7 +17,8 @@ output$checklist_qc_clinical <- renderText({
 })
 
 output$checklist_qc_lab <- renderText({
-  text_checklist(checklist_status, vec = c(paste0("lab_data_qc_", 1:7), "lab_dta"))
+  text_checklist(checklist_status, vec = c(paste0("lab_data_qc_", 1:10), 
+                                           "lab_dta"))
 })
 
 output$checklist_generate <- renderText(

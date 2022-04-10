@@ -1,4 +1,4 @@
-message("09_checklist_lab.R")
+message("10_checklist_lab.R")
 
 if(format_data_dic == "TABULAR") {
   if(c("patid", "specid", "specdate", "spectype.local") %in% names(amr) %>% all()) {
@@ -52,6 +52,25 @@ if(all(!is.na(amr$orgname))) {
   checklist_status$lab_data_qc_7 <- list(status = "okay", msg = i18n$t("All 'orgname' are provided."))
 } else {
   checklist_status$lab_data_qc_7 <- list(status = "warning", msg = i18n$t("There are rows with missing 'orgname'."))
+}
+
+if(lab_log$missing_ast |> nrow() == 0) {
+  checklist_status$lab_data_qc_8 <- list(status = "okay", msg = i18n$t("There is not missing data for key organism – antibiotic susceptibility test combinations."))
+} else {
+  checklist_status$lab_data_qc_8 <- list(status = "warning", msg = i18n$t("There is missing data for key organism – antibiotic susceptibility test combinations."))
+}
+
+
+if(lab_log$intrinsic_resistance |> nrow() == 0) {
+  checklist_status$lab_data_qc_9 <- list(status = "okay", msg = i18n$t("There are not intrinsic resistance warnings to review."))
+} else {
+  checklist_status$lab_data_qc_9 <- list(status = "warning", msg = i18n$t("There are intrinsic resistance warnings to review."))
+}
+
+if(lab_log$unusual_ast |> nrow() == 0) {
+  checklist_status$lab_data_qc_10 <- list(status = "okay", msg = i18n$t("There are not unusual antibiotic resistance phenotype warnings to review."))
+} else {
+  checklist_status$lab_data_qc_10 <- list(status = "warning", msg = i18n$t("There are unusual antibiotic resistance phenotype warnings to review."))
 }
 
 checklist_status$lab_dta = list(status = "okay", msg = i18n$t("Lab data successfully provided."))
