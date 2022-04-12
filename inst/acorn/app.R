@@ -1128,14 +1128,16 @@ server <- function(input, output, session) {
   checklist_status <- reactiveValues(
     log_errors = tibble(issue = character(), redcap_id = character(), acorn_id = character()),
     
-    lab_data_qc_1 = list(status = "hidden", msg = ""),
-    lab_data_qc_2 = list(status = "hidden", msg = ""),
-    lab_data_qc_3 = list(status = "hidden", msg = ""),
-    lab_data_qc_4 = list(status = "hidden", msg = ""),
-    lab_data_qc_5 = list(status = "hidden", msg = ""),
-    lab_data_qc_6 = list(status = "hidden", msg = ""),
-    lab_data_qc_7 = list(status = "hidden", msg = ""),
-    lab_data_qc_8 = list(status = "hidden", msg = ""),
+    lab_data_qc_1  = list(status = "hidden", msg = ""),
+    lab_data_qc_2  = list(status = "hidden", msg = ""),
+    lab_data_qc_3  = list(status = "hidden", msg = ""),
+    lab_data_qc_4  = list(status = "hidden", msg = ""),
+    lab_data_qc_5  = list(status = "hidden", msg = ""),
+    lab_data_qc_6  = list(status = "hidden", msg = ""),
+    lab_data_qc_7  = list(status = "hidden", msg = ""),
+    lab_data_qc_8  = list(status = "hidden", msg = ""),
+    lab_data_qc_9  = list(status = "hidden", msg = ""),
+    lab_data_qc_10 = list(status = "hidden", msg = ""),
     
     redcap_acorn_id            = list(status = "hidden", msg = ""),
     redcap_local_id            = list(status = "hidden", msg = ""),
@@ -1557,8 +1559,8 @@ server <- function(input, output, session) {
     source("./www/R/data/06_make_ast_group.R", local = TRUE)
     source("./www/R/data/07_ast_interpretation.R", local = TRUE)
     source("./www/R/data/08_ast_interpretation_nonstandard.R", local = TRUE)
-    source("./www/R/data/09_checklist_lab.R", local = TRUE)
-    source("./www/R/data/10_generate_lab_log.R", local = TRUE)
+    source("./www/R/data/09_generate_lab_log.R", local = TRUE)
+    source("./www/R/data/10_checklist_lab.R", local = TRUE)
     
     lab_dta(amr)
     notify(i18n$t("Lab data successfully processed!"), id = id)
