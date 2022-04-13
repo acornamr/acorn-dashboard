@@ -1,12 +1,31 @@
 message("09_generate_lab_log.R")
+
+# Branch out if clinical data has or hasn't been provided
+ifelse(is.null(redcap_f01f05_dta()), 
+       {
+         amr_acorn_relevant <- amr
+         showNotification(i18n$t("The lab log is generated based on all organisms, including those not relevant to ACORN. 
+                          To avoid this, donwload clinical data first."), duration = 8, type = "warning")
+         
+       },
+       {
+         amr_acorn_relevant <- amr |> filter(patid %in% redcap_f01f05_dta()$patient_id)
+         showNotification(paste0(i18n$t("Generating the lab log only on organisms relevant to ACORN ("), 
+                                       amr_acorn_relevant |> nrow(), 
+                                       " records out of ", amr |> nrow(),
+                                       " total records)."), duration = 8)
+       }
+)
+
+
 # Comparison of organisms -----------------------------------------------------
 
 if (input$format_lab_data %in% c("WHONET .dBase", "WHONET .SQLite")) {
   lab_log$organism_name_compare <- bind_rows(
-    amr |> filter(org.local != orgname) |> 
+    amr_acorn_relevant |> filter(org.local != orgname) |> 
       group_by(org.local, org.whonet, orgname) |> summarise(n = n(), .groups = "drop") |> 
       mutate(Change = "changed"),
-    amr |> filter(org.local == orgname) |> 
+    amr_acorn_relevant |> filter(org.local == orgname) |> 
       group_by(org.local, org.whonet, orgname) |> summarise(n = n(), .groups = "drop") |> 
       mutate(Change = "identical")
   ) |>
@@ -16,10 +35,10 @@ if (input$format_lab_data %in% c("WHONET .dBase", "WHONET .SQLite")) {
 
 if (input$format_lab_data == "Tabular") {
   lab_log$organism_name_compare <- bind_rows(
-    amr |> filter(org.local != orgname) |> 
+    amr_acorn_relevant |> filter(org.local != orgname) |> 
       group_by(org.local, orgname) |> summarise(n = n(), .groups = "drop") |> 
       mutate(Change = "changed"),
-    amr |> filter(org.local == orgname) |> 
+    amr_acorn_relevant |> filter(org.local == orgname) |> 
       group_by(org.local, orgname) |> summarise(n = n(), .groups = "drop") |> 
       mutate(Change = "identical")
   ) |>
@@ -30,7 +49,7 @@ if (input$format_lab_data == "Tabular") {
 # Comparison of specimen types ------------------------------------------------
 
 if (input$format_lab_data %in% c("WHONET .dBase", "WHONET .SQLite")) {
-  lab_log$specimen_type_compare <- amr |> 
+  lab_log$specimen_type_compare <- amr_acorn_relevant |> 
     group_by(spectype.whonet, specgroup) |> 
     summarise(n = n(), .groups = "drop") |> 
     arrange(desc(n)) |> 
@@ -38,7 +57,7 @@ if (input$format_lab_data %in% c("WHONET .dBase", "WHONET .SQLite")) {
 }
 
 if (input$format_lab_data == "Tabular") {
-  lab_log$specimen_type_compare <- amr |> 
+  lab_log$specimen_type_compare <- amr_acorn_relevant |> 
     group_by(spectype.local, specgroup) |> 
     summarise(n = n(), .groups = "drop") |> 
     arrange(desc(n)) |> 
@@ -57,7 +76,7 @@ result <- tibble()
 
 for(dta_combo_row in dta_combo$dta_combo_row) {
   result <- bind_rows(result, 
-                      amr |> 
+                      amr_acorn_relevant |> 
                         filter(str_detect(orgname, dta_combo$orgname[dta_combo_row])) |> 
                         select(specid, specgroup, orgnum, orgname, 
                                dta_combo$antibio_code_vec[[dta_combo_row]]) |> 
@@ -95,7 +114,7 @@ result <- tibble()
 
 for(dta_intrinsic_row in dta_intrinsic$dta_intrinsic_row) {
   result <- bind_rows(result, 
-                      amr |> 
+                      amr_acorn_relevant |> 
                         filter(str_detect(orgname, dta_intrinsic$orgname[dta_intrinsic_row])) |> 
                         select(specid, specgroup, orgnum, orgname, 
                                dta_intrinsic$antibio_code[[dta_intrinsic_row]]) |> 
@@ -120,9 +139,9 @@ lab_log$intrinsic_resistance <- left_join(result,
 
 # Unusual AST results ---------------------------------------------------------
 
-# Modify amr to test if correctly flagged
-# amr |> filter(orgname == "Salmonella Typhi") |> pull(MEM)  # S
-# amr[amr$specid == "BC2021-2281" & amr$orgnum == 1, "MEM"] <- "R"
+# Modify amr_acorn_relevant to test if correctly flagged
+# amr_acorn_relevant |> filter(orgname == "Salmonella Typhi") |> pull(MEM)  # S
+# amr_acorn_relevant[amr_acorn_relevant$specid == "BC2021-2281" & amr_acorn_relevant$orgnum == 1, "MEM"] <- "R"
 
 dta_unusual_ast <- lab_code$qc.checks |> 
   mutate(antibio_code = str_replace_all(antibio_code, pattern = " ", replacement = "")) |> 
@@ -139,7 +158,7 @@ result <- tibble()
 
 for(dta_unusual_ast_row in dta_unusual_ast$dta_unusual_ast_row) {
   result <- bind_rows(result, 
-                      amr |> 
+                      amr_acorn_relevant |> 
                         filter(str_detect(orgname, dta_unusual_ast$orgname[dta_unusual_ast_row])) |> 
                         select(specid, specgroup, orgnum, orgname, 
                                dta_unusual_ast$antibio_code[[dta_unusual_ast_row]]) |> 
@@ -163,6 +182,6 @@ lab_log$unusual_ast <- left_join(result,
 
 # Check the first cases flagged in KH001 data:
 # Missing AST for key bug-drug combos:
-# amr |> filter(specid == "BC2021-1952", orgnum == 2) |> select(TZP)  # NA
+# amr_acorn_relevant |> filter(specid == "BC2021-1952", orgnum == 2) |> select(TZP)  # NA
 # Key intrinsic resistance:
-# amr |> filter(specid == "BC2021-1952", orgnum == 3) |> select(CRO)  # I 
+# amr_acorn_relevant |> filter(specid == "BC2021-1952", orgnum == 3) |> select(CRO)  # I 
