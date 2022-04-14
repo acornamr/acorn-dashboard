@@ -4,13 +4,13 @@ message("09_generate_lab_log.R")
 ifelse(is.null(redcap_f01f05_dta()), 
        {
          amr_acorn_relevant <- amr
-         showNotification(i18n$t("The lab log is generated based on all organisms, including those not relevant to ACORN. 
-                          To avoid this, donwload clinical data first."), duration = 8, type = "warning")
+         showNotification(i18n$t("The lab log is generated based on all specimens, including those not relevant to ACORN. 
+                          To avoid this, download clinical data first."), duration = 8, type = "warning")
          
        },
        {
          amr_acorn_relevant <- amr |> filter(patid %in% redcap_f01f05_dta()$patient_id)
-         showNotification(paste0(i18n$t("Generating the lab log only on organisms relevant to ACORN ("), 
+         showNotification(paste0(i18n$t("Generating the lab log only on specimens from patients relevant to ACORN ("), 
                                        amr_acorn_relevant |> nrow(), 
                                        " records out of ", amr |> nrow(),
                                        " total records)."), duration = 8)
