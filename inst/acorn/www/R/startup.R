@@ -1,4 +1,4 @@
-app_version <- "2.3.2"  # Make sure that the app version is identical in DESCRIPTION and build_standalone_XXX.R files.
+app_version <- "2.3.3"  # Make sure that the app version is identical in DESCRIPTION and build_standalone_XXX.R files.
 session_start_time <- format(Sys.time(), "%Y-%m-%d_%HH%M")
 
 # IMPORTANT: ensure that there is a match between the calls below and:
@@ -15,7 +15,8 @@ library(curl)
 library(glue)
 library(highcharter)
 library(lubridate)
-library(markdown)  # to avoid issue with includeMarkdown() on shinyapps.io deployment
+library(markdown)  # The includeMarkdown function requires the markdown package.
+library(rmarkdown)
 library(shiny)
 library(shiny.i18n)  # i18n$t()
 library(shinyWidgets)  # prettyCheckboxGroup()
