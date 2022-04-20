@@ -24,4 +24,5 @@ renv::snapshot()
 # (6) deploy on production URL
 rsconnect::deployApp(appDir = "./inst/acorn/", 
                      appName = "acorn2",
-                     account = "moru")
+                     account = "moru",
+                     forceUpdate = TRUE)
