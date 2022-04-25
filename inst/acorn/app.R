@@ -1552,6 +1552,9 @@ server <- function(input, output, session) {
            ast.ent = lab_code$ast.ent,
            ast.sau = lab_code$ast.sau,
            ast.spn = lab_code$ast.spn,
+           key.bug.drug.combos = lab_code$key.bug.drug.combos,
+           intrinsic.resistance = lab_code$intrinsic.resistance,
+           qc.checks = lab_code$qc.checks,
            notes = lab_code$notes)
     )
     
