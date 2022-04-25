@@ -1025,9 +1025,22 @@ server <- function(input, output, session) {
     filename = function()  glue("acorn_data_{session_start_time}.xlsx"),
     content = function(file) {
       
+      # write_xlsx() won't execute if an element of the list is NULL.
       ifelse(is.null(data_dictionary()$organisms.patterns), 
              org_patterns <- tibble(info = "No organisms.patterns sheet."),
              org_patterns <- data_dictionary()$organisms.patterns)
+      
+      ifelse(is.null(lab_code()$key.bug.drug.combos), 
+             key_bug_drug_combos <- tibble(info = "No organisms.patterns sheet."), 
+             key_bug_drug_combos <- lab_code()$key.bug.drug.combos)
+      
+      ifelse(is.null(lab_code()$intrinsic.resistance), 
+             intrinsic_resistance <- tibble(info = "No organisms.patterns sheet."), 
+             intrinsic_resistance <- lab_code()$intrinsic.resistance)
+      
+      ifelse(is.null(lab_code()$qc.checks), 
+             qc_checks <- tibble(info = "No organisms.patterns sheet."), 
+             qc_checks <- lab_code()$qc.checks)
       
       writexl::write_xlsx(
         ## Anonymised data ----
@@ -1062,9 +1075,9 @@ server <- function(input, output, session) {
           "lab_codes_ast.ent" = lab_code()$ast.ent,
           "lab_codes_ast.sau" = lab_code()$ast.sau,
           "lab_codes_ast.spn" = lab_code()$ast.spn,
-          "lab_code_key.bug" = lab_code()$key.bug.drug.combos,
-          "lab_code_intrinsic.res" = lab_code()$intrinsic.resistance,
-          "lab_code_qc.checks" = lab_code()$qc.checks,
+          "lab_code_key.bug" = key_bug_drug_combos,
+          "lab_code_intrinsic.res" = intrinsic_resistance,
+          "lab_code_qc.checks" = qc_checks, 
           "lab_codes_notes" = lab_code()$notes
         ), path = file)
     }
