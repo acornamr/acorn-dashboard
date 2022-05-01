@@ -3,6 +3,10 @@ Visit <a href='https://acornamr.net/' target='_blank'>https://acornamr.net/</a> 
 If you have questions about the project or the app, please <a href='mailto:acorn@tropmedres.ac'>contact the ACORN team.</a>
 </div>
 
+<div class = "alert alert-danger">
+For more information on a specific element of the dashboard, refer to the <a href='https://acornamr.net/pdf/ACORN2_dashboard_cheat_sheet.pdf' target='_blank'>ACORN Dashboard Cheat Sheet.</a>
+</div>
+
 - [Clinical data](#h00)
 - [ទិន្ន័យមីក្រូជីវសាស្រ្ត](#h10)
   - [ការលុបទិន្ន័យដូចគ្នានៃការបណ្តុះមេរោគ ឬបាក់តេរី isolate](#h11)

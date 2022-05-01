@@ -942,7 +942,7 @@ ui <- page(
             )
         ),
         nav_item(
-          actionLink("show_faq", label = "FAQ")
+          actionLink("show_faq", label = "FAQ/Cheat Sheet")
         )
       )
     )

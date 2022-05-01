@@ -1,3 +1,13 @@
+<div class = "alert alert-light">
+Visit <a href='https://acornamr.net/' target='_blank'>https://acornamr.net/</a> to learn more about ACORN and <a href='https://twitter.com/ACORN_AMR' target='_blank'>Twitter for the latest developments.</a>
+If you have questions about the project or the app, please <a href='mailto:acorn@tropmedres.ac'>contact the ACORN team.</a>
+</div>
+
+<div class = "alert alert-danger">
+For more information on a specific element of the dashboard, refer to the <a href='https://acornamr.net/pdf/ACORN2_dashboard_cheat_sheet.pdf' target='_blank'>ACORN Dashboard Cheat Sheet.</a>
+</div>
+
+
 ## Dữ liệu vi sinh
 
 ### ⚠️ Sự trùng lặp dữ liệu nuôi cấy / phân lập vi khuẩn ⚠️

@@ -3,6 +3,10 @@ Visit <a href='https://acornamr.net/' target='_blank'>https://acornamr.net/</a> 
 If you have questions about the project or the app, please <a href='mailto:acorn@tropmedres.ac'>contact the ACORN team.</a>
 </div>
 
+<div class = "alert alert-danger">
+For more information on a specific element of the dashboard, refer to the <a href='https://acornamr.net/pdf/ACORN2_dashboard_cheat_sheet.pdf' target='_blank'>ACORN Dashboard Cheat Sheet.</a>
+</div>
+
 - [Clinical data](#h00)
   - [Definition of Healthcare Associated Infections (HCAI)](#h01)
   - [Definition of Updated Charlson Comorbidity Index (uCCI)](#h02)
