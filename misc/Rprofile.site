@@ -13,12 +13,17 @@ utils::assignInNamespace(
 )
 
 options(repos=structure(c(CRAN = "http://cran.us.r-project.org")))
+options(install.packages.check.source = "no")
 
-is_remotes_available <- require("remotes")
-if(! is_remotes_available)  utils::install.packages("remotes")
+# Install some packages so that install_github has fewer dependencies to update
+# packages <- c("bslib", "curl", "glue", "highcharter", "lubridate", "markdown", "rmarkdown", "shiny", "shiny.i18n", "shinyWidgets", "tidyverse",
+#               "remotes")
+# install.packages(setdiff(packages, rownames(installed.packages())))  
 
 remotes::install_github("acornamr/acorn-dashboard", 
                         ref = "development",
                         upgrade = "never",
-                        quiet = TRUE)
-acorn::run_app()
+                        quiet = FALSE)
+
+cat("Ready to launch")
+acorn::run_app() 
