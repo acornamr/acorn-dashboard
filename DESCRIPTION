@@ -1,7 +1,7 @@
 Package: acorn
 Type: Package
 Title: A Dashboard for ACORN AMR Data
-Version: 2.4.0
+Version: 2.4.1
 Authors@R: c(person(given = "Olivier", family = "Celhay", 
                 email = "olivier.celhay@gmail.com", 
                 role = c("aut", "cre"), comment = c(ORCID = "https://orcid.org/0000-0002-2971-9110")),
@@ -41,4 +41,4 @@ Imports:
     shinyWidgets,
     tidyverse,
     writexl
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.0

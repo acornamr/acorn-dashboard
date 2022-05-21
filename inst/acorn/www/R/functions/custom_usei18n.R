@@ -16,4 +16,4 @@ custom_usei18n <- function (translator)
 }
 
 environment(custom_usei18n) <- asNamespace('shiny.i18n')
-assignInNamespace("usei18n", custom_usei18n, ns = "shiny.i18n")
+utils::assignInNamespace("usei18n", custom_usei18n, ns = "shiny.i18n")

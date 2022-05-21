@@ -951,6 +951,11 @@ ui <- page(
 
 # Definition of server ----
 server <- function(input, output, session) {
+  # Terminate R when shiny app window is closed
+  session$onSessionEnded(function() {
+    stopApp()
+  })
+  
   # Quick access.
   source("./www/R/quick_access.R", local = TRUE)
   

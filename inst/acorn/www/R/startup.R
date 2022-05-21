@@ -1,4 +1,4 @@
-app_version <- "2.4.0"  # Make sure that the app version is identical in DESCRIPTION and build_standalone_XXX.R files.
+app_version <- "2.4.1"  # Make sure that the app version is identical in DESCRIPTION and build_standalone_XXX.R files.
 session_start_time <- format(Sys.time(), "%Y-%m-%d_%HH%M")
 
 # IMPORTANT: ensure that there is a match between the calls below and:

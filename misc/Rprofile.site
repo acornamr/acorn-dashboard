@@ -1,0 +1,24 @@
+cat("\n\n\n\n\n\n Welcome to ACORN! \n\n\n\n\n\n")
+cat("\n\n\n\n\n\n First time launch will take some time! \n\n\n\n\n\n")
+
+
+# disable "save workspace image prompt
+utils::assignInNamespace(
+  "q", 
+  function(save = "no", status = 0, runLast = TRUE) 
+  {
+    .Internal(quit(save, status, runLast))
+  }, 
+  "base"
+)
+
+options(repos=structure(c(CRAN = "http://cran.us.r-project.org")))
+
+is_remotes_available <- require("remotes")
+if(! is_remotes_available)  utils::install.packages("remotes")
+
+remotes::install_github("acornamr/acorn-dashboard", 
+                        ref = "development",
+                        upgrade = "never",
+                        quiet = TRUE)
+acorn::run_app()
