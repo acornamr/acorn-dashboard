@@ -1,6 +1,6 @@
 {
   "R": {
-    "Version": "4.1.3",
+    "Version": "4.2.0",
     "Repositories": [
       {
         "Name": "CRAN",
@@ -107,10 +107,10 @@
     },
     "RSQLite": {
       "Package": "RSQLite",
-      "Version": "2.2.12",
+      "Version": "2.2.14",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "4bfe20c70c3db354b60adf76e10fc7f6",
+      "Hash": "086113da6af75461b8dc8d916dcf9620",
       "Requirements": [
         "DBI",
         "Rcpp",
@@ -470,6 +470,26 @@
         "tibble",
         "tidyselect",
         "vctrs"
+      ]
+    },
+    "electricShine": {
+      "Package": "electricShine",
+      "Version": "0.0.0.9000",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "electricShine",
+      "RemoteUsername": "erikvona",
+      "RemoteRef": "master",
+      "RemoteSha": "9176e5d1833879a10db66ffe309a8c4c592d47c8",
+      "Hash": "8a386aa9c65cc844a4582c98b26da253",
+      "Requirements": [
+        "glue",
+        "openssl",
+        "remotes",
+        "stringr",
+        "withr",
+        "zip"
       ]
     },
     "ellipsis": {
@@ -1747,6 +1767,14 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "458bb38374d73bf83b1bb85e353da200",
+      "Requirements": []
+    },
+    "zip": {
+      "Package": "zip",
+      "Version": "2.2.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "c7eef2996ac270a18c2715c997a727c5",
       "Requirements": []
     },
     "zoo": {
