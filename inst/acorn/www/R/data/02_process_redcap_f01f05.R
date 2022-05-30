@@ -331,10 +331,14 @@ infection <- infection %>% transmute(
   # End F01
   # Start fields from F04
   d28_date = as_date(d28_date), 
-  d28_status = recode(d28_status, "ALIVE" = "Alive - completely recovered", 
+  d28_status = recode(d28_status, 
+                      "ALIVE"   = "Alive - completely recovered", 
                       "ABALIVE" = "Alive - not back to normal activities", 
-                      "DEAD" = "Dead",
-                      "UTC" = "Unable to contact"),
+                      "DEAD"    = "Dead",
+                      "UTC"     = "Unable to contact",
+                      "HX"      = "Hx of Sickness",
+                      "ADMIT"   = "Admission",
+                      "NOADMIT" = "No Admission"),
   d28_death_date = as_date(d28_death_date),
   # f04_deleted, 
   # f04_d28_complete
