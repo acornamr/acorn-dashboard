@@ -55,7 +55,7 @@ about <- tribble(
   "redcap_hai_dta",      "HAI (REDCap F06) form data with one row per submission.",
   "redcap_f01f05_dta",   "REDCap F01,...,F05 forms data with one row per episode.",
   "lab_dta",             "Lab data provided for patients enrolled in ACORN.",
-  "acorn_dta",           "REDCap F01,...,F05 forms + Lab data consolidated with one row per isolate.",
+  "acorn_dta",           "REDCap F01,...,F05 forms + Lab data consolidated with one row per isolate. Infection episodes with no linked lab data are not included in this dataset.",
   "tables_dictionary",   "Dictionary of the _dta tables: redcap_hai_dta, redcap_f01f05_dta, lab_dta, and acorn_dta.",
   "corresp_org_antibio", "Organisms that are shown for each antibiotic.",
   "data_dictionary_",    "All (unformated) sheets from the site ACORN2_lab_data_dictionary.xlsx file.",
