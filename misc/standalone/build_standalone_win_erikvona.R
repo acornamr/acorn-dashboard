@@ -1,5 +1,7 @@
-# Install and load the latest version of erikvona/electricShine
-remotes::install_github("erikvona/electricShine", ref = "master", upgrade = "never")
+# Install and load the latest version of ocelhay/electricShine
+remove.packages("electricShine")
+detach("package:electricShine", unload = TRUE)
+remotes::install_github("ocelhay/electricShine", ref = "master", upgrade = "never")
 library(electricShine)
 
 # Check that the package is working.
@@ -7,8 +9,7 @@ library(electricShine)
 # acorn::run_app()
 
 # Create a directory for the app.
-# buildPath <- paste0("/Users/olivier/Desktop/standalone_", format(Sys.time(), "%Y-%m-%d_%H%M%S"))
-
+buildPath <- paste0("C:\\Users\\olivi\\Documents\\", format(Sys.time(), "%Y-%m-%d_%H%M%S"))
 dir.create(buildPath)
 
 electricShine::electrify(app_name = "ACORN",
@@ -19,7 +20,7 @@ electricShine::electrify(app_name = "ACORN",
                          cran_like_url = "https://cran.r-project.org",
                          function_name = "run_app",
                          git_host = "github",
-                         git_repo = "",
+                         git_repo = "acornamr/acorn-dashboard@development",
                          local_package_path = NULL,
                          package_install_opts = list(type = "binary"),
                          run_build = TRUE)
