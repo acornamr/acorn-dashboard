@@ -7,950 +7,949 @@ ui <- page(
   includeCSS("www/styles.css"),
   usei18n(i18n),  # for translation
   shinyjs::useShinyjs(),
-  div(id = "loading_page"),
-  shinyjs::hidden(
-    div(
-      id = "content",
-      page_navbar(
-        title = a(img(src = "logo_acorn.png", style = "height: 45px; position: relative;")),
-        id = "tabs",
-        selected = "welcome",
-        window_title = "ACORN | A Clinically Oriented antimicrobial Resistance Network",
-        collapsible = TRUE, inverse = FALSE, 
-        position = "static-top",
+  page_navbar(
+    title = a(img(src = "logo_acorn.png", style = "height: 45px; position: relative;")),
+    id = "tabs",
+    selected = "welcome",
+    window_title = "ACORN | A Clinically Oriented antimicrobial Resistance Network",
+    collapsible = TRUE, inverse = FALSE, 
+    position = "static-top",
+    
+    header = div(conditionalPanel(
+      condition = "input.tabs != 'welcome' & input.tabs != 'data_management'",
+      uiOutput("quick_access"),
+      div(id = "header-filter",
+          fluidRow(
+            column(12,
+                   div(id = "filter_box", class = "well",
+                       fluidRow(
+                         column(6,
+                                div(class = "smallcaps", class = "text_center", span(icon("hospital-user"), i18n$t("Enrolments"))),
+                                checkboxGroupButtons("filter_enrolments",
+                                                     choices = c("Surveillance Category", "Type of Ward", "Ward Name", "Date of Enrolment/Survey", "Age Category",
+                                                                 "Initial Diagnosis", "Final Diagnosis", "Clinical Severity", "uCCI", "Clinical/D28 Outcome",
+                                                                 "Transfer"),
+                                                     selected = NULL,
+                                                     status = "light", direction = "horizontal", size = "sm", individual = TRUE,
+                                                     checkIcon = list(yes = icon("filter"))),
+                                conditionalPanel("input.filter_enrolments.includes('Surveillance Category')",
+                                                 prettyCheckboxGroup("filter_surveillance_cat", NULL, shape = "curve", status = "primary",
+                                                                     choiceNames = c("Community Acquired Infection", "Hospital Acquired Infection"),
+                                                                     choiceValues = c("CAI", "HAI"),
+                                                                     selected = c("CAI", "HAI"), inline = TRUE)
+                                ),
+                                conditionalPanel("input.filter_enrolments.includes('Type of Ward')",
+                                                 pickerInput("filter_ward_type", NULL, choices = NULL, selected = NULL, options = list(`actions-box` = TRUE), multiple = TRUE)
+                                ),
+                                conditionalPanel("input.filter_enrolments.includes('Ward Name')",
+                                                 pickerInput("filter_ward_name", NULL, choices = NULL, selected = NULL, options = list(`actions-box` = TRUE), multiple = TRUE)
+                                ),
+                                conditionalPanel("input.filter_enrolments.includes('Date of Enrolment/Survey')",
+                                                 dateRangeInput("filter_date_enrolment", NULL, startview = "year")
+                                ),
+                                conditionalPanel("input.filter_enrolments.includes('Age Category')",
+                                                 prettyCheckboxGroup("filter_age_cat", NULL, shape = "curve", status = "primary",
+                                                                     choices = c("Adult", "Child", "Neonate"), selected = c("Adult", "Child", "Neonate"), inline = TRUE)
+                                ),
+                                conditionalPanel("input.filter_enrolments.includes('Initial Diagnosis')",
+                                                 pickerInput("filter_diagnosis_initial", NULL, choices = NULL,
+                                                             selected = NULL, options = list(`actions-box` = TRUE), multiple = TRUE)
+                                ),
+                                conditionalPanel("input.filter_enrolments.includes('Final Diagnosis')",
+                                                 pickerInput("filter_diagnosis_final", NULL, choices = NULL,
+                                                             selected = NULL, options = list(`actions-box` = TRUE), multiple = TRUE)
+                                ),
+                                conditionalPanel("input.filter_enrolments.includes('Clinical Severity')",
+                                                 sliderInput("filter_severity_adult", "Adult qSOFA score", min = 0, max = 3, value = c(0, 3)),
+                                                 prettySwitch("filter_severity_child_0", "Include Child/Neonate with 0 severity criteria", status = "primary", value = TRUE, slim = TRUE),
+                                                 prettySwitch("filter_severity_child_1", "Include Child/Neonate with ≥ 1 severity criteria", status = "primary", value = TRUE, slim = TRUE)
+                                ),
+                                conditionalPanel("input.filter_enrolments.includes('uCCI')",
+                                                 sliderInput("filter_uCCI", "Updated Charlson Comorbidity Index (only adults)", min = 0, max = 24, value = c(0, 24))
+                                ),
+                                conditionalPanel("input.filter_enrolments.includes('Clinical/D28 Outcome')",
+                                                 prettySwitch("filter_outcome_clinical", "Only with Clinical Outcome", status = "primary", value = FALSE, slim = TRUE),
+                                                 prettySwitch("filter_outcome_d28", "Only with Day-28 Outcome", status = "primary", value = FALSE, slim = TRUE)
+                                ),
+                                conditionalPanel("input.filter_enrolments.includes('Transfer')",
+                                                 prettySwitch("filter_transfer", "Only Non-Transferred Patients", status = "primary", value = FALSE, slim = TRUE)
+                                ),
+                                actionLink("shortcut_reset_filters", label = span(icon("ban"), i18n$t("Reset Enrolments Filters")))
+                         ),
+                         column(3,
+                                div(class = "smallcaps", class = "text_center", span(icon("vial"), i18n$t("Specimens"))),
+                                prettyCheckboxGroup("filter_method_collection", NULL,  shape = "curve", status = "primary", inline = TRUE,
+                                                    choiceNames = c("Blood Culture", "Other Specimens:"),
+                                                    choiceValues = c("blood", "other_not_blood"),
+                                                    selected = c("blood", "other_not_blood")),
+                                conditionalPanel("input.filter_method_collection.includes('other_not_blood')",
+                                                 pickerInput("filter_method_other", NULL, multiple = TRUE,
+                                                             choices = "", selected = NULL,
+                                                             options = list(`actions-box` = TRUE, `deselect-all-text` = "None...",
+                                                                            `select-all-text` = "Select All", `none-selected-text` = "None Selected"))
+                                ),
+                                prettySwitch("filter_not_cultured", label = i18n$t("Remove 'Not Cultured' specimens"), status = "primary", value = FALSE, slim = TRUE)
+                         ),
+                         column(3,
+                                div(class = "smallcaps", class = "text_center",  span(icon("bacterium"), i18n$t("Isolates"))),
+                                pickerInput("deduplication_method",
+                                            choices = c("No deduplication of isolates", "Deduplication by patient-episode", "Deduplication by patient ID")
+                                )
+                         )
+                       )
+                   )
+            )
+          ),
+          fluidRow(
+            column(3, htmlOutput("nb_enrolments")),
+            column(3, htmlOutput("nb_patients_microbiology")),
+            column(3, htmlOutput("nb_specimens")),
+            column(3, htmlOutput("nb_isolates_growth"), htmlOutput("nb_isolates_target"))
+          )
+      )
+    )
+    ),
+    # Tab Welcome ----
+    nav(i18n$t("Welcome"), value = "welcome",
+        fluidRow(
+          column(3,
+                 uiOutput("site_logo"),
+                 htmlOutput("app_github_versions"), br(),
+                 pickerInput(
+                   "selected_language", label = span(icon("language"), i18n$t("Language")),
+                   choices = lang$val,
+                   selected = "en",
+                   choicesOpt = list(content = lang$img)
+                 ),
+                 div(id = "login-basic",
+                     div(class = "well",
+                         h5(class = "text_center",  i18n$t("Please log in")),
+                         div(class = "text-center", i18n$t("(To log out, close the app.)")),
+                         pickerInput("cred_site", "", choices = code_sites, selected = "Run Demo"),
+                         conditionalPanel("input.cred_site != 'Run Demo' && input.cred_site != 'Upload Local .acorn'", div(
+                           textInput("cred_user", tagList(icon("user"), i18n$t("User")), placeholder = "enter user name"),
+                           passwordInput("cred_password", tagList(icon("unlock-alt"), i18n$t("Password")), placeholder = "enter password")
+                         )
+                         ), 
+                         div(class = "text_center",
+                             actionButton("cred_login", label = i18n$t("Log in"), class = "btn-primary")
+                         )
+                     )
+                 )
+          ),
+          column(9,
+                 fluidRow(
+                   column(6,
+                          conditionalPanel("input.selected_language != 'fr' & input.selected_language != 'kh' & input.selected_language != 'vn'",
+                                           includeMarkdown("./www/markdown/about_acorn_en.md")),
+                          conditionalPanel("input.selected_language == 'fr'", includeMarkdown("./www/markdown/about_acorn_fr.md")),
+                          conditionalPanel("input.selected_language == 'vn'", includeMarkdown("./www/markdown/about_acorn_vn.md")),
+                          conditionalPanel("input.selected_language == 'kh'", includeMarkdown("./www/markdown/about_acorn_kh.md"))
+                   ),
+                   column(6,
+                          h5(i18n$t("ACORN Participating Countries")),
+                          span(img(src = "./images/Map-ACORN-Sites-Global.png", id = "map_sites")),
+                          htmlOutput("twitter_feed")
+                   )
+                 )
+          )
+        )
+    ),
+    # Tab Data Management ----
+    nav(span(icon("database"), i18n$t("Data Management")), value = "data_management",
+        p(i18n$t("What do you want to do?")),
         
-        header = div(conditionalPanel(
-          condition = "input.tabs != 'welcome' & input.tabs != 'data_management'",
-          uiOutput("quick_access"),
-          div(id = "header-filter",
-              fluidRow(
-                column(12,
-                       div(id = "filter_box", class = "well",
+        navs_pill_card(id = "data_management_tabs",
+                       nav(title = i18n$t("Generate and load .acorn from clinical and lab data"), value = "generate",
+                           br(),
                            fluidRow(
+                             column(3,    
+                                    h5(i18n$t("(1/4) Download Clinical data")), p(i18n$t("and generate enrolment log.")),
+                                    actionButton("get_redcap_data", i18n$t("Get data from REDCap"), icon = icon('cloud-download-alt'))
+                             ),
                              column(6,
-                                    div(class = "smallcaps", class = "text_center", span(icon("hospital-user"), i18n$t("Enrolments"))),
-                                    checkboxGroupButtons("filter_enrolments",
-                                                         choices = c("Surveillance Category", "Type of Ward", "Ward Name", "Date of Enrolment/Survey", "Age Category",
-                                                                     "Initial Diagnosis", "Final Diagnosis", "Clinical Severity", "uCCI", "Clinical/D28 Outcome",
-                                                                     "Transfer"),
-                                                         selected = NULL,
-                                                         status = "light", direction = "horizontal", size = "sm", individual = TRUE,
-                                                         checkIcon = list(yes = icon("filter"))),
-                                    conditionalPanel("input.filter_enrolments.includes('Surveillance Category')",
-                                                     prettyCheckboxGroup("filter_surveillance_cat", NULL, shape = "curve", status = "primary",
-                                                                         choiceNames = c("Community Acquired Infection", "Hospital Acquired Infection"),
-                                                                         choiceValues = c("CAI", "HAI"),
-                                                                         selected = c("CAI", "HAI"), inline = TRUE)
-                                    ),
-                                    conditionalPanel("input.filter_enrolments.includes('Type of Ward')",
-                                                     pickerInput("filter_ward_type", NULL, choices = NULL, selected = NULL, options = list(`actions-box` = TRUE), multiple = TRUE)
-                                    ),
-                                    conditionalPanel("input.filter_enrolments.includes('Ward Name')",
-                                                     pickerInput("filter_ward_name", NULL, choices = NULL, selected = NULL, options = list(`actions-box` = TRUE), multiple = TRUE)
-                                    ),
-                                    conditionalPanel("input.filter_enrolments.includes('Date of Enrolment/Survey')",
-                                                     dateRangeInput("filter_date_enrolment", NULL, startview = "year")
-                                    ),
-                                    conditionalPanel("input.filter_enrolments.includes('Age Category')",
-                                                     prettyCheckboxGroup("filter_age_cat", NULL, shape = "curve", status = "primary",
-                                                                         choices = c("Adult", "Child", "Neonate"), selected = c("Adult", "Child", "Neonate"), inline = TRUE)
-                                    ),
-                                    conditionalPanel("input.filter_enrolments.includes('Initial Diagnosis')",
-                                                     pickerInput("filter_diagnosis_initial", NULL, choices = NULL,
-                                                                 selected = NULL, options = list(`actions-box` = TRUE), multiple = TRUE)
-                                    ),
-                                    conditionalPanel("input.filter_enrolments.includes('Final Diagnosis')",
-                                                     pickerInput("filter_diagnosis_final", NULL, choices = NULL,
-                                                                 selected = NULL, options = list(`actions-box` = TRUE), multiple = TRUE)
-                                    ),
-                                    conditionalPanel("input.filter_enrolments.includes('Clinical Severity')",
-                                                     sliderInput("filter_severity_adult", "Adult qSOFA score", min = 0, max = 3, value = c(0, 3)),
-                                                     prettySwitch("filter_severity_child_0", "Include Child/Neonate with 0 severity criteria", status = "primary", value = TRUE, slim = TRUE),
-                                                     prettySwitch("filter_severity_child_1", "Include Child/Neonate with ≥ 1 severity criteria", status = "primary", value = TRUE, slim = TRUE)
-                                    ),
-                                    conditionalPanel("input.filter_enrolments.includes('uCCI')",
-                                                     sliderInput("filter_uCCI", "Updated Charlson Comorbidity Index (only adults)", min = 0, max = 24, value = c(0, 24))
-                                    ),
-                                    conditionalPanel("input.filter_enrolments.includes('Clinical/D28 Outcome')",
-                                                     prettySwitch("filter_outcome_clinical", "Only with Clinical Outcome", status = "primary", value = FALSE, slim = TRUE),
-                                                     prettySwitch("filter_outcome_d28", "Only with Day-28 Outcome", status = "primary", value = FALSE, slim = TRUE)
-                                    ),
-                                    conditionalPanel("input.filter_enrolments.includes('Transfer')",
-                                                     prettySwitch("filter_transfer", "Only Non-Transferred Patients", status = "primary", value = FALSE, slim = TRUE)
-                                    ),
-                                    actionLink("shortcut_reset_filters", label = span(icon("ban"), i18n$t("Reset Enrolments Filters")))
+                                    htmlOutput("checklist_qc_clinical")
                              ),
                              column(3,
-                                    div(class = "smallcaps", class = "text_center", span(icon("vial"), i18n$t("Specimens"))),
-                                    prettyCheckboxGroup("filter_method_collection", NULL,  shape = "curve", status = "primary", inline = TRUE,
-                                                        choiceNames = c("Blood Culture", "Other Specimens:"),
-                                                        choiceValues = c("blood", "other_not_blood"),
-                                                        selected = c("blood", "other_not_blood")),
-                                    conditionalPanel("input.filter_method_collection.includes('other_not_blood')",
-                                                     pickerInput("filter_method_other", NULL, multiple = TRUE,
-                                                                 choices = "", selected = NULL,
-                                                                 options = list(`actions-box` = TRUE, `deselect-all-text` = "None...",
-                                                                                `select-all-text` = "Select All", `none-selected-text` = "None Selected"))
+                                    uiOutput("enrolment_log_dl")
+                             )
+                           ),
+                           fluidRow(column(9, offset = 3, br(), uiOutput("enrolment_log_table"))),
+                           hr(),
+                           fluidRow(
+                             column(3,
+                                    h5(i18n$t("(2/4) Provide Lab data")),
+                                    pickerInput("format_lab_data", 
+                                                options = list(title = "Select lab data format"),
+                                                choices = c("WHONET .dBase", "WHONET .SQLite", "Tabular"), 
+                                                multiple = FALSE,
+                                                selected = NULL),
+                                    
+                                    conditionalPanel("input.format_lab_data == 'WHONET .dBase'",
+                                                     fileInput("file_lab_dba", NULL,  buttonLabel = "Browse for dBase file")
                                     ),
-                                    prettySwitch("filter_not_cultured", label = i18n$t("Remove 'Not Cultured' specimens"), status = "primary", value = FALSE, slim = TRUE)
+                                    conditionalPanel("input.format_lab_data == 'WHONET .SQLite'",
+                                                     fileInput("file_lab_sql", NULL,  buttonLabel = "Browse for sqlite file", accept = c(".sqlite3", ".sqlite", ".db"))
+                                    ),
+                                    conditionalPanel("input.format_lab_data == 'Tabular'",
+                                                     fileInput("file_lab_tab", NULL,  buttonLabel = "Browse for file", accept = c(".csv", ".txt", ".xls", ".xlsx"))
+                                    ),
+                                    conditionalPanel("output.lab_file_uploaded",
+                                                     downloadLink("overview_lab_data", span(icon("file"), i18n$t("Lab file overview (optional)"))),
+                                                     br(),
+                                                     actionButton("process_lab_data", i18n$t("Process Lab File"))
+                                    ),
+                             ),
+                             column(6,
+                                    htmlOutput("checklist_qc_lab")
                              ),
                              column(3,
-                                    div(class = "smallcaps", class = "text_center",  span(icon("bacterium"), i18n$t("Isolates"))),
-                                    pickerInput("deduplication_method",
-                                                choices = c("No deduplication of isolates", "Deduplication by patient-episode", "Deduplication by patient ID")
+                                    uiOutput("lab_log_dl")
+                             )
+                           ),
+                           hr(),
+                           fluidRow(
+                             column(3, 
+                                    h5(i18n$t("(3/4) Combine Clinical and Lab data")),
+                                    actionButton("generate_acorn_data", i18n$t("Generate .acorn file"))
+                             ),
+                             column(6,
+                                    htmlOutput("checklist_generate")
+                             )
+                           ),
+                           hr(),
+                           fluidRow(
+                             column(3, 
+                                    h5(i18n$t("(4/4) Save .acorn file")),
+                                    tags$div(
+                                      materialSwitch("save_switch", label = "Local", 
+                                                     inline = TRUE, status = "primary", value = TRUE),
+                                      tags$span(icon("cloud"), "Server"),
+                                      conditionalPanel("! input.save_switch",
+                                                       actionButton("save_acorn_local", i18n$t("Save .acorn file"))
+                                      ),
+                                      conditionalPanel("input.save_switch",
+                                                       actionButton("save_acorn_server", span(icon('cloud-upload-alt'), i18n$t("Save .acorn file")))
+                                      )
+                                    )
+                             ),
+                             column(8,
+                                    htmlOutput("checklist_save")
+                             )
+                           )
+                       ),
+                       nav(title = i18n$t("Load .acorn from cloud"), value = "load_cloud",
+                           br(),
+                           fluidRow(
+                             column(3,
+                                    pickerInput("acorn_files_server", choices = NULL, label = NULL,
+                                                options = pickerOptions(actionsBox = TRUE, noneSelectedText = "No file selected", liveSearch = FALSE,
+                                                                        showTick = TRUE, header = "10 most recent files:"))
+                             ),
+                             column(9,
+                                    conditionalPanel(condition = "input.acorn_files_server",
+                                                     actionButton("load_acorn_server", span(icon("cloud-download-alt"), i18n$t("Load selected .acorn")))
+                                    )
+                             )
+                           )
+                       ),
+                       nav(title = i18n$t("Load .acorn from local file"), value = "load_local",
+                           br(),
+                           fileInput("load_acorn_local", label = NULL, buttonLabel =  i18n$t("Load .acorn"), accept = '.acorn')
+                       ),
+                       nav(title = i18n$t("Info on loaded .acorn"),  value = "info",
+                           br(),
+                           htmlOutput("info_data")
+                       )
+        )
+    ),
+    # Tab Overview ----
+    nav(i18n$t("Overview"), value = "overview", 
+        fluidRow(
+          column(6,
+                 HTML("<span id='anchor_101'></span>"),
+                 div(class = "box_outputs", 
+                     h4_title(icon("calendar-check"), i18n$t("Date of Enrolment")),
+                     div(class = "box_outputs_content",
+                         prettySwitch("show_date_week", label = i18n$t("See by Week"), status = "primary"),
+                         highchartOutput("profile_date_enrolment")
+                     )
+                 ),
+                 HTML("<span id='anchor_103'></span>"),
+                 div(class = "box_outputs",
+                     h4_title(icon("tint"), i18n$t("Enrolments with Blood Culture")),
+                     div(class = "box_outputs_content",
+                         fluidRow(
+                           column(6, flexdashboard::gaugeOutput("profile_blood_culture_gauge", width = "100%", height = "100px")),
+                           column(6, htmlOutput("profile_blood_culture_pct", width = "100%", height = "100px"))
+                         )
+                     )
+                 )
+          ),
+          column(6,
+                 HTML("<span id='anchor_102'></span>"),
+                 div(class = "box_outputs",
+                     h4_title(i18n$t("Distribution of Enrolments")),
+                     div(class = "box_outputs_content",
+                         fluidRow(
+                           column(3, i18n$t("Variables in Table:")),
+                           column(9,
+                                  checkboxGroupButtons("variables_table", label = NULL, 
+                                                       size = "sm", status = "primary", checkIcon = list(yes = icon("check-square"), no = icon("square")), individual = TRUE,
+                                                       choices = c("Place of Infection" = "surveillance_category", "Type of Ward" = "ward_type", "Ward" = "ward", "Clinical Outcome" = "clinical_outcome", "Day-28 Outcome" = "d28_outcome"), 
+                                                       selected = c("surveillance_category", "ward_type", "ward", "clinical_outcome", "d28_outcome"))
+                           )
+                         ),
+                         DT::DTOutput("table_patients", width = "95%")
+                     )
+                 )
+          )
+        ),
+        fluidRow(
+          column(6, 
+                 HTML("<span id='anchor_104'></span>"),
+                 div(class = "box_outputs",
+                     h4_title(i18n$t("Enrolments by (type of) Ward")),
+                     div(class = "box_outputs_content",
+                         prettySwitch("show_ward_breakdown", label = i18n$t("See Breakdown by Ward"), status = "primary"),
+                         highchartOutput("profile_type_ward")
+                     )
+                 )
+          ),
+          column(6, 
+                 HTML("<span id='anchor_105'></span>"),
+                 div(class = "box_outputs", h4_title(i18n$t("Patient Age Distribution")),
+                     div(class = "box_outputs_content",
+                         highchartOutput("profile_age")
+                     )
+                 )
+          )
+        ),
+        fluidRow(
+          column(6, 
+                 HTML("<span id='anchor_106'></span>"),
+                 div(class = "box_outputs",
+                     h4_title(i18n$t("Diagnosis at Enrolment")),
+                     div(class = "box_outputs_content",
+                         highchartOutput("profile_diagnosis", height = "500px")
+                     )
+                 )
+          ),
+          column(6, 
+                 HTML("<span id='anchor_107'></span>"),
+                 div(class = "box_outputs",
+                     h4_title(i18n$t("Empiric Antibiotics Prescribed")),
+                     div(class = "box_outputs_content",
+                         prettySwitch("antibiotics_combinations", label = i18n$t("Show antibiotics combinations"), status = "primary", value = FALSE, slim = TRUE),
+                         highchartOutput("profile_antibiotics", height = "500px")
+                     )
+                 )
+          )
+        ),
+        fluidRow(
+          column(6, 
+                 HTML("<span id='anchor_108'></span>"),
+                 div(class = "box_outputs",
+                     h4_title(i18n$t("Updated Charlson Comorbidity Index (uCCI)")),
+                     div(class = "box_outputs_content",
+                         highchartOutput("profile_ucci", height = "300px")
+                     )
+                 ),
+                 HTML("<span id='anchor_110'></span>"),
+                 div(class = "box_outputs",
+                     h4_title(icon("arrows-alt-h"), i18n$t("Patients Transferred")),
+                     div(class = "box_outputs_content",
+                         highchartOutput("profile_transfer_hospital", height = "200px")
+                     )
+                 )
+          ),
+          column(6, 
+                 HTML("<span id='anchor_109'></span>"),
+                 div(class = "box_outputs",
+                     h4_title(i18n$t("Patient Comorbidities")),
+                     div(class = "box_outputs_content",
+                         prettySwitch("comorbidities_combinations", label = i18n$t("Show comorbidities combinations"), status = "primary", value = FALSE, slim = TRUE),
+                         highchartOutput("profile_comorbidities", height = "500px")
+                     )
+                 )
+          )
+        ),
+        fluidRow(
+          column(6, 
+                 HTML("<span id='anchor_111'></span>"),
+                 div(class = "box_outputs",
+                     h4_title(i18n$t("Enrolments with Blood Culture")),
+                     a(id = "anchor_bcc", style = "visibility: hidden", ""),
+                     div(class = "box_outputs_content",
+                         pickerInput("display_unit_ebc", label = NULL, 
+                                     choices = c("Use heuristic for time unit", "Display by month", "Display by year")),
+                         highchartOutput("enrolment_blood_culture")
+                     )
+                 )
+          ),
+          column(6, 
+                 HTML("<span id='anchor_112'></span>"),
+                 div(class = "box_outputs", h4_title(i18n$t("Blood culture collected within 24 hours of admission (CAI) / symptom onset (HAI)")),
+                     div(class = "box_outputs_content",
+                         highchartOutput("profile_blood")
+                     )
+                 )
+          )
+        )
+    ),
+    # Tab Follow-up ----
+    nav(i18n$t("Follow-up"), value = "follow_up",
+        fluidRow(
+          column(6,
+                 HTML("<span id='anchor_201'></span>"),
+                 div(class = "box_outputs",
+                     h4_title(i18n$t("Clinical Outcome")),
+                     div(class = "box_outputs_content",
+                         fluidRow(
+                           column(6, flexdashboard::gaugeOutput("clinical_outcome_gauge", width = "100%", height = "100px")),
+                           column(6, htmlOutput("clinical_outcome_pct", width = "100%", height = "70px"))
+                         ),
+                         h5(i18n$t("Clinical Outcome Status:")),
+                         highchartOutput("clinical_outcome_status", height = "250px")
+                     )
+                 ),
+          ),
+          column(6,
+                 HTML("<span id='anchor_202'></span>"),
+                 div(class = "box_outputs",
+                     h4_title(i18n$t("Day 28")),
+                     div(class = "box_outputs_content",
+                         fluidRow(
+                           column(6, flexdashboard::gaugeOutput("d28_outcome_gauge", width = "100%", height = "100px")),
+                           column(6, htmlOutput("d28_outcome_pct", width = "100%", height = "70px"))
+                         ),
+                         h5(i18n$t("Day 28 Status:")),
+                         highchartOutput("d28_outcome_status", height = "250px")
+                     )
+                 )
+          )
+        ),
+        fluidRow(
+          column(4,
+                 HTML("<span id='anchor_203'></span>"),
+                 div(class = "box_outputs",
+                     h4_title(i18n$t("Bloodstream Infection (BSI)")),
+                     div(class = "box_outputs_content",
+                         htmlOutput("bsi_summary")
+                     )
+                 )
+          ),
+          column(8, 
+                 HTML("<span id='anchor_204'></span>"),
+                 div(class = "box_outputs",
+                     h4_title(i18n$t("Initial and Final Surveillance Diagnosis")),
+                     div(class = "box_outputs_content",
+                         i18n$t("The 10 most common initial-final diagnosis combinations:"),
+                         highchartOutput("followup_outcome_clin_diag", height = "500px")
+                     )
+                 )
+          )
+        )
+    ),
+    # Tab HAI ----
+    nav("HAI", value = "hai", 
+        HTML("<span id='anchor_301'></span>"),
+        div(class = "box_outputs",
+            h4_title(i18n$t("Ward Occupancy Rates")),
+            div(class = "box_outputs_content",
+                i18n$t("Occupancy rate per type of ward per month"),
+                plotOutput("bed_occupancy_ward", width = "80%")
+            )
+        ),
+        HTML("<span id='anchor_302'></span>"),
+        div(class = "box_outputs",
+            h4_title(i18n$t("HAI Prevalence")),
+            div(class = "box_outputs_content",
+                span(
+                  i18n$t("HAI point prevalence by "),
+                  selectInput("hai_ward_display", NULL, c("type of ward", "ward"), selected = "type of ward", multiple = FALSE, selectize = TRUE)
+                ),
+                plotOutput("hai_rate_ward", width = "80%")
+            )
+        )
+    ),
+    # Tab Microbiology ----
+    nav(i18n$t("Microbiology"), value = "microbiology", 
+        prettySwitch("filter_rm_contaminant", label = i18n$t("Remove blood culture contaminants from the following visualizations"), status = "primary", value = FALSE, slim = TRUE),
+        fluidRow(
+          column(6,
+                 HTML("<span id='anchor_401'></span>"),
+                 div(class = "box_outputs",
+                     h4_title(i18n$t("Blood Culture Contaminants")),
+                     div(class = "box_outputs_content",
+                         fluidRow(
+                           column(6, flexdashboard::gaugeOutput("contaminants_gauge", width = "100%", height = "100px"), br()),
+                           column(6, htmlOutput("contaminants_pct", width = "100%", height = "100px"))
+                         )
+                     )
+                 ),
+                 HTML("<span id='anchor_403'></span>"),
+                 div(class = "box_outputs",
+                     h4_title(i18n$t("Specimen Types")),
+                     div(class = "box_outputs_content",
+                         i18n$t("Number of specimens per specimen type"),
+                         highchartOutput("culture_specimen_type", height = "400px"),
+                         
+                         i18n$t("Culture results per specimen type"),
+                         highchartOutput("culture_specgroup", height = "350px")
+                     )
+                 )
+          ),
+          column(6,
+                 HTML("<span id='anchor_402'></span>"),
+                 div(class = "box_outputs",
+                     h4_title(i18n$t("Growth / No Growth")),
+                     div(class = "box_outputs_content",
+                         fluidRow(
+                           column(6, flexdashboard::gaugeOutput("isolates_growth_gauge", width = "100%", height = "100px"), br()),
+                           column(6, htmlOutput("isolates_growth_pct", width = "100%", height = "100px"))
+                         )
+                     )
+                 ),
+                 HTML("<span id='anchor_404'></span>"),
+                 div(class = "box_outputs",
+                     h4_title(i18n$t("Isolates")),
+                     div(class = "box_outputs_content",
+                         i18n$t("Most frequent 10 organisms in the plot and complete listing in the table. Contaminants are in red."),
+                         highchartOutput("isolates_organism_nc"),
+                         highchartOutput("isolates_organism_contaminant"),
+                         br(), br(),
+                         DT::DTOutput("isolates_organism_table", width = "95%"),
+                         br()
+                     )
+                 )
+          )
+        )
+    ),
+    # Tab AMR ----
+    nav(span(icon("bug"), "AMR"), value = "amr", 
+        prettySwitch("combine_SI", i18n$t("Combine Susceptible + Intermediate"), status = "primary"),
+        HTML("<span id='anchor_amr'></span>"),
+        navs_pill_card(id = "amr_panel",
+                       nav(value = "amr_aci",
+                           span(em("Acinetobacter"), br(), " species"),
+                           
+                           conditionalPanel(condition = "! output.test_acinetobacter_sir", 
+                                            h4(i18n$t("There is no data to display for this organism."))),
+                           conditionalPanel(condition = "output.test_acinetobacter_sir", 
+                                            div(
+                                              fluidRow(
+                                                column(6,
+                                                       htmlOutput("nb_isolates_acinetobacter")
+                                                ),
+                                                column(6,
+                                                       div(class = "text-warning", 
+                                                           span(icon("exclamation-triangle"),
+                                                                i18n$t("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable.")))
+                                                )
+                                              ),
+                                              br(),
+                                              fluidRow(
+                                                column(6,
+                                                       h4(i18n$t("SIR Evaluation")),
+                                                       highchartOutput("acinetobacter_sir", height = "400px")
+                                                ),
+                                                column(6,
+                                                       h4(i18n$t("Co-resistances")),
+                                                       plotOutput("acinetobacter_co_resistance", height = "400px"),
+                                                       conditionalPanel(condition = "! input.combine_SI", 
+                                                                        i18n$t("Susceptible and Intermediate are always combined in this visualisation of co-resistances.")
+                                                       ),
+                                                       i18n$t("Horizontal bars show the size of a set of SR results while vertical bars show the number of resistant isolates for the corresponding antibiotic."),
+                                                       i18n$t("Only isolates that have been tested against all of the drugs are included in the upset plot.")
+                                                )
+                                              ),
+                                              fluidRow(
+                                                column(12,
+                                                       h4(i18n$t("Resistance to Carbapenems Over Time")),
+                                                       highchartOutput("acinetobacter_sir_evolution", height = "400px")
+                                                ))
+                                            )
+                           )
+                       ),
+                       nav(value = "amr_esc",
+                           HTML("<em>Escherichia <br/>coli</em>"),
+                           
+                           conditionalPanel(condition = "! output.test_ecoli_sir", 
+                                            h4(i18n$t("There is no data to display for this organism."))),
+                           conditionalPanel(condition = "output.test_ecoli_sir", 
+                                            div(
+                                              fluidRow(
+                                                column(6,
+                                                       htmlOutput("nb_isolates_ecoli")
+                                                ),
+                                                column(6,
+                                                       div(class = "text-warning", 
+                                                           span(icon("exclamation-triangle"),
+                                                                i18n$t("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable.")))
+                                                )
+                                              ),
+                                              br(),
+                                              fluidRow(
+                                                column(6,
+                                                       h4(i18n$t("SIR Evaluation")),
+                                                       highchartOutput("ecoli_sir", height = "400px")
+                                                ),
+                                                column(6,
+                                                       h4(i18n$t("Co-resistances")),
+                                                       plotOutput("ecoli_co_resistance", height = "400px"),
+                                                       conditionalPanel(condition = "! input.combine_SI", 
+                                                                        i18n$t("Susceptible and Intermediate are always combined in this visualisation of co-resistances.")
+                                                       ),
+                                                       i18n$t("Horizontal bars show the size of a set of SR results while vertical bars show the number of resistant isolates for the corresponding antibiotic."),
+                                                       i18n$t("Only isolates that have been tested against all of the drugs are included in the upset plot.")
+                                                )
+                                              ),
+                                              fluidRow(
+                                                column(12,
+                                                       h4(i18n$t("Resistance to Carbapenems Over Time")),
+                                                       highchartOutput("ecoli_sir_evolution", height = "400px")
+                                                )),
+                                              fluidRow(
+                                                column(12,
+                                                       h4(i18n$t("Resistance to 3rd gen. Cephalosporins Over Time")),
+                                                       highchartOutput("ecoli_sir_evolution_ceph", height = "400px")
+                                                ))
+                                            )
+                           )
+                       ),
+                       nav(value = "amr_hae",
+                           HTML("<em>Haemophilus <br/>influenzae</em>"),
+                           
+                           conditionalPanel(condition = "! output.test_haemophilus_influenzae_sir", 
+                                            h4(i18n$t("There is no data to display for this organism."))),
+                           conditionalPanel(condition = "output.test_haemophilus_influenzae_sir", 
+                                            div(
+                                              fluidRow(
+                                                column(6,
+                                                       htmlOutput("nb_isolates_haemophilus_influenzae")
+                                                ),
+                                                column(6,
+                                                       div(class = "text-warning", 
+                                                           span(icon("exclamation-triangle"),
+                                                                i18n$t("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable.")))
+                                                )
+                                              ),
+                                              br(),
+                                              fluidRow(
+                                                column(6,
+                                                       h4(i18n$t("SIR Evaluation")),
+                                                       highchartOutput("haemophilus_influenzae_sir", height = "400px")
+                                                ),
+                                                column(6,
+                                                       h4(i18n$t("Co-resistances")),
+                                                       plotOutput("haemophilus_influenzae_co_resistance", height = "400px"),
+                                                       conditionalPanel(condition = "! input.combine_SI", 
+                                                                        i18n$t("Susceptible and Intermediate are always combined in this visualisation of co-resistances.")
+                                                       ),
+                                                       i18n$t("Horizontal bars show the size of a set of SR results while vertical bars show the number of resistant isolates for the corresponding antibiotic."),
+                                                       i18n$t("Only isolates that have been tested against all of the drugs are included in the upset plot.")
+                                                )
+                                              )
+                                            )
+                           )
+                       ),
+                       nav(value = "amr_kle",
+                           HTML("<em>Klebsiella <br/>pneumoniae</em>"), 
+                           
+                           conditionalPanel(condition = "! output.test_kpneumoniae_sir", 
+                                            h4(i18n$t("There is no data to display for this organism."))),
+                           conditionalPanel(condition = "output.test_kpneumoniae_sir", 
+                                            div(
+                                              fluidRow(
+                                                column(6,
+                                                       htmlOutput("nb_isolates_kpneumoniae")
+                                                ),
+                                                column(6,
+                                                       div(class = "text-warning", 
+                                                           span(icon("exclamation-triangle"),
+                                                                i18n$t("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable.")))
+                                                )
+                                              ),
+                                              br(),
+                                              fluidRow(
+                                                column(6,
+                                                       h4(i18n$t("SIR Evaluation")),
+                                                       highchartOutput("kpneumoniae_sir", height = "400px")
+                                                ),
+                                                column(6,
+                                                       h4(i18n$t("Co-resistances")),
+                                                       plotOutput("kpneumoniae_co_resistance", height = "400px"),
+                                                       conditionalPanel(condition = "! input.combine_SI", 
+                                                                        i18n$t("Susceptible and Intermediate are always combined in this visualisation of co-resistances.")
+                                                       ),
+                                                       i18n$t("Horizontal bars show the size of a set of SR results while vertical bars show the number of resistant isolates for the corresponding antibiotic."),
+                                                       i18n$t("Only isolates that have been tested against all of the drugs are included in the upset plot.")
+                                                )
+                                              ),
+                                              fluidRow(
+                                                column(12,
+                                                       h4(i18n$t("Resistance to Carbapenems Over Time")),
+                                                       highchartOutput("kpneumoniae_sir_evolution", height = "400px")
+                                                )),
+                                              fluidRow(
+                                                column(12,
+                                                       h4(i18n$t("Resistance to 3rd gen. Cephalosporins Over Time")),
+                                                       highchartOutput("kpneumoniae_sir_evolution_ceph", height = "400px")
+                                                ))
+                                            )
+                           )
+                       ),
+                       nav(value = "amr_nei",
+                           HTML("<em>Neisseria <br/>meningitidis</em>"), 
+                           
+                           conditionalPanel(condition = "! output.test_neisseria_meningitidis_sir", 
+                                            h4(i18n$t("There is no data to display for this organism."))),
+                           conditionalPanel(condition = "output.test_neisseria_meningitidis_sir", 
+                                            div(
+                                              fluidRow(
+                                                column(6,
+                                                       htmlOutput("nb_isolates_neisseria_meningitidis")
+                                                ),
+                                                column(6,
+                                                       div(class = "text-warning", 
+                                                           span(icon("exclamation-triangle"),
+                                                                i18n$t("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable.")))
+                                                )
+                                              ),
+                                              br(),
+                                              fluidRow(
+                                                column(6,
+                                                       h4(i18n$t("SIR Evaluation")),
+                                                       highchartOutput("neisseria_meningitidis_sir", height = "400px")
+                                                ),
+                                                column(6,
+                                                       h4(i18n$t("Co-resistances")),
+                                                       plotOutput("neisseria_meningitidis_co_resistance", height = "400px"),
+                                                       conditionalPanel(condition = "! input.combine_SI", 
+                                                                        i18n$t("Susceptible and Intermediate are always combined in this visualisation of co-resistances.")
+                                                       ),
+                                                       i18n$t("Horizontal bars show the size of a set of SR results while vertical bars show the number of resistant isolates for the corresponding antibiotic."),
+                                                       i18n$t("Only isolates that have been tested against all of the drugs are included in the upset plot.")
+                                                )
+                                              )
+                                            )
+                           )
+                       ),
+                       nav(value = "amr_pse",
+                           HTML("<em>Pseudomonas <br/>aeruginosa</em>"), 
+                           
+                           conditionalPanel(condition = "! output.test_pseudomonas_aeruginosa_sir", 
+                                            h4(i18n$t("There is no data to display for this organism."))),
+                           conditionalPanel(condition = "output.test_pseudomonas_aeruginosa_sir", 
+                                            div(
+                                              fluidRow(
+                                                column(6,
+                                                       htmlOutput("nb_isolates_pseudomonas_aeruginosa")
+                                                ),
+                                                column(6,
+                                                       div(class = "text-warning", 
+                                                           span(icon("exclamation-triangle"),
+                                                                i18n$t("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable.")))
+                                                )
+                                              ),
+                                              br(),
+                                              fluidRow(
+                                                column(6,
+                                                       h4(i18n$t("SIR Evaluation")),
+                                                       highchartOutput("pseudomonas_aeruginosa_sir", height = "400px")
+                                                ),
+                                                column(6,
+                                                       h4(i18n$t("Co-resistances")),
+                                                       plotOutput("pseudomonas_aeruginosa_co_resistance", height = "400px"),
+                                                       conditionalPanel(condition = "! input.combine_SI", 
+                                                                        i18n$t("Susceptible and Intermediate are always combined in this visualisation of co-resistances.")
+                                                       ),
+                                                       i18n$t("Horizontal bars show the size of a set of SR results while vertical bars show the number of resistant isolates for the corresponding antibiotic."),
+                                                       i18n$t("Only isolates that have been tested against all of the drugs are included in the upset plot.")
+                                                )
+                                              ),
+                                              fluidRow(
+                                                column(12,
+                                                       h4(i18n$t("Resistance to Carbapenems Over Time")),
+                                                       highchartOutput("pseudomonas_aeruginosa_sir_evolution", height = "400px")
+                                                ))
+                                            )
+                           )
+                       ),
+                       nav(value = "amr_sal",
+                           HTML("<em>Salmonella</em> <br/>species"),
+                           br(),
+                           prettyRadioButtons("select_salmonella", label = NULL,  shape = "curve",
+                                              choices = c("Salmonella Typhi", "Salmonella Paratyphi", "Salmonella sp (not S. Typhi or S. Paratyphi)"), 
+                                              selected = "Salmonella Typhi", inline = TRUE),
+                           conditionalPanel(condition = "! output.test_salmonella_sir", 
+                                            h4(i18n$t("There is no data to display for this organism."))),
+                           conditionalPanel(condition = "output.test_salmonella_sir", 
+                                            div(
+                                              fluidRow(
+                                                column(6,
+                                                       htmlOutput("nb_isolates_salmonella")
+                                                ),
+                                                column(6,
+                                                       div(class = "text-warning", 
+                                                           span(icon("exclamation-triangle"),
+                                                                i18n$t("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable.")))
+                                                )
+                                              ),
+                                              br(),
+                                              fluidRow(
+                                                column(6,
+                                                       h4(i18n$t("SIR Evaluation")),
+                                                       highchartOutput("salmonella_sir", height = "500px"),
+                                                ),
+                                                column(6,
+                                                       h4(i18n$t("Co-resistances")),
+                                                       plotOutput("salmonella_co_resistance", height = "400px"),
+                                                       conditionalPanel(condition = "! input.combine_SI", 
+                                                                        i18n$t("Susceptible and Intermediate are always combined in this visualisation of co-resistances.")
+                                                       ),
+                                                       i18n$t("Horizontal bars show the size of a set of SR results while vertical bars show the number of resistant isolates for the corresponding antibiotic."),
+                                                       i18n$t("Only isolates that have been tested against all of the drugs are included in the upset plot.")
+                                                )
+                                              ),
+                                              fluidRow(
+                                                column(12,
+                                                       h4(i18n$t("Resistance to 3rd gen. Cephalosporins Over Time")),
+                                                       highchartOutput("salmonella_sir_evolution_ceph", height = "400px"),
+                                                )),
+                                              fluidRow(
+                                                column(12,
+                                                       h4(i18n$t("Resistance to Fluoroquinolones Over Time")),
+                                                       highchartOutput("salmonella_sir_evolution_fluo", height = "400px")
+                                                ))
+                                            )
+                           )
+                       ),
+                       nav(value = "amr_sta",
+                           HTML("<em>Staphylococcus <br/>aureus</em>"),
+                           conditionalPanel(condition = "! output.test_saureus_sir", 
+                                            h4(i18n$t("There is no data to display for this organism."))),
+                           conditionalPanel(condition = "output.test_saureus_sir", 
+                                            div(
+                                              fluidRow(
+                                                column(6,
+                                                       htmlOutput("nb_isolates_saureus")
+                                                ),
+                                                column(6,
+                                                       div(class = "text-warning", 
+                                                           span(icon("exclamation-triangle"),
+                                                                i18n$t("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable.")))
+                                                )
+                                              ),
+                                              br(),
+                                              fluidRow(
+                                                column(6,
+                                                       h4(i18n$t("SIR Evaluation")),
+                                                       highchartOutput("saureus_sir", height = "400px")
+                                                ),
+                                                column(6,
+                                                       h4(i18n$t("Co-resistances")),
+                                                       plotOutput("saureus_co_resistance", height = "400px"),
+                                                       conditionalPanel(condition = "! input.combine_SI", 
+                                                                        i18n$t("Susceptible and Intermediate are always combined in this visualisation of co-resistances.")
+                                                       ),
+                                                       i18n$t("Horizontal bars show the size of a set of SR results while vertical bars show the number of resistant isolates for the corresponding antibiotic."),
+                                                       i18n$t("Only isolates that have been tested against all of the drugs are included in the upset plot.")
+                                                )
+                                              ),
+                                              fluidRow(
+                                                column(12,
+                                                       h4(i18n$t("Resistance to Oxacillin Over Time")),
+                                                       highchartOutput("saureus_sir_evolution", height = "400px")
+                                                ))
+                                            )
+                           )
+                       ),
+                       nav(value = "amr_str",
+                           HTML("<em>Streptococcus <br/>pneumoniae</em>"),
+                           conditionalPanel(condition = "! output.test_spneumoniae_sir", 
+                                            h4(i18n$t("There is no data to display for this organism."))),
+                           conditionalPanel(condition = "output.test_spneumoniae_sir", 
+                                            div(
+                                              fluidRow(
+                                                column(6,
+                                                       htmlOutput("nb_isolates_spneumoniae")
+                                                ),
+                                                column(6,
+                                                       div(class = "text-warning", 
+                                                           span(icon("exclamation-triangle"),
+                                                                i18n$t("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable.")))
+                                                )
+                                              ),
+                                              br(),
+                                              fluidRow(
+                                                column(6,
+                                                       h4(i18n$t("SIR Evaluation")),
+                                                       highchartOutput("spneumoniae_sir", height = "400px")
+                                                ),
+                                                column(6,
+                                                       h4(i18n$t("Co-resistances")),
+                                                       plotOutput("spneumoniae_co_resistance", height = "400px"),
+                                                       conditionalPanel(condition = "! input.combine_SI", 
+                                                                        i18n$t("Susceptible and Intermediate are always combined in this visualisation of co-resistances.")
+                                                       ),
+                                                       i18n$t("Horizontal bars show the size of a set of SR results while vertical bars show the number of resistant isolates for the corresponding antibiotic."),
+                                                       i18n$t("Only isolates that have been tested against all of the drugs are included in the upset plot.")
+                                                )
+                                              ),
+                                              fluidRow(
+                                                column(12,
+                                                       h4(i18n$t("Resistance to Penicillin G Over Time")),
+                                                       highchartOutput("spneumoniae_sir_evolution_pen", height = "400px")
+                                                )),
+                                              fluidRow(
+                                                column(12,
+                                                       h4(i18n$t("Resistance to Penicillin G - meningitis Over Time")),
+                                                       highchartOutput("spneumoniae_sir_evolution_pen_men", height = "400px")
+                                                ))
+                                            )
+                           )
+                       ),
+                       nav(value = "amr_all",
+                           i18n$t("All Other Organisms"),
+                           br(),
+                           fluidRow(
+                             column(4,
+                                    div(id = "other_organism_div", selectInput("other_organism", label = NULL, multiple = FALSE, choices = NULL, selected = NULL))
+                             ),
+                             column(8,
+                                    conditionalPanel(condition = "! output.test_other_sir", 
+                                                     h4(i18n$t("There is no data to display for this organism."))),
+                                    conditionalPanel(condition = "output.test_other_sir", 
+                                                     div(
+                                                       htmlOutput("nb_isolates_other"),
+                                                       div(class = "text-warning", 
+                                                           span(icon("exclamation-triangle"),
+                                                                i18n$t("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable."))),
+                                                       h4(i18n$t("SIR Evaluation")),
+                                                       highchartOutput("other_organism_sir", height = "500px"),
+                                                     )
                                     )
                              )
                            )
                        )
-                )
-              ),
-              fluidRow(
-                column(3, htmlOutput("nb_enrolments")),
-                column(3, htmlOutput("nb_patients_microbiology")),
-                column(3, htmlOutput("nb_specimens")),
-                column(3, htmlOutput("nb_isolates_growth"), htmlOutput("nb_isolates_target"))
-              )
-          )
+                       
         )
-        ),
-        # Tab Welcome ----
-        nav(i18n$t("Welcome"), value = "welcome",
-            fluidRow(
-              column(3,
-                     uiOutput("site_logo"),
-                     htmlOutput("app_github_versions"), br(),
-                     pickerInput(
-                       "selected_language", label = span(icon("language"), i18n$t("Language")),
-                       choices = lang$val,
-                       selected = "en",
-                       choicesOpt = list(content = lang$img)
-                     ),
-                     div(id = "login-basic",
-                         div(class = "well",
-                             h5(class = "text_center",  i18n$t("Please log in")),
-                             div(class = "text-center", i18n$t("(To log out, close the app.)")),
-                             pickerInput("cred_site", "", choices = code_sites, selected = "Run Demo"),
-                             conditionalPanel("input.cred_site != 'Run Demo' && input.cred_site != 'Upload Local .acorn'", div(
-                               textInput("cred_user", tagList(icon("user"), i18n$t("User")), placeholder = "enter user name"),
-                               passwordInput("cred_password", tagList(icon("unlock-alt"), i18n$t("Password")), placeholder = "enter password")
-                             )
-                             ), 
-                             div(class = "text_center",
-                                 actionButton("cred_login", label = i18n$t("Log in"), class = "btn-primary")
-                             )
-                         )
-                     )
-              ),
-              column(9,
-                     fluidRow(
-                       column(6,
-                              conditionalPanel("input.selected_language != 'fr' & input.selected_language != 'kh' & input.selected_language != 'vn'",
-                                               includeMarkdown("./www/markdown/about_acorn_en.md")),
-                              conditionalPanel("input.selected_language == 'fr'", includeMarkdown("./www/markdown/about_acorn_fr.md")),
-                              conditionalPanel("input.selected_language == 'vn'", includeMarkdown("./www/markdown/about_acorn_vn.md")),
-                              conditionalPanel("input.selected_language == 'kh'", includeMarkdown("./www/markdown/about_acorn_kh.md"))
-                       ),
-                       column(6,
-                              h5(i18n$t("ACORN Participating Countries")),
-                              span(img(src = "./images/Map-ACORN-Sites-Global.png", id = "map_sites")),
-                              htmlOutput("twitter_feed")
-                       )
-                     )
-              )
-            )
-        ),
-        # Tab Data Management ----
-        nav(span(icon("database"), i18n$t("Data Management")), value = "data_management",
-            p(i18n$t("What do you want to do?")),
-            
-            navs_pill_card(id = "data_management_tabs",
-                           nav(title = i18n$t("Generate and load .acorn from clinical and lab data"), value = "generate",
-                               br(),
-                               fluidRow(
-                                 column(3,    
-                                        h5(i18n$t("(1/4) Download Clinical data")), p(i18n$t("and generate enrolment log.")),
-                                        actionButton("get_redcap_data", i18n$t("Get data from REDCap"), icon = icon('cloud-download-alt'))
-                                 ),
-                                 column(6,
-                                        htmlOutput("checklist_qc_clinical")
-                                 ),
-                                 column(3,
-                                        uiOutput("enrolment_log_dl")
-                                 )
-                               ),
-                               fluidRow(column(9, offset = 3, br(), uiOutput("enrolment_log_table"))),
-                               hr(),
-                               fluidRow(
-                                 column(3,
-                                        h5(i18n$t("(2/4) Provide Lab data")),
-                                        pickerInput("format_lab_data", 
-                                                    options = list(title = "Select lab data format"),
-                                                    choices = c("WHONET .dBase", "WHONET .SQLite", "Tabular"), 
-                                                    multiple = FALSE,
-                                                    selected = NULL),
-                                        
-                                        conditionalPanel("input.format_lab_data == 'WHONET .dBase'",
-                                                         fileInput("file_lab_dba", NULL,  buttonLabel = "Browse for dBase file")
-                                        ),
-                                        conditionalPanel("input.format_lab_data == 'WHONET .SQLite'",
-                                                         fileInput("file_lab_sql", NULL,  buttonLabel = "Browse for sqlite file", accept = c(".sqlite3", ".sqlite", ".db"))
-                                        ),
-                                        conditionalPanel("input.format_lab_data == 'Tabular'",
-                                                         fileInput("file_lab_tab", NULL,  buttonLabel = "Browse for file", accept = c(".csv", ".txt", ".xls", ".xlsx"))
-                                        ),
-                                        conditionalPanel("output.lab_file_uploaded",
-                                                         downloadLink("overview_lab_data", span(icon("file"), i18n$t("Lab file overview (optional)"))),
-                                                         br(),
-                                                         actionButton("process_lab_data", i18n$t("Process Lab File"))
-                                        ),
-                                 ),
-                                 column(6,
-                                        htmlOutput("checklist_qc_lab")
-                                 ),
-                                 column(3,
-                                        uiOutput("lab_log_dl")
-                                 )
-                               ),
-                               hr(),
-                               fluidRow(
-                                 column(3, 
-                                        h5(i18n$t("(3/4) Combine Clinical and Lab data")),
-                                        actionButton("generate_acorn_data", i18n$t("Generate .acorn file"))
-                                 ),
-                                 column(6,
-                                        htmlOutput("checklist_generate")
-                                 )
-                               ),
-                               hr(),
-                               fluidRow(
-                                 column(3, 
-                                        h5(i18n$t("(4/4) Save .acorn file")),
-                                        tags$div(
-                                          materialSwitch("save_switch", label = "Local", 
-                                                         inline = TRUE, status = "primary", value = TRUE),
-                                          tags$span(icon("cloud"), "Server"),
-                                          conditionalPanel("! input.save_switch",
-                                                           actionButton("save_acorn_local", i18n$t("Save .acorn file"))
-                                          ),
-                                          conditionalPanel("input.save_switch",
-                                                           actionButton("save_acorn_server", span(icon('cloud-upload-alt'), i18n$t("Save .acorn file")))
-                                          )
-                                        )
-                                 ),
-                                 column(8,
-                                        htmlOutput("checklist_save")
-                                 )
-                               )
-                           ),
-                           nav(title = i18n$t("Load .acorn from cloud"), value = "load_cloud",
-                               br(),
-                               fluidRow(
-                                 column(3,
-                                        pickerInput("acorn_files_server", choices = NULL, label = NULL,
-                                                    options = pickerOptions(actionsBox = TRUE, noneSelectedText = "No file selected", liveSearch = FALSE,
-                                                                            showTick = TRUE, header = "10 most recent files:"))
-                                 ),
-                                 column(9,
-                                        conditionalPanel(condition = "input.acorn_files_server",
-                                                         actionButton("load_acorn_server", span(icon("cloud-download-alt"), i18n$t("Load selected .acorn")))
-                                        )
-                                 )
-                               )
-                           ),
-                           nav(title = i18n$t("Load .acorn from local file"), value = "load_local",
-                               br(),
-                               fileInput("load_acorn_local", label = NULL, buttonLabel =  i18n$t("Load .acorn"), accept = '.acorn')
-                           ),
-                           nav(title = i18n$t("Info on loaded .acorn"),  value = "info",
-                               br(),
-                               htmlOutput("info_data")
-                           )
-            )
-        ),
-        # Tab Overview ----
-        nav(i18n$t("Overview"), value = "overview", 
-            fluidRow(
-              column(6,
-                     HTML("<span id='anchor_101'></span>"),
-                     div(class = "box_outputs", 
-                         h4_title(icon("calendar-check"), i18n$t("Date of Enrolment")),
-                         div(class = "box_outputs_content",
-                             prettySwitch("show_date_week", label = i18n$t("See by Week"), status = "primary"),
-                             highchartOutput("profile_date_enrolment")
-                         )
-                     ),
-                     HTML("<span id='anchor_103'></span>"),
-                     div(class = "box_outputs",
-                         h4_title(icon("tint"), i18n$t("Enrolments with Blood Culture")),
-                         div(class = "box_outputs_content",
-                             fluidRow(
-                               column(6, flexdashboard::gaugeOutput("profile_blood_culture_gauge", width = "100%", height = "100px")),
-                               column(6, htmlOutput("profile_blood_culture_pct", width = "100%", height = "100px"))
-                             )
-                         )
-                     )
-              ),
-              column(6,
-                     HTML("<span id='anchor_102'></span>"),
-                     div(class = "box_outputs",
-                         h4_title(i18n$t("Distribution of Enrolments")),
-                         div(class = "box_outputs_content",
-                             fluidRow(
-                               column(3, i18n$t("Variables in Table:")),
-                               column(9,
-                                      checkboxGroupButtons("variables_table", label = NULL, 
-                                                           size = "sm", status = "primary", checkIcon = list(yes = icon("check-square"), no = icon("square")), individual = TRUE,
-                                                           choices = c("Place of Infection" = "surveillance_category", "Type of Ward" = "ward_type", "Ward" = "ward", "Clinical Outcome" = "clinical_outcome", "Day-28 Outcome" = "d28_outcome"), 
-                                                           selected = c("surveillance_category", "ward_type", "ward", "clinical_outcome", "d28_outcome"))
-                               )
-                             ),
-                             DT::DTOutput("table_patients", width = "95%")
-                         )
-                     )
-              )
-            ),
-            fluidRow(
-              column(6, 
-                     HTML("<span id='anchor_104'></span>"),
-                     div(class = "box_outputs",
-                         h4_title(i18n$t("Enrolments by (type of) Ward")),
-                         div(class = "box_outputs_content",
-                             prettySwitch("show_ward_breakdown", label = i18n$t("See Breakdown by Ward"), status = "primary"),
-                             highchartOutput("profile_type_ward")
-                         )
-                     )
-              ),
-              column(6, 
-                     HTML("<span id='anchor_105'></span>"),
-                     div(class = "box_outputs", h4_title(i18n$t("Patient Age Distribution")),
-                         div(class = "box_outputs_content",
-                             highchartOutput("profile_age")
-                         )
-                     )
-              )
-            ),
-            fluidRow(
-              column(6, 
-                     HTML("<span id='anchor_106'></span>"),
-                     div(class = "box_outputs",
-                         h4_title(i18n$t("Diagnosis at Enrolment")),
-                         div(class = "box_outputs_content",
-                             highchartOutput("profile_diagnosis", height = "500px")
-                         )
-                     )
-              ),
-              column(6, 
-                     HTML("<span id='anchor_107'></span>"),
-                     div(class = "box_outputs",
-                         h4_title(i18n$t("Empiric Antibiotics Prescribed")),
-                         div(class = "box_outputs_content",
-                             prettySwitch("antibiotics_combinations", label = i18n$t("Show antibiotics combinations"), status = "primary", value = FALSE, slim = TRUE),
-                             highchartOutput("profile_antibiotics", height = "500px")
-                         )
-                     )
-              )
-            ),
-            fluidRow(
-              column(6, 
-                     HTML("<span id='anchor_108'></span>"),
-                     div(class = "box_outputs",
-                         h4_title(i18n$t("Updated Charlson Comorbidity Index (uCCI)")),
-                         div(class = "box_outputs_content",
-                             highchartOutput("profile_ucci", height = "300px")
-                         )
-                     ),
-                     HTML("<span id='anchor_110'></span>"),
-                     div(class = "box_outputs",
-                         h4_title(icon("arrows-alt-h"), i18n$t("Patients Transferred")),
-                         div(class = "box_outputs_content",
-                             highchartOutput("profile_transfer_hospital", height = "200px")
-                         )
-                     )
-              ),
-              column(6, 
-                     HTML("<span id='anchor_109'></span>"),
-                     div(class = "box_outputs",
-                         h4_title(i18n$t("Patient Comorbidities")),
-                         div(class = "box_outputs_content",
-                             prettySwitch("comorbidities_combinations", label = i18n$t("Show comorbidities combinations"), status = "primary", value = FALSE, slim = TRUE),
-                             highchartOutput("profile_comorbidities", height = "500px")
-                         )
-                     )
-              )
-            ),
-            fluidRow(
-              column(6, 
-                     HTML("<span id='anchor_111'></span>"),
-                     div(class = "box_outputs",
-                         h4_title(i18n$t("Enrolments with Blood Culture")),
-                         a(id = "anchor_bcc", style = "visibility: hidden", ""),
-                         div(class = "box_outputs_content",
-                             pickerInput("display_unit_ebc", label = NULL, 
-                                         choices = c("Use heuristic for time unit", "Display by month", "Display by year")),
-                             highchartOutput("enrolment_blood_culture")
-                         )
-                     )
-              ),
-              column(6, 
-                     HTML("<span id='anchor_112'></span>"),
-                     div(class = "box_outputs", h4_title(i18n$t("Blood culture collected within 24 hours of admission (CAI) / symptom onset (HAI)")),
-                         div(class = "box_outputs_content",
-                             highchartOutput("profile_blood")
-                         )
-                     )
-              )
-            )
-        ),
-        # Tab Follow-up ----
-        nav(i18n$t("Follow-up"), value = "follow_up",
-            fluidRow(
-              column(6,
-                     HTML("<span id='anchor_201'></span>"),
-                     div(class = "box_outputs",
-                         h4_title(i18n$t("Clinical Outcome")),
-                         div(class = "box_outputs_content",
-                             fluidRow(
-                               column(6, flexdashboard::gaugeOutput("clinical_outcome_gauge", width = "100%", height = "100px")),
-                               column(6, htmlOutput("clinical_outcome_pct", width = "100%", height = "70px"))
-                             ),
-                             h5(i18n$t("Clinical Outcome Status:")),
-                             highchartOutput("clinical_outcome_status", height = "250px")
-                         )
-                     ),
-              ),
-              column(6,
-                     HTML("<span id='anchor_202'></span>"),
-                     div(class = "box_outputs",
-                         h4_title(i18n$t("Day 28")),
-                         div(class = "box_outputs_content",
-                             fluidRow(
-                               column(6, flexdashboard::gaugeOutput("d28_outcome_gauge", width = "100%", height = "100px")),
-                               column(6, htmlOutput("d28_outcome_pct", width = "100%", height = "70px"))
-                             ),
-                             h5(i18n$t("Day 28 Status:")),
-                             highchartOutput("d28_outcome_status", height = "250px")
-                         )
-                     )
-              )
-            ),
-            fluidRow(
-              column(4,
-                     HTML("<span id='anchor_203'></span>"),
-                     div(class = "box_outputs",
-                         h4_title(i18n$t("Bloodstream Infection (BSI)")),
-                         div(class = "box_outputs_content",
-                             htmlOutput("bsi_summary")
-                         )
-                     )
-              ),
-              column(8, 
-                     HTML("<span id='anchor_204'></span>"),
-                     div(class = "box_outputs",
-                         h4_title(i18n$t("Initial and Final Surveillance Diagnosis")),
-                         div(class = "box_outputs_content",
-                             i18n$t("The 10 most common initial-final diagnosis combinations:"),
-                             highchartOutput("followup_outcome_clin_diag", height = "500px")
-                         )
-                     )
-              )
-            )
-        ),
-        # Tab HAI ----
-        nav("HAI", value = "hai", 
-            HTML("<span id='anchor_301'></span>"),
-            div(class = "box_outputs",
-                h4_title(i18n$t("Ward Occupancy Rates")),
-                div(class = "box_outputs_content",
-                    i18n$t("Occupancy rate per type of ward per month"),
-                    plotOutput("bed_occupancy_ward", width = "80%")
-                )
-            ),
-            HTML("<span id='anchor_302'></span>"),
-            div(class = "box_outputs",
-                h4_title(i18n$t("HAI Prevalence")),
-                div(class = "box_outputs_content",
-                    span(
-                      i18n$t("HAI point prevalence by "),
-                      selectInput("hai_ward_display", NULL, c("type of ward", "ward"), selected = "type of ward", multiple = FALSE, selectize = TRUE)
-                    ),
-                    plotOutput("hai_rate_ward", width = "80%")
-                )
-            )
-        ),
-        # Tab Microbiology ----
-        nav(i18n$t("Microbiology"), value = "microbiology", 
-            prettySwitch("filter_rm_contaminant", label = i18n$t("Remove blood culture contaminants from the following visualizations"), status = "primary", value = FALSE, slim = TRUE),
-            fluidRow(
-              column(6,
-                     HTML("<span id='anchor_401'></span>"),
-                     div(class = "box_outputs",
-                         h4_title(i18n$t("Blood Culture Contaminants")),
-                         div(class = "box_outputs_content",
-                             fluidRow(
-                               column(6, flexdashboard::gaugeOutput("contaminants_gauge", width = "100%", height = "100px"), br()),
-                               column(6, htmlOutput("contaminants_pct", width = "100%", height = "100px"))
-                             )
-                         )
-                     ),
-                     HTML("<span id='anchor_403'></span>"),
-                     div(class = "box_outputs",
-                         h4_title(i18n$t("Specimen Types")),
-                         div(class = "box_outputs_content",
-                             i18n$t("Number of specimens per specimen type"),
-                             highchartOutput("culture_specimen_type", height = "400px"),
-                             
-                             i18n$t("Culture results per specimen type"),
-                             highchartOutput("culture_specgroup", height = "350px")
-                         )
-                     )
-              ),
-              column(6,
-                     HTML("<span id='anchor_402'></span>"),
-                     div(class = "box_outputs",
-                         h4_title(i18n$t("Growth / No Growth")),
-                         div(class = "box_outputs_content",
-                             fluidRow(
-                               column(6, flexdashboard::gaugeOutput("isolates_growth_gauge", width = "100%", height = "100px"), br()),
-                               column(6, htmlOutput("isolates_growth_pct", width = "100%", height = "100px"))
-                             )
-                         )
-                     ),
-                     HTML("<span id='anchor_404'></span>"),
-                     div(class = "box_outputs",
-                         h4_title(i18n$t("Isolates")),
-                         div(class = "box_outputs_content",
-                             i18n$t("Most frequent 10 organisms in the plot and complete listing in the table. Contaminants are in red."),
-                             highchartOutput("isolates_organism_nc"),
-                             highchartOutput("isolates_organism_contaminant"),
-                             br(), br(),
-                             DT::DTOutput("isolates_organism_table", width = "95%"),
-                             br()
-                         )
-                     )
-              )
-            )
-        ),
-        # Tab AMR ----
-        nav(span(icon("bug"), "AMR"), value = "amr", 
-            prettySwitch("combine_SI", i18n$t("Combine Susceptible + Intermediate"), status = "primary"),
-            HTML("<span id='anchor_amr'></span>"),
-            navs_pill_card(id = "amr_panel",
-                           nav(value = "amr_aci",
-                               span(em("Acinetobacter"), br(), " species"),
-                               
-                               conditionalPanel(condition = "! output.test_acinetobacter_sir", 
-                                                h4(i18n$t("There is no data to display for this organism."))),
-                               conditionalPanel(condition = "output.test_acinetobacter_sir", 
-                                                div(
-                                                  fluidRow(
-                                                    column(6,
-                                                           htmlOutput("nb_isolates_acinetobacter")
-                                                    ),
-                                                    column(6,
-                                                           div(class = "text-warning", 
-                                                               span(icon("exclamation-triangle"),
-                                                                    i18n$t("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable.")))
-                                                    )
-                                                  ),
-                                                  br(),
-                                                  fluidRow(
-                                                    column(6,
-                                                           h4(i18n$t("SIR Evaluation")),
-                                                           highchartOutput("acinetobacter_sir", height = "400px")
-                                                    ),
-                                                    column(6,
-                                                           h4(i18n$t("Co-resistances")),
-                                                           plotOutput("acinetobacter_co_resistance", height = "400px"),
-                                                           conditionalPanel(condition = "! input.combine_SI", 
-                                                                            i18n$t("Susceptible and Intermediate are always combined in this visualisation of co-resistances.")
-                                                           ),
-                                                           i18n$t("Horizontal bars show the size of a set of SR results while vertical bars show the number of resistant isolates for the corresponding antibiotic."),
-                                                           i18n$t("Only isolates that have been tested against all of the drugs are included in the upset plot.")
-                                                    )
-                                                  ),
-                                                  fluidRow(
-                                                    column(12,
-                                                           h4(i18n$t("Resistance to Carbapenems Over Time")),
-                                                           highchartOutput("acinetobacter_sir_evolution", height = "400px")
-                                                    ))
-                                                )
-                               )
-                           ),
-                           nav(value = "amr_esc",
-                               HTML("<em>Escherichia <br/>coli</em>"),
-                               
-                               conditionalPanel(condition = "! output.test_ecoli_sir", 
-                                                h4(i18n$t("There is no data to display for this organism."))),
-                               conditionalPanel(condition = "output.test_ecoli_sir", 
-                                                div(
-                                                  fluidRow(
-                                                    column(6,
-                                                           htmlOutput("nb_isolates_ecoli")
-                                                    ),
-                                                    column(6,
-                                                           div(class = "text-warning", 
-                                                               span(icon("exclamation-triangle"),
-                                                                    i18n$t("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable.")))
-                                                    )
-                                                  ),
-                                                  br(),
-                                                  fluidRow(
-                                                    column(6,
-                                                           h4(i18n$t("SIR Evaluation")),
-                                                           highchartOutput("ecoli_sir", height = "400px")
-                                                    ),
-                                                    column(6,
-                                                           h4(i18n$t("Co-resistances")),
-                                                           plotOutput("ecoli_co_resistance", height = "400px"),
-                                                           conditionalPanel(condition = "! input.combine_SI", 
-                                                                            i18n$t("Susceptible and Intermediate are always combined in this visualisation of co-resistances.")
-                                                           ),
-                                                           i18n$t("Horizontal bars show the size of a set of SR results while vertical bars show the number of resistant isolates for the corresponding antibiotic."),
-                                                           i18n$t("Only isolates that have been tested against all of the drugs are included in the upset plot.")
-                                                    )
-                                                  ),
-                                                  fluidRow(
-                                                    column(12,
-                                                           h4(i18n$t("Resistance to Carbapenems Over Time")),
-                                                           highchartOutput("ecoli_sir_evolution", height = "400px")
-                                                    )),
-                                                  fluidRow(
-                                                    column(12,
-                                                           h4(i18n$t("Resistance to 3rd gen. Cephalosporins Over Time")),
-                                                           highchartOutput("ecoli_sir_evolution_ceph", height = "400px")
-                                                    ))
-                                                )
-                               )
-                           ),
-                           nav(value = "amr_hae",
-                               HTML("<em>Haemophilus <br/>influenzae</em>"),
-                               
-                               conditionalPanel(condition = "! output.test_haemophilus_influenzae_sir", 
-                                                h4(i18n$t("There is no data to display for this organism."))),
-                               conditionalPanel(condition = "output.test_haemophilus_influenzae_sir", 
-                                                div(
-                                                  fluidRow(
-                                                    column(6,
-                                                           htmlOutput("nb_isolates_haemophilus_influenzae")
-                                                    ),
-                                                    column(6,
-                                                           div(class = "text-warning", 
-                                                               span(icon("exclamation-triangle"),
-                                                                    i18n$t("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable.")))
-                                                    )
-                                                  ),
-                                                  br(),
-                                                  fluidRow(
-                                                    column(6,
-                                                           h4(i18n$t("SIR Evaluation")),
-                                                           highchartOutput("haemophilus_influenzae_sir", height = "400px")
-                                                    ),
-                                                    column(6,
-                                                           h4(i18n$t("Co-resistances")),
-                                                           plotOutput("haemophilus_influenzae_co_resistance", height = "400px"),
-                                                           conditionalPanel(condition = "! input.combine_SI", 
-                                                                            i18n$t("Susceptible and Intermediate are always combined in this visualisation of co-resistances.")
-                                                           ),
-                                                           i18n$t("Horizontal bars show the size of a set of SR results while vertical bars show the number of resistant isolates for the corresponding antibiotic."),
-                                                           i18n$t("Only isolates that have been tested against all of the drugs are included in the upset plot.")
-                                                    )
-                                                  )
-                                                )
-                               )
-                           ),
-                           nav(value = "amr_kle",
-                               HTML("<em>Klebsiella <br/>pneumoniae</em>"), 
-                               
-                               conditionalPanel(condition = "! output.test_kpneumoniae_sir", 
-                                                h4(i18n$t("There is no data to display for this organism."))),
-                               conditionalPanel(condition = "output.test_kpneumoniae_sir", 
-                                                div(
-                                                  fluidRow(
-                                                    column(6,
-                                                           htmlOutput("nb_isolates_kpneumoniae")
-                                                    ),
-                                                    column(6,
-                                                           div(class = "text-warning", 
-                                                               span(icon("exclamation-triangle"),
-                                                                    i18n$t("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable.")))
-                                                    )
-                                                  ),
-                                                  br(),
-                                                  fluidRow(
-                                                    column(6,
-                                                           h4(i18n$t("SIR Evaluation")),
-                                                           highchartOutput("kpneumoniae_sir", height = "400px")
-                                                    ),
-                                                    column(6,
-                                                           h4(i18n$t("Co-resistances")),
-                                                           plotOutput("kpneumoniae_co_resistance", height = "400px"),
-                                                           conditionalPanel(condition = "! input.combine_SI", 
-                                                                            i18n$t("Susceptible and Intermediate are always combined in this visualisation of co-resistances.")
-                                                           ),
-                                                           i18n$t("Horizontal bars show the size of a set of SR results while vertical bars show the number of resistant isolates for the corresponding antibiotic."),
-                                                           i18n$t("Only isolates that have been tested against all of the drugs are included in the upset plot.")
-                                                    )
-                                                  ),
-                                                  fluidRow(
-                                                    column(12,
-                                                           h4(i18n$t("Resistance to Carbapenems Over Time")),
-                                                           highchartOutput("kpneumoniae_sir_evolution", height = "400px")
-                                                    )),
-                                                  fluidRow(
-                                                    column(12,
-                                                           h4(i18n$t("Resistance to 3rd gen. Cephalosporins Over Time")),
-                                                           highchartOutput("kpneumoniae_sir_evolution_ceph", height = "400px")
-                                                    ))
-                                                )
-                               )
-                           ),
-                           nav(value = "amr_nei",
-                               HTML("<em>Neisseria <br/>meningitidis</em>"), 
-                               
-                               conditionalPanel(condition = "! output.test_neisseria_meningitidis_sir", 
-                                                h4(i18n$t("There is no data to display for this organism."))),
-                               conditionalPanel(condition = "output.test_neisseria_meningitidis_sir", 
-                                                div(
-                                                  fluidRow(
-                                                    column(6,
-                                                           htmlOutput("nb_isolates_neisseria_meningitidis")
-                                                    ),
-                                                    column(6,
-                                                           div(class = "text-warning", 
-                                                               span(icon("exclamation-triangle"),
-                                                                    i18n$t("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable.")))
-                                                    )
-                                                  ),
-                                                  br(),
-                                                  fluidRow(
-                                                    column(6,
-                                                           h4(i18n$t("SIR Evaluation")),
-                                                           highchartOutput("neisseria_meningitidis_sir", height = "400px")
-                                                    ),
-                                                    column(6,
-                                                           h4(i18n$t("Co-resistances")),
-                                                           plotOutput("neisseria_meningitidis_co_resistance", height = "400px"),
-                                                           conditionalPanel(condition = "! input.combine_SI", 
-                                                                            i18n$t("Susceptible and Intermediate are always combined in this visualisation of co-resistances.")
-                                                           ),
-                                                           i18n$t("Horizontal bars show the size of a set of SR results while vertical bars show the number of resistant isolates for the corresponding antibiotic."),
-                                                           i18n$t("Only isolates that have been tested against all of the drugs are included in the upset plot.")
-                                                    )
-                                                  )
-                                                )
-                               )
-                           ),
-                           nav(value = "amr_pse",
-                               HTML("<em>Pseudomonas <br/>aeruginosa</em>"), 
-                               
-                               conditionalPanel(condition = "! output.test_pseudomonas_aeruginosa_sir", 
-                                                h4(i18n$t("There is no data to display for this organism."))),
-                               conditionalPanel(condition = "output.test_pseudomonas_aeruginosa_sir", 
-                                                div(
-                                                  fluidRow(
-                                                    column(6,
-                                                           htmlOutput("nb_isolates_pseudomonas_aeruginosa")
-                                                    ),
-                                                    column(6,
-                                                           div(class = "text-warning", 
-                                                               span(icon("exclamation-triangle"),
-                                                                    i18n$t("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable.")))
-                                                    )
-                                                  ),
-                                                  br(),
-                                                  fluidRow(
-                                                    column(6,
-                                                           h4(i18n$t("SIR Evaluation")),
-                                                           highchartOutput("pseudomonas_aeruginosa_sir", height = "400px")
-                                                    ),
-                                                    column(6,
-                                                           h4(i18n$t("Co-resistances")),
-                                                           plotOutput("pseudomonas_aeruginosa_co_resistance", height = "400px"),
-                                                           conditionalPanel(condition = "! input.combine_SI", 
-                                                                            i18n$t("Susceptible and Intermediate are always combined in this visualisation of co-resistances.")
-                                                           ),
-                                                           i18n$t("Horizontal bars show the size of a set of SR results while vertical bars show the number of resistant isolates for the corresponding antibiotic."),
-                                                           i18n$t("Only isolates that have been tested against all of the drugs are included in the upset plot.")
-                                                    )
-                                                  ),
-                                                  fluidRow(
-                                                    column(12,
-                                                           h4(i18n$t("Resistance to Carbapenems Over Time")),
-                                                           highchartOutput("pseudomonas_aeruginosa_sir_evolution", height = "400px")
-                                                    ))
-                                                )
-                               )
-                           ),
-                           nav(value = "amr_sal",
-                               HTML("<em>Salmonella</em> <br/>species"),
-                               br(),
-                               prettyRadioButtons("select_salmonella", label = NULL,  shape = "curve",
-                                                  choices = c("Salmonella Typhi", "Salmonella Paratyphi", "Salmonella sp (not S. Typhi or S. Paratyphi)"), 
-                                                  selected = "Salmonella Typhi", inline = TRUE),
-                               conditionalPanel(condition = "! output.test_salmonella_sir", 
-                                                h4(i18n$t("There is no data to display for this organism."))),
-                               conditionalPanel(condition = "output.test_salmonella_sir", 
-                                                div(
-                                                  fluidRow(
-                                                    column(6,
-                                                           htmlOutput("nb_isolates_salmonella")
-                                                    ),
-                                                    column(6,
-                                                           div(class = "text-warning", 
-                                                               span(icon("exclamation-triangle"),
-                                                                    i18n$t("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable.")))
-                                                    )
-                                                  ),
-                                                  br(),
-                                                  fluidRow(
-                                                    column(6,
-                                                           h4(i18n$t("SIR Evaluation")),
-                                                           highchartOutput("salmonella_sir", height = "500px"),
-                                                    ),
-                                                    column(6,
-                                                           h4(i18n$t("Co-resistances")),
-                                                           plotOutput("salmonella_co_resistance", height = "400px"),
-                                                           conditionalPanel(condition = "! input.combine_SI", 
-                                                                            i18n$t("Susceptible and Intermediate are always combined in this visualisation of co-resistances.")
-                                                           ),
-                                                           i18n$t("Horizontal bars show the size of a set of SR results while vertical bars show the number of resistant isolates for the corresponding antibiotic."),
-                                                           i18n$t("Only isolates that have been tested against all of the drugs are included in the upset plot.")
-                                                    )
-                                                  ),
-                                                  fluidRow(
-                                                    column(12,
-                                                           h4(i18n$t("Resistance to 3rd gen. Cephalosporins Over Time")),
-                                                           highchartOutput("salmonella_sir_evolution_ceph", height = "400px"),
-                                                    )),
-                                                  fluidRow(
-                                                    column(12,
-                                                           h4(i18n$t("Resistance to Fluoroquinolones Over Time")),
-                                                           highchartOutput("salmonella_sir_evolution_fluo", height = "400px")
-                                                    ))
-                                                )
-                               )
-                           ),
-                           nav(value = "amr_sta",
-                               HTML("<em>Staphylococcus <br/>aureus</em>"),
-                               conditionalPanel(condition = "! output.test_saureus_sir", 
-                                                h4(i18n$t("There is no data to display for this organism."))),
-                               conditionalPanel(condition = "output.test_saureus_sir", 
-                                                div(
-                                                  fluidRow(
-                                                    column(6,
-                                                           htmlOutput("nb_isolates_saureus")
-                                                    ),
-                                                    column(6,
-                                                           div(class = "text-warning", 
-                                                               span(icon("exclamation-triangle"),
-                                                                    i18n$t("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable.")))
-                                                    )
-                                                  ),
-                                                  br(),
-                                                  fluidRow(
-                                                    column(6,
-                                                           h4(i18n$t("SIR Evaluation")),
-                                                           highchartOutput("saureus_sir", height = "400px")
-                                                    ),
-                                                    column(6,
-                                                           h4(i18n$t("Co-resistances")),
-                                                           plotOutput("saureus_co_resistance", height = "400px"),
-                                                           conditionalPanel(condition = "! input.combine_SI", 
-                                                                            i18n$t("Susceptible and Intermediate are always combined in this visualisation of co-resistances.")
-                                                           ),
-                                                           i18n$t("Horizontal bars show the size of a set of SR results while vertical bars show the number of resistant isolates for the corresponding antibiotic."),
-                                                           i18n$t("Only isolates that have been tested against all of the drugs are included in the upset plot.")
-                                                    )
-                                                  ),
-                                                  fluidRow(
-                                                    column(12,
-                                                           h4(i18n$t("Resistance to Oxacillin Over Time")),
-                                                           highchartOutput("saureus_sir_evolution", height = "400px")
-                                                    ))
-                                                )
-                               )
-                           ),
-                           nav(value = "amr_str",
-                               HTML("<em>Streptococcus <br/>pneumoniae</em>"),
-                               conditionalPanel(condition = "! output.test_spneumoniae_sir", 
-                                                h4(i18n$t("There is no data to display for this organism."))),
-                               conditionalPanel(condition = "output.test_spneumoniae_sir", 
-                                                div(
-                                                  fluidRow(
-                                                    column(6,
-                                                           htmlOutput("nb_isolates_spneumoniae")
-                                                    ),
-                                                    column(6,
-                                                           div(class = "text-warning", 
-                                                               span(icon("exclamation-triangle"),
-                                                                    i18n$t("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable.")))
-                                                    )
-                                                  ),
-                                                  br(),
-                                                  fluidRow(
-                                                    column(6,
-                                                           h4(i18n$t("SIR Evaluation")),
-                                                           highchartOutput("spneumoniae_sir", height = "400px")
-                                                    ),
-                                                    column(6,
-                                                           h4(i18n$t("Co-resistances")),
-                                                           plotOutput("spneumoniae_co_resistance", height = "400px"),
-                                                           conditionalPanel(condition = "! input.combine_SI", 
-                                                                            i18n$t("Susceptible and Intermediate are always combined in this visualisation of co-resistances.")
-                                                           ),
-                                                           i18n$t("Horizontal bars show the size of a set of SR results while vertical bars show the number of resistant isolates for the corresponding antibiotic."),
-                                                           i18n$t("Only isolates that have been tested against all of the drugs are included in the upset plot.")
-                                                    )
-                                                  ),
-                                                  fluidRow(
-                                                    column(12,
-                                                           h4(i18n$t("Resistance to Penicillin G Over Time")),
-                                                           highchartOutput("spneumoniae_sir_evolution_pen", height = "400px")
-                                                    )),
-                                                  fluidRow(
-                                                    column(12,
-                                                           h4(i18n$t("Resistance to Penicillin G - meningitis Over Time")),
-                                                           highchartOutput("spneumoniae_sir_evolution_pen_men", height = "400px")
-                                                    ))
-                                                )
-                               )
-                           ),
-                           nav(value = "amr_all",
-                               i18n$t("All Other Organisms"),
-                               br(),
-                               fluidRow(
-                                 column(4,
-                                        div(id = "other_organism_div", selectInput("other_organism", label = NULL, multiple = FALSE, choices = NULL, selected = NULL))
-                                 ),
-                                 column(8,
-                                        conditionalPanel(condition = "! output.test_other_sir", 
-                                                         h4(i18n$t("There is no data to display for this organism."))),
-                                        conditionalPanel(condition = "output.test_other_sir", 
-                                                         div(
-                                                           htmlOutput("nb_isolates_other"),
-                                                           div(class = "text-warning", 
-                                                               span(icon("exclamation-triangle"),
-                                                                    i18n$t("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable."))),
-                                                           h4(i18n$t("SIR Evaluation")),
-                                                           highchartOutput("other_organism_sir", height = "500px"),
-                                                         )
-                                        )
-                                 )
-                               )
-                           )
-                           
-            )
-        ),
-        nav_item(
-          actionLink("show_faq", label = "FAQ/Cheat Sheet")
-        )
-      )
+    ),
+    nav_item(
+      actionLink("show_faq", label = "FAQ/Cheat Sheet")
     )
   )
 )
 
 # Definition of server ----
 server <- function(input, output, session) {
+  # Terminate R when shiny app window is closed
+  session$onSessionEnded(function() {
+    stopApp()
+  })
+  
   # Quick access.
   source("./www/R/quick_access.R", local = TRUE)
   
@@ -961,12 +960,6 @@ server <- function(input, output, session) {
   nav_hide("tabs", target = "hai")
   nav_hide("tabs", target = "microbiology")
   nav_hide("tabs", target = "amr")
-  
-  # Create a blank page while the app is loading.
-  shinyjs::delay(100, {
-    shinyjs::hide("loading_page")
-    shinyjs::show("content")
-  })
   
   output$twitter_feed <- renderText({
     ifelse(!nzchar(Sys.getenv("SHINY_PORT")),
@@ -1010,7 +1003,7 @@ server <- function(input, output, session) {
                     meta = meta(), 
                     redcap_f01f05_dta = redcap_f01f05_dta() %>% mutate(patient_id = openssl::md5(patient_id)), 
                     redcap_hai_dta = redcap_hai_dta(), 
-                    lab_dta = lab_dta() %>% filter(patid %in% redcap_f01f05_dta()$patient_id) %>% mutate(patid = openssl::md5(patid)), 
+                    lab_dta = lab_dta() %>% filter(patid %in% acorn_dta()$patient_id) %>% mutate(patid = openssl::md5(patid)), 
                     acorn_dta = acorn_dta() %>% mutate(patient_id = openssl::md5(patient_id)), 
                     tables_dictionary = tables_dictionary(),
                     corresp_org_antibio = corresp_org_antibio(), 
@@ -1049,7 +1042,7 @@ server <- function(input, output, session) {
           "meta" = meta() |> as_tibble(),
           "redcap_hai_dta" = redcap_hai_dta(),
           "redcap_f01f05_dta" = redcap_f01f05_dta() %>% mutate(patient_id = openssl::md5(patient_id)),
-          "lab_dta" = lab_dta() %>% filter(patid %in% redcap_f01f05_dta()$patient_id) %>% mutate(patid = openssl::md5(patid)),
+          "lab_dta" = lab_dta() %>% filter(patid %in% acorn_dta()$patient_id) %>% mutate(patid = openssl::md5(patid)),
           "acorn_dta" = acorn_dta() %>% mutate(patient_id = openssl::md5(patient_id)),
           "tables_dictionary" = tables_dictionary(),
           "corresp_org_antibio" = corresp_org_antibio(),
@@ -1689,7 +1682,7 @@ server <- function(input, output, session) {
                   meta = meta(), 
                   redcap_f01f05_dta = redcap_f01f05_dta() %>% mutate(patient_id = openssl::md5(patient_id)), 
                   redcap_hai_dta = redcap_hai_dta(), 
-                  lab_dta = lab_dta() %>% filter(patid %in% redcap_f01f05_dta()$patient_id) %>% mutate(patid = openssl::md5(patid)), 
+                  lab_dta = lab_dta() %>% filter(patid %in% acorn_dta()$patient_id) %>% mutate(patid = openssl::md5(patid)), 
                   acorn_dta = acorn_dta() %>% mutate(patient_id = openssl::md5(patient_id)), 
                   tables_dictionary = tables_dictionary(),
                   corresp_org_antibio = corresp_org_antibio(), 
@@ -1711,7 +1704,7 @@ server <- function(input, output, session) {
                   meta = meta(), 
                   redcap_f01f05_dta = redcap_f01f05_dta(), 
                   redcap_hai_dta = redcap_hai_dta(), 
-                  lab_dta = lab_dta() %>% filter(patid %in% redcap_f01f05_dta()$patient_id), 
+                  lab_dta = lab_dta() %>% filter(patid %in% acorn_dta()$patient_id), 
                   acorn_dta = acorn_dta(), 
                   tables_dictionary = tables_dictionary(),
                   corresp_org_antibio = corresp_org_antibio(), 
@@ -1765,7 +1758,7 @@ server <- function(input, output, session) {
                     meta = meta(), 
                     redcap_f01f05_dta = redcap_f01f05_dta() %>% mutate(patient_id = openssl::md5(patient_id)), 
                     redcap_hai_dta = redcap_hai_dta(), 
-                    lab_dta = lab_dta() %>% filter(patid %in% redcap_f01f05_dta()$patient_id) %>% mutate(patid = openssl::md5(patid)), 
+                    lab_dta = lab_dta() %>% filter(patid %in% acorn_dta()$patient_id) %>% mutate(patid = openssl::md5(patid)), 
                     acorn_dta = acorn_dta() %>% mutate(patient_id = openssl::md5(patient_id)), 
                     tables_dictionary = tables_dictionary(),
                     corresp_org_antibio = corresp_org_antibio(), 
