@@ -18,7 +18,14 @@ There are three ways to access the ACORN dashboard:
 - with the standalone app for Windows by installing the latest release (.exe file in the Assets section): https://github.com/acornamr/acorn-dashboard/releases/latest/
 - using the `acorn-dashboard` R package:
 
+1. Download and install R 4.2.0 https://cran.r-project.org/bin/windows/base/R-4.2.0-win.exe
+2. **The first time**, open R and copy/paste in the console:
 ```r
-remotes::install_github("acornamr/acorn-dashboard", ref = "master")
-acorn::run_app()
+if(!require(remotes)){
+    install.packages("remotes", repos = "https://cloud.r-project.org/")
+}
+remotes::install_github("acornamr/acorn-dashboard", ref = "master", upgrade = "never")
 ```
+3. **From then on**, open R and copy/paste in the console: `acorn::run_app()` every time you want to run the ACORN Dashboard.
+
+Close your browser and quit R at the end of your ACORN session, clicking 'No' when prompted 'Save workspace image?' 
