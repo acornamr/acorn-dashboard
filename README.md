@@ -26,6 +26,12 @@ if(!require(remotes)){
 }
 remotes::install_github("acornamr/acorn-dashboard", ref = "master", upgrade = "never")
 ```
-3. **From then on**, open R and copy/paste in the console: `acorn::run_app()` every time you want to run the ACORN Dashboard.
+3. **From then on**, open R and copy/paste in the console:
+```r
+remotes::install_github("acornamr/acorn-dashboard", ref = "master", upgrade = "never")
+acorn::run_app()
+``` 
+
+every time you want to run the ACORN Dashboard. (The first line is to ensure that you are using the latest version of the dashboard.)
 
 Close your browser and quit R at the end of your ACORN session, clicking 'No' when prompted 'Save workspace image?' 
