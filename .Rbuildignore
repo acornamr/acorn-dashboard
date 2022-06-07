@@ -3,5 +3,6 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^misc$
+^misc_IGNORED$
 ^LICENSE$
 ^\.github$
