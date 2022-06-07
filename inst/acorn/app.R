@@ -195,7 +195,7 @@ ui <- page(
                                                      fileInput("file_lab_tab", NULL,  buttonLabel = "Browse for file", accept = c(".csv", ".txt", ".xls", ".xlsx"))
                                     ),
                                     conditionalPanel("output.lab_file_uploaded",
-                                                     downloadLink("overview_lab_data", span(icon("file"), i18n$t("Lab file overview (optional)"))),
+                                                     downloadLink("download_overview_lab_data", span(icon("file"), i18n$t("Lab file overview (optional)"))),
                                                      br(),
                                                      actionButton("process_lab_data", i18n$t("Process Lab File"))
                                     ),
@@ -1585,20 +1585,63 @@ server <- function(input, output, session) {
   })
   outputOptions(output, "lab_file_uploaded", suspendWhenHidden = FALSE)
   
-  
-  output$overview_lab_data <- downloadHandler(
-    filename = "acorn_overview_lab_file.html",
-    content = function(file) {
-      showNotification(i18n$t("Generating lab file overview."), id = "overview_lab")
+  output$download_overview_lab_data <- downloadHandler(
+    filename = function()  "acorn_overview_lab_file.xlsx",
+    content = function(file)  {
+      if (input$format_lab_data == "WHONET .dBase") {
+        path_lab_file <- input$file_lab_dba[[1, "datapath"]]
+        name_lab_file <- input$file_lab_dba[[1, "name"]]
+        dta <- foreign::read.dbf(path_lab_file, as.is = TRUE)
+      }
       
-      temp_file <- file.path(tempdir(), "report_lab_file.Rmd")
-      file.copy("./www/report_lab_file.Rmd", temp_file, overwrite = TRUE)
+      if (input$format_lab_data == "WHONET .SQLite") {
+        path_lab_file <- input$file_lab_sql[[1, "datapath"]]
+        name_lab_file <- input$file_lab_sql[[1, "name"]]
+        dta <- DBI::dbConnect(RSQLite::SQLite(), path_lab_file)
+        dta <- as.data.frame(DBI::dbReadTable(dta, "Isolates"))
+      }
       
-      rmarkdown::render(temp_file, output_file = file)
-      showNotification(i18n$t("Overview of lab file successfully generated!"), id = "overview_lab")
-    }
-  )
-  
+      if (input$format_lab_data == "Tabular") {
+        path_lab_file <- input$file_lab_tab[[1, "datapath"]]
+        name_lab_file <- input$file_lab_tab[[1, "name"]]
+        extension_file_lab_data <- tools::file_ext(path_lab_file)
+        
+        if (extension_file_lab_data == "csv")  dta <- readr::read_csv(path_lab_file, guess_max = 10000)
+        if (extension_file_lab_data == "txt")  dta <- readr::read_tsv(path_lab_file, guess_max = 10000)
+        if (extension_file_lab_data %in% c("xls", "xlsx")) dta <- readxl::read_excel(path_lab_file, guess_max = 10000)
+      }
+      
+      missing_val <- function(x) sum(is.na(x))
+      non_missing_val <- function(x) sum(! is.na(x))
+      
+      about_file <- data.frame(
+        File = c("File name", "File format", "Extension"),
+        Info = c(name_lab_file, input$format_lab_data, extension_file_lab_data)
+      )
+      
+      about_overview <- data.frame(
+        Names = c("For each column of the lab file provided, find in the Lab File Overview table:", 
+                 "column_name", "type", "missing_val", "non_missing_val", "random_val"),
+        Content = c("", "name of the column", "type of the column", "number of missing values for the column", 
+                 "number of NON missing values for the column", "two randomly selected values for the column")
+      )
+      
+      dta <- data.frame(
+        column_name = names(dta),
+        type     = apply(dta, 2, typeof),
+        missing_val = apply(dta, 2, missing_val),
+        non_missing_val = apply(dta, 2, non_missing_val),
+        random_val_1 = apply(dta, 2, sample, size = 1),
+        random_val_2 = apply(dta, 2, sample, size = 1)
+      )
+      
+      writexl::write_xlsx(
+      list(
+        "About Lab File" = about_file,
+        "About Lab File Overview" = about_overview,
+        "Lab File Overview" = dta
+      ), path = file)
+  })
   
   # On "Generate ACORN" ----
   observeEvent(input$generate_acorn_data, {
