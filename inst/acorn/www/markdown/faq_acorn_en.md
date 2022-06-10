@@ -4,7 +4,7 @@ If you have questions about the project or the app, please <a href='mailto:acorn
 </div>
 
 <div class = "alert alert-danger">
-For more information on a specific element of the dashboard, refer to the <a href='https://acornamr.net/pdf/ACORN2_dashboard_cheat_sheet.pdf' target='_blank'>ACORN Dashboard Cheat Sheet.</a>
+For more information on a specific element of the dashboard, refer to the <a href='https://acornamr.net/docs/ACORN2_dashboard_cheat_sheet.pdf' target='_blank'>ACORN Dashboard Cheat Sheet.</a>
 </div>
 
 - [Clinical data](#h00)
