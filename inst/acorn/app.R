@@ -1615,8 +1615,8 @@ server <- function(input, output, session) {
       non_missing_val <- function(x) sum(! is.na(x))
       
       about_file <- data.frame(
-        File = c("File name", "File format", "Extension"),
-        Info = c(name_lab_file, input$format_lab_data, extension_file_lab_data)
+        File = c("File name", "File format"),
+        Info = c(name_lab_file, input$format_lab_data)
       )
       
       about_overview <- data.frame(
