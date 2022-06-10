@@ -15,18 +15,13 @@ output$app_github_versions <- renderText({
   v_version_github <- glue("v{version_github}")
   
   if(is.na(version_github))  return(HTML(i18n$t("You are running ACORN dashboard"), " ", 
-                                         v_app_version, 
-                                         " ",
-                                         "<a href = https://github.com/acornamr/acorn-dashboard/releases/latest target='_blank' class = 'alert-link'>", 
-                                         i18n$t("You can check here if it's the latest production release.")))
+                                         v_app_version))
   
   if(compare_version == 0 | compare_version == 1) return(HTML("<div class='alert alert-success'><i class='fa fa-check'></i>&nbsp;", 
                                        i18n$t("Your ACORN dashboard is up to date"), " (", v_app_version, ")", "</div>"))
 
   if(compare_version == -1) return(HTML("<div class='alert alert-warning'><i class='fa fa-exclamation-triangle'></i>&nbsp;", 
                                                                              i18n$t("You are running ACORN dashboard"),
-                                                                             " ", v_app_version, " ",
-                                                                             "<a href = https://github.com/acornamr/acorn-dashboard/releases/latest target='_blank' class = 'alert-link'>",
-                                                                             i18n$t("Get the latest production release"), 
-                                                                             " (", v_version_github, ").", "</a></div>"))
+                                                                             " ", v_app_version, ".</br>",
+                                                                             "Double click on 'UpdateACORN.cmd' in your app folder to update.</div>"))
 })
