@@ -48,10 +48,10 @@
     },
     "MASS": {
       "Package": "MASS",
-      "Version": "7.3-57",
+      "Version": "7.3-56",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "71476c1d88d1ebdf31580e5a257d5d31",
+      "Hash": "af0e1955cb80bb36b7988cc657db261e",
       "Requirements": []
     },
     "Matrix": {
@@ -97,14 +97,6 @@
         "tidyr"
       ]
     },
-    "RJSONIO": {
-      "Package": "RJSONIO",
-      "Version": "1.3-1.6",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "0c7658433758cea5bcae50edd02b55b7",
-      "Requirements": []
-    },
     "RSQLite": {
       "Package": "RSQLite",
       "Version": "2.2.14",
@@ -143,10 +135,10 @@
     },
     "XML": {
       "Package": "XML",
-      "Version": "3.99-0.9",
+      "Version": "3.99-0.10",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "6e75b3884423e21eda89b424a98e091d",
+      "Hash": "f140675d766cf765bf06a5f14afb149d",
       "Requirements": []
     },
     "askpass": {
@@ -226,14 +218,6 @@
       "Requirements": [
         "bit"
       ]
-    },
-    "bitops": {
-      "Package": "bitops",
-      "Version": "1.0-7",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "b7d8d8ee39869c18d8846a184dd8a1af",
-      "Requirements": []
     },
     "blob": {
       "Package": "blob",
@@ -404,20 +388,21 @@
     },
     "dbplyr": {
       "Package": "dbplyr",
-      "Version": "2.1.1",
+      "Version": "2.2.0",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "1f37fa4ab2f5f7eded42f78b9a887182",
+      "Hash": "a6e4cc7b658d043806bc559ef42a1d2a",
       "Requirements": [
         "DBI",
         "R6",
         "assertthat",
         "blob",
+        "cli",
         "dplyr",
-        "ellipsis",
         "glue",
         "lifecycle",
         "magrittr",
+        "pillar",
         "purrr",
         "rlang",
         "tibble",
@@ -470,26 +455,6 @@
         "tibble",
         "tidyselect",
         "vctrs"
-      ]
-    },
-    "electricShine": {
-      "Package": "electricShine",
-      "Version": "0.0.0.9000",
-      "Source": "GitHub",
-      "RemoteType": "github",
-      "RemoteHost": "api.github.com",
-      "RemoteRepo": "electricShine",
-      "RemoteUsername": "erikvona",
-      "RemoteRef": "master",
-      "RemoteSha": "9176e5d1833879a10db66ffe309a8c4c592d47c8",
-      "Hash": "8a386aa9c65cc844a4582c98b26da253",
-      "Requirements": [
-        "glue",
-        "openssl",
-        "remotes",
-        "stringr",
-        "withr",
-        "zip"
       ]
     },
     "ellipsis": {
@@ -686,31 +651,6 @@
         "rlang",
         "tibble",
         "vctrs"
-      ]
-    },
-    "gt": {
-      "Package": "gt",
-      "Version": "0.6.0",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "842059d3f71b14e812500b23eeea765e",
-      "Requirements": [
-        "base64enc",
-        "bitops",
-        "checkmate",
-        "commonmark",
-        "dplyr",
-        "fs",
-        "ggplot2",
-        "glue",
-        "htmltools",
-        "magrittr",
-        "rlang",
-        "sass",
-        "scales",
-        "stringr",
-        "tibble",
-        "tidyselect"
       ]
     },
     "gtable": {
@@ -1053,20 +993,20 @@
     },
     "openssl": {
       "Package": "openssl",
-      "Version": "2.0.1",
+      "Version": "2.0.2",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "edde731e84cf3d42aa9b7f04b8de5941",
+      "Hash": "6d3bef2e305f55c705c674653c7d7d3d",
       "Requirements": [
         "askpass"
       ]
     },
     "packrat": {
       "Package": "packrat",
-      "Version": "0.7.0",
+      "Version": "0.8.0",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "95e8c3825efcaad09411799da92c0af9",
+      "Hash": "15517f0f57129e93fba4cf40dcf88c2d",
       "Requirements": []
     },
     "patchwork": {
@@ -1336,10 +1276,10 @@
     },
     "rsconnect": {
       "Package": "rsconnect",
-      "Version": "0.8.25",
+      "Version": "0.8.26",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "c78e0acc405a6990475f1f9500ebe66c",
+      "Hash": "c274aa0076b1892bf702de3257e67275",
       "Requirements": [
         "curl",
         "digest",
@@ -1474,26 +1414,6 @@
         "rlang",
         "sass",
         "shiny"
-      ]
-    },
-    "shinybox": {
-      "Package": "shinybox",
-      "Version": "0.3",
-      "Source": "GitHub",
-      "RemoteType": "github",
-      "RemoteHost": "api.github.com",
-      "RemoteRepo": "shinybox",
-      "RemoteUsername": "ocelhay",
-      "RemoteRef": "master",
-      "RemoteSha": "15107322dfc9ed8d790a43246be1a7877e18dd5a",
-      "Hash": "687835c70be2a5c92b6dd0c1a9a2da7e",
-      "Requirements": [
-        "glue",
-        "openssl",
-        "remotes",
-        "rjson",
-        "stringr",
-        "withr"
       ]
     },
     "shinyjs": {
@@ -1768,14 +1688,6 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "458bb38374d73bf83b1bb85e353da200",
-      "Requirements": []
-    },
-    "zip": {
-      "Package": "zip",
-      "Version": "2.2.0",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "c7eef2996ac270a18c2715c997a727c5",
       "Requirements": []
     },
     "zoo": {
