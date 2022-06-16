@@ -16,6 +16,7 @@ library(glue)
 library(highcharter)
 library(lubridate)
 library(markdown)  # The includeMarkdown function requires the markdown package.
+library(REDCapR)
 library(shiny)
 library(shiny.i18n)  # i18n$t()
 library(shinyWidgets)  # prettyCheckboxGroup()
