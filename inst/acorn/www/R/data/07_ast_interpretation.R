@@ -18,7 +18,7 @@ amr.l <- subset(amr.l, subset = (!is.na(result) & !is.na(ast.group))) # Keep onl
 
 if(nrow(amr.l) == 0) {
   showNotification(i18n$t("There are no isolate with valid AST results. Please contact ACORN support."),
-    duration = 15, type = "error", closeButton = FALSE, session = session)
+                   duration = 15, type = "error", closeButton = FALSE, session = session)
   Sys.sleep(15)
 }
 
@@ -30,10 +30,6 @@ amr.l.int <- left_join(amr.l, ast.codes, by = "link")
 amr.l.int$ast.cat <- NA # Make an ast category variable (ast.cat)
 
 # Interpret the raw AST data (have to do as categories first, then convert to numeric to summarise per antibiotic, then back to categories)
-# Do the raw S / I / R results first
-amr.l.int$ast.cat[amr.l.int$result == 110011] <- "S"
-amr.l.int$ast.cat[amr.l.int$result == 220022] <- "I"
-amr.l.int$ast.cat[amr.l.int$result == 330033] <- "R"
 # Disks - CLSI (categorised by >= for S and <= for R (with I in between))
 amr.l.int$ast.cat[amr.l.int$GUIDELINES == "CLSI" & amr.l.int$TESTMETHOD == "DISK" & amr.l.int$result >= amr.l.int$S] <- "S"
 amr.l.int$ast.cat[amr.l.int$GUIDELINES == "CLSI" & amr.l.int$TESTMETHOD == "DISK" & amr.l.int$result > amr.l.int$R & amr.l.int$result < amr.l.int$S] <- "I"
@@ -50,6 +46,10 @@ amr.l.int$ast.cat[amr.l.int$GUIDELINES == "CLSI" & amr.l.int$TESTMETHOD == "MIC"
 amr.l.int$ast.cat[amr.l.int$GUIDELINES == "EUCAST" & amr.l.int$TESTMETHOD == "MIC" & amr.l.int$result <= amr.l.int$S] <- "S"
 amr.l.int$ast.cat[amr.l.int$GUIDELINES == "EUCAST" & amr.l.int$TESTMETHOD == "MIC" & amr.l.int$result > amr.l.int$S & amr.l.int$result <= amr.l.int$R] <- "I"
 amr.l.int$ast.cat[amr.l.int$GUIDELINES == "EUCAST" & amr.l.int$TESTMETHOD == "MIC" & amr.l.int$result > amr.l.int$R] <- "R"
+# Do the raw S / I / R results [Updated in ACORN v2.5.1 - was previously done before the numeric disk/MIC data, result in categorical data all being recoded incorrectly]
+amr.l.int$ast.cat[amr.l.int$result == 110011] <- "S"
+amr.l.int$ast.cat[amr.l.int$result == 220022] <- "I"
+amr.l.int$ast.cat[amr.l.int$result == 330033] <- "R"
 
 # Summarise the Disk, MIC, Etest results for each antibiotic (use WHONET formula of Etest > MIC > Disk if >1 method): one row per isolate
 # Add in amr.var$abxname.cat (E, M, D) to amr.l.int

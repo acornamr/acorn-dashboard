@@ -80,7 +80,7 @@ amr[,(names(amr)[(names(amr) %in% amr.var$varname.ast)])] <- sapply(amr[,(names(
 # Ensure the S / I / R number codes (110011, 220022, 330033) are retained
 # No need to do this for MIC (non-Etest as should already be doubling dilutions), except for co-trimoxazole (SXT) if reported as a compound MIC rather than just trimethoprim (e.g. VITEK) - see below.
 # Co-trimoxazole (TS) Etests report the trimethoprim MIC only so no modification required (source = biomerieux kit insert)
-mic.breaks <- c(0, 0.04, 0.065, 0.126, 0.26, 0.6, 1.1, 2.1, 4.1, 8.1, 16.1, 32.1, 64.1, 128.1, 256.1, 110011, 220022, 330033, Inf) # Make MIC category cut-offs
+mic.breaks <- c(0, 0.04, 0.065, 0.126, 0.26, 0.6, 1.1, 2.1, 4.1, 8.1, 16.1, 32.1, 64.1, 128.1, 256.1, 110010, 220021, 330032, Inf) # Make MIC category cut-offs [updated v2.5.1, to ensure values of >=512 coded correctly]
 mic.labels <- c(0.03, 0.06, 0.12, 0.25, 0.5, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 110011, 220022, 33033) # Make MIC values
 
 for(i in amr.var$varname.ast[amr.var$cat.short == "E"]) {
