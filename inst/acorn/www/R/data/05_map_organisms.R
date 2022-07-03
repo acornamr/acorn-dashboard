@@ -15,13 +15,15 @@ amr$org.local.lower <- tolower(amr$org.local) # Convert amr data.frame org.local
 
 # Sequentially perform removal/mapping of regexp patterns in organisms.patterns sheet.
 if(! is.null(data_dictionary$organisms.patterns)) {
-  for (row_nb in 1:nrow(data_dictionary$organisms.patterns)) {
-    row <- data_dictionary$organisms.patterns[row_nb, ]
-    if (row$action == "remove_pattern") {
-      amr$org.local.lower <- str_replace(amr$org.local.lower, glue("\\s*{row$pattern}\\s*"), "")
-    }
-    if (row$action == "map_pattern") {
-      amr$org.local.lower[str_detect(amr$org.local.lower, row$pattern)] <- tolower(row$map_to_acorn.org.code)
+  if(nrow(data_dictionary$organisms.patterns) > 0) {
+    for (row_nb in 1:nrow(data_dictionary$organisms.patterns)) {
+      row <- data_dictionary$organisms.patterns[row_nb, ]
+      if (row$action == "remove_pattern") {
+        amr$org.local.lower <- str_replace(amr$org.local.lower, glue("\\s*{row$pattern}\\s*"), "")
+      }
+      if (row$action == "map_pattern") {
+        amr$org.local.lower[str_detect(amr$org.local.lower, row$pattern)] <- tolower(row$map_to_acorn.org.code)
+      }
     }
   }
 }
