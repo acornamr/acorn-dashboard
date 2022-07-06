@@ -372,7 +372,7 @@ infection <- infection %>% transmute(
   # End F05
 ) %>%
   mutate(
-    episode_id = glue("{acorn_id}-{date_enrolment}"),
+    episode_id = glue("{acorn_id}-{date_episode_enrolment}"),
     has_clinical_outcome = !is.na(ho_discharge_date),
     has_d28_outcome = !is.na(d28_date)) %>%
   mutate(across(cmb_aids:cmb_tub, ~ ifelse(. == "", NA, .))) %>%
