@@ -1,4 +1,4 @@
-app_version <- "2.5.1"  # Make sure that the app version is identical in DESCRIPTION
+app_version <- "2.5.2"  # Make sure that the app version is identical in DESCRIPTION
 session_start_time <- format(Sys.time(), "%Y-%m-%d_%HH%M")
 
 # IMPORTANT: ensure that there is a match between the calls below and:
