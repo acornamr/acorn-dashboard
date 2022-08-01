@@ -1441,7 +1441,7 @@ server <- function(input, output, session) {
     if (continue) {
       if (!fail_read_redcap) {
         
-        if(nrow(dl_redcap_f01f05_dta) == 0 | ncol(dl_redcap_f01f05_dta) != 237) {
+        if(nrow(dl_redcap_f01f05_dta) == 0 | ncol(dl_redcap_f01f05_dta) < 237) {
           shinyjs::html(id = "text_redcap_f01f05_log", i18n$t("Issue detected with REDCap data. Please report to ACORN data managers. Until resolution, only existing .acorn files can be used."), add = TRUE)
           checklist_status$redcap_F01F05_status <- list(status = "ko", msg = i18n$t("The REDCap dataset is empty/in wrong format. Please contact ACORN support."))
           continue <<- FALSE
