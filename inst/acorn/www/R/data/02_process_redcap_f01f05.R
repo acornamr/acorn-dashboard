@@ -428,9 +428,16 @@ ifelse(nrow(test) == 0,
                                                   tibble(issue = "Multiple F02 with identical ACORN ID, admission date, and episode enrolment date.", local_id = test$patient_id, redcap_id = test$redcap_id, acorn_id = test$acorn_id))
        })
 
+# Give a count of the episodes for a given patient and date of admission.
+# validation by Paul on 2022-08-03.
+infection <- infection |> 
+  group_by(
+    patient_id, 
+    date_admission
+  ) |> 
+  mutate(episode_count = row_number()) |> 
+  ungroup()
 
-# Create episode_count for enrolment log. ----
-infection <- infection |> group_by(episode_id) |> mutate(episode_count = row_number()) |> ungroup()
 
 # Flag if Day28 is not "Dead" and clinical outcome is "Dead". ----
 test <- infection %>% filter(ho_discharge_status == "Dead", d28_status != "Dead")
