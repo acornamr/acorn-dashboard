@@ -8,6 +8,7 @@ ui <- page(
   usei18n(i18n),  # for translation
   shinyjs::useShinyjs(),
   page_navbar(
+    theme = acorn_theme,
     title = a(img(src = "logo_acorn.png", style = "height: 45px; position: relative;")),
     id = "tabs",
     selected = "welcome",
