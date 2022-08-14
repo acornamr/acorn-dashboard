@@ -1,7 +1,8 @@
-library(tidyverse)
+library(dplyr)
 library(gt)
+library(rlang)
 
-test_data <- tribble(
+test_data <- tibble::tribble(
   ~row_nb,	~patient_id,	~date_episode_enrolment,	~episode_id,	~surveillance_category,	~orgname,	~specgroup,	~specdate,
   1,	"A",	"2020-01-01",	"1-2020-01-01",	"CAI",	"E coli",	"Blood Culture",	"2020-01-01",
   2,  "A",	"2020-01-01",	"1-2020-01-01",	"CAI",	"E coli",	"Blood Culture",	"2020-01-01",
@@ -17,11 +18,9 @@ test_data <- tribble(
   11,	"B",	"2020-12-25",	"3-2020-12-25",	"CAI",	"E coli",	"Blood Culture",	"2020-12-25",
 )
 
-test_data |> gt() |> tab_header(title = "No Deduplication") |> 
-  cols_align("center") |> 
-  gtsave("./inst/acorn/www/images/table_dedup_no_dedup.png")
-
-# Function updated on 2021-12-03
+# Function that returns a deduplicated dataset following the provided method: by patient-episode or by patient Id
+# It's essential to use this only once possible other filters (surveillance type...) have already been applied
+# Function last updated on 2021-12-03, using slice_min(specdate)
 fun_deduplication <- function(data, method = NULL) {
   if(is_empty(method)) stop("No deduplication method provided.")
   
@@ -50,16 +49,25 @@ fun_deduplication <- function(data, method = NULL) {
   }
 }
 
-# Resulting Table 1
-test_data |> fun_deduplication(method = "Deduplication by patient-episode") |>
-  arrange(row_nb) |> 
-  gt() |> tab_header(title = "Deduplication by patient-episode") |> 
-  cols_align("center") |> 
-  gtsave("./inst/acorn/www/images/table_dedup_patient_episode.png")
+# No Deduplication
+test_data |> 
+  fun_deduplication(method = "No deduplication of isolates") |>
+  gt() |> 
+  tab_header(title = "No Deduplication") |> 
+  cols_align("center")
 
-# Resulting Table 2
-test_data |> fun_deduplication(method = "Deduplication by patient ID") |> 
+# Deduplication by patient-episode
+test_data |> 
+  fun_deduplication(method = "Deduplication by patient-episode") |>
   arrange(row_nb) |> 
-  gt() |> tab_header(title = "Deduplication by patient ID") |>
-  cols_align("center") |> 
-  gtsave("./inst/acorn/www/images/table_dedup_patient_id.png")
+  gt() |> 
+  tab_header(title = "Deduplication by patient-episode") |> 
+  cols_align("center")
+
+# Deduplication by patient ID
+test_data |> 
+  fun_deduplication(method = "Deduplication by patient ID") |> 
+  arrange(row_nb) |> 
+  gt() |> 
+  tab_header(title = "Deduplication by patient ID") |>
+  cols_align("center")
