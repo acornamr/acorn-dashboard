@@ -429,14 +429,12 @@ ifelse(nrow(test) == 0,
        })
 
 # Give a count of the episodes for a given patient and date of admission.
-# validation by Paul on 2022-08-03.
 infection <- infection |> 
-  group_by(
+  add_count(
     patient_id, 
-    date_admission
-  ) |> 
-  mutate(episode_count = row_number()) |> 
-  ungroup()
+    date_admission,
+    name = episode_count
+  )
 
 
 # Flag if Day28 is not "Dead" and clinical outcome is "Dead". ----
