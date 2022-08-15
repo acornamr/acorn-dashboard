@@ -433,7 +433,7 @@ infection <- infection |>
   add_count(
     patient_id, 
     date_admission,
-    name = episode_count
+    name = "episode_count"
   )
 
 
