@@ -1158,7 +1158,6 @@ server <- function(input, output, session) {
     redcap_F03F01              = list(status = "hidden", msg = ""),
     redcap_multiple_F02        = list(status = "hidden", msg = ""),
     redcap_missing_acorn_id    = list(status = "hidden", msg = ""),
-    redcap_age_category        = list(status = "hidden", msg = ""),
     redcap_hai_status          = list(status = "hidden", msg = ""),
     
     linkage_caseB  = list(status = "hidden", msg = ""),
@@ -1475,8 +1474,7 @@ server <- function(input, output, session) {
       ifelse(any(c(checklist_status$redcap_F04F01$status,
                    checklist_status$redcap_F03F02$status,
                    checklist_status$redcap_F02F01$status,
-                   checklist_status$redcap_F03F01$status,
-                   checklist_status$redcap_age_category$status) == "ko"),
+                   checklist_status$redcap_F03F01$status) == "ko"),
              {
                checklist_status$redcap_f01f05_dta <- list(status = "ko", msg = i18n$t("Critical errors with clinical data."))
                showNotification(i18n$t("There is a critical issue with clinical data. The issue should be fixed in REDCap."), type = "error", duration = NULL)

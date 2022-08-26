@@ -466,20 +466,6 @@ infection <- infection %>% mutate(age_category_calc = case_when(
 
 infection$age_category[is.na(infection$age_category)] <- infection$age_category_calc[is.na(infection$age_category)]
 
-# Test that "Calculated age is consistent with 'Age Category'". ----
-test <- bind_rows(infection %>% filter(age_category == "Adult", age_year < 18),
-                  infection %>% filter(age_category == "Child", age_year > 17 | age_day <= 28),
-                  infection %>% filter(age_category == "Neonate", age_day > 28))
-
-ifelse(nrow(test) == 0, 
-       { checklist_status$redcap_age_category <- list(status = "okay", msg = i18n$t("Calculated age is consistent with 'Age Category'")) },
-       { 
-         checklist_status$redcap_age_category <- list(status = "warning", msg = i18n$t("Calculated age isn't always consistent with 'Age Category'"))
-         checklist_status$log_errors <- bind_rows(checklist_status$log_errors, 
-                                                  tibble(issue = "Calculated age not consistent with 'Age Category'", local_id = test$patient_id, redcap_id = test$redcap_id, acorn_id = test$acorn_id))
-       })
-
-
 # Define Clinical Severity, qSOFA score. ----
 equal_yes <- function(x) replace_na(x, "No") == "Yes"
 
