@@ -1560,12 +1560,29 @@ server <- function(input, output, session) {
     )
     
     notify(i18n$t("Processing lab data."), id = id)
+    tictoc::tic("03_map_variables.R")
     source("./www/R/data/03_map_variables.R", local = TRUE)
+    tictoc::toc()
+    
+    tictoc::tic("04_map_specimens.R")
     source("./www/R/data/04_map_specimens.R", local = TRUE)
+    tictoc::toc()
+    
+    tictoc::tic("05_map_organisms.R")
     source("./www/R/data/05_map_organisms.R", local = TRUE)
+    tictoc::toc()
+    
+    tictoc::tic("06_make_ast_group.R")
     source("./www/R/data/06_make_ast_group.R", local = TRUE)
+    tictoc::toc()
+    
+    tictoc::tic("07_ast_interpretation.R")
     source("./www/R/data/07_ast_interpretation.R", local = TRUE)
+    tictoc::toc()
+    
+    tictoc::tic("08_ast_interpretation_nonstandard.R")
     source("./www/R/data/08_ast_interpretation_nonstandard.R", local = TRUE)
+    tictoc::toc()
     
     lab_dta(amr)
     
