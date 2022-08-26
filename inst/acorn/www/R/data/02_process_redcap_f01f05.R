@@ -436,17 +436,6 @@ infection <- infection |>
     name = "episode_count"
   )
 
-
-# Flag if Day28 is not "Dead" and clinical outcome is "Dead". ----
-test <- infection %>% filter(ho_discharge_status == "Dead", d28_status != "Dead")
-ifelse(nrow(test) == 0, 
-       { checklist_status$redcap_consistent_outcomes <- list(status = "okay", msg = i18n$t("Clinical and day-28 outcomes are consistent.")) },
-       {
-         checklist_status$redcap_consistent_outcomes <- list(status = "warning", msg = i18n$t("Clinical and day-28 outcomes aren't consistent for some dead patients."))
-         checklist_status$log_errors <- bind_rows(checklist_status$log_errors, 
-                                                  tibble(issue = "Clinical and day-28 outcomes not consistent", local_id = test$patient_id, redcap_id = test$redcap_id, acorn_id = test$acorn_id))
-       })
-
 # Delete records that have a missing acornid. ----
 test <- infection %>% filter(is.na(acorn_id))
 ifelse(nrow(test) == 0, 

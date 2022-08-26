@@ -1157,7 +1157,6 @@ server <- function(input, output, session) {
     redcap_F02F01              = list(status = "hidden", msg = ""),
     redcap_F03F01              = list(status = "hidden", msg = ""),
     redcap_multiple_F02        = list(status = "hidden", msg = ""),
-    redcap_consistent_outcomes = list(status = "hidden", msg = ""),
     redcap_missing_acorn_id    = list(status = "hidden", msg = ""),
     redcap_age_category        = list(status = "hidden", msg = ""),
     redcap_hai_status          = list(status = "hidden", msg = ""),
@@ -1477,7 +1476,6 @@ server <- function(input, output, session) {
                    checklist_status$redcap_F03F02$status,
                    checklist_status$redcap_F02F01$status,
                    checklist_status$redcap_F03F01$status,
-                   checklist_status$redcap_consistent_outcomes$status,
                    checklist_status$redcap_age_category$status) == "ko"),
              {
                checklist_status$redcap_f01f05_dta <- list(status = "ko", msg = i18n$t("Critical errors with clinical data."))
