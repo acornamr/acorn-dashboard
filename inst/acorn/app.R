@@ -1344,7 +1344,7 @@ server <- function(input, output, session) {
           unlist()
         acorn_dates <- as.vector(dta[names(dta) == 'Contents.LastModified'])
         ord_acorn_dates <- order(as.POSIXct(acorn_dates))
-        acorn_files <- rev(tail(as.vector(dta[names(dta) == 'Contents.Key'])[ord_acorn_dates], 20))  # 20 because of .acorn_non_anonymised
+        acorn_files <- rev(tail(as.vector(dta[names(dta) == 'Contents.Key'])[ord_acorn_dates], 10))
         
         if(! is.null(acorn_files)) { acorn_files <- acorn_files[endsWith(acorn_files, ".acorn")] }
         if(! is.null(acorn_files)) { updatePickerInput(session, 'acorn_files_server', choices = acorn_files, selected = acorn_files[1]) }
@@ -1728,28 +1728,6 @@ server <- function(input, output, session) {
                   redcap_hai_dta = redcap_hai_dta(), 
                   lab_dta = lab_dta() %>% filter(specid %in% acorn_dta()$specid) %>% mutate(patid = openssl::md5(patid)), 
                   acorn_dta = acorn_dta() %>% mutate(patient_id = openssl::md5(patient_id)), 
-                  tables_dictionary = tables_dictionary(),
-                  corresp_org_antibio = corresp_org_antibio(), 
-                  lab_code = lab_code(), 
-                  data_dictionary = data_dictionary())
-    save(acorn, file = file)
-    
-    aws.s3::put_object(file = file,
-                       object = name_file,
-                       bucket = acorn_cred()$aws_bucket,
-                       key =  acorn_cred()$aws_key,
-                       secret = acorn_cred()$aws_secret,
-                       region = acorn_cred()$aws_region)
-    
-    ## Non anonymised data ----
-    name_file <- glue("{input$name_file_server}.acorn_non_anonymised")
-    file <- file.path(tempdir(), name_file)
-    acorn <- list(about = about,
-                  meta = meta(), 
-                  redcap_f01f05_dta = redcap_f01f05_dta(), 
-                  redcap_hai_dta = redcap_hai_dta(), 
-                  lab_dta = lab_dta() %>% filter(specid %in% acorn_dta()$specid),
-                  acorn_dta = acorn_dta(), 
                   tables_dictionary = tables_dictionary(),
                   corresp_org_antibio = corresp_org_antibio(), 
                   lab_code = lab_code(), 
