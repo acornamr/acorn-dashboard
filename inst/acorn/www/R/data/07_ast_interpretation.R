@@ -15,7 +15,13 @@ tictoc::tic("07_ast_interpretation.R: Part 1.3")
 ast.codes$link <- paste(ast.codes$ACORN_AST_ORGGROUP, ast.codes$WHON5_TEST, sep = ".")
 
 # Reshape amr data.frame to long and then make the same link variable (link)
-amr.l <- gather(amr, WHON5_TEST, result, (contains("_" ))) # Only ast variable names include "_"
+# Only ast variable names include "_"
+amr.l <- amr |> 
+  tidyr::pivot_longer(
+    contains("_"),
+    names_to = "WHON5_TEST",
+    values_to = "result"
+  )
 tictoc::toc()
 tictoc::tic("07_ast_interpretation.R: Part 1.4")
 amr.l <- subset(amr.l, subset = (!is.na(result) & !is.na(ast.group))) # Keep only isolateids with valid AST results
@@ -124,7 +130,12 @@ tmp.ast3$abx.cat.result[tmp.ast3$abx.cat.result == 0] <- NA
 tictoc::toc()
 tictoc::tic("07_ast_interpretation.R: Part 6")
 # Convert AST data.frame from long back to wide format
-ast.final <- spread(tmp.ast3, abxname, abx.cat.result) # Make individual variables for each antibiotic (WHONET codes)
+# Make individual variables for each antibiotic (WHONET codes)
+ast.final <- tmp.ast3 |> 
+  pivot_wider(
+    names_from = "abxname", 
+    values_from = "abx.cat.result"
+  )
 
 # Merge categorised AST data back into amr.raw data.frame (defined in 05_make_ast_group.R)
 amr <- left_join(amr.raw, ast.final, by = "isolateid")
