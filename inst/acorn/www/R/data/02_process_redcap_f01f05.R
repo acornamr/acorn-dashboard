@@ -430,11 +430,14 @@ ifelse(nrow(test) == 0,
 
 # Give a count of the episodes for a given patient and date of admission.
 infection <- infection |> 
-  add_count(
+  group_by(
     patient_id, 
-    date_admission,
-    name = "episode_count"
-  )
+    date_admission
+  ) |> 
+  mutate(
+    episode_count = 1:n()
+  ) |> 
+  ungroup()
 
 # Delete records that have a missing acornid. ----
 test <- infection %>% filter(is.na(acorn_id))
