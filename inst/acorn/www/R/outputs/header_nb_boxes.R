@@ -65,8 +65,10 @@ output$nb_isolates_growth <- renderText({
 
 output$nb_isolates_target <- renderText({
   req(acorn_dta())
-  nb_isolates <- acorn_dta_filter() %>% 
-    fun_filter_target_pathogens() %>% 
+  
+  nb_isolates <- acorn_dta_filter() |> 
+    fun_deduplication(method = input$deduplication_method) |> 
+    fun_filter_target_pathogens() |> 
     nrow()
   
   as.character(

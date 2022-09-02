@@ -428,19 +428,16 @@ ifelse(nrow(test) == 0,
                                                   tibble(issue = "Multiple F02 with identical ACORN ID, admission date, and episode enrolment date.", local_id = test$patient_id, redcap_id = test$redcap_id, acorn_id = test$acorn_id))
        })
 
-
-# Create episode_count for enrolment log. ----
-infection <- infection |> group_by(episode_id) |> mutate(episode_count = row_number()) |> ungroup()
-
-# Flag if Day28 is not "Dead" and clinical outcome is "Dead". ----
-test <- infection %>% filter(ho_discharge_status == "Dead", d28_status != "Dead")
-ifelse(nrow(test) == 0, 
-       { checklist_status$redcap_consistent_outcomes <- list(status = "okay", msg = i18n$t("Clinical and day-28 outcomes are consistent.")) },
-       {
-         checklist_status$redcap_consistent_outcomes <- list(status = "warning", msg = i18n$t("Clinical and day-28 outcomes aren't consistent for some dead patients."))
-         checklist_status$log_errors <- bind_rows(checklist_status$log_errors, 
-                                                  tibble(issue = "Clinical and day-28 outcomes not consistent", local_id = test$patient_id, redcap_id = test$redcap_id, acorn_id = test$acorn_id))
-       })
+# Give a count of the episodes for a given patient and date of admission.
+infection <- infection |> 
+  group_by(
+    patient_id, 
+    date_admission
+  ) |> 
+  mutate(
+    episode_count = 1:n()
+  ) |> 
+  ungroup()
 
 # Delete records that have a missing acornid. ----
 test <- infection %>% filter(is.na(acorn_id))
@@ -471,20 +468,6 @@ infection <- infection %>% mutate(age_category_calc = case_when(
   TRUE ~ "Unknown"))
 
 infection$age_category[is.na(infection$age_category)] <- infection$age_category_calc[is.na(infection$age_category)]
-
-# Test that "Calculated age is consistent with 'Age Category'". ----
-test <- bind_rows(infection %>% filter(age_category == "Adult", age_year < 18),
-                  infection %>% filter(age_category == "Child", age_year > 17 | age_day <= 28),
-                  infection %>% filter(age_category == "Neonate", age_day > 28))
-
-ifelse(nrow(test) == 0, 
-       { checklist_status$redcap_age_category <- list(status = "okay", msg = i18n$t("Calculated age is consistent with 'Age Category'")) },
-       { 
-         checklist_status$redcap_age_category <- list(status = "warning", msg = i18n$t("Calculated age isn't always consistent with 'Age Category'"))
-         checklist_status$log_errors <- bind_rows(checklist_status$log_errors, 
-                                                  tibble(issue = "Calculated age not consistent with 'Age Category'", local_id = test$patient_id, redcap_id = test$redcap_id, acorn_id = test$acorn_id))
-       })
-
 
 # Define Clinical Severity, qSOFA score. ----
 equal_yes <- function(x) replace_na(x, "No") == "Yes"

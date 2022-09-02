@@ -4,13 +4,13 @@ library(readxl)
 library(tidyverse)
 rm(list = ls())
 
-all_cred <- readxl::read_excel("/Users/olivier/Documents/Projets/ACORN/Data/ACORN2_cred.xlsx", sheet = "cred") |>  
+creds <- readxl::read_excel("/Users/olivier/Documents/Projets/ACORN/Data/ACORN2_cred.xlsx", sheet = "cred") |>  
   filter(!is.na(site)) |> 
-  filter(user != "demo")
+  filter(user == "user")
 
 
-for (i in 1:nrow(all_cred)) {
-  user <- all_cred[i, ]
+for (i in 1:nrow(creds)) {
+  user <- creds[i, ]
   
   cred <- serialize(
     object = list(site = user$site,

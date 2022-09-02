@@ -8,6 +8,7 @@ ui <- page(
   usei18n(i18n),  # for translation
   shinyjs::useShinyjs(),
   page_navbar(
+    theme = acorn_theme,
     title = a(img(src = "logo_acorn.png", style = "height: 45px; position: relative;")),
     id = "tabs",
     selected = "welcome",
@@ -1156,9 +1157,7 @@ server <- function(input, output, session) {
     redcap_F02F01              = list(status = "hidden", msg = ""),
     redcap_F03F01              = list(status = "hidden", msg = ""),
     redcap_multiple_F02        = list(status = "hidden", msg = ""),
-    redcap_consistent_outcomes = list(status = "hidden", msg = ""),
     redcap_missing_acorn_id    = list(status = "hidden", msg = ""),
-    redcap_age_category        = list(status = "hidden", msg = ""),
     redcap_hai_status          = list(status = "hidden", msg = ""),
     
     linkage_caseB  = list(status = "hidden", msg = ""),
@@ -1343,7 +1342,7 @@ server <- function(input, output, session) {
           unlist()
         acorn_dates <- as.vector(dta[names(dta) == 'Contents.LastModified'])
         ord_acorn_dates <- order(as.POSIXct(acorn_dates))
-        acorn_files <- rev(tail(as.vector(dta[names(dta) == 'Contents.Key'])[ord_acorn_dates], 20))  # 20 because of .acorn_non_anonymised
+        acorn_files <- rev(tail(as.vector(dta[names(dta) == 'Contents.Key'])[ord_acorn_dates], 10))
         
         if(! is.null(acorn_files)) { acorn_files <- acorn_files[endsWith(acorn_files, ".acorn")] }
         if(! is.null(acorn_files)) { updatePickerInput(session, 'acorn_files_server', choices = acorn_files, selected = acorn_files[1]) }
@@ -1475,9 +1474,7 @@ server <- function(input, output, session) {
       ifelse(any(c(checklist_status$redcap_F04F01$status,
                    checklist_status$redcap_F03F02$status,
                    checklist_status$redcap_F02F01$status,
-                   checklist_status$redcap_F03F01$status,
-                   checklist_status$redcap_consistent_outcomes$status,
-                   checklist_status$redcap_age_category$status) == "ko"),
+                   checklist_status$redcap_F03F01$status) == "ko"),
              {
                checklist_status$redcap_f01f05_dta <- list(status = "ko", msg = i18n$t("Critical errors with clinical data."))
                showNotification(i18n$t("There is a critical issue with clinical data. The issue should be fixed in REDCap."), type = "error", duration = NULL)
@@ -1563,12 +1560,29 @@ server <- function(input, output, session) {
     )
     
     notify(i18n$t("Processing lab data."), id = id)
+    tictoc::tic("03_map_variables.R")
     source("./www/R/data/03_map_variables.R", local = TRUE)
+    tictoc::toc()
+    
+    tictoc::tic("04_map_specimens.R")
     source("./www/R/data/04_map_specimens.R", local = TRUE)
+    tictoc::toc()
+    
+    tictoc::tic("05_map_organisms.R")
     source("./www/R/data/05_map_organisms.R", local = TRUE)
+    tictoc::toc()
+    
+    tictoc::tic("06_make_ast_group.R")
     source("./www/R/data/06_make_ast_group.R", local = TRUE)
+    tictoc::toc()
+    
+    tictoc::tic("07_ast_interpretation.R")
     source("./www/R/data/07_ast_interpretation.R", local = TRUE)
+    tictoc::toc()
+    
+    tictoc::tic("08_ast_interpretation_nonstandard.R")
     source("./www/R/data/08_ast_interpretation_nonstandard.R", local = TRUE)
+    tictoc::toc()
     
     lab_dta(amr)
     
@@ -1727,28 +1741,6 @@ server <- function(input, output, session) {
                   redcap_hai_dta = redcap_hai_dta(), 
                   lab_dta = lab_dta() %>% filter(specid %in% acorn_dta()$specid) %>% mutate(patid = openssl::md5(patid)), 
                   acorn_dta = acorn_dta() %>% mutate(patient_id = openssl::md5(patient_id)), 
-                  tables_dictionary = tables_dictionary(),
-                  corresp_org_antibio = corresp_org_antibio(), 
-                  lab_code = lab_code(), 
-                  data_dictionary = data_dictionary())
-    save(acorn, file = file)
-    
-    aws.s3::put_object(file = file,
-                       object = name_file,
-                       bucket = acorn_cred()$aws_bucket,
-                       key =  acorn_cred()$aws_key,
-                       secret = acorn_cred()$aws_secret,
-                       region = acorn_cred()$aws_region)
-    
-    ## Non anonymised data ----
-    name_file <- glue("{input$name_file_server}.acorn_non_anonymised")
-    file <- file.path(tempdir(), name_file)
-    acorn <- list(about = about,
-                  meta = meta(), 
-                  redcap_f01f05_dta = redcap_f01f05_dta(), 
-                  redcap_hai_dta = redcap_hai_dta(), 
-                  lab_dta = lab_dta() %>% filter(specid %in% acorn_dta()$specid),
-                  acorn_dta = acorn_dta(), 
                   tables_dictionary = tables_dictionary(),
                   corresp_org_antibio = corresp_org_antibio(), 
                   lab_code = lab_code(), 

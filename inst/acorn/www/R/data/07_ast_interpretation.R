@@ -1,19 +1,29 @@
 message("07_ast_interpretation.R")
-
+tictoc::tic("07_ast_interpretation.R: Part 1.1")
 # Combine into a single data.frame
 ast.codes <- rbind(lab_code$ast.aci, lab_code$ast.col, lab_code$ast.ent, lab_code$ast.hin, lab_code$ast.ngo, lab_code$ast.nmen, lab_code$ast.pae, lab_code$ast.sal, lab_code$ast.sau, lab_code$ast.shi, lab_code$ast.spn)
-
+tictoc::toc()
+tictoc::tic("07_ast_interpretation.R: Part 1.2")
 # Add Etest rows into ast.codes (not included in ast.codes since breakpoints are same as for other MIC, but they have unique codes in WHONET)
 ast.codes.e <- subset(ast.codes, subset = (ast.codes$TESTMETHOD == "MIC"))
 ast.codes.e$WHON5_TEST <- gsub("_NM", "_NE", ast.codes.e$WHON5_TEST)
 ast.codes.e$WHON5_TEST <- gsub("_EM", "_EE", ast.codes.e$WHON5_TEST)
 ast.codes <- rbind(ast.codes, ast.codes.e)
-
+tictoc::toc()
+tictoc::tic("07_ast_interpretation.R: Part 1.3")
 # Make a link variable (link, to link AST breakpoints to amr data)
 ast.codes$link <- paste(ast.codes$ACORN_AST_ORGGROUP, ast.codes$WHON5_TEST, sep = ".")
 
 # Reshape amr data.frame to long and then make the same link variable (link)
-amr.l <- gather(amr, WHON5_TEST, result, (contains("_" ))) # Only ast variable names include "_"
+# Only ast variable names include "_"
+amr.l <- amr |> 
+  tidyr::pivot_longer(
+    contains("_"),
+    names_to = "WHON5_TEST",
+    values_to = "result"
+  )
+tictoc::toc()
+tictoc::tic("07_ast_interpretation.R: Part 1.4")
 amr.l <- subset(amr.l, subset = (!is.na(result) & !is.na(ast.group))) # Keep only isolateids with valid AST results
 
 if(nrow(amr.l) == 0) {
@@ -21,7 +31,8 @@ if(nrow(amr.l) == 0) {
                    duration = 15, type = "error", closeButton = FALSE, session = session)
   Sys.sleep(15)
 }
-
+tictoc::toc()
+tictoc::tic("07_ast_interpretation.R: Part 2")
 amr.l$link <- paste(amr.l$ast.group, amr.l$WHON5_TEST, sep = ".")
 amr.l <- subset(amr.l, select = c(isolateid, result, link))
 
@@ -50,7 +61,8 @@ amr.l.int$ast.cat[amr.l.int$GUIDELINES == "EUCAST" & amr.l.int$TESTMETHOD == "MI
 amr.l.int$ast.cat[amr.l.int$result == 110011] <- "S"
 amr.l.int$ast.cat[amr.l.int$result == 220022] <- "I"
 amr.l.int$ast.cat[amr.l.int$result == 330033] <- "R"
-
+tictoc::toc()
+tictoc::tic("07_ast_interpretation.R: Part 3")
 # Summarise the Disk, MIC, Etest results for each antibiotic (use WHONET formula of Etest > MIC > Disk if >1 method): one row per isolate
 # Add in amr.var$abxname.cat (E, M, D) to amr.l.int
 amr.l.int <- left_join(amr.l.int, 
@@ -67,7 +79,8 @@ amr.l.int$ast.cat[amr.l.int$ast.cat == "I"] <- 2
 amr.l.int$ast.cat[amr.l.int$ast.cat == "S"] <- 1
 amr.l.int$ast.cat[is.na(amr.l.int$ast.cat)] <- 0 # Important for the next part, otherwise NA > 3 and everything recoded as NA
 amr.l.int$ast.cat <- as.numeric(amr.l.int$ast.cat)
-
+tictoc::toc()
+tictoc::tic("07_ast_interpretation.R: Part 4")
 # Make a variable for the result of each test cat (abx.cat.result, if both CLSI and EUCAST for disk/mic/etst then the most resistant result will be taken)
 tmp.ast <- amr.l.int %>%
   group_by(isolateid.abxname.cat) %>%
@@ -93,7 +106,8 @@ tmp.ast1 <- tmp.ast %>%
 tmp.ast1 <- as.data.frame(tmp.ast1)
 names(tmp.ast1) <- c("isolateid.abxname", "cat.shortnum.max")
 tmp.ast2 <- left_join(tmp.ast, tmp.ast1, by = "isolateid.abxname")
-
+tictoc::toc()
+tictoc::tic("07_ast_interpretation.R: Part 5")
 # Change numeric values back to characters for AST test categories (E == 3, M == 2, D == 1)
 tmp.ast2$cat.shortnum[tmp.ast2$cat.shortnum == 1] <- "D"
 tmp.ast2$cat.shortnum[tmp.ast2$cat.shortnum == 2] <- "M"
@@ -113,9 +127,15 @@ tmp.ast3$abx.cat.result[tmp.ast3$abx.cat.result == 3] <- "R"
 tmp.ast3$abx.cat.result[tmp.ast3$abx.cat.result == 2] <- "I"
 tmp.ast3$abx.cat.result[tmp.ast3$abx.cat.result == 1] <- "S"
 tmp.ast3$abx.cat.result[tmp.ast3$abx.cat.result == 0] <- NA
-
+tictoc::toc()
+tictoc::tic("07_ast_interpretation.R: Part 6")
 # Convert AST data.frame from long back to wide format
-ast.final <- spread(tmp.ast3, abxname, abx.cat.result) # Make individual variables for each antibiotic (WHONET codes)
+# Make individual variables for each antibiotic (WHONET codes)
+ast.final <- tmp.ast3 |> 
+  pivot_wider(
+    names_from = "abxname", 
+    values_from = "abx.cat.result"
+  )
 
 # Merge categorised AST data back into amr.raw data.frame (defined in 05_make_ast_group.R)
 amr <- left_join(amr.raw, ast.final, by = "isolateid")
@@ -137,3 +157,4 @@ amr <- bind_rows(tmp.amr2 %>% mutate_all(as.character),
          spectype.whonet = as.numeric(spectype.whonet),
          specid.acorn = as.numeric(specid.acorn ),
          orgnum.acorn = as.numeric(orgnum.acorn))
+tictoc::toc()
