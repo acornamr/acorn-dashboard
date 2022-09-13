@@ -5,5 +5,6 @@ output$profile_age <- renderHighchart({
   hchart(redcap_f01f05_dta_filter()$age_year) %>%
     hc_colors("#969696") %>%
     hc_legend() %>%
-    hc_exporting(enabled = TRUE, buttons = list(contextButton = list(menuItems = hc_export_kind)))
+    hc_exporting(enabled = TRUE, buttons = list(contextButton = list(menuItems = hc_export_kind))) |> 
+    hc_add_theme(hc_acorn_theme)
 })

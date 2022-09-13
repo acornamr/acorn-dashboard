@@ -34,6 +34,7 @@ acorn_theme_la <- bs_theme(version = 4, bootswatch = "flatly", "border-width" = 
 acorn_theme_vn <- bs_theme(version = 4, bootswatch = "flatly", "border-width" = "2px", base_font = "Arial")
 
 hc_export_kind <- c("downloadJPEG", "downloadCSV")
+hc_acorn_theme <- hc_theme_google() # mirror in startup.R, highchart_sir.R and highchart_sir_evolution.R
 
 choices_datamanagement <- c("Generate and load .acorn </br> from clinical and lab data", 
                             "Load .acorn </br> from cloud", 

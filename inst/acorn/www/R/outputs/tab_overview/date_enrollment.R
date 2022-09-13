@@ -14,7 +14,11 @@ output$profile_date_enrolment <- renderHighchart({
     hc_yAxis(title = "") %>% hc_xAxis(title = "") %>%
     hc_colors("#969696") %>%
     hc_tooltip(headerFormat = "", pointFormat = "{point.week}: <br>{point.n} patients") %>%
-    hc_exporting(enabled = TRUE, buttons = list(contextButton = list(menuItems = hc_export_kind)))
+    hc_exporting(
+      enabled = TRUE, 
+      buttons = list(contextButton = list(menuItems = hc_export_kind))
+      ) |> 
+    hc_add_theme(hc_acorn_theme)
   })
   
   if(! input$show_date_week) return({
@@ -28,6 +32,10 @@ output$profile_date_enrolment <- renderHighchart({
       hc_yAxis(title = "") %>% hc_xAxis(title = "") %>%
       hc_colors("#969696") %>%
       hc_tooltip(headerFormat = "", pointFormat = "{point.month}: <br>{point.n} patients") %>%
-      hc_exporting(enabled = TRUE, buttons = list(contextButton = list(menuItems = hc_export_kind)))
+      hc_exporting(
+        enabled = TRUE, 
+        buttons = list(contextButton = list(menuItems = hc_export_kind))
+      ) |> 
+      hc_add_theme(hc_acorn_theme)
   })
 })

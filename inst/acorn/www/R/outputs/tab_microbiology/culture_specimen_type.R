@@ -27,5 +27,6 @@ output$culture_specimen_type <- renderHighchart({
     hc_add_series(data = dta, type = "bar", hcaes(x = specgroup, y = y),
                   showInLegend = FALSE, tooltip = list(pointFormat = "{point.y} specimens collected ({point.freq} %).")) %>%
     hc_plotOptions(bar = list(stacking = "normal")) %>%
-    hc_exporting(enabled = TRUE, buttons = list(contextButton = list(menuItems = hc_export_kind)))
+    hc_exporting(enabled = TRUE, buttons = list(contextButton = list(menuItems = hc_export_kind))) |> 
+    hc_add_theme(hc_acorn_theme)
 })

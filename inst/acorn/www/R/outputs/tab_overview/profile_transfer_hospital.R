@@ -13,5 +13,6 @@ output$profile_transfer_hospital <- renderHighchart({
     hc_xAxis(title = "", stackLabels = list(enabled = TRUE)) %>% 
     hc_yAxis(title = "") %>%
     hc_tooltip(headerFormat = "", pointFormat = "{point.n} patients ({point.freq} %)") %>%
-    hc_exporting(enabled = TRUE, buttons = list(contextButton = list(menuItems = hc_export_kind)))
+    hc_exporting(enabled = TRUE, buttons = list(contextButton = list(menuItems = hc_export_kind))) |> 
+    hc_add_theme(hc_acorn_theme)
 })
