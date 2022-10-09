@@ -1,4 +1,4 @@
-app_version <- "2.5.4"  # Make sure that the app version is identical in DESCRIPTION
+app_version <- "2.5.5"  # Make sure that the app version is identical in DESCRIPTION
 session_start_time <- format(Sys.time(), "%Y-%m-%d_%HH%M")
 
 # IMPORTANT: ensure that there is a match between the calls below and:
@@ -34,14 +34,20 @@ acorn_theme_la <- bs_theme(version = 4, bootswatch = "flatly", "border-width" = 
 acorn_theme_vn <- bs_theme(version = 4, bootswatch = "flatly", "border-width" = "2px", base_font = "Arial")
 
 hc_export_kind <- c("downloadJPEG", "downloadCSV")
+hc_acorn_theme <- hc_theme_google() # mirror in startup.R, highchart_sir.R and highchart_sir_evolution.R
 
 choices_datamanagement <- c("Generate and load .acorn </br> from clinical and lab data", 
                             "Load .acorn </br> from cloud", 
                             "Load .acorn </br> from local file",
                             "Info on </br> loaded .acorn")
 
-code_sites <- c("Run Demo", "Upload Local .acorn",
-                readr::read_delim(file = "./www/data/ACORN2_site_codes.csv", delim = ";", show_col_types = FALSE) %>% pull(`ACORN2 site code`))
+code_sites <- c("Run Demo", 
+                "Upload Local .acorn",
+                readr::read_csv(
+                  file = "./www/data/ACORN2_site_codes.csv", 
+                  show_col_types = FALSE) |> 
+                  pull(`ACORN2 site code`)
+)
 
 aware <- readr::read_delim(file = "./www/data/AWaRe_WHO_2019.csv", delim = "\t", show_col_types = FALSE) |> 
   transmute(

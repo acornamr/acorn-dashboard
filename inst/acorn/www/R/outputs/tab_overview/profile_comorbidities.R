@@ -18,7 +18,8 @@ output$profile_comorbidities <- renderHighchart({
       hc_tooltip(headerFormat = "",
                  pointFormat = "{point.patients} patients with {point.symptom}") %>%
       hc_plotOptions(series = list(stacking = 'normal')) %>%
-      hc_exporting(enabled = TRUE, buttons = list(contextButton = list(menuItems = hc_export_kind)))
+      hc_exporting(enabled = TRUE, buttons = list(contextButton = list(menuItems = hc_export_kind))) |> 
+      hc_add_theme(hc_acorn_theme)
   })
   
   if(input$comorbidities_combinations) return({
@@ -33,6 +34,7 @@ output$profile_comorbidities <- renderHighchart({
       hc_tooltip(headerFormat = "",
                  pointFormat = "{point.n} patients with {point.comorbidities}") %>%
       hc_plotOptions(series = list(stacking = 'normal')) %>%
-      hc_exporting(enabled = TRUE, buttons = list(contextButton = list(menuItems = hc_export_kind)))
+      hc_exporting(enabled = TRUE, buttons = list(contextButton = list(menuItems = hc_export_kind))) |> 
+      hc_add_theme(hc_acorn_theme)
   })
 })

@@ -22,7 +22,8 @@ output$isolates_organism_nc <- renderHighchart({
     hc_add_series(data = dta, type = "bar", hcaes(x = orgname, y = y),
                   showInLegend = FALSE, tooltip = list(headerFormat = "", 
                                                        pointFormat = "{point.y} isolates with {point.orgname} ({point.freq} %).")) %>%
-    hc_exporting(enabled = TRUE, buttons = list(contextButton = list(menuItems = hc_export_kind)))
+    hc_exporting(enabled = TRUE, buttons = list(contextButton = list(menuItems = hc_export_kind))) |> 
+    hc_add_theme(hc_acorn_theme)
 })
 
 output$isolates_organism_contaminant <- renderHighchart({
@@ -50,5 +51,6 @@ output$isolates_organism_contaminant <- renderHighchart({
     hc_add_series(data = dta, type = "bar", hcaes(x = orgname, y = y),
                   showInLegend = FALSE, tooltip = list(headerFormat = "", 
                                                        pointFormat = "{point.y} isolates with {point.orgname} ({point.freq} %).")) %>%
-    hc_exporting(enabled = TRUE, buttons = list(contextButton = list(menuItems = hc_export_kind)))
+    hc_exporting(enabled = TRUE, buttons = list(contextButton = list(menuItems = hc_export_kind))) |> 
+    hc_add_theme(hc_acorn_theme)
 })

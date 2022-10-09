@@ -400,7 +400,10 @@ infection <- infection |> mutate(
 
 # Test if there are D28 follow-up done before the expected D28 date. ----
 test <- infection |> 
-  filter(d28_date < (date_episode_enrolment + 28))
+  filter(
+    d28_date < (date_episode_enrolment + 28) & 
+      ho_discharge_status != "Dead"
+  )
 
 ifelse(nrow(test) == 0, 
        { checklist_status$redcap_D28_date <- list(status = "okay", msg = i18n$t("There are no D28 follow-up done before the expected D28 date.")) },

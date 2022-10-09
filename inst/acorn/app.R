@@ -166,6 +166,11 @@ ui <- page(
                            fluidRow(
                              column(3,    
                                     h5(i18n$t("(1/4) Download Clinical data")), p(i18n$t("and generate enrolment log.")),
+                                    checkboxInput(
+                                      "check_acorn_patient_ids",
+                                      i18n$t("Check if ACORN and Patient ID match uniquely"),
+                                      value = TRUE
+                                    ),
                                     actionButton("get_redcap_data", i18n$t("Get data from REDCap"), icon = icon('cloud-download-alt'))
                              ),
                              column(6,
@@ -1497,11 +1502,26 @@ server <- function(input, output, session) {
   # On "Download Enrolment Log" ----
   output$download_enrolment_log <- downloadHandler(
     filename = function()  glue("enrolment_log_{format(Sys.time(), '%Y-%m-%d_%H%M')}.xlsx"),
-    content = function(file)  writexl::write_xlsx(
-      list(
-        "Enrolment Log" = enrolment_log(),
-        "Errors Log"    = checklist_status$log_errors
-      ), path = file)
+    content = function(file) {
+      
+      error_logs <- checklist_status$log_errors |> 
+        filter(
+          if (!input$check_acorn_patient_ids) {
+            !(issue %in% c(
+              "Local patient ID with several ACORN IDs.",
+              "ACORN ID with several local patient IDs."))
+          } else {
+            !is.na(issue)
+          }
+        )
+      
+      writexl::write_xlsx(
+        list(
+          "Enrolment Log" = enrolment_log(),
+          "Errors Log"    = error_logs
+        ),
+        path = file)
+    }
   )
   
   # On "Download Lab Log" ----
@@ -1635,9 +1655,9 @@ server <- function(input, output, session) {
       
       about_overview <- data.frame(
         Names = c("For each column of the lab file provided, find in the Lab File Overview table:", 
-                 "column_name", "type", "missing_val", "non_missing_val", "random_val"),
+                  "column_name", "type", "missing_val", "non_missing_val", "random_val"),
         Content = c("", "name of the column", "type of the column", "number of missing values for the column", 
-                 "number of NON missing values for the column", "two randomly selected values for the column")
+                    "number of NON missing values for the column", "two randomly selected values for the column")
       )
       
       dta <- data.frame(
@@ -1650,12 +1670,12 @@ server <- function(input, output, session) {
       )
       
       writexl::write_xlsx(
-      list(
-        "About Lab File" = about_file,
-        "About Lab File Overview" = about_overview,
-        "Lab File Overview" = dta
-      ), path = file)
-  })
+        list(
+          "About Lab File" = about_file,
+          "About Lab File Overview" = about_overview,
+          "Lab File Overview" = dta
+        ), path = file)
+    })
   
   # On "Generate ACORN" ----
   observeEvent(input$generate_acorn_data, {

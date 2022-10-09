@@ -1,4 +1,12 @@
-highchart_sir <- function(data_input, organism_input, corresp, combine_SI, deduplication_method) {
+highchart_sir <- function(
+    data_input, 
+    organism_input, 
+    corresp, 
+    combine_SI, 
+    deduplication_method
+) {
+  
+  hc_acorn_theme <- hc_theme_google() # mirror in startup.R, highchart_sir.R and highchart_sir_evolution.R
   
   # Column in the Organism-Antibiotic matrix
   matching_name_column <- "all_other_organisms"  # default
@@ -13,7 +21,7 @@ highchart_sir <- function(data_input, organism_input, corresp, combine_SI, dedup
   if(organism_input == "Staphylococcus aureus")       matching_name_column <- "s_aureus"
   if(organism_input == "Streptococcus pneumoniae")    matching_name_column <- "s_pneumoniae"
   
-
+  
   # Treatment of species
   organism_filter <- organism_input
   
@@ -79,7 +87,7 @@ highchart_sir <- function(data_input, organism_input, corresp, combine_SI, dedup
           x[["categories"]] <- list(x[["categories"]])
         x
       })
-
+    
     return(
       sir_results %>%
         hchart(type = "bar", hcaes(x = "antibio_name", y = "n", group = "resistance")) %>%
@@ -91,7 +99,8 @@ highchart_sir <- function(data_input, organism_input, corresp, combine_SI, dedup
                    pointFormat = "<b>{point.antibiotic_name}</b><br> {point.resistance}: {point.percent}% <br>({point.n} of {point.total_org} tested.)") %>%
         hc_plotOptions(series = list(stacking = 'percent')) %>%
         hc_add_dependency("plugins/grouped-categories.js") %>%
-        hc_exporting(enabled = TRUE, buttons = list(contextButton = list(menuItems = hc_export_kind)))
+        hc_exporting(enabled = TRUE, buttons = list(contextButton = list(menuItems = hc_export_kind))) |> 
+        hc_add_theme(hc_acorn_theme)
     )
   }
   
@@ -157,7 +166,8 @@ highchart_sir <- function(data_input, organism_input, corresp, combine_SI, dedup
                    pointFormat = "<b>{point.antibiotic_name}</b><br> {point.resistance}: {point.percent}% <br>({point.n} of {point.total_org} tested.)") %>%
         hc_plotOptions(series = list(stacking = 'percent')) %>%
         hc_add_dependency("plugins/grouped-categories.js") %>%
-        hc_exporting(enabled = TRUE, buttons = list(contextButton = list(menuItems = hc_export_kind)))
+        hc_exporting(enabled = TRUE, buttons = list(contextButton = list(menuItems = hc_export_kind))) |> 
+        hc_add_theme(hc_acorn_theme)
     )
   }
 }

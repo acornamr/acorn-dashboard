@@ -28,7 +28,8 @@ output$profile_antibiotics <- renderHighchart({
       hc_tooltip(headerFormat = "",
                  pointFormat = "{point.n} patients have taken {point.antibiotic}") %>%
       hc_plotOptions(series = list(stacking = 'normal')) %>%
-      hc_exporting(enabled = TRUE, buttons = list(contextButton = list(menuItems = hc_export_kind)))
+      hc_exporting(enabled = TRUE, buttons = list(contextButton = list(menuItems = hc_export_kind))) |> 
+      hc_add_theme(hc_acorn_theme)
   })
   
   if(input$antibiotics_combinations) return({
@@ -47,6 +48,7 @@ output$profile_antibiotics <- renderHighchart({
       hc_tooltip(headerFormat = "",
                  pointFormat = "{point.n} patients have taken {point.antibiotic}") %>%
       hc_plotOptions(series = list(stacking = 'normal')) %>%
-      hc_exporting(enabled = TRUE, buttons = list(contextButton = list(menuItems = hc_export_kind)))
+      hc_exporting(enabled = TRUE, buttons = list(contextButton = list(menuItems = hc_export_kind))) |> 
+      hc_add_theme(hc_acorn_theme)
   })
 })

@@ -1,12 +1,6 @@
-library(glue)
-library(openssl)
-library(readxl)
-library(tidyverse)
-rm(list = ls())
-
-creds <- readxl::read_excel("/Users/olivier/Documents/Projets/ACORN/Data/ACORN2_cred.xlsx", sheet = "cred") |>  
-  filter(!is.na(site)) |> 
-  filter(user == "user")
+creds <- readxl::read_excel("/Users/olivier/Documents/Projets/ACORN/Data/ACORN2_cred.xlsx", 
+                            sheet = "cred") |>  
+  filter(!is.na(site))
 
 
 for (i in 1:nrow(creds)) {
@@ -29,11 +23,9 @@ for (i in 1:nrow(creds)) {
     ),
     connection = NULL)
   
-  encrypted_cred <- aes_cbc_encrypt(cred, key = openssl::sha256(charToRaw(user$pwd)))
-  saveRDS(encrypted_cred, glue("/Users/olivier/Documents/Projets/ACORN/Data/ACORN2_creds/encrypted_cred_{user$site}_{user$user}.rds"))
+  encrypted_cred <- openssl::aes_cbc_encrypt(cred, key = openssl::sha256(charToRaw(user$pwd)))
+  saveRDS(encrypted_cred, glue::glue("/Users/olivier/Documents/Projets/ACORN/Data/ACORN2_creds/encrypted_cred_{user$site}_{user$user}.rds"))
 }
-
-rm(list = ls())
 
 # Instructions:
 # encrypted_cred_XXX_YYY.rds files should be added to the "shared-acornamr" folder

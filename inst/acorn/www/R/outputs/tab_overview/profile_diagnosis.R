@@ -13,5 +13,6 @@ output$profile_diagnosis <- renderHighchart({
     hc_tooltip(headerFormat = "",
                pointFormat = "Patients with {point.surveillance_diag}: {point.n} ({point.freq} %)") %>%
     hc_plotOptions(series = list(stacking = "normal")) %>%
-    hc_exporting(enabled = TRUE, buttons = list(contextButton = list(menuItems = hc_export_kind)))
+    hc_exporting(enabled = TRUE, buttons = list(contextButton = list(menuItems = hc_export_kind))) |> 
+    hc_add_theme(hc_acorn_theme)
 })

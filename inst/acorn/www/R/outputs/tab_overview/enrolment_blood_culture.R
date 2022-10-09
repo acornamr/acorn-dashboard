@@ -25,7 +25,8 @@ output$enrolment_blood_culture <- renderHighchart({
       hchart(dta, type = "column", hcaes(x = "year", y = "percent"), color = "#e74c3c") %>%
         hc_yAxis(title = list(text = "% with BC", rotation = 0), max = 100) %>% hc_xAxis(title = "Years of enrolment") %>% 
         hc_tooltip(pointFormat = "{point.percent}% of enrolments with BC<br> ({point.blood} of {point.all} enrolments)") %>%
-        hc_exporting(enabled = TRUE, buttons = list(contextButton = list(menuItems = hc_export_kind)))
+        hc_exporting(enabled = TRUE, buttons = list(contextButton = list(menuItems = hc_export_kind))) |> 
+        hc_add_theme(hc_acorn_theme)
     )
   }
   
@@ -48,7 +49,8 @@ output$enrolment_blood_culture <- renderHighchart({
       hchart(dta, type = "column", hcaes(x = "month", y = "percent"), color = "#e74c3c") %>%
         hc_yAxis(title = list(text = "% with BC", rotation = 0), max = 100) %>% hc_xAxis(title = "Month of enrolment") %>% 
         hc_tooltip(pointFormat = "{point.percent}% of enrolments with BC<br> ({point.blood} of {point.all} enrolments)") %>%
-        hc_exporting(enabled = TRUE, buttons = list(contextButton = list(menuItems = hc_export_kind)))
+        hc_exporting(enabled = TRUE, buttons = list(contextButton = list(menuItems = hc_export_kind))) |> 
+        hc_add_theme(hc_acorn_theme)
     )
   }
 })

@@ -84,16 +84,6 @@ Ví dụ `load(file = "/Users/olivier/Desktop/KH001_2023-08-24_01H59.acorn")` t�
 - `lab_code`: tất cả dữ liệu của tệp mã phòng thí nghiệm ACORN2 đã được sử dụng trong quá trình tạo tệp .acorn.
 - `meta`: siêu dữ liệu (metadata) được thu thập khi tạo tệp .acorn.
 
-Với mỗi file NAME.acorn, a NAME.acorn_non_anonymised cũng được tạo.
-
-Tệp NAME.acorn_non_anonymised cũng có thể được tải lên với cùng lệnh `load(file = "NAME.acorn_non_anonymised")` (giả sử tệp nằm trong thư mục làm việc hiện tại).
-
-Tệp chứa các đối tượng giống như NAME.acorn, nhưng ID của bệnh nhân thì KHÔNG hashed Ở `redcap_f01f05_dta` và `acorn_dta`. Ngoài ra, tệp còn chứa một phần tử:
-
-- `lab_dta`: một hàng cho mỗi chủng phân lập theo tệp phòng thí nghiệm được cung cấp khi tạo .acorn file.
-
-File non_anonmyised `.acorn` phải được xử lý cẩn thận và an toàn, vì chúng chứa mã nhận dạng của bệnh nhân: các tệp này có thể được các nghiên cứu viên ở điểm nghiên cứu sử dụng để liên kết dữ liệu / vi khuẩn phân lập với các dự án nghiên cứu bổ sung / hoạt động cải tiến chất lượng. Vui lòng liên hệ với nhóm ACORN để biết thêm thông tin.
-
 ## Quản lý Dashboard
 
 ### Sửa đổi chủ đề / ngôn ngữ Dashboard

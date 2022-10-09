@@ -36,5 +36,6 @@ output$culture_specgroup <- renderHighchart({
     hc_colors(c("#8e44ad", "#7f8c8d", "#d35400")) %>%
     hc_plotOptions(bar = list(stacking = "normal")) %>%
     hc_tooltip(pointFormat = "{point.culture_result}: {point.y} specimens collected ({point.freq} %).") %>%
-    hc_exporting(enabled = TRUE, buttons = list(contextButton = list(menuItems = hc_export_kind)))
+    hc_exporting(enabled = TRUE, buttons = list(contextButton = list(menuItems = hc_export_kind))) |> 
+    hc_add_theme(hc_acorn_theme)
 })
