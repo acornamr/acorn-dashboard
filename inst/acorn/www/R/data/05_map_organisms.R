@@ -70,6 +70,7 @@ amr$orgname[is.na(amr$orgname) & !is.na(amr$org.code2)] <- amr$org.code2[is.na(a
 amr$orgname[is.na(amr$orgname) & !is.na(amr$org.code3)] <- amr$org.code3[is.na(amr$orgname) & !is.na(amr$org.code3)]
 amr$orgname[is.na(amr$orgname) & !is.na(amr$org.code4)] <- amr$org.code4[is.na(amr$orgname) & !is.na(amr$org.code4)]
 amr$orgname[is.na(amr$orgname)] <- amr$org.local[is.na(amr$orgname)] # If no orgname at this stage, use the org.local value
+amr$orgname[is.na(amr$orgname)] <- "No organism name / culture result" # If still missing, recode to human readable missing
 
 
 # Flag potential contaminants in blood cultures (CoNS, Micrococcus sp., GBP - diphtheroids / Bacillus sp.) [UPDATED ACORN2]
