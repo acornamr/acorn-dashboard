@@ -12,7 +12,7 @@ fun_filter_enrolment <- function(data, input) {
            ho_final_diag %in% input$filter_diagnosis_final,
            cci >= input$filter_uCCI[1],
            cci <= input$filter_uCCI[2]
-           )
+    )
   
   
   data <- bind_rows(data %>% 
@@ -88,7 +88,15 @@ fun_deduplication <- function(data, method = NULL) {
 
 # Function that removes organisms "No growth (specific organism)" and "No growth"
 # Note that "No significant growth" should be categorised as growth
-fun_filter_growth_only <- function(data) data %>% filter(! orgname %in% c("No growth (specific organism)", "No growth"))
+fun_filter_growth_only <- function(data) {
+  data |> 
+    filter(! orgname %in% c(
+      "No growth (specific organism)", 
+      "No growth", 
+      "No organism name / culture result"
+    )
+    )
+}
 
 # Function that removes organisms "No significant growth"
 fun_filter_signifgrowth_only <- function(data) data %>% filter(orgname != "No significant growth")
