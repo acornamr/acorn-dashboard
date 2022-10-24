@@ -22,6 +22,15 @@ output$culture_specgroup <- renderHighchart({
         orgname == "Not cultured" ~ "Not cultured",
         orgname == "No organism name / culture result" ~ "No organism name / culture result",
         TRUE ~ growth
+      ),
+      culture_result = factor(
+        culture_result, 
+        levels = c(
+          "Growth",
+          "No Growth",
+          "Not cultured",
+          "No organism name / culture result"
+        )
       )
     ) %>%
     group_by(specgroup, culture_result) %>%
@@ -39,9 +48,15 @@ output$culture_specgroup <- renderHighchart({
   dta2 %>%
     hchart(type = "bar", hcaes(x = "specgroup", y = "n", group = "culture_result")) %>%
     hc_xAxis(title = "") %>% hc_yAxis(title = "") %>%
-    hc_colors(c("#8e44ad", "#7f8c8d", "#fef0d9", "#fc8d59")) %>%
+    hc_colors(c(
+      "#8e44ad", # Growth
+      "#7f8c8d", # No Growth
+      "#C81D25", # Not cultured
+      "#BFD7EA"  # No organism name / culture result
+    )) %>%
     hc_plotOptions(bar = list(stacking = "normal")) %>%
     hc_tooltip(pointFormat = "{point.culture_result}: {point.y} specimens collected ({point.freq} %).") %>%
     hc_exporting(enabled = TRUE, buttons = list(contextButton = list(menuItems = hc_export_kind))) |> 
-    hc_add_theme(hc_acorn_theme)
+    hc_add_theme(hc_acorn_theme) |> 
+    hc_legend(reversed = "true")
 })
