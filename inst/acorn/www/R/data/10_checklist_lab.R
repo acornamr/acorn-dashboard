@@ -24,7 +24,7 @@ if(all(!is.na(amr_acorn_relevant$patid))) {
   checklist_status$lab_data_qc_2 <- list(status = "warning", msg = i18n$t("There are rows with missing 'patid'."))
 }
 
-if(all(!is.na(amr_acorn_relevant$specid))) {
+if(all(!stringr::str_detect(amr_acorn_relevant$specid, "^_SPEC"))) {
   checklist_status$lab_data_qc_3 <- list(status = "okay", msg = i18n$t("All 'specid' are provided."))
 } else{
   checklist_status$lab_data_qc_3 <- list(status = "warning", msg = i18n$t("There are rows with missing 'specid'."))
