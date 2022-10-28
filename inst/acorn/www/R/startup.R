@@ -49,13 +49,11 @@ code_sites <- c("Run Demo",
                   pull(`ACORN2 site code`)
 )
 
-aware <- readxl::read_excel(
-  path = "./www/data/WHO-HMP-HPS-EML-2021.04-eng.xlsx", 
-  sheet = "AWaRe classification 2021",
-  skip = 3) |> 
+aware <- read.csv(
+  file = "./www/data/AWaRe_WHO_2021.csv") |> 
   transmute(
     category = `Category`,
-    antibiotic_code = paste0("antibiotic_", tolower(`ATC code`))
+    antibiotic_code = paste0("antibiotic_", tolower(ATC.code))
   )
 
 about <- tribble(
