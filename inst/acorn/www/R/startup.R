@@ -46,7 +46,7 @@ code_sites <- c("Run Demo",
                 readr::read_csv(
                   file = "./www/data/ACORN2_site_codes.csv", 
                   show_col_types = FALSE) |> 
-                  pull(`ACORN2 site code`)
+                  pull(site_code)
 )
 
 aware <- read.csv(
