@@ -2,7 +2,7 @@
 Amikacin,Aminoglycosides,J01GB06,Access,Yes
 Amoxicillin,Penicillins,J01CA04,Access,Yes
 Amoxicillin/clavulanic-acid,Beta-lactam/beta-lactamase-inhibitor,J01CR02,Access,Yes
-Ampicillin,Penicillins,J01CA01 ,Access,Yes
+Ampicillin,Penicillins,J01CA01,Access,Yes
 Ampicillin/sulbactam,Beta-lactam/beta-lactamase-inhibitor,J01CR01,Access,No
 Arbekacin,Aminoglycosides,J01GB12,Watch,No
 Aspoxicillin,Penicillins ,J01CA19,Watch,No
@@ -58,7 +58,7 @@ Cefprozil,Second-generation-cephalosporins,J01DC10,Watch,No
 Cefradine,First-generation-cephalosporins,J01DB09,Access,No
 Cefroxadine,First-generation-cephalosporins,J01DB11,Access,No
 Cefsulodin,Third-generation-cephalosporins,J01DD03,Watch,No
-Ceftaroline-fosamil,Fifth-generation cephalosporins,J01DI02 ,Reserve,No
+Ceftaroline-fosamil,Fifth-generation cephalosporins,J01DI02,Reserve,No
 Ceftazidime,Third-generation-cephalosporins,J01DD02,Watch,Yes
 Ceftazidime/avibactam,Third-generation-cephalosporins,J01DD52,Reserve,Yes
 Cefteram-pivoxil,Third-generation-cephalosporins,J01DD18,Watch,No
