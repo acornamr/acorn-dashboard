@@ -1,4 +1,4 @@
-app_version <- "2.5.5"  # Make sure that the app version is identical in DESCRIPTION
+app_version <- "2.5.6"  # Make sure that the app version is identical in DESCRIPTION
 session_start_time <- format(Sys.time(), "%Y-%m-%d_%HH%M")
 
 # IMPORTANT: ensure that there is a match between the calls below and:
@@ -46,13 +46,14 @@ code_sites <- c("Run Demo",
                 readr::read_csv(
                   file = "./www/data/ACORN2_site_codes.csv", 
                   show_col_types = FALSE) |> 
-                  pull(`ACORN2 site code`)
+                  pull(site_code)
 )
 
-aware <- readr::read_delim(file = "./www/data/AWaRe_WHO_2019.csv", delim = "\t", show_col_types = FALSE) |> 
+aware <- read.csv(
+  file = "./www/data/AWaRe_WHO_2021.csv") |> 
   transmute(
-    category,
-    antibiotic_code = paste0("antibiotic_", tolower(atc_code))
+    category = `Category`,
+    antibiotic_code = paste0("antibiotic_", tolower(ATC.code))
   )
 
 about <- tribble(

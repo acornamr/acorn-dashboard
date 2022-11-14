@@ -5,10 +5,17 @@ amr <- dta %>%
   rename_with(use_acorn_name,
               acorn_names = data_dictionary$variables$acorn.code,
               local_names = data_dictionary$variables$local.code) %>%
-  select(! starts_with("NOT_ACORN_COLUMN_")) %>%
+  select(! starts_with("NOT_ACORN_COLUMN_"))
+
+# Deal with rows with missing specimen IDs
+# This is non-ideal and should be addressed at site-level, but is a pragmatic solution where this is difficult:
+# Makes an assumption that a specimen is a single row of data (which is true in the vast majority of cases, and most importantly for blood cultures)
+# Replaces NA with a running number (based on row.names(amr)) plus the prefix "SPEC"
+amr <- amr %>%
+  mutate(specid = if_else(!is.na(specid), specid, paste0("SPEC", seq_along(row.names(amr))))) %>%
   mutate(specid.lc = tolower(specid))
 
-# add new columns of NAs required for aggregate variables (e.g. aggregate carbapenem) computations
+# Add new columns of NAs required for aggregate variables (e.g. aggregate carbapenem) computations
 col_sup <- setdiff(data_dictionary$variables$acorn.code, names(amr))
 new <- rep(NA_character_, length(col_sup))
 names(new) <- col_sup
