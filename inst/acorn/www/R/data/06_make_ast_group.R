@@ -56,6 +56,7 @@ amr.raw <- amr
 
 # Sort out formatting of AST data (assuming English language for the S / I / R possibilities and standard notation with / without spaces for the MICs)
 for(i in amr.var$varname.ast) { # Select the variables containing raw AST data
+  amr[,i] <- gsub("NULL", "", amr[,i]) # Removes “NULL” text
   amr[,i] <- gsub(" ", "", amr[,i]) # Removes spaces
   amr[,i] <- gsub("<=", "", amr[,i]) # Replaces <= with blank
   amr[,i] <- gsub(">=", "", amr[,i]) # Replaces >= with blank
