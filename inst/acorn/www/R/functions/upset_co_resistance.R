@@ -40,7 +40,10 @@ upset_co_resistance <- function(data_input, organism_input, corresp, deduplicati
     filter(orgname %in% organism_filter) %>%
     fun_deduplication(method = deduplication_method) |> 
     select(c("specid", any_of(antibio_to_show))) |> 
-    select(where(~ !all(is.na(.x)))) |> 
+    # remove columns that contains only NA:
+    select(where(~ !all(is.na(.x)))) |>
+    # remove rows that contains only NA (apart from specid):
+    filter(if_any(!contains("specid"), ~ !is.na(.))) |> 
     mutate(across(any_of(antibio_to_show), ~ . == "R"))
   
   if (! any(dta[, -1]))  return({
