@@ -1,4 +1,4 @@
-upset_co_resistance <- function(data_input, organism_input, corresp, deduplication_method, exclude_antibio) {
+upset_antibiotics <- function(data_input, organism_input, corresp, deduplication_method) {
   
   find_name <- function(x) {
     ifelse (x %in% corresp$antibio_code,
@@ -46,53 +46,10 @@ upset_co_resistance <- function(data_input, organism_input, corresp, deduplicati
     filter(if_any(!contains("specid"), ~ !is.na(.))) |> 
     mutate(across(any_of(antibio_to_show), ~ . == "R"))
   
-  if (! any(dta[, -1]))  return({
-    plot(c(0, 1), c(0, 1), ann = F, bty = "n", type = "n", xaxt = "n", yaxt = "n")
-    text(x = 0.5, y = 0.5, paste("There are no resistant."), cex = 1.6, col = "black")
-  })
-  
   dta <- dta |> 
-    rename_with(vec_find_names, -specid) |> 
-    select(-all_of(exclude_antibio))
+    rename_with(vec_find_names, -specid)
   
-  if (ncol(dta) <= 2)  return({
-    plot(c(0, 1), c(0, 1), ann = F, bty = "n", type = "n", xaxt = "n", yaxt = "n")
-    text(x = 0.5, y = 0.5, paste("Keep at least two antibiotics."), cex = 1.6, col = "black")
-  })
-  
-  ComplexUpset::upset(
-    data = dta, 
-    intersect = colnames(dta)[-1], 
-    name = " ", 
-    width_ratio = 0.2, 
-    stripes = "white",
-    keep_empty_groups = TRUE,
-    themes = ComplexUpset::upset_default_themes(
-      text = element_text(size = 14), 
-      axis.title.x = element_text(size = 12),
-      axis.title.y = element_text(size = 0), 
-      legend.position = "none"
-    ),
-    base_annotations = list(
-      "Intersection size" = (
-        ComplexUpset::intersection_size() + 
-          xlab(NULL) +
-          scale_y_continuous(breaks = function(x) unique(floor(pretty(seq(0, (max(x) + 1) * 1.1)))))
-      )
-    ),
-    set_sizes = ComplexUpset::upset_set_size(position = "right") +
-      ylab(NULL) +
-      geom_label(aes(label = ..count..), fill = cols_sir[3], color = "white", hjust = 1.1, stat = "count") +
-      scale_y_continuous(breaks = function(x) unique(floor(pretty(seq(0, (max(x) + 1) * 1.1))))),
-    matrix = (
-      ComplexUpset::intersection_matrix(
-        geom = geom_point(size = 4), 
-        segment = geom_segment(linetype = 'dotted')
-      ) +
-        scale_color_manual(values = c(
-          "TRUE" = cols_sir[3], 
-          "FALSE" = cols_sir[1])
-        )
-    )
+  return(
+    names(dta)[-1] |> sort()
   )
 }

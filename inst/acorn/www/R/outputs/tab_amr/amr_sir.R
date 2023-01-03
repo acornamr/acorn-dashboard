@@ -5,10 +5,28 @@ output$acinetobacter_sir <- renderHighchart({
                 combine_SI = input$combine_SI, deduplication_method = input$deduplication_method)
 })
 
+output$acinetobacter_upset_antibio <- renderUI({
+  req(acorn_dta_filter())
+  antibio <- upset_antibiotics(
+    data_input = acorn_dta_filter(), 
+    organism_input = "Acinetobacter sp", 
+    corresp = corresp_org_antibio(), 
+    deduplication_method = input$deduplication_method
+  )
+  
+  pickerInput(
+    "acinetobacter_upset_antibio", 
+    "Exclude antibiotic(s):", 
+    multiple = TRUE,
+    choices = antibio, 
+    selected = NULL
+  )
+})
+
 output$acinetobacter_co_resistance <- renderPlot({
   req(acorn_dta_filter())
   upset_co_resistance(data_input = acorn_dta_filter(), organism_input = "Acinetobacter sp", corresp = corresp_org_antibio(), 
-                      deduplication_method = input$deduplication_method)
+                      deduplication_method = input$deduplication_method, exclude_antibio = input$acinetobacter_upset_antibio)
 })
 
 output$acinetobacter_sir_evolution <- renderHighchart({

@@ -655,6 +655,7 @@ ui <- page(
                                                 ),
                                                 column(6,
                                                        h4(i18n$t("Co-resistances")),
+                                                       uiOutput("acinetobacter_upset_antibio"),
                                                        plotOutput("acinetobacter_co_resistance", height = "400px"),
                                                        conditionalPanel(condition = "! input.combine_SI", 
                                                                         i18n$t("Susceptible and Intermediate are always combined in this visualisation of co-resistances.")
