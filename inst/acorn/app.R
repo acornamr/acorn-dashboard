@@ -697,6 +697,7 @@ ui <- page(
                                                 ),
                                                 column(6,
                                                        h4(i18n$t("Co-resistances")),
+                                                       uiOutput("ecoli_upset_antibio"),
                                                        plotOutput("ecoli_co_resistance", height = "400px"),
                                                        conditionalPanel(condition = "! input.combine_SI", 
                                                                         i18n$t("Susceptible and Intermediate are always combined in this visualisation of co-resistances.")
@@ -743,6 +744,7 @@ ui <- page(
                                                 ),
                                                 column(6,
                                                        h4(i18n$t("Co-resistances")),
+                                                       uiOutput("haemophilus_influenzae_upset_antibio"),
                                                        plotOutput("haemophilus_influenzae_co_resistance", height = "400px"),
                                                        conditionalPanel(condition = "! input.combine_SI", 
                                                                         i18n$t("Susceptible and Intermediate are always combined in this visualisation of co-resistances.")
@@ -779,6 +781,7 @@ ui <- page(
                                                 ),
                                                 column(6,
                                                        h4(i18n$t("Co-resistances")),
+                                                       uiOutput("kpneumoniae_upset_antibio"),
                                                        plotOutput("kpneumoniae_co_resistance", height = "400px"),
                                                        conditionalPanel(condition = "! input.combine_SI", 
                                                                         i18n$t("Susceptible and Intermediate are always combined in this visualisation of co-resistances.")
@@ -825,6 +828,7 @@ ui <- page(
                                                 ),
                                                 column(6,
                                                        h4(i18n$t("Co-resistances")),
+                                                       uiOutput("neisseria_meningitidis_upset_antibio"),
                                                        plotOutput("neisseria_meningitidis_co_resistance", height = "400px"),
                                                        conditionalPanel(condition = "! input.combine_SI", 
                                                                         i18n$t("Susceptible and Intermediate are always combined in this visualisation of co-resistances.")
@@ -861,6 +865,7 @@ ui <- page(
                                                 ),
                                                 column(6,
                                                        h4(i18n$t("Co-resistances")),
+                                                       uiOutput("pseudomonas_aeruginosa_upset_antibio"),
                                                        plotOutput("pseudomonas_aeruginosa_co_resistance", height = "400px"),
                                                        conditionalPanel(condition = "! input.combine_SI", 
                                                                         i18n$t("Susceptible and Intermediate are always combined in this visualisation of co-resistances.")
@@ -905,6 +910,7 @@ ui <- page(
                                                 ),
                                                 column(6,
                                                        h4(i18n$t("Co-resistances")),
+                                                       uiOutput("salmonella_upset_antibio"),
                                                        plotOutput("salmonella_co_resistance", height = "400px"),
                                                        conditionalPanel(condition = "! input.combine_SI", 
                                                                         i18n$t("Susceptible and Intermediate are always combined in this visualisation of co-resistances.")
@@ -950,6 +956,7 @@ ui <- page(
                                                 ),
                                                 column(6,
                                                        h4(i18n$t("Co-resistances")),
+                                                       uiOutput("saureus_upset_antibio"),
                                                        plotOutput("saureus_co_resistance", height = "400px"),
                                                        conditionalPanel(condition = "! input.combine_SI", 
                                                                         i18n$t("Susceptible and Intermediate are always combined in this visualisation of co-resistances.")
@@ -990,6 +997,7 @@ ui <- page(
                                                 ),
                                                 column(6,
                                                        h4(i18n$t("Co-resistances")),
+                                                       uiOutput("spneumoniae_upset_antibio"),
                                                        plotOutput("spneumoniae_co_resistance", height = "400px"),
                                                        conditionalPanel(condition = "! input.combine_SI", 
                                                                         i18n$t("Susceptible and Intermediate are always combined in this visualisation of co-resistances.")

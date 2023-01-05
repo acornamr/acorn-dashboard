@@ -53,11 +53,18 @@ upset_co_resistance <- function(data_input, organism_input, corresp, deduplicati
   
   dta <- dta |> 
     rename_with(vec_find_names, -specid) |> 
-    select(-all_of(exclude_antibio))
+    select(-all_of(exclude_antibio)) |>
+    # remove rows with NA values in any column
+    na.omit()
   
   if (ncol(dta) <= 2)  return({
     plot(c(0, 1), c(0, 1), ann = F, bty = "n", type = "n", xaxt = "n", yaxt = "n")
     text(x = 0.5, y = 0.5, paste("Keep at least two antibiotics."), cex = 1.6, col = "black")
+  })
+  
+  if (nrow(dta) == 0)  return({
+    plot(c(0, 1), c(0, 1), ann = F, bty = "n", type = "n", xaxt = "n", yaxt = "n")
+    text(x = 0.5, y = 0.5, paste("Consider excluding antibiotic(s)."), cex = 1.6, col = "black")
   })
   
   ComplexUpset::upset(
