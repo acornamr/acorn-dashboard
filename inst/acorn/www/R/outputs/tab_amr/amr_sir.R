@@ -13,13 +13,24 @@ output$acinetobacter_upset_antibio <- renderUI({
     corresp = corresp_org_antibio(), 
     deduplication_method = input$deduplication_method
   )
-  
-  pickerInput(
-    "acinetobacter_upset_antibio", 
-    "Exclude antibiotic(s):", 
-    multiple = TRUE,
-    choices = antibio, 
-    selected = NULL
+  tagList(
+    fluidRow(
+      column(
+        width = 4,
+        "Exclude antibiotic(s):"
+      ),
+      column(
+        width = 8,
+        pickerInput(
+          "acinetobacter_upset_antibio", 
+          NULL, 
+          multiple = TRUE,
+          choices = antibio, 
+          selected = NULL
+        )
+      )
+    ),
+    tags$small(text$co_resistance)
   )
 })
 
@@ -72,12 +83,24 @@ output$ecoli_upset_antibio <- renderUI({
     deduplication_method = input$deduplication_method
   )
   
-  pickerInput(
-    "ecoli_upset_antibio", 
-    "Exclude antibiotic(s):", 
-    multiple = TRUE,
-    choices = antibio, 
-    selected = NULL
+  tagList(
+    fluidRow(
+      column(
+        width = 4,
+        "Exclude antibiotic(s):"
+      ),
+      column(
+        width = 8,
+        pickerInput(
+          "ecoli_upset_antibio", 
+          NULL, 
+          multiple = TRUE,
+          choices = antibio, 
+          selected = NULL
+        )
+      )
+    ),
+    tags$small(text$co_resistance)
   )
 })
 
@@ -135,12 +158,24 @@ output$haemophilus_influenzae_upset_antibio <- renderUI({
     deduplication_method = input$deduplication_method
   )
   
-  pickerInput(
-    "haemophilus_influenzae_upset_antibio", 
-    "Exclude antibiotic(s):", 
-    multiple = TRUE,
-    choices = antibio, 
-    selected = NULL
+  tagList(
+    fluidRow(
+      column(
+        width = 4,
+        "Exclude antibiotic(s):"
+      ),
+      column(
+        width = 8,
+        pickerInput(
+          "haemophilus_influenzae_upset_antibio", 
+          NULL, 
+          multiple = TRUE,
+          choices = antibio, 
+          selected = NULL
+        )
+      )
+    ),
+    tags$small(text$co_resistance)
   )
 })
 
@@ -183,12 +218,24 @@ output$kpneumoniae_upset_antibio <- renderUI({
     deduplication_method = input$deduplication_method
   )
   
-  pickerInput(
-    "kpneumoniae_upset_antibio", 
-    "Exclude antibiotic(s):", 
-    multiple = TRUE,
-    choices = antibio, 
-    selected = NULL
+  tagList(
+    fluidRow(
+      column(
+        width = 4,
+        "Exclude antibiotic(s):"
+      ),
+      column(
+        width = 8,
+        pickerInput(
+          "kpneumoniae_upset_antibio", 
+          NULL, 
+          multiple = TRUE,
+          choices = antibio, 
+          selected = NULL
+        )
+      )
+    ),
+    tags$small(text$co_resistance)
   )
 })
 
@@ -247,12 +294,24 @@ output$neisseria_meningitidis_upset_antibio <- renderUI({
     deduplication_method = input$deduplication_method
   )
   
-  pickerInput(
-    "neisseria_meningitidis_upset_antibio", 
-    "Exclude antibiotic(s):", 
-    multiple = TRUE,
-    choices = antibio, 
-    selected = NULL
+  tagList(
+    fluidRow(
+      column(
+        width = 4,
+        "Exclude antibiotic(s):"
+      ),
+      column(
+        width = 8,
+        pickerInput(
+          "neisseria_meningitidis_upset_antibio", 
+          NULL, 
+          multiple = TRUE,
+          choices = antibio, 
+          selected = NULL
+        )
+      )
+    ),
+    tags$small(text$co_resistance)
   )
 })
 
@@ -295,12 +354,24 @@ output$pseudomonas_aeruginosa_upset_antibio <- renderUI({
     deduplication_method = input$deduplication_method
   )
   
-  pickerInput(
-    "pseudomonas_aeruginosa_upset_antibio", 
-    "Exclude antibiotic(s):", 
-    multiple = TRUE,
-    choices = antibio, 
-    selected = NULL
+  tagList(
+    fluidRow(
+      column(
+        width = 4,
+        "Exclude antibiotic(s):"
+      ),
+      column(
+        width = 8,
+        pickerInput(
+          "pseudomonas_aeruginosa_upset_antibio", 
+          NULL, 
+          multiple = TRUE,
+          choices = antibio, 
+          selected = NULL
+        )
+      )
+    ),
+    tags$small(text$co_resistance)
   )
 })
 
@@ -351,12 +422,24 @@ output$saureus_upset_antibio <- renderUI({
     deduplication_method = input$deduplication_method
   )
   
-  pickerInput(
-    "saureus_upset_antibio", 
-    "Exclude antibiotic(s):", 
-    multiple = TRUE,
-    choices = antibio, 
-    selected = NULL
+  tagList(
+    fluidRow(
+      column(
+        width = 4,
+        "Exclude antibiotic(s):"
+      ),
+      column(
+        width = 8,
+        pickerInput(
+          "saureus_upset_antibio", 
+          NULL, 
+          multiple = TRUE,
+          choices = antibio, 
+          selected = NULL
+        )
+      )
+    ),
+    tags$small(text$co_resistance)
   )
 })
 
@@ -406,12 +489,24 @@ output$spneumoniae_upset_antibio <- renderUI({
     deduplication_method = input$deduplication_method
   )
   
-  pickerInput(
-    "spneumoniae_upset_antibio", 
-    "Exclude antibiotic(s):", 
-    multiple = TRUE,
-    choices = antibio, 
-    selected = NULL
+  tagList(
+    fluidRow(
+      column(
+        width = 4,
+        "Exclude antibiotic(s):"
+      ),
+      column(
+        width = 8,
+        pickerInput(
+          "spneumoniae_upset_antibio", 
+          NULL, 
+          multiple = TRUE,
+          choices = antibio, 
+          selected = NULL
+        )
+      )
+    ),
+    tags$small(text$co_resistance)
   )
 })
 
@@ -470,12 +565,24 @@ output$salmonella_upset_antibio <- renderUI({
     deduplication_method = input$deduplication_method
   )
   
-  pickerInput(
-    "salmonella_upset_antibio", 
-    "Exclude antibiotic(s):", 
-    multiple = TRUE,
-    choices = antibio, 
-    selected = NULL
+  tagList(
+    fluidRow(
+      column(
+        width = 4,
+        "Exclude antibiotic(s):"
+      ),
+      column(
+        width = 8,
+        pickerInput(
+          "salmonella_upset_antibio", 
+          NULL, 
+          multiple = TRUE,
+          choices = antibio, 
+          selected = NULL
+        )
+      )
+    ),
+    tags$small(text$co_resistance)
   )
 })
 
