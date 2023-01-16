@@ -2,8 +2,5 @@
 .Rhistory
 .RData
 .Ruserdata
-*.Rproj
 *.DS_Store
 *.dcf
-misc_IGNORED/
-misc/ACORN_statistics.html
