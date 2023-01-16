@@ -29,9 +29,9 @@ cols_aware <- c("Access" = "#2c3e50",
                 "Reserve" = "#e74c3c", 
                 "Unknown" = "#969696")
 
-acorn_theme    <- bs_theme(version = 4, bootswatch = "flatly", "border-width" = "2px")
-acorn_theme_la <- bs_theme(version = 4, bootswatch = "flatly", "border-width" = "2px", base_font = "Phetsarath OT")
-acorn_theme_vn <- bs_theme(version = 4, bootswatch = "flatly", "border-width" = "2px", base_font = "Arial")
+acorn_theme    <- bs_theme(version = 5, bootswatch = "flatly", "border-width" = "2px")
+acorn_theme_la <- bs_theme(version = 5, bootswatch = "flatly", "border-width" = "2px", base_font = "Phetsarath OT")
+acorn_theme_vn <- bs_theme(version = 5, bootswatch = "flatly", "border-width" = "2px", base_font = "Arial")
 
 hc_export_kind <- c("downloadJPEG", "downloadCSV")
 hc_acorn_theme <- hc_theme_google() # mirror in startup.R, highchart_sir.R and highchart_sir_evolution.R
@@ -110,7 +110,7 @@ ui <- page(
   shinyjs::useShinyjs(),
   page_navbar(
     theme = acorn_theme,
-    title = a(img(src = "logo_acorn.png", style = "height: 45px; position: relative;")),
+    title = a(img(src = "logo_acorn.png", style = "height: 58px; padding: 5px; position: relative;")),
     id = "tabs",
     selected = "welcome",
     window_title = "ACORN | A Clinically Oriented antimicrobial Resistance Network",
