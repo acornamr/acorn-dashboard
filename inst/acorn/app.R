@@ -1,5 +1,106 @@
-# ACORN shiny app main script
-source('./www/R/startup.R', local = TRUE)
+app_version <- "2.5.7"  # Make sure that the app version is identical in DESCRIPTION
+session_start_time <- format(Sys.time(), "%Y-%m-%d_%HH%M")
+
+# IMPORTANT: ensure that there is a match between the calls below and:
+# - run_app.R
+# - DESCRIPTION
+# - NAMESPACE
+
+# Calls to these packages are not required as all used functions are prefixed with pack_name::
+# aws.s3, ComplexUpset, DBI, DT, flexdashboard, openssl, readr, readxl, REDCapR, RSQLite,
+# rvest, shinyjs, writexl
+
+library(bslib)
+library(curl)
+library(glue)
+library(highcharter)
+library(lubridate)
+library(markdown)  # The includeMarkdown function requires the markdown package.
+library(REDCapR)
+library(shiny)
+library(shiny.i18n)  # i18n$t()
+library(shinyWidgets)  # prettyCheckboxGroup()
+library(tidyverse)
+
+
+cols_sir <- c("#2c3e50", "#f39c12", "#e74c3c")  # resp. S, I and R
+cols_aware <- c("Access" = "#2c3e50", 
+                "Watch" = "#f39c12", 
+                "Reserve" = "#e74c3c", 
+                "Unknown" = "#969696")
+
+acorn_theme    <- bs_theme(version = 4, bootswatch = "flatly", "border-width" = "2px")
+acorn_theme_la <- bs_theme(version = 4, bootswatch = "flatly", "border-width" = "2px", base_font = "Phetsarath OT")
+acorn_theme_vn <- bs_theme(version = 4, bootswatch = "flatly", "border-width" = "2px", base_font = "Arial")
+
+hc_export_kind <- c("downloadJPEG", "downloadCSV")
+hc_acorn_theme <- hc_theme_google() # mirror in startup.R, highchart_sir.R and highchart_sir_evolution.R
+
+choices_datamanagement <- c("Generate and load .acorn </br> from clinical and lab data", 
+                            "Load .acorn </br> from cloud", 
+                            "Load .acorn </br> from local file",
+                            "Info on </br> loaded .acorn")
+
+code_sites <- c("Run Demo", 
+                "Upload Local .acorn",
+                readr::read_csv(
+                  file = "./www/data/ACORN2_site_codes.csv", 
+                  show_col_types = FALSE) |> 
+                  pull(site_code)
+)
+
+aware <- read.csv(
+  file = "./www/data/AWaRe_WHO_2021.csv") |> 
+  transmute(
+    category = `Category`,
+    antibiotic_code = paste0("antibiotic_", tolower(ATC.code))
+  )
+
+about <- tribble(
+  ~ sheet, ~ content,
+  "meta",                "Metadata on acorn data generation.",
+  "redcap_hai_dta",      "HAI (REDCap F06) form data with one row per submission.",
+  "redcap_f01f05_dta",   "REDCap F01,...,F05 forms data with one row per episode.",
+  "lab_dta",             "Lab data provided for patients enrolled in ACORN.",
+  "acorn_dta",           "REDCap F01,...,F05 forms + Lab data consolidated with one row per isolate. Infection episodes with no linked lab data are not included in this dataset.",
+  "tables_dictionary",   "Dictionary of the _dta tables: redcap_hai_dta, redcap_f01f05_dta, lab_dta, and acorn_dta.",
+  "corresp_org_antibio", "Organisms that are shown for each antibiotic.",
+  "data_dictionary_",    "All (unformated) sheets from the site ACORN2_lab_data_dictionary.xlsx file.",
+  "lab_codes_",          "All (unformated) sheets from the ACORN2_lab_codes.xlsx file."
+)
+
+current_tables_dictionary <- readr::read_delim(file = "./www/data/tables_dictionary.csv", delim = ";", show_col_types = FALSE)
+
+# safe to expose since the shared_acornamr bucket can only be listed/read
+shared_acornamr_key <- readRDS("./www/cred/shared_acornamr_key.rds")
+shared_acornamr_sec <- readRDS("./www/cred/shared_acornamr_sec.rds")
+
+# contains all require i18n elements
+i18n <- Translator$new(translation_json_path = "./www/translations/translation.json")
+i18n$set_translation_language("en")
+
+lang <- data.frame(
+  val = c("ba", "en", "fr", "kh", "la", "vn"),
+  img = c(
+    "<img src = './images/flags/id.png' width = 20px><div class='language_name'>Bahasa Indonesia</div></img>",
+    "<img src = './images/flags/gb.png' width = 20px><div class='language_name'>English</div></img>",
+    "<img src = './images/flags/fr.png' width = 20px><div class='language_name'>French</div></img>",
+    "<img src = './images/flags/kh.png' width = 20px><div class='language_name'>Khmer</div></img>",
+    "<img src = './images/flags/la.png' width = 20px><div class='language_name'>Lao</div></img>",
+    "<img src = './images/flags/vn.png' width = 20px><div class='language_name'>Vietnamese</div></img>"
+  )
+)
+
+text <- list(
+  interpretation_amr = "Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable.",
+  co_resistance_combined = "Susceptible and Intermediate are always combined in this visualisation of co-resistances.",
+  co_resistance_bars = "Horizontal bars show the size of a set of SR results while vertical bars show the number of resistant isolates for the corresponding antibiotic.",
+  co_resistance_include = "Only isolates that have been tested against all of the drugs are included in the upset plot.",
+  co_resistance = "The co-resistance plot will include all isolates where every antimicrobial has been tested. Select antimicrobials to exclude from the plot (e.g. if only tested in a small proportion of isolates) to ensure the plots provides the most representative summary of the data."
+)
+
+# source functions
+for(file in list.files('./www/R/functions/'))  source(paste0('./www/R/functions/', file), local = TRUE)
 
 # Definition of UI ----
 ui <- page(
@@ -551,7 +652,7 @@ ui <- page(
                                                 column(6,
                                                        div(class = "text-warning", 
                                                            span(icon("exclamation-triangle"),
-                                                                i18n$t("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable.")))
+                                                                i18n$t(text$interpretation_amr)))
                                                 )
                                               ),
                                               br(),
@@ -562,12 +663,13 @@ ui <- page(
                                                 ),
                                                 column(6,
                                                        h4(i18n$t("Co-resistances")),
+                                                       uiOutput("acinetobacter_upset_antibio"),
                                                        plotOutput("acinetobacter_co_resistance", height = "400px"),
                                                        conditionalPanel(condition = "! input.combine_SI", 
-                                                                        i18n$t("Susceptible and Intermediate are always combined in this visualisation of co-resistances.")
+                                                                        i18n$t(text$co_resistance_combined)
                                                        ),
-                                                       i18n$t("Horizontal bars show the size of a set of SR results while vertical bars show the number of resistant isolates for the corresponding antibiotic."),
-                                                       i18n$t("Only isolates that have been tested against all of the drugs are included in the upset plot.")
+                                                       i18n$t(text$co_resistance_bars),
+                                                       i18n$t(text$co_resistance_include)
                                                 )
                                               ),
                                               fluidRow(
@@ -592,7 +694,7 @@ ui <- page(
                                                 column(6,
                                                        div(class = "text-warning", 
                                                            span(icon("exclamation-triangle"),
-                                                                i18n$t("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable.")))
+                                                                i18n$t(text$interpretation_amr)))
                                                 )
                                               ),
                                               br(),
@@ -603,12 +705,13 @@ ui <- page(
                                                 ),
                                                 column(6,
                                                        h4(i18n$t("Co-resistances")),
+                                                       uiOutput("ecoli_upset_antibio"),
                                                        plotOutput("ecoli_co_resistance", height = "400px"),
                                                        conditionalPanel(condition = "! input.combine_SI", 
-                                                                        i18n$t("Susceptible and Intermediate are always combined in this visualisation of co-resistances.")
+                                                                        i18n$t(text$co_resistance_combined)
                                                        ),
-                                                       i18n$t("Horizontal bars show the size of a set of SR results while vertical bars show the number of resistant isolates for the corresponding antibiotic."),
-                                                       i18n$t("Only isolates that have been tested against all of the drugs are included in the upset plot.")
+                                                       i18n$t(text$co_resistance_bars),
+                                                       i18n$t(text$co_resistance_include)
                                                 )
                                               ),
                                               fluidRow(
@@ -638,7 +741,7 @@ ui <- page(
                                                 column(6,
                                                        div(class = "text-warning", 
                                                            span(icon("exclamation-triangle"),
-                                                                i18n$t("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable.")))
+                                                                i18n$t(text$interpretation_amr)))
                                                 )
                                               ),
                                               br(),
@@ -649,12 +752,13 @@ ui <- page(
                                                 ),
                                                 column(6,
                                                        h4(i18n$t("Co-resistances")),
+                                                       uiOutput("haemophilus_influenzae_upset_antibio"),
                                                        plotOutput("haemophilus_influenzae_co_resistance", height = "400px"),
                                                        conditionalPanel(condition = "! input.combine_SI", 
-                                                                        i18n$t("Susceptible and Intermediate are always combined in this visualisation of co-resistances.")
+                                                                        i18n$t(text$co_resistance_combined)
                                                        ),
-                                                       i18n$t("Horizontal bars show the size of a set of SR results while vertical bars show the number of resistant isolates for the corresponding antibiotic."),
-                                                       i18n$t("Only isolates that have been tested against all of the drugs are included in the upset plot.")
+                                                       i18n$t(text$co_resistance_bars),
+                                                       i18n$t(text$co_resistance_include)
                                                 )
                                               )
                                             )
@@ -674,7 +778,7 @@ ui <- page(
                                                 column(6,
                                                        div(class = "text-warning", 
                                                            span(icon("exclamation-triangle"),
-                                                                i18n$t("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable.")))
+                                                                i18n$t(text$interpretation_amr)))
                                                 )
                                               ),
                                               br(),
@@ -685,12 +789,13 @@ ui <- page(
                                                 ),
                                                 column(6,
                                                        h4(i18n$t("Co-resistances")),
+                                                       uiOutput("kpneumoniae_upset_antibio"),
                                                        plotOutput("kpneumoniae_co_resistance", height = "400px"),
                                                        conditionalPanel(condition = "! input.combine_SI", 
-                                                                        i18n$t("Susceptible and Intermediate are always combined in this visualisation of co-resistances.")
+                                                                        i18n$t(text$co_resistance_combined)
                                                        ),
-                                                       i18n$t("Horizontal bars show the size of a set of SR results while vertical bars show the number of resistant isolates for the corresponding antibiotic."),
-                                                       i18n$t("Only isolates that have been tested against all of the drugs are included in the upset plot.")
+                                                       i18n$t(text$co_resistance_bars),
+                                                       i18n$t(text$co_resistance_include)
                                                 )
                                               ),
                                               fluidRow(
@@ -720,7 +825,7 @@ ui <- page(
                                                 column(6,
                                                        div(class = "text-warning", 
                                                            span(icon("exclamation-triangle"),
-                                                                i18n$t("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable.")))
+                                                                i18n$t(text$interpretation_amr)))
                                                 )
                                               ),
                                               br(),
@@ -731,12 +836,13 @@ ui <- page(
                                                 ),
                                                 column(6,
                                                        h4(i18n$t("Co-resistances")),
+                                                       uiOutput("neisseria_meningitidis_upset_antibio"),
                                                        plotOutput("neisseria_meningitidis_co_resistance", height = "400px"),
                                                        conditionalPanel(condition = "! input.combine_SI", 
-                                                                        i18n$t("Susceptible and Intermediate are always combined in this visualisation of co-resistances.")
+                                                                        i18n$t(text$co_resistance_combined)
                                                        ),
-                                                       i18n$t("Horizontal bars show the size of a set of SR results while vertical bars show the number of resistant isolates for the corresponding antibiotic."),
-                                                       i18n$t("Only isolates that have been tested against all of the drugs are included in the upset plot.")
+                                                       i18n$t(text$co_resistance_bars),
+                                                       i18n$t(text$co_resistance_include)
                                                 )
                                               )
                                             )
@@ -756,7 +862,7 @@ ui <- page(
                                                 column(6,
                                                        div(class = "text-warning", 
                                                            span(icon("exclamation-triangle"),
-                                                                i18n$t("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable.")))
+                                                                i18n$t(text$interpretation_amr)))
                                                 )
                                               ),
                                               br(),
@@ -767,12 +873,13 @@ ui <- page(
                                                 ),
                                                 column(6,
                                                        h4(i18n$t("Co-resistances")),
+                                                       uiOutput("pseudomonas_aeruginosa_upset_antibio"),
                                                        plotOutput("pseudomonas_aeruginosa_co_resistance", height = "400px"),
                                                        conditionalPanel(condition = "! input.combine_SI", 
-                                                                        i18n$t("Susceptible and Intermediate are always combined in this visualisation of co-resistances.")
+                                                                        i18n$t(text$co_resistance_combined)
                                                        ),
-                                                       i18n$t("Horizontal bars show the size of a set of SR results while vertical bars show the number of resistant isolates for the corresponding antibiotic."),
-                                                       i18n$t("Only isolates that have been tested against all of the drugs are included in the upset plot.")
+                                                       i18n$t(text$co_resistance_bars),
+                                                       i18n$t(text$co_resistance_include)
                                                 )
                                               ),
                                               fluidRow(
@@ -800,7 +907,7 @@ ui <- page(
                                                 column(6,
                                                        div(class = "text-warning", 
                                                            span(icon("exclamation-triangle"),
-                                                                i18n$t("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable.")))
+                                                                i18n$t(text$interpretation_amr)))
                                                 )
                                               ),
                                               br(),
@@ -811,12 +918,13 @@ ui <- page(
                                                 ),
                                                 column(6,
                                                        h4(i18n$t("Co-resistances")),
+                                                       uiOutput("salmonella_upset_antibio"),
                                                        plotOutput("salmonella_co_resistance", height = "400px"),
                                                        conditionalPanel(condition = "! input.combine_SI", 
-                                                                        i18n$t("Susceptible and Intermediate are always combined in this visualisation of co-resistances.")
+                                                                        i18n$t(text$co_resistance_combined)
                                                        ),
-                                                       i18n$t("Horizontal bars show the size of a set of SR results while vertical bars show the number of resistant isolates for the corresponding antibiotic."),
-                                                       i18n$t("Only isolates that have been tested against all of the drugs are included in the upset plot.")
+                                                       i18n$t(text$co_resistance_bars),
+                                                       i18n$t(text$co_resistance_include)
                                                 )
                                               ),
                                               fluidRow(
@@ -845,7 +953,7 @@ ui <- page(
                                                 column(6,
                                                        div(class = "text-warning", 
                                                            span(icon("exclamation-triangle"),
-                                                                i18n$t("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable.")))
+                                                                i18n$t(text$interpretation_amr)))
                                                 )
                                               ),
                                               br(),
@@ -856,12 +964,13 @@ ui <- page(
                                                 ),
                                                 column(6,
                                                        h4(i18n$t("Co-resistances")),
+                                                       uiOutput("saureus_upset_antibio"),
                                                        plotOutput("saureus_co_resistance", height = "400px"),
                                                        conditionalPanel(condition = "! input.combine_SI", 
-                                                                        i18n$t("Susceptible and Intermediate are always combined in this visualisation of co-resistances.")
+                                                                        i18n$t(text$co_resistance_combined)
                                                        ),
-                                                       i18n$t("Horizontal bars show the size of a set of SR results while vertical bars show the number of resistant isolates for the corresponding antibiotic."),
-                                                       i18n$t("Only isolates that have been tested against all of the drugs are included in the upset plot.")
+                                                       i18n$t(text$co_resistance_bars),
+                                                       i18n$t(text$co_resistance_include)
                                                 )
                                               ),
                                               fluidRow(
@@ -885,7 +994,7 @@ ui <- page(
                                                 column(6,
                                                        div(class = "text-warning", 
                                                            span(icon("exclamation-triangle"),
-                                                                i18n$t("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable.")))
+                                                                i18n$t(text$interpretation_amr)))
                                                 )
                                               ),
                                               br(),
@@ -896,12 +1005,13 @@ ui <- page(
                                                 ),
                                                 column(6,
                                                        h4(i18n$t("Co-resistances")),
+                                                       uiOutput("spneumoniae_upset_antibio"),
                                                        plotOutput("spneumoniae_co_resistance", height = "400px"),
                                                        conditionalPanel(condition = "! input.combine_SI", 
-                                                                        i18n$t("Susceptible and Intermediate are always combined in this visualisation of co-resistances.")
+                                                                        i18n$t(text$co_resistance_combined)
                                                        ),
-                                                       i18n$t("Horizontal bars show the size of a set of SR results while vertical bars show the number of resistant isolates for the corresponding antibiotic."),
-                                                       i18n$t("Only isolates that have been tested against all of the drugs are included in the upset plot.")
+                                                       i18n$t(text$co_resistance_bars),
+                                                       i18n$t(text$co_resistance_include)
                                                 )
                                               ),
                                               fluidRow(
@@ -932,7 +1042,7 @@ ui <- page(
                                                        htmlOutput("nb_isolates_other"),
                                                        div(class = "text-warning", 
                                                            span(icon("exclamation-triangle"),
-                                                                i18n$t("Care should be taken when interpreting rates and AMR profiles where there are small numbers of cases or bacterial isolates: point estimates may be unreliable."))),
+                                                                i18n$t(text$interpretation_amr))),
                                                        h4(i18n$t("SIR Evaluation")),
                                                        highchartOutput("other_organism_sir", height = "500px"),
                                                      )

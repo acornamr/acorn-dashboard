@@ -5,10 +5,39 @@ output$acinetobacter_sir <- renderHighchart({
                 combine_SI = input$combine_SI, deduplication_method = input$deduplication_method)
 })
 
+output$acinetobacter_upset_antibio <- renderUI({
+  req(acorn_dta_filter())
+  antibio <- upset_antibiotics(
+    data_input = acorn_dta_filter(), 
+    organism_input = "Acinetobacter sp", 
+    corresp = corresp_org_antibio(), 
+    deduplication_method = input$deduplication_method
+  )
+  tagList(
+    fluidRow(
+      column(
+        width = 4,
+        "Exclude antibiotic(s):"
+      ),
+      column(
+        width = 8,
+        pickerInput(
+          "acinetobacter_upset_antibio", 
+          NULL, 
+          multiple = TRUE,
+          choices = antibio, 
+          selected = NULL
+        )
+      )
+    ),
+    tags$small(text$co_resistance)
+  )
+})
+
 output$acinetobacter_co_resistance <- renderPlot({
   req(acorn_dta_filter())
   upset_co_resistance(data_input = acorn_dta_filter(), organism_input = "Acinetobacter sp", corresp = corresp_org_antibio(), 
-                      deduplication_method = input$deduplication_method)
+                      deduplication_method = input$deduplication_method, exclude_antibio = input$acinetobacter_upset_antibio)
 })
 
 output$acinetobacter_sir_evolution <- renderHighchart({
@@ -41,15 +70,44 @@ output$nb_isolates_acinetobacter <- renderText({
 # Escherichia coli ----
 output$ecoli_sir <- renderHighchart({
   req(acorn_dta_filter())
-  organism_input <- "Escherichia coli"
-  highchart_sir(data_input = acorn_dta_filter(), organism_input = organism_input, corresp = corresp_org_antibio(), combine_SI = input$combine_SI,
+  highchart_sir(data_input = acorn_dta_filter(), organism_input = "Escherichia coli", corresp = corresp_org_antibio(), combine_SI = input$combine_SI,
                 deduplication_method = input$deduplication_method)
+})
+
+output$ecoli_upset_antibio <- renderUI({
+  req(acorn_dta_filter())
+  antibio <- upset_antibiotics(
+    data_input = acorn_dta_filter(), 
+    organism_input = "Escherichia coli", 
+    corresp = corresp_org_antibio(), 
+    deduplication_method = input$deduplication_method
+  )
+  
+  tagList(
+    fluidRow(
+      column(
+        width = 4,
+        "Exclude antibiotic(s):"
+      ),
+      column(
+        width = 8,
+        pickerInput(
+          "ecoli_upset_antibio", 
+          NULL, 
+          multiple = TRUE,
+          choices = antibio, 
+          selected = NULL
+        )
+      )
+    ),
+    tags$small(text$co_resistance)
+  )
 })
 
 output$ecoli_co_resistance <- renderPlot({
   req(acorn_dta_filter())
   upset_co_resistance(data_input = acorn_dta_filter(), organism_input = "Escherichia coli", corresp = corresp_org_antibio(), 
-                      deduplication_method = input$deduplication_method)
+                      deduplication_method = input$deduplication_method, exclude_antibio = input$ecoli_upset_antibio)
 })
 
 output$ecoli_sir_evolution <- renderHighchart({
@@ -91,10 +149,41 @@ output$haemophilus_influenzae_sir <- renderHighchart({
                 combine_SI = input$combine_SI, deduplication_method = input$deduplication_method)
 })
 
+output$haemophilus_influenzae_upset_antibio <- renderUI({
+  req(acorn_dta_filter())
+  antibio <- upset_antibiotics(
+    data_input = acorn_dta_filter(), 
+    organism_input = "Haemophilus influenzae", 
+    corresp = corresp_org_antibio(), 
+    deduplication_method = input$deduplication_method
+  )
+  
+  tagList(
+    fluidRow(
+      column(
+        width = 4,
+        "Exclude antibiotic(s):"
+      ),
+      column(
+        width = 8,
+        pickerInput(
+          "haemophilus_influenzae_upset_antibio", 
+          NULL, 
+          multiple = TRUE,
+          choices = antibio, 
+          selected = NULL
+        )
+      )
+    ),
+    tags$small(text$co_resistance)
+  )
+})
+
 output$haemophilus_influenzae_co_resistance <- renderPlot({
   req(acorn_dta_filter())
   upset_co_resistance(data_input = acorn_dta_filter(), organism_input = "Haemophilus influenzae", corresp = corresp_org_antibio(), 
-                      deduplication_method = input$deduplication_method)
+                      deduplication_method = input$deduplication_method,
+                      exclude_antibio = input$haemophilus_influenzae_upset_antibio)
 })
 
 output$test_haemophilus_influenzae_sir <- reactive({
@@ -120,10 +209,41 @@ output$kpneumoniae_sir <- renderHighchart({
                 deduplication_method = input$deduplication_method)
 })
 
+output$kpneumoniae_upset_antibio <- renderUI({
+  req(acorn_dta_filter())
+  antibio <- upset_antibiotics(
+    data_input = acorn_dta_filter(), 
+    organism_input = "Klebsiella pneumoniae", 
+    corresp = corresp_org_antibio(), 
+    deduplication_method = input$deduplication_method
+  )
+  
+  tagList(
+    fluidRow(
+      column(
+        width = 4,
+        "Exclude antibiotic(s):"
+      ),
+      column(
+        width = 8,
+        pickerInput(
+          "kpneumoniae_upset_antibio", 
+          NULL, 
+          multiple = TRUE,
+          choices = antibio, 
+          selected = NULL
+        )
+      )
+    ),
+    tags$small(text$co_resistance)
+  )
+})
+
 output$kpneumoniae_co_resistance <- renderPlot({
   req(acorn_dta_filter())
   upset_co_resistance(data_input = acorn_dta_filter(), organism_input = "Klebsiella pneumoniae", corresp = corresp_org_antibio(), 
-                      deduplication_method = input$deduplication_method)
+                      deduplication_method = input$deduplication_method,
+                      exclude_antibio = input$kpneumoniae_upset_antibio)
 })
 
 output$kpneumoniae_sir_evolution <- renderHighchart({
@@ -165,10 +285,41 @@ output$neisseria_meningitidis_sir <- renderHighchart({
                 combine_SI = input$combine_SI, deduplication_method = input$deduplication_method)
 })
 
+output$neisseria_meningitidis_upset_antibio <- renderUI({
+  req(acorn_dta_filter())
+  antibio <- upset_antibiotics(
+    data_input = acorn_dta_filter(), 
+    organism_input = "Neisseria meningitidis", 
+    corresp = corresp_org_antibio(), 
+    deduplication_method = input$deduplication_method
+  )
+  
+  tagList(
+    fluidRow(
+      column(
+        width = 4,
+        "Exclude antibiotic(s):"
+      ),
+      column(
+        width = 8,
+        pickerInput(
+          "neisseria_meningitidis_upset_antibio", 
+          NULL, 
+          multiple = TRUE,
+          choices = antibio, 
+          selected = NULL
+        )
+      )
+    ),
+    tags$small(text$co_resistance)
+  )
+})
+
 output$neisseria_meningitidis_co_resistance <- renderPlot({
   req(acorn_dta_filter())
   upset_co_resistance(data_input = acorn_dta_filter(), organism_input = "Neisseria meningitidis", corresp = corresp_org_antibio(), 
-                      deduplication_method = input$deduplication_method)
+                      deduplication_method = input$deduplication_method,
+                      exclude_antibio = input$neisseria_meningitidis_upset_antibio)
 })
 
 output$test_neisseria_meningitidis_sir <- reactive({
@@ -194,10 +345,41 @@ output$pseudomonas_aeruginosa_sir <- renderHighchart({
                 combine_SI = input$combine_SI, deduplication_method = input$deduplication_method)
 })
 
+output$pseudomonas_aeruginosa_upset_antibio <- renderUI({
+  req(acorn_dta_filter())
+  antibio <- upset_antibiotics(
+    data_input = acorn_dta_filter(), 
+    organism_input = "Pseudomonas aeruginosa", 
+    corresp = corresp_org_antibio(), 
+    deduplication_method = input$deduplication_method
+  )
+  
+  tagList(
+    fluidRow(
+      column(
+        width = 4,
+        "Exclude antibiotic(s):"
+      ),
+      column(
+        width = 8,
+        pickerInput(
+          "pseudomonas_aeruginosa_upset_antibio", 
+          NULL, 
+          multiple = TRUE,
+          choices = antibio, 
+          selected = NULL
+        )
+      )
+    ),
+    tags$small(text$co_resistance)
+  )
+})
+
 output$pseudomonas_aeruginosa_co_resistance <- renderPlot({
   req(acorn_dta_filter())
   upset_co_resistance(data_input = acorn_dta_filter(), organism_input = "Pseudomonas aeruginosa", corresp = corresp_org_antibio(), 
-                      deduplication_method = input$deduplication_method)
+                      deduplication_method = input$deduplication_method,
+                      exclude_antibio = input$pseudomonas_aeruginosa_upset_antibio)
 })
 
 output$pseudomonas_aeruginosa_sir_evolution <- renderHighchart({
@@ -231,10 +413,41 @@ output$saureus_sir <- renderHighchart({
                 deduplication_method = input$deduplication_method)
 })
 
+output$saureus_upset_antibio <- renderUI({
+  req(acorn_dta_filter())
+  antibio <- upset_antibiotics(
+    data_input = acorn_dta_filter(), 
+    organism_input = "Staphylococcus aureus", 
+    corresp = corresp_org_antibio(), 
+    deduplication_method = input$deduplication_method
+  )
+  
+  tagList(
+    fluidRow(
+      column(
+        width = 4,
+        "Exclude antibiotic(s):"
+      ),
+      column(
+        width = 8,
+        pickerInput(
+          "saureus_upset_antibio", 
+          NULL, 
+          multiple = TRUE,
+          choices = antibio, 
+          selected = NULL
+        )
+      )
+    ),
+    tags$small(text$co_resistance)
+  )
+})
+
 output$saureus_co_resistance <- renderPlot({
   req(acorn_dta_filter())
   upset_co_resistance(data_input = acorn_dta_filter(), organism_input = "Staphylococcus aureus", corresp = corresp_org_antibio(), 
-                      deduplication_method = input$deduplication_method)
+                      deduplication_method = input$deduplication_method,
+                      exclude_antibio = input$saureus_upset_antibio)
 })
 
 output$saureus_sir_evolution <- renderHighchart({
@@ -267,10 +480,41 @@ output$spneumoniae_sir <- renderHighchart({
                 deduplication_method = input$deduplication_method)
 })
 
+output$spneumoniae_upset_antibio <- renderUI({
+  req(acorn_dta_filter())
+  antibio <- upset_antibiotics(
+    data_input = acorn_dta_filter(), 
+    organism_input = "Streptococcus pneumoniae", 
+    corresp = corresp_org_antibio(), 
+    deduplication_method = input$deduplication_method
+  )
+  
+  tagList(
+    fluidRow(
+      column(
+        width = 4,
+        "Exclude antibiotic(s):"
+      ),
+      column(
+        width = 8,
+        pickerInput(
+          "spneumoniae_upset_antibio", 
+          NULL, 
+          multiple = TRUE,
+          choices = antibio, 
+          selected = NULL
+        )
+      )
+    ),
+    tags$small(text$co_resistance)
+  )
+})
+
 output$spneumoniae_co_resistance <- renderPlot({
   req(acorn_dta_filter())
   upset_co_resistance(data_input = acorn_dta_filter(), organism_input = "Streptococcus pneumoniae", corresp = corresp_org_antibio(), 
-                      deduplication_method = input$deduplication_method)
+                      deduplication_method = input$deduplication_method,
+                      exclude_antibio = input$spneumoniae_upset_antibio)
 })
 
 output$spneumoniae_sir_evolution_pen <- renderHighchart({
@@ -312,11 +556,42 @@ output$salmonella_sir <- renderHighchart({
                 deduplication_method = input$deduplication_method)
 })
 
+output$salmonella_upset_antibio <- renderUI({
+  req(acorn_dta_filter())
+  antibio <- upset_antibiotics(
+    data_input = acorn_dta_filter(), 
+    organism_input = input$select_salmonella, 
+    corresp = corresp_org_antibio(), 
+    deduplication_method = input$deduplication_method
+  )
+  
+  tagList(
+    fluidRow(
+      column(
+        width = 4,
+        "Exclude antibiotic(s):"
+      ),
+      column(
+        width = 8,
+        pickerInput(
+          "salmonella_upset_antibio", 
+          NULL, 
+          multiple = TRUE,
+          choices = antibio, 
+          selected = NULL
+        )
+      )
+    ),
+    tags$small(text$co_resistance)
+  )
+})
+
 output$salmonella_co_resistance <- renderPlot({
   req(acorn_dta_filter())
   organism_input <- input$select_salmonella
   upset_co_resistance(data_input = acorn_dta_filter(), organism_input = organism_input, corresp = corresp_org_antibio(), 
-                      deduplication_method = input$deduplication_method)
+                      deduplication_method = input$deduplication_method,
+                      exclude_antibio = input$salmonella_upset_antibio)
 })
 
 output$salmonella_sir_evolution_ceph <- renderHighchart({

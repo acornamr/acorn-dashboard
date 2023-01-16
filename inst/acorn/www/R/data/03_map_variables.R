@@ -11,9 +11,12 @@ amr <- dta %>%
 # This is non-ideal and should be addressed at site-level, but is a pragmatic solution where this is difficult:
 # Makes an assumption that a specimen is a single row of data (which is true in the vast majority of cases, and most importantly for blood cultures)
 # Replaces NA with a running number (based on row.names(amr)) plus the prefix "SPEC"
-amr <- amr %>%
-  mutate(specid = if_else(!is.na(specid), specid, paste0("SPEC", seq_along(row.names(amr))))) %>%
-  mutate(specid.lc = tolower(specid))
+amr <- amr |> 
+  mutate(
+    specid = na_if(specid, ""),
+    specid = if_else(!is.na(specid), specid, paste0("SPEC", seq_along(row.names(amr)))),
+    specid.lc = tolower(specid)
+  )
 
 # Add new columns of NAs required for aggregate variables (e.g. aggregate carbapenem) computations
 col_sup <- setdiff(data_dictionary$variables$acorn.code, names(amr))
