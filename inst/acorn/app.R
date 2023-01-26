@@ -1,4 +1,4 @@
-app_version <- "2.5.7"  # Make sure that the app version is identical in DESCRIPTION
+app_version <- "2.5.8"  # Make sure that the app version is identical in DESCRIPTION
 session_start_time <- format(Sys.time(), "%Y-%m-%d_%HH%M")
 
 # IMPORTANT: ensure that there is a match between the calls below and:
@@ -19,19 +19,25 @@ library(markdown)  # The includeMarkdown function requires the markdown package.
 library(REDCapR)
 library(shiny)
 library(shiny.i18n)  # i18n$t()
-library(shinyWidgets)  # prettyCheckboxGroup()
+library(shinyWidgets)
 library(tidyverse)
 
+cols_sir <- c(
+  "S" = "#2c3e50",
+  "I" = "#f39c12", 
+  "R" = "#e74c3c"
+)
 
-cols_sir <- c("#2c3e50", "#f39c12", "#e74c3c")  # resp. S, I and R
-cols_aware <- c("Access" = "#2c3e50", 
-                "Watch" = "#f39c12", 
-                "Reserve" = "#e74c3c", 
-                "Unknown" = "#969696")
+cols_aware <- c(
+  "Access"  = "#2c3e50", 
+  "Watch"   = "#f39c12", 
+  "Reserve" = "#e74c3c", 
+  "Unknown" = "#969696"
+)
 
-acorn_theme    <- bs_theme(version = 5, bootswatch = "flatly", "border-width" = "2px")
-acorn_theme_la <- bs_theme(version = 5, bootswatch = "flatly", "border-width" = "2px", base_font = "Phetsarath OT")
-acorn_theme_vn <- bs_theme(version = 5, bootswatch = "flatly", "border-width" = "2px", base_font = "Arial")
+acorn_theme    <- bslib::bs_theme(version = 4, bootswatch = "flatly", "border-width" = "2px")
+acorn_theme_la <- bslib::bs_theme(version = 4, bootswatch = "flatly", "border-width" = "2px", base_font = "Phetsarath OT")
+acorn_theme_vn <- bslib::bs_theme(version = 4, bootswatch = "flatly", "border-width" = "2px", base_font = "Arial")
 
 hc_export_kind <- c("downloadJPEG", "downloadCSV")
 hc_acorn_theme <- hc_theme_google() # mirror in startup.R, highchart_sir.R and highchart_sir_evolution.R
@@ -348,7 +354,8 @@ ui <- page(
                        nav(title = i18n$t("Load .acorn from cloud"), value = "load_cloud",
                            br(),
                            fluidRow(
-                             column(3,
+                             column(
+                               width = 3,
                                     pickerInput("acorn_files_server", choices = NULL, label = NULL,
                                                 options = pickerOptions(actionsBox = TRUE, noneSelectedText = "No file selected", liveSearch = FALSE,
                                                                         showTick = TRUE, header = "10 most recent files:"))
