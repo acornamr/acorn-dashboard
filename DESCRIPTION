@@ -38,6 +38,7 @@ Imports:
     shiny.i18n,
     shinyjs,
     shinyWidgets,
+    stringr,
     tictoc,
     tidyverse,
     writexl
