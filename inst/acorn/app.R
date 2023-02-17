@@ -1,4 +1,4 @@
-app_version <- "2.5.8"  # Make sure that the app version is identical in DESCRIPTION
+app_version <- "2.5.9"  # Make sure that the app version is identical in DESCRIPTION
 session_start_time <- format(Sys.time(), "%Y-%m-%d_%HH%M")
 
 # IMPORTANT: ensure that there is a match between the calls below and:
@@ -22,11 +22,7 @@ library(shiny.i18n)  # i18n$t()
 library(shinyWidgets)
 library(tidyverse)
 
-cols_sir <- c(
-  "S" = "#2c3e50",
-  "I" = "#f39c12", 
-  "R" = "#e74c3c"
-)
+cols_sir <- c("#2c3e50", "#f39c12", "#e74c3c")
 
 cols_aware <- c(
   "Access"  = "#2c3e50", 
