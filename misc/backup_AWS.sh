@@ -8,7 +8,7 @@
 # output format: json
 
 # (3) create a directory for backup
-cd "/Users/olivier/Documents/Projets/ACORN/Backup AWS"
+cd "/Users/olivier/Documents/Consultances/ACORN/Backup AWS"
 d=`date +%Y-%m-%d`
 mkdir acornamr-aws_$d
 
