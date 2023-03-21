@@ -73,4 +73,16 @@ if(lab_log$unusual_ast |> nrow() == 0) {
   checklist_status$lab_data_qc_10 <- list(status = "warning", msg = i18n$t("There are unusual antibiotic resistance phenotype warnings to review."))
 }
 
+if (lab_log$patient_redcap_not_lab |> nrow() == 0) {
+  checklist_status$lab_data_qc_11 <- list(
+    status = "okay", 
+    msg = i18n$t("All 'patient_id' in REDCap match a 'patid' in the lab file.")
+  )
+} else {
+  checklist_status$lab_data_qc_11 <- list(
+    status = "warning", 
+    msg = i18n$t("One or more 'patient_id' in REDCap do NOT match ANY 'patid' in the lab file.")
+  )
+}
+
 checklist_status$lab_dta = list(status = "okay", msg = i18n$t("Lab data successfully provided."))

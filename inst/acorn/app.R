@@ -1263,6 +1263,7 @@ server <- function(input, output, session) {
     lab_data_qc_8  = list(status = "hidden", msg = ""),
     lab_data_qc_9  = list(status = "hidden", msg = ""),
     lab_data_qc_10 = list(status = "hidden", msg = ""),
+    lab_data_qc_11 = list(status = "hidden", msg = ""),
     
     redcap_acorn_id            = list(status = "hidden", msg = ""),
     redcap_local_id            = list(status = "hidden", msg = ""),
@@ -1646,7 +1647,8 @@ server <- function(input, output, session) {
         "Specimens"            = lab_log$specimen_type_compare,
         "Missing AST"          = lab_log$missing_ast,
         "Intrinsic Resistance" = lab_log$intrinsic_resistance,
-        "Unusual AST"          = lab_log$unusual_ast
+        "Unusual AST"          = lab_log$unusual_ast,
+        "REDCap patient NOT in Lab data" = lab_log$patient_redcap_not_lab
       ), path = file)
   )
   

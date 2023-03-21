@@ -11,9 +11,9 @@ ifelse(is.null(redcap_f01f05_dta()),
        {
          amr_acorn_relevant <- amr |> filter(patid %in% redcap_f01f05_dta()$patient_id)
          showNotification(paste0(i18n$t("Generating the lab log only on specimens from patients relevant to ACORN ("), 
-                                       amr_acorn_relevant |> nrow(), 
-                                       " records out of ", amr |> nrow(),
-                                       " total records)."), duration = 8)
+                                 amr_acorn_relevant |> nrow(), 
+                                 " records out of ", amr |> nrow(),
+                                 " total records)."), duration = 8)
        }
 )
 
@@ -178,6 +178,15 @@ lab_log$unusual_ast <- left_join(result,
   filter(flag == TRUE) |>
   select(`Specimen number` = specid, `Specimen type` = specgroup, `Organism number` = orgnum, `Organism name` = orgname,
          `Antibiotic group` = antibio_group, `Antibiotic name` = antibio_name, Comment = comment)
+
+
+# All patient_id in REDCap should match one patid in the lab file.
+lab_log$patient_redcap_not_lab <- tibble::tibble(
+  patient_id = setdiff(
+    redcap_f01f05_dta() |> pull(patient_id) |> unique(),
+    lab_dta() |> pull(patid) |> unique()
+  )
+)
 
 
 # Check the first cases flagged in KH001 data:
