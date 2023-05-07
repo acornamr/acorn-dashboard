@@ -1,4 +1,4 @@
-﻿site_code,country,city,site_name,lat,lon,acorn_network,comment
+site_code,country,city,site_name,lat,lon,acorn_network,comment
 KH001,Cambodia,Siem Reap,Angkor Hospital for Children,13.3579855,103.8567,TRUE,
 GH001,Ghana,Accra,Korle-Bu Teaching Hospital,5.5372605,-0.22683187,TRUE,
 GH002,Ghana,Accra,37 Military Hospital,5.588754786,-0.18410816,TRUE,
@@ -19,3 +19,4 @@ NG003,Nigeria,Igbo-ora,Ibarapa Rural lab,7.447033504,3.276880573,FALSE,
 VN001,Vietnam,Hanoi,National Hospital for Tropical Diseases,21.00231646,105.8389495,TRUE,
 VN002,Vietnam,Hue,Hue Central Hospital (Bệnh viện Trung Ương Huế),16.4626133,107.5879476,FALSE,
 VN003,Vietnam,Ho Chi Minh City,Children's Hospital 2 (Bệnh viện Nhi Đồng 2),10.7810848,106.702319,FALSE,
+PH001,Philippine,Manila,Philippine General Hospital,,,FALSE,
