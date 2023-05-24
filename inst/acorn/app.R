@@ -49,8 +49,7 @@ site_choices <- readr::read_csv(
   shinyWidgets::prepare_choices(
     label = site_code,
     value = site_code,
-    group_by = country,
-    description = site_name
+    group_by = country
   )
 
 aware <- read.csv(
