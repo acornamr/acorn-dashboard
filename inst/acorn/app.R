@@ -1,4 +1,4 @@
-app_version <- "2.6.0"  # Make sure that the app version is identical in DESCRIPTION
+app_version <- "2.6.1"  # Make sure that the app version is identical in DESCRIPTION
 session_start_time <- format(Sys.time(), "%Y-%m-%d_%HH%M")
 
 # IMPORTANT: ensure that there is a match between the calls below and:
@@ -43,13 +43,14 @@ choices_datamanagement <- c("Generate and load .acorn </br> from clinical and la
                             "Load .acorn </br> from local file",
                             "Info on </br> loaded .acorn")
 
-code_sites <- c("Run Demo", 
-                "Upload Local .acorn",
-                readr::read_csv(
-                  file = "./www/data/ACORN2_site_codes.csv", 
-                  show_col_types = FALSE) |> 
-                  pull(site_code)
-)
+site_choices <- readr::read_csv(
+  file = "./www/data/ACORN2_site_codes.csv", 
+  show_col_types = FALSE) |> 
+  shinyWidgets::prepare_choices(
+    label = site_code,
+    value = site_code,
+    group_by = country
+  )
 
 aware <- read.csv(
   file = "./www/data/AWaRe_WHO_2021.csv") |> 
@@ -229,7 +230,12 @@ ui <- page(
                      div(class = "well",
                          h5(class = "text_center",  i18n$t("Please log in")),
                          div(class = "text-center", i18n$t("(To log out, close the app.)")),
-                         pickerInput("cred_site", "", choices = code_sites, selected = "Run Demo"),
+                         shinyWidgets::virtualSelectInput(
+                           "cred_site",
+                           "",
+                           site_choices,
+                           hasOptionDescription = TRUE
+                         ),
                          conditionalPanel("input.cred_site != 'Run Demo' && input.cred_site != 'Upload Local .acorn'", div(
                            textInput("cred_user", tagList(icon("user"), i18n$t("User")), placeholder = "enter user name"),
                            passwordInput("cred_password", tagList(icon("unlock-alt"), i18n$t("Password")), placeholder = "enter password")
