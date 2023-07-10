@@ -1,6 +1,9 @@
 app_version <- "2.6.1"  # Make sure that the app version is identical in DESCRIPTION
 session_start_time <- format(Sys.time(), "%Y-%m-%d_%HH%M")
 
+# Increase limit upload to 50 Mb.
+options(shiny.maxRequestSize = 50 * 1024 ^ 2)
+
 # IMPORTANT: ensure that there is a match between the calls below and:
 # - run_app.R
 # - DESCRIPTION
