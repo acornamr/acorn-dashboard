@@ -61,7 +61,9 @@ for(i in amr.var$varname.ast) { # Select the variables containing raw AST data
   amr[,i] <- gsub("<=", "", amr[,i]) # Replaces <= with blank
   amr[,i] <- gsub(">=", "", amr[,i]) # Replaces >= with blank
   amr[,i] <- gsub("\u2264", "", amr[,i]) # Replaces unicode-2264 (unicode <= with blank) [UPDATED ACORN2]
-  amr[,i] <- gsub("\u2265", "", amr[,i]) # Replaces unicode-2264 (unicode >= with blank) [UPDATED ACORN2]
+  amr[,i] <- gsub("\u2265", "", amr[,i]) # Replaces unicode-2265 (unicode >= with blank) [UPDATED ACORN2]
+  amr[,i] <- gsub("\u00b5g/ml", "", amr[,i]) # Replaces unicode-00b5 g/ml (unicode ug/ml with blank) [UPDATED ACORN2]
+  amr[,i] <- gsub("\u03bcg/ml", "", amr[,i]) # Replaces unicode-03bc g/ml (unicode ug/ml with blank) [UPDATED ACORN2]
   amr[,i] <- gsub("/.*", "", amr[,i]) # Anything with a slash MIC (e.g. co-amoxiclav 8/4), remove the "/" and the second MIC which should be the b-lac inhibitor or sulfa, for co-trimoxazole [UPDATED ACORN2]
   amr[,i] <- gsub("<[0-9]{1,3}", "0", amr[,i]) # Anything with < followed by a number (upto 3 digits) is replaced by "0" (i.e. low MIC = S)
   amr[,i] <- gsub(">[0-9]{1,3}", "512", amr[,i]) # Anything with > followed by a number (upto 3 digits) is replaced by "512" (i.e. high MIC = R)
