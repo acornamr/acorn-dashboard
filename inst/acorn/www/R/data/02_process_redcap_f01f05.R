@@ -12,7 +12,7 @@ dl_redcap_f01f05_dta <- dl_redcap_f01f05_dta |>
 
 # If a form F03, F04 or F05 is marked as deleted, set corresponding data elements to NA (except for _deleted and _complete).
 dl_redcap_f01f05_dta <- dl_redcap_f01f05_dta |> 
-  mutate(across(odkreckey:ho_days_icu, 
+  mutate(across(f01odkreckey:ho_days_icu, 
                 ~ replace(., deleted == "Y", NA))) |> 
   mutate(across(f04odkreckey:d28_death_date, 
                 ~ replace(., f04_deleted == "Y", NA))) |> 
@@ -86,7 +86,7 @@ dl_redcap_f02 <- dl_redcap_f01f05_dta %>%
 
 dl_redcap_f03 <- dl_redcap_f01f05_dta %>% 
   select(c(recordid:redcap_repeat_instance, usubjid,
-           odkreckey:f03_infection_hospital_outcome_complete)) %>%
+           f03odkreckey:f03_infection_hospital_outcome_complete)) %>%
   filter(is.na(redcap_repeat_instrument))
 
 dl_redcap_f03 <- dl_redcap_f03 %>%
@@ -167,7 +167,7 @@ ifelse(nrow(test) == 0,
 
 # Consolidate patient_enrolment & infection_episode in infection dataframe. ----
 infection <- left_join(
-  infection_episode %>% select(-c("f02odkreckey", "odkreckey", "id_dmdtc")), 
+  infection_episode %>% select(-any_of(c("f02odkreckey", "f01odkreckey", "id_dmdtc"))), 
   patient_enrolment %>% select(-c("redcap_repeat_instrument", "redcap_repeat_instance", "f01odkreckey",
                                   "acornid_odk", "adm_date_odk", "siteid_cfm", "usubjid_cfm", "acornid_cfm",
                                   "hpd_adm_date_cfm", "f04odkreckey")), 
