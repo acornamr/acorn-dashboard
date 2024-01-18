@@ -1,4 +1,4 @@
-app_version <- "2.6.3"  # Make sure that the app version is identical in DESCRIPTION
+app_version <- "2.6.4"  # Make sure that the app version is identical in DESCRIPTION
 session_start_time <- format(Sys.time(), "%Y-%m-%d_%HH%M")
 
 # Increase limit upload to 50 Mb.
@@ -45,6 +45,7 @@ choices_datamanagement <- c("Generate and load .acorn </br> from clinical and la
                             "Load .acorn </br> from cloud", 
                             "Load .acorn </br> from local file",
                             "Info on </br> loaded .acorn")
+
 
 site_choices <- readr::read_csv(
   file = "./www/data/ACORN2_site_codes.csv", 
