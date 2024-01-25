@@ -1,4 +1,6 @@
 site_code,country,city,site_name,lat,lon,acorn_network,comment
+Run Demo,No Log In Required:,,,,,,
+Upload Local .acorn,No Log In Required:,,,,,,
 KH001,Cambodia,Siem Reap,Angkor Hospital for Children,13.3579855,103.8567,TRUE,
 GH001,Ghana,Accra,Korle-Bu Teaching Hospital,5.5372605,-0.22683187,TRUE,
 GH002,Ghana,Accra,37 Military Hospital,5.588754786,-0.18410816,TRUE,

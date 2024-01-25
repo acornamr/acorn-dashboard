@@ -22,17 +22,22 @@ ifelse(nrow(caseB) == 0,
                                                                                  paste(caseB$patient_id, collapse = ", "))) })
 
 # Make a data frame of (H)CAI episodes / HAI episodes and merge
+
 dta_cai <- clin %>%
   filter(surveillance_category %in% c("CAI", "HCAI")) %>%
   inner_join(lab, by = c("patient_id" = "patid")) %>%
-  filter(specdate >= (date_admission - 2),
-         specdate <= (date_admission + 2))
+  filter(
+    lubridate::as_datetime(specdate) >= lubridate::as_datetime(date_admission - 2),
+    lubridate::as_datetime(specdate) <= lubridate::as_datetime(date_admission + 2)
+  )
 
 dta_hai <- clin %>%
   filter(surveillance_category == "HAI") %>%
   inner_join(lab, by = c("patient_id" = "patid")) %>%
-  filter(specdate >= hai_date_symptom_onset,
-         specdate <= (hai_date_symptom_onset + 2))
+  filter(
+    lubridate::as_datetime(specdate) >= lubridate::as_datetime(hai_date_symptom_onset),
+    lubridate::as_datetime(specdate) <= lubridate::as_datetime(hai_date_symptom_onset + 2)
+  )
 
 acorn_dta <- bind_rows(dta_cai, dta_hai) 
 

@@ -36,7 +36,8 @@ if(all(!is.na(amr_acorn_relevant$specdate))) {
   checklist_status$lab_data_qc_4 <- list(status = "warning", msg = i18n$t("There are rows with missing 'specdate'."))
 }
 
-if(all(amr_acorn_relevant$specdate <= Sys.Date(), na.rm = TRUE)) {
+
+if(all(lubridate::as_datetime(amr_acorn_relevant$specdate) <= Sys.time(), na.rm = TRUE)) {
   checklist_status$lab_data_qc_5 <- list(status = "okay", msg = i18n$t("All 'specdate' are today or before today."))
 } else {
   checklist_status$lab_data_qc_5 <- list(status = "warning", msg = i18n$t("There are rows for which 'specdate' are after today."))
