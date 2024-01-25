@@ -86,7 +86,7 @@ dl_redcap_f02 <- dl_redcap_f01f05_dta %>%
 
 dl_redcap_f03 <- dl_redcap_f01f05_dta %>% 
   select(c(recordid:redcap_repeat_instance, usubjid,
-           f03odkreckey:f03_infection_hospital_outcome_complete)) %>%
+           odkreckey:f03_infection_hospital_outcome_complete)) %>%
   filter(is.na(redcap_repeat_instrument))
 
 dl_redcap_f03 <- dl_redcap_f03 %>%

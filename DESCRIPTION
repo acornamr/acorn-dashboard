@@ -1,7 +1,7 @@
 Package: acorn
 Type: Package
 Title: A Dashboard for ACORN AMR Data
-Version: 2.6.4
+Version: 2.6.5
 Authors@R: c(person(given = "Olivier", family = "Celhay", 
                 email = "olivier.celhay@gmail.com", 
                 role = c("aut", "cre"), 
