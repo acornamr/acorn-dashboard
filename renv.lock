@@ -48,11 +48,8 @@
     },
     "MASS": {
       "Package": "MASS",
-      "Version": "7.3-56",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "af0e1955cb80bb36b7988cc657db261e",
-      "Requirements": []
+      "Version": "7.3-60.0.1",
+      "Source": "Repository"
     },
     "Matrix": {
       "Package": "Matrix",
@@ -1238,11 +1235,10 @@
     },
     "renv": {
       "Package": "renv",
-      "Version": "0.16.0",
-      "Source": "Repository",
+      "Version": "1.0.3",
+      "OS_type": null,
       "Repository": "CRAN",
-      "Hash": "c9e8442ab69bc21c9697ecf856c1e6c7",
-      "Requirements": []
+      "Source": "Repository"
     },
     "reprex": {
       "Package": "reprex",
@@ -1313,19 +1309,8 @@
     },
     "rsconnect": {
       "Package": "rsconnect",
-      "Version": "0.8.26",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "c274aa0076b1892bf702de3257e67275",
-      "Requirements": [
-        "curl",
-        "digest",
-        "jsonlite",
-        "openssl",
-        "packrat",
-        "rstudioapi",
-        "yaml"
-      ]
+      "Version": "1.2.0",
+      "Source": "Repository"
     },
     "rstudioapi": {
       "Package": "rstudioapi",
