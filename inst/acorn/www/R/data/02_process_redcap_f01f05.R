@@ -35,7 +35,7 @@ test <- left_join(
     summarise(match_local_id = n_distinct(usubjid)) |> 
     filter(match_local_id >= 2),
   patient_enrolment |> select(usubjid, recordid, acornid),
-  join_by = "acornid"
+  by = "acornid"
 )
 
 ifelse(nrow(test) == 0, 
@@ -53,7 +53,7 @@ test <- left_join(
     summarise(match_acorn_id = n_distinct(acornid)) |> 
     filter(match_acorn_id >= 2),
   patient_enrolment |> select(usubjid, recordid, acornid),
-  join_by = "usubjid"
+  by = "usubjid"
 )
 
 ifelse(nrow(test) == 0, 
@@ -172,6 +172,7 @@ infection <- left_join(
                                   "acornid_odk", "adm_date_odk", "siteid_cfm", "usubjid_cfm", "acornid_cfm",
                                   "hpd_adm_date_cfm", "f04odkreckey")), 
   by = "recordid")
+
 
 infection <- infection %>% transmute(
   redcap_id = recordid,
