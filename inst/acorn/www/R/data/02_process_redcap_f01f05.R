@@ -479,7 +479,7 @@ infection <- infection %>% select(-birthday, -calc_age_day, -age_month)
 infection <- infection %>% mutate(age_category_calc = case_when(
   age_day <= 28 ~ "Neonate",
   age_year <= 17 ~ "Child",
-  age_year > 18 ~ "Adult",
+  age_year >= 18 ~ "Adult",
   TRUE ~ "Unknown"))
 
 infection$age_category[is.na(infection$age_category)] <- infection$age_category_calc[is.na(infection$age_category)]
