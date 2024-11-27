@@ -35,7 +35,7 @@ test <- left_join(
     summarise(match_local_id = n_distinct(usubjid)) |> 
     filter(match_local_id >= 2),
   patient_enrolment |> select(usubjid, recordid, acornid),
-  join_by = "acornid"
+  by = "acornid"
 )
 
 ifelse(nrow(test) == 0, 
@@ -53,7 +53,7 @@ test <- left_join(
     summarise(match_acorn_id = n_distinct(acornid)) |> 
     filter(match_acorn_id >= 2),
   patient_enrolment |> select(usubjid, recordid, acornid),
-  join_by = "usubjid"
+  by = "usubjid"
 )
 
 ifelse(nrow(test) == 0, 
@@ -172,6 +172,7 @@ infection <- left_join(
                                   "acornid_odk", "adm_date_odk", "siteid_cfm", "usubjid_cfm", "acornid_cfm",
                                   "hpd_adm_date_cfm", "f04odkreckey")), 
   by = "recordid")
+
 
 infection <- infection %>% transmute(
   redcap_id = recordid,
@@ -478,7 +479,7 @@ infection <- infection %>% select(-birthday, -calc_age_day, -age_month)
 infection <- infection %>% mutate(age_category_calc = case_when(
   age_day <= 28 ~ "Neonate",
   age_year <= 17 ~ "Child",
-  age_year > 18 ~ "Adult",
+  age_year >= 18 ~ "Adult",
   TRUE ~ "Unknown"))
 
 infection$age_category[is.na(infection$age_category)] <- infection$age_category_calc[is.na(infection$age_category)]

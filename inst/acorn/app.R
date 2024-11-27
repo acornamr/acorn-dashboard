@@ -1,4 +1,4 @@
-app_version <- "2.6.5"  # Make sure that the app version is identical in DESCRIPTION
+app_version <- "2.6.6"  # Make sure that the app version is identical in DESCRIPTION
 session_start_time <- format(Sys.time(), "%Y-%m-%d_%HH%M")
 
 # Increase limit upload to 50 Mb.
@@ -362,9 +362,9 @@ ui <- page(
                            fluidRow(
                              column(
                                width = 3,
-                                    pickerInput("acorn_files_server", choices = NULL, label = NULL,
-                                                options = pickerOptions(actionsBox = TRUE, noneSelectedText = "No file selected", liveSearch = FALSE,
-                                                                        showTick = TRUE, header = "10 most recent files:"))
+                               pickerInput("acorn_files_server", choices = NULL, label = NULL,
+                                           options = pickerOptions(actionsBox = TRUE, noneSelectedText = "No file selected", liveSearch = FALSE,
+                                                                   showTick = TRUE, header = "10 most recent files:"))
                              ),
                              column(9,
                                     conditionalPanel(condition = "input.acorn_files_server",
@@ -1074,11 +1074,6 @@ ui <- page(
 
 # Definition of server ----
 server <- function(input, output, session) {
-  # Terminate R when shiny app window is closed
-  session$onSessionEnded(function() {
-    stopApp()
-  })
-  
   # Quick access.
   source("./www/R/quick_access.R", local = TRUE)
   
@@ -1313,11 +1308,14 @@ server <- function(input, output, session) {
   enrolment_log <- reactive({
     req(redcap_f01f05_dta())
     
+    
     left_join(redcap_f01f05_dta(),
               redcap_f01f05_dta() %>% 
                 group_by(redcap_id) %>%  # one acorn_id/redcap_id per enrolment but some acorn_id are missing so we prefer to group by redcap_id
                 summarise(expected_d28_date = max(date_episode_enrolment) + 28, .groups = "drop"),
               by = "redcap_id") %>%
+      mutate(redcap_id = as.numeric(redcap_id)) |> 
+      arrange(redcap_id) |> 
       transmute("Category" = surveillance_category,
                 "Patient ID" = patient_id, 
                 "ACORN ID" = acorn_id,
@@ -1900,17 +1898,26 @@ server <- function(input, output, session) {
                        region = acorn_cred()$aws_region)
     
     ## Update list of files to load ----
-    acorn_files <- aws.s3::get_bucket_df(bucket = acorn_cred()$aws_bucket,
-                                         key =  acorn_cred()$aws_key,
-                                         secret = acorn_cred()$aws_secret,
-                                         region = acorn_cred()$aws_region) |> 
-      filter(endsWith(Key, ".acorn")) |> 
-      mutate(date_mod = as.POSIXct(LastModified)) |> 
-      arrange(desc(date_mod)) |> 
-      slice_head(n = 10) |> 
-      pull(Key)
+    # test <- aws.s3::get_bucket_df(
+    #   bucket = acorn_cred()$aws_bucket,
+    #   key =  acorn_cred()$aws_key,
+    #   secret = acorn_cred()$aws_secret,
+    #   region = acorn_cred()$aws_region
+    #   )
+    # 
+    # acorn_files <- tibble(
+    #   Key = purrr::map_chr(test, 1),
+    #   LastModified = purrr::map_chr(test, 2)
+    # ) |> 
+    #   filter(endsWith(Key, ".acorn")) |> 
+    #   mutate(date_mod = as.POSIXct(LastModified)) |> 
+    #   slice_max(n = 10, order_by = date_mod) |> 
+    #   pull(Key)
     
-    updatePickerInput(session, 'acorn_files_server', choices = acorn_files, selected = acorn_files[1])
+    
+    
+    updatePickerInput(session, 'acorn_files_server', choices = name_file, selected = name_file)
+    
     
     
     ## Switch to analysis ----
