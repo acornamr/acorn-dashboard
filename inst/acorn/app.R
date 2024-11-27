@@ -1,4 +1,4 @@
-app_version <- "2.6.5"  # Make sure that the app version is identical in DESCRIPTION
+app_version <- "2.6.6"  # Make sure that the app version is identical in DESCRIPTION
 session_start_time <- format(Sys.time(), "%Y-%m-%d_%HH%M")
 
 # Increase limit upload to 50 Mb.
@@ -1308,11 +1308,14 @@ server <- function(input, output, session) {
   enrolment_log <- reactive({
     req(redcap_f01f05_dta())
     
+    
     left_join(redcap_f01f05_dta(),
               redcap_f01f05_dta() %>% 
                 group_by(redcap_id) %>%  # one acorn_id/redcap_id per enrolment but some acorn_id are missing so we prefer to group by redcap_id
                 summarise(expected_d28_date = max(date_episode_enrolment) + 28, .groups = "drop"),
               by = "redcap_id") %>%
+      mutate(redcap_id = as.numeric(redcap_id)) |> 
+      arrange(redcap_id) |> 
       transmute("Category" = surveillance_category,
                 "Patient ID" = patient_id, 
                 "ACORN ID" = acorn_id,
